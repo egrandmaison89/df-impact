@@ -1,0 +1,22 @@
+uuid: aec9c041-8339-4017-98b8-a92794e5c20d
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: issue_pattern
+label: 'Issue URL Pattern'
+type: 'canonical_entities:node'
+pattern: '/issues/[node:field_season]-[node:field_year]'
+selection_criteria:
+  c0d7bb6d-48c4-441b-a0c8-47983445a440:
+    id: 'entity_bundle:node'
+    negate: false
+    uuid: c0d7bb6d-48c4-441b-a0c8-47983445a440
+    context_mapping:
+      node: node
+    bundles:
+      issue: issue
+selection_logic: and
+weight: 0
+relationships: {  }

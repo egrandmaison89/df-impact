@@ -1,0 +1,30 @@
+id: df_taxonomy_cancer_types
+label: 'Import Dana-Farber Impact Cancer Types taxonomy'
+migration_group: df_migrate
+source:
+  plugin: url
+  data_fetcher_plugin: file
+  data_parser_plugin: json
+  urls:
+    - modules/custom/df_migrate/data/cancer_types.json
+  item_selector: ''
+  fields:
+    - name: name
+      label: 'Term name'
+      selector: name
+    - name: slug
+      label: Slug
+      selector: slug
+  ids:
+    slug:
+      type: string
+
+process:
+  name: name
+  vid:
+    plugin: default_value
+    default_value: cancer_types
+
+destination:
+  plugin: 'entity:taxonomy_term'
+  default_bundle: cancer_types

@@ -1,0 +1,22 @@
+uuid: 2d91874f-bc41-47f8-a875-1c5f8801689e
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: in_brief_pattern
+label: 'In Brief URL Pattern'
+type: 'canonical_entities:node'
+pattern: '/in-brief/[node:title]'
+selection_criteria:
+  0491b575-434f-4e82-8998-9cbc9cadc96d:
+    id: 'entity_bundle:node'
+    negate: false
+    uuid: 0491b575-434f-4e82-8998-9cbc9cadc96d
+    context_mapping:
+      node: node
+    bundles:
+      in_brief: in_brief
+selection_logic: and
+weight: 0
+relationships: {  }

@@ -1,0 +1,10 @@
+uuid: a467dc96-5f6e-4897-8bc3-631f19ba0927
+langcode: en
+status: true
+dependencies: {  }
+id: video_embed
+label: 'Video Embed'
+icon_uuid: null
+icon_default: null
+description: 'An embedded video from YouTube or Vimeo.'
+behavior_plugins: {  }

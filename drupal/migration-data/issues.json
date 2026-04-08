@@ -1,0 +1,128 @@
+[
+  {
+    "wp_tag_id": 24,
+    "name": "Late Fall 2022",
+    "slug": "late-fall-2022",
+    "season": "late fall",
+    "year": 2022,
+    "path_alias": "/issues/late fall-2022",
+    "article_count": 15
+  },
+  {
+    "wp_tag_id": 56,
+    "name": "Fall 2023",
+    "slug": "fall-2023",
+    "season": "fall",
+    "year": 2023,
+    "path_alias": "/issues/fall-2023",
+    "article_count": 24
+  },
+  {
+    "wp_tag_id": 31,
+    "name": "Spring 2023",
+    "slug": "spring-2023",
+    "season": "spring",
+    "year": 2023,
+    "path_alias": "/issues/spring-2023",
+    "article_count": 21
+  },
+  {
+    "wp_tag_id": 53,
+    "name": "Summer 2023",
+    "slug": "summer-2023",
+    "season": "summer",
+    "year": 2023,
+    "path_alias": "/issues/summer-2023",
+    "article_count": 20
+  },
+  {
+    "wp_tag_id": 64,
+    "name": "Winter 2023",
+    "slug": "winter-2023",
+    "season": "winter",
+    "year": 2023,
+    "path_alias": "/issues/winter-2023",
+    "article_count": 27
+  },
+  {
+    "wp_tag_id": 71,
+    "name": "Fall 2024",
+    "slug": "fall-2024",
+    "season": "fall",
+    "year": 2024,
+    "path_alias": "/issues/fall-2024",
+    "article_count": 28
+  },
+  {
+    "wp_tag_id": 67,
+    "name": "Spring 2024",
+    "slug": "spring-2024",
+    "season": "spring",
+    "year": 2024,
+    "path_alias": "/issues/spring-2024",
+    "article_count": 35
+  },
+  {
+    "wp_tag_id": 68,
+    "name": "Summer 2024",
+    "slug": "summer-2024",
+    "season": "summer",
+    "year": 2024,
+    "path_alias": "/issues/summer-2024",
+    "article_count": 36
+  },
+  {
+    "wp_tag_id": 73,
+    "name": "Winter 2024",
+    "slug": "winter-2024",
+    "season": "winter",
+    "year": 2024,
+    "path_alias": "/issues/winter-2024",
+    "article_count": 23
+  },
+  {
+    "wp_tag_id": 83,
+    "name": "Fall 2025",
+    "slug": "fall-2025",
+    "season": "fall",
+    "year": 2025,
+    "path_alias": "/issues/fall-2025",
+    "article_count": 34
+  },
+  {
+    "wp_tag_id": 77,
+    "name": "Spring 2025",
+    "slug": "spring-2025",
+    "season": "spring",
+    "year": 2025,
+    "path_alias": "/issues/spring-2025",
+    "article_count": 36
+  },
+  {
+    "wp_tag_id": 81,
+    "name": "Summer 2025",
+    "slug": "summer-2025",
+    "season": "summer",
+    "year": 2025,
+    "path_alias": "/issues/summer-2025",
+    "article_count": 27
+  },
+  {
+    "wp_tag_id": 85,
+    "name": "Winter 2025",
+    "slug": "winter-2025",
+    "season": "winter",
+    "year": 2025,
+    "path_alias": "/issues/winter-2025",
+    "article_count": 25
+  },
+  {
+    "wp_tag_id": 88,
+    "name": "Spring 2026",
+    "slug": "spring-2026",
+    "season": "spring",
+    "year": 2026,
+    "path_alias": "/issues/spring-2026",
+    "article_count": 24
+  }
+]

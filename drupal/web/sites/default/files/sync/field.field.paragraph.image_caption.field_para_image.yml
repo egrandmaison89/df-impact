@@ -1,0 +1,24 @@
+uuid: 1e719a7c-19a6-493e-8568-ce777744072a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_para_image
+    - media.type.image
+    - paragraphs.paragraphs_type.image_caption
+id: paragraph.image_caption.field_para_image
+field_name: field_para_image
+entity_type: paragraph
+bundle: image_caption
+label: Image
+description: 'Select or upload an image.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+field_type: entity_reference

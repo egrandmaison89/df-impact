@@ -1,0 +1,167 @@
+[
+  {
+    "wp_id": null,
+    "name": "Research",
+    "slug": "research",
+    "parent_name": null,
+    "is_parent": true
+  },
+  {
+    "wp_id": null,
+    "name": "Patient Care",
+    "slug": "patient-care",
+    "parent_name": null,
+    "is_parent": true
+  },
+  {
+    "wp_id": null,
+    "name": "Philanthropy",
+    "slug": "philanthropy",
+    "parent_name": null,
+    "is_parent": true
+  },
+  {
+    "wp_id": 10,
+    "name": "Cancer Research",
+    "slug": "cancer-research",
+    "parent_name": "Research",
+    "is_parent": false,
+    "wp_count": 437
+  },
+  {
+    "wp_id": 14,
+    "name": "Discovery Science",
+    "slug": "discovery-science",
+    "parent_name": "Research",
+    "is_parent": false,
+    "wp_count": 49
+  },
+  {
+    "wp_id": 13,
+    "name": "Drug Development",
+    "slug": "drug-development",
+    "parent_name": "Research",
+    "is_parent": false,
+    "wp_count": 37
+  },
+  {
+    "wp_id": 18,
+    "name": "Immunotherapy",
+    "slug": "immunotherapy",
+    "parent_name": "Research",
+    "is_parent": false,
+    "wp_count": 68
+  },
+  {
+    "wp_id": 62,
+    "name": "AI and Machine Learning",
+    "slug": "ai-and-machine-learning",
+    "parent_name": "Research",
+    "is_parent": false,
+    "wp_count": 14
+  },
+  {
+    "wp_id": 61,
+    "name": "Epigenetics",
+    "slug": "epigenetics",
+    "parent_name": "Research",
+    "is_parent": false,
+    "wp_count": 12
+  },
+  {
+    "wp_id": 17,
+    "name": "Prevention and Early Detection",
+    "slug": "prevention-and-early-detection",
+    "parent_name": "Research",
+    "is_parent": false,
+    "wp_count": 62
+  },
+  {
+    "wp_id": 69,
+    "name": "Basic Science",
+    "slug": "basic-science",
+    "parent_name": "Research",
+    "is_parent": false,
+    "wp_count": 46
+  },
+  {
+    "wp_id": 63,
+    "name": "Rare and Resistant Cancers",
+    "slug": "rare-and-resistant-cancers",
+    "parent_name": "Research",
+    "is_parent": false,
+    "wp_count": 48
+  },
+  {
+    "wp_id": 11,
+    "name": "Total Patient Care",
+    "slug": "total-patient-care",
+    "parent_name": "Patient Care",
+    "is_parent": false,
+    "wp_count": 129
+  },
+  {
+    "wp_id": 15,
+    "name": "Access and Equity",
+    "slug": "access-and-equity",
+    "parent_name": "Patient Care",
+    "is_parent": false,
+    "wp_count": 51
+  },
+  {
+    "wp_id": 60,
+    "name": "Exceptional Expertise",
+    "slug": "exceptional-expertise",
+    "parent_name": "Patient Care",
+    "is_parent": false,
+    "wp_count": 48
+  },
+  {
+    "wp_id": 59,
+    "name": "Essential Opportunities",
+    "slug": "essential-opportunities",
+    "parent_name": "Patient Care",
+    "is_parent": false,
+    "wp_count": 25
+  },
+  {
+    "wp_id": 9,
+    "name": "Grassroots Support",
+    "slug": "grassroots-support",
+    "parent_name": "Philanthropy",
+    "is_parent": false,
+    "wp_count": 140
+  },
+  {
+    "wp_id": 16,
+    "name": "Planned Giving",
+    "slug": "planned-giving",
+    "parent_name": "Philanthropy",
+    "is_parent": false,
+    "wp_count": 33
+  },
+  {
+    "wp_id": 12,
+    "name": "Recognition",
+    "slug": "recognition",
+    "parent_name": "Philanthropy",
+    "is_parent": false,
+    "wp_count": 44
+  },
+  {
+    "wp_id": 55,
+    "name": "The Dana-Farber Campaign",
+    "slug": "the-dana-farber-campaign",
+    "parent_name": "Philanthropy",
+    "is_parent": false,
+    "wp_count": 30
+  },
+  {
+    "wp_id": 40,
+    "name": "From Melany Duval",
+    "slug": "from-melany-duval",
+    "parent_name": null,
+    "is_parent": false,
+    "wp_count": 9
+  }
+]

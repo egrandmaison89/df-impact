@@ -1,0 +1,24 @@
+uuid: f2157f1a-5477-4a5b-a052-f0457bd591d8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_cancer_types
+    - node.type.article
+    - taxonomy.vocabulary.cancer_types
+id: node.article.field_cancer_types
+field_name: field_cancer_types
+entity_type: node
+bundle: article
+label: 'Cancer Types'
+description: 'Select applicable cancer types (optional).'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      cancer_types: cancer_types
+field_type: entity_reference

@@ -1,0 +1,17 @@
+{#
+/**
+ * @file
+ * Views unformatted template for homepage featured stories.
+ * Renders as a featured grid (1 large + others).
+ */
+#}
+{% if title %}
+  <h3>{{ title }}</h3>
+{% endif %}
+<div class="grid grid--featured">
+  {% for row in rows %}
+    <div{{ row.attributes }}>
+      {{ row.content }}
+    </div>
+  {% endfor %}
+</div>

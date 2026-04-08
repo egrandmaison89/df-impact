@@ -1,0 +1,55 @@
+{#
+/**
+ * @file
+ * Theme override for Issue nodes (full view mode).
+ */
+#}
+<div{{ attributes.addClass('issue-page') }}>
+
+  {# --- Banner Image with Title Overlay --- #}
+  {% if content.field_banner_image|render|trim %}
+    <div class="issue-page__banner">
+      {{ content.field_banner_image }}
+      <div class="issue-page__banner-overlay">
+        <h1 class="issue-page__banner-title">{{ label }}</h1>
+      </div>
+    </div>
+  {% else %}
+    <div class="container">
+      <h1>{{ label }}</h1>
+    </div>
+  {% endif %}
+
+  {# --- Description --- #}
+  {% if content.field_description|render|trim %}
+    <div class="issue-page__description">
+      {{ content.field_description }}
+    </div>
+  {% endif %}
+
+  {# --- Leadership Message Link --- #}
+  {% if content.field_leadership_message|render|trim %}
+    <div class="container" style="text-align: center; margin-bottom: var(--space-lg);">
+      <p>
+        <strong>{{ 'A Message from Leadership'|t }}:</strong>
+        {{ content.field_leadership_message }}
+      </p>
+    </div>
+  {% endif %}
+
+  {# --- Gradient Divider --- #}
+  <hr class="divider-gradient" aria-hidden="true">
+
+  {# --- Articles in this Issue (rendered by Views block) --- #}
+  <div class="issue-page__articles">
+    <h2 class="section-heading">{{ 'Articles in This Issue'|t }}</h2>
+    {#
+      The issue_articles view block should be placed in the content region
+      and will use a contextual filter on the issue node ID.
+      Drupal will render it automatically if configured.
+      Alternatively, the view block can be embedded here:
+    #}
+    {{ drupal_view('issue_articles', 'block_1', node.id) }}
+  </div>
+
+</div>

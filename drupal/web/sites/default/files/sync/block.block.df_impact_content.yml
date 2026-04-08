@@ -1,0 +1,22 @@
+uuid: 17caeb0a-3fdc-4527-95ad-5b80f9c7bbd2
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - df_impact
+_core:
+  default_config_hash: erQSEZF2XUjNmgTl0uNRBzmg18ZGXwUcw2FhApoeuHk
+id: df_impact_content
+theme: df_impact
+region: content
+weight: 0
+provider: null
+plugin: system_main_block
+settings:
+  id: system_main_block
+  label: 'Main page content'
+  label_display: '0'
+  provider: system
+visibility: {  }

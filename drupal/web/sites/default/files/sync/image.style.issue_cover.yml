@@ -1,0 +1,18 @@
+uuid: 7e733779-b921-465d-854d-3656303e0d01
+langcode: en
+status: true
+dependencies:
+  module:
+    - focal_point
+name: issue_cover
+label: 'Issue Cover (750x970)'
+effects:
+  5170b127-f93a-4fe1-8285-ff1ae13b5d88:
+    uuid: 5170b127-f93a-4fe1-8285-ff1ae13b5d88
+    id: focal_point_scale_and_crop
+    weight: null
+    data:
+      width: 750
+      height: 970
+      crop_type: focal_point
+pipeline: __default__

@@ -1,0 +1,31 @@
+{#
+/**
+ * @file
+ * Theme override for Basic Page nodes (full view mode).
+ */
+#}
+<div{{ attributes.addClass('page-node') }}>
+
+  {% if content.field_banner_image|render|trim %}
+    <div class="hero">
+      {{ content.field_banner_image }}
+    </div>
+  {% endif %}
+
+  <div class="container container--narrow" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
+    {{ title_prefix }}
+    <h1>{{ label }}</h1>
+    {{ title_suffix }}
+
+    <div class="page-node__body">
+      {{ content.body }}
+    </div>
+
+    {% if content.field_content_sections|render|trim %}
+      <div class="page-node__sections">
+        {{ content.field_content_sections }}
+      </div>
+    {% endif %}
+  </div>
+
+</div>

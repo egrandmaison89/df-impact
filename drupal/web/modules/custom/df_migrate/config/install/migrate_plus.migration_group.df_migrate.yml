@@ -1,0 +1,9 @@
+id: df_migrate
+label: 'Dana-Farber Impact Migration'
+description: 'Migrates all content from the WordPress Impact Magazine site to Drupal.'
+source_type: 'WordPress REST API JSON'
+dependencies: {  }
+shared_configuration:
+  source:
+    constants:
+      SOURCE_BASE_URL: 'https://danafarberimpact.org'

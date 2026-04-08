@@ -1,0 +1,30 @@
+uuid: fc9bc777-8933-40af-8333-bcb122a63ddb
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_homepage_placement
+field_name: field_homepage_placement
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: none
+      label: None
+    -
+      value: featured
+      label: 'Featured (Hero Section)'
+    -
+      value: recent_highlights
+      label: 'Recent Highlights'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

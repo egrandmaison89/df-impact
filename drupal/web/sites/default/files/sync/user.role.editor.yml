@@ -1,0 +1,38 @@
+uuid: 1c569874-c822-4c02-bfa4-35e874e11a81
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.article
+    - node.type.in_brief
+    - workflows.workflow.editorial
+  module:
+    - coffee
+    - content_moderation
+    - media
+    - node
+    - system
+    - toolbar
+id: editor
+label: Editor
+weight: 4
+is_admin: false
+permissions:
+  - 'access coffee'
+  - 'access content'
+  - 'access content overview'
+  - 'access media overview'
+  - 'access toolbar'
+  - 'create article content'
+  - 'create in_brief content'
+  - 'create media'
+  - 'edit any article content'
+  - 'edit any in_brief content'
+  - 'edit own article content'
+  - 'edit own in_brief content'
+  - 'update any media'
+  - 'use editorial transition create_new_draft'
+  - 'use editorial transition publish'
+  - 'use editorial transition submit_for_review'
+  - 'view any unpublished content'
+  - 'view latest version'

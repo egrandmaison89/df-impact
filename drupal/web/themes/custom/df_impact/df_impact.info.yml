@@ -1,0 +1,21 @@
+name: Dana-Farber Impact
+type: theme
+description: 'Custom theme for Dana-Farber Impact Magazine.'
+core_version_requirement: ^10.3 || ^11
+base theme: false
+
+regions:
+  header: 'Header'
+  hero: 'Hero'
+  highlighted: 'Highlighted'
+  content: 'Content'
+  sidebar: 'Sidebar'
+  footer_first: 'Footer First'
+  footer_second: 'Footer Second'
+  footer_third: 'Footer Third'
+
+libraries:
+  - df_impact/global
+
+libraries-override:
+  claro/global-styling: false

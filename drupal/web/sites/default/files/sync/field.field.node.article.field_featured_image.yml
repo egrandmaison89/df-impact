@@ -1,0 +1,24 @@
+uuid: ad7a1ba4-6a56-495e-92c7-ca190606d90f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_featured_image
+    - media.type.image
+    - node.type.article
+id: node.article.field_featured_image
+field_name: field_featured_image
+entity_type: node
+bundle: article
+label: 'Featured Image'
+description: 'The main article image (recommended: 1450×1040px minimum).'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+field_type: entity_reference

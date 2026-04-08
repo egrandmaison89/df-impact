@@ -1,0 +1,162 @@
+id: df_articles
+label: 'Import Dana-Farber Impact Article nodes'
+migration_group: df_migrate
+source:
+  plugin: url
+  data_fetcher_plugin: file
+  data_parser_plugin: json
+  urls:
+    - modules/custom/df_migrate/data/articles.json
+  item_selector: ''
+  fields:
+    - name: wp_id
+      label: 'WP Post ID'
+      selector: wp_id
+    - name: title
+      label: Title
+      selector: title
+    - name: slug
+      label: Slug
+      selector: slug
+    - name: status
+      label: Status
+      selector: status
+    - name: created
+      label: Created
+      selector: created
+    - name: changed
+      label: Changed
+      selector: changed
+    - name: byline
+      label: Byline
+      selector: byline
+    - name: photo_credit
+      label: 'Photo credit'
+      selector: photo_credit
+    - name: body
+      label: Body
+      selector: body
+    - name: excerpt
+      label: Excerpt
+      selector: excerpt
+    - name: featured_image_url
+      label: 'Featured image URL'
+      selector: featured_image_url
+    - name: featured_image_wp_id
+      label: 'Featured image WP ID'
+      selector: featured_image_wp_id
+    - name: issue_name
+      label: 'Issue name'
+      selector: issue_name
+    - name: topics
+      label: Topics
+      selector: topics
+    - name: cancer_types
+      label: 'Cancer types'
+      selector: cancer_types
+    - name: homepage_placement
+      label: 'Homepage placement'
+      selector: homepage_placement
+    - name: content_type
+      label: 'Content type'
+      selector: content_type
+    - name: meta_description
+      label: 'Meta description'
+      selector: meta_description
+    - name: drupal_alias
+      label: 'Drupal alias'
+      selector: drupal_alias
+  ids:
+    wp_id:
+      type: integer
+
+process:
+  title: title
+  type:
+    plugin: default_value
+    default_value: article
+  status:
+    plugin: static_map
+    source: status
+    map:
+      published: 1
+      draft: 0
+
+  moderation_state:
+    plugin: static_map
+    source: status
+    map:
+      published: published
+      draft: draft
+
+  created:
+    plugin: format_date
+    from_format: 'Y-m-d\TH:i:s'
+    to_format: 'U'
+    source: created
+
+  changed:
+    plugin: format_date
+    from_format: 'Y-m-d\TH:i:s'
+    to_format: 'U'
+    source: changed
+
+  'body/value': body
+  'body/format':
+    plugin: default_value
+    default_value: full_html
+
+  field_subtitle: excerpt
+  field_byline: byline
+  field_photo_credit: photo_credit
+  field_excerpt: excerpt
+  field_meta_description: meta_description
+
+  # Map homepage placement
+  field_homepage_placement:
+    plugin: static_map
+    source: homepage_placement
+    map:
+      featured: featured
+      recent_highlights: recent_highlights
+      digital_exclusives: digital_exclusives
+      none: none
+
+  # Map issue name to issue node
+  field_issue:
+    plugin: df_map_issue_name
+    source: issue_name
+    migration: df_issues
+
+  # Map topic names to taxonomy term IDs
+  field_topics:
+    plugin: df_map_term_names
+    source: topics
+    vocabulary: topics
+
+  # Map cancer type names to taxonomy term IDs
+  field_cancer_types:
+    plugin: df_map_term_names
+    source: cancer_types
+    vocabulary: cancer_types
+
+  # Download featured image and create file entity
+  field_featured_image:
+    plugin: df_download_image
+    source: featured_image_url
+
+  # Path alias
+  'path/alias': drupal_alias
+  'path/pathauto':
+    plugin: default_value
+    default_value: 0
+
+destination:
+  plugin: 'entity:node'
+  default_bundle: article
+
+migration_dependencies:
+  required:
+    - df_issues
+    - df_taxonomy_topics
+    - df_taxonomy_cancer_types

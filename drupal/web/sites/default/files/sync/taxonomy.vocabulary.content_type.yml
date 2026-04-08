@@ -1,0 +1,9 @@
+uuid: 9c566e8b-e2bd-4215-a1d4-cf13ae72044f
+langcode: en
+status: true
+dependencies: {  }
+name: 'Content Type'
+vid: content_type
+description: 'Classifies the format or purpose of an article.'
+weight: 0
+new_revision: false

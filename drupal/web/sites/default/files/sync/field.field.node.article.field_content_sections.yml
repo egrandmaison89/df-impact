@@ -1,0 +1,55 @@
+uuid: fb435ae4-eb3b-4b5a-b2c2-4371488c117a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_content_sections
+    - node.type.article
+    - paragraphs.paragraphs_type.cta
+    - paragraphs.paragraphs_type.image_caption
+    - paragraphs.paragraphs_type.pull_quote
+    - paragraphs.paragraphs_type.stat_highlight
+    - paragraphs.paragraphs_type.text_block
+    - paragraphs.paragraphs_type.video_embed
+  module:
+    - entity_reference_revisions
+id: node.article.field_content_sections
+field_name: field_content_sections
+entity_type: node
+bundle: article
+label: 'Content Sections'
+description: 'Add structured components like pull quotes, images, CTAs, and stats.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      pull_quote: pull_quote
+      image_caption: image_caption
+      text_block: text_block
+      cta: cta
+      stat_highlight: stat_highlight
+      video_embed: video_embed
+    target_bundles_drag_drop:
+      cta:
+        weight: 3
+        enabled: true
+      image_caption:
+        weight: 1
+        enabled: true
+      pull_quote:
+        weight: 0
+        enabled: true
+      stat_highlight:
+        weight: 4
+        enabled: true
+      text_block:
+        weight: 2
+        enabled: true
+      video_embed:
+        weight: 5
+        enabled: true
+field_type: entity_reference_revisions

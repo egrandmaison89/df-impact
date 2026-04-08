@@ -1,0 +1,19 @@
+uuid: da44b688-e5c8-4136-bab9-613c46b2ee6e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_meta_description
+    - node.type.article
+id: node.article.field_meta_description
+field_name: field_meta_description
+entity_type: node
+bundle: article
+label: 'Meta Description'
+description: 'SEO meta description (max 320 characters). Falls back to excerpt if empty.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

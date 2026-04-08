@@ -1,0 +1,62 @@
+[
+  {
+    "wp_id": 90,
+    "name": "Breast Cancer",
+    "slug": "breast-cancer",
+    "wp_count": 5
+  },
+  {
+    "wp_id": 91,
+    "name": "Lung Cancer",
+    "slug": "lung-cancer",
+    "wp_count": 2
+  },
+  {
+    "wp_id": 92,
+    "name": "Prostate Cancer",
+    "slug": "prostate-cancer",
+    "wp_count": 1
+  },
+  {
+    "wp_id": 19,
+    "name": "Pediatrics",
+    "slug": "pediatrics",
+    "wp_count": 84
+  },
+  {
+    "wp_id": null,
+    "name": "Colorectal Cancer",
+    "slug": "colorectal-cancer",
+    "wp_count": 0
+  },
+  {
+    "wp_id": null,
+    "name": "Leukemia",
+    "slug": "leukemia",
+    "wp_count": 0
+  },
+  {
+    "wp_id": null,
+    "name": "Lymphoma",
+    "slug": "lymphoma",
+    "wp_count": 0
+  },
+  {
+    "wp_id": null,
+    "name": "Ovarian Cancer",
+    "slug": "ovarian-cancer",
+    "wp_count": 0
+  },
+  {
+    "wp_id": null,
+    "name": "Multiple Myeloma",
+    "slug": "multiple-myeloma",
+    "wp_count": 0
+  },
+  {
+    "wp_id": null,
+    "name": "Skin Cancer",
+    "slug": "skin-cancer",
+    "wp_count": 0
+  }
+]

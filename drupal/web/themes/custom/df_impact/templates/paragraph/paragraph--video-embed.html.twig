@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * Theme override for Video Embed paragraphs.
+ */
+#}
+<div{{ attributes.addClass('paragraph--video-embed') }}>
+  <div class="paragraph--video-embed__wrapper">
+    {{ content.field_video_url }}
+  </div>
+  {% if content.field_video_caption|render|trim %}
+    <div class="paragraph--video-embed__caption">
+      {{ content.field_video_caption }}
+    </div>
+  {% endif %}
+</div>

@@ -1,0 +1,24 @@
+uuid: 02044a90-c368-4a5a-865c-ed93243b6369
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_issue
+    - node.type.in_brief
+    - node.type.issue
+id: node.in_brief.field_issue
+field_name: field_issue
+entity_type: node
+bundle: in_brief
+label: Issue
+description: 'The quarterly issue this item belongs to.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      issue: issue
+field_type: entity_reference

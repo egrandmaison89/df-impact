@@ -1,0 +1,19 @@
+uuid: 72a94f2e-759d-4252-9dba-10516fe0d38f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_attribution
+    - paragraphs.paragraphs_type.pull_quote
+id: paragraph.pull_quote.field_attribution
+field_name: field_attribution
+entity_type: paragraph
+bundle: pull_quote
+label: Attribution
+description: 'Speaker name and title.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

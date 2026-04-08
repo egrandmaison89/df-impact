@@ -1,0 +1,24 @@
+uuid: 2ae86c52-ec77-46ff-adf7-f6671b5f2e43
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_issue
+    - node.type.article
+    - node.type.issue
+id: node.article.field_issue
+field_name: field_issue
+entity_type: node
+bundle: article
+label: Issue
+description: 'The quarterly issue this article belongs to. Leave empty for Digital Exclusives.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      issue: issue
+field_type: entity_reference

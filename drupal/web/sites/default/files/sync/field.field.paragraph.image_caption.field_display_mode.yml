@@ -1,0 +1,21 @@
+uuid: 8371fecc-4e8c-457a-b23a-e4015619f16b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_display_mode
+    - paragraphs.paragraphs_type.image_caption
+  module:
+    - options
+id: paragraph.image_caption.field_display_mode
+field_name: field_display_mode
+entity_type: paragraph
+bundle: image_caption
+label: 'Display Mode'
+description: 'How the image should be displayed in the article.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

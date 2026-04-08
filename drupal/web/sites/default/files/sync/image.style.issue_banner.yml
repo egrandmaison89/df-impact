@@ -1,0 +1,18 @@
+uuid: 0bc39d09-e2f9-41d9-898b-24643fdc9194
+langcode: en
+status: true
+dependencies:
+  module:
+    - focal_point
+name: issue_banner
+label: 'Issue Banner (1750x677)'
+effects:
+  58282ead-1d34-420f-bd37-c82f8fb77539:
+    uuid: 58282ead-1d34-420f-bd37-c82f8fb77539
+    id: focal_point_scale_and_crop
+    weight: null
+    data:
+      width: 1750
+      height: 677
+      crop_type: focal_point
+pipeline: __default__

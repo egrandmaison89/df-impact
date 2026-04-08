@@ -1,0 +1,51 @@
+id: df_issues
+label: 'Import Dana-Farber Impact Issue nodes'
+migration_group: df_migrate
+source:
+  plugin: url
+  data_fetcher_plugin: file
+  data_parser_plugin: json
+  urls:
+    - modules/custom/df_migrate/data/issues.json
+  item_selector: ''
+  fields:
+    - name: wp_tag_id
+      label: 'WP Tag ID'
+      selector: wp_tag_id
+    - name: name
+      label: 'Issue name'
+      selector: name
+    - name: slug
+      label: Slug
+      selector: slug
+    - name: season
+      label: Season
+      selector: season
+    - name: year
+      label: Year
+      selector: year
+    - name: path_alias
+      label: 'Path alias'
+      selector: path_alias
+  ids:
+    slug:
+      type: string
+
+process:
+  title: name
+  type:
+    plugin: default_value
+    default_value: issue
+  status:
+    plugin: default_value
+    default_value: 1
+  field_season: season
+  field_year: year
+  'path/alias': path_alias
+  'path/pathauto':
+    plugin: default_value
+    default_value: 0
+
+destination:
+  plugin: 'entity:node'
+  default_bundle: issue

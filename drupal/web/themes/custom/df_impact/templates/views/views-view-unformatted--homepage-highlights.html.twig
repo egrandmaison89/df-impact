@@ -1,0 +1,17 @@
+{#
+/**
+ * @file
+ * Views unformatted template for homepage highlights.
+ * Renders as a 3-column grid.
+ */
+#}
+{% if title %}
+  <h3>{{ title }}</h3>
+{% endif %}
+<div class="grid grid--3">
+  {% for row in rows %}
+    <div{{ row.attributes }}>
+      {{ row.content }}
+    </div>
+  {% endfor %}
+</div>

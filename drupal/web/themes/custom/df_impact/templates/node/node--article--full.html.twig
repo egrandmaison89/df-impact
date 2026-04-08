@@ -1,0 +1,95 @@
+{#
+/**
+ * @file
+ * Theme override for Article nodes (full view mode).
+ */
+#}
+{{ attach_library('df_impact/global') }}
+
+<article{{ attributes.addClass('article') }}>
+
+  {# --- Featured Image (full-bleed) --- #}
+  {% if content.field_featured_image|render|trim %}
+    <div class="article__hero">
+      {{ content.field_featured_image }}
+      {% if content.field_photo_credit|render|trim %}
+        <div class="article__hero-caption">
+          {{ content.field_photo_credit }}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {# --- Header --- #}
+  <header class="article__header">
+    {{ title_prefix }}
+    <h1 class="article__title">{{ label }}</h1>
+    {{ title_suffix }}
+
+    {% if content.field_subtitle|render|trim %}
+      <p class="article__subtitle">{{ content.field_subtitle }}</p>
+    {% endif %}
+
+    <div class="article__meta">
+      {% if content.field_issue|render|trim %}
+        <span class="article__meta-item">
+          {{ content.field_issue }}
+        </span>
+      {% endif %}
+
+      {% if content.field_byline|render|trim %}
+        <span class="article__meta-item">
+          {{ content.field_byline }}
+        </span>
+      {% endif %}
+
+      {% if content.field_photo_credit|render|trim %}
+        <span class="article__meta-item">
+          {{ content.field_photo_credit }}
+        </span>
+      {% endif %}
+    </div>
+  </header>
+
+  {# --- Article Body --- #}
+  <div class="article__body">
+    {{ content.body }}
+  </div>
+
+  {# --- Content Sections (Paragraphs) --- #}
+  {% if content.field_content_sections|render|trim %}
+    <div class="article__sections">
+      {{ content.field_content_sections }}
+    </div>
+  {% endif %}
+
+  {# --- Tags (Topics + Cancer Types) --- #}
+  <div class="article__tags">
+    {% if content.field_topics|render|trim %}
+      {{ content.field_topics }}
+    {% endif %}
+    {% if content.field_cancer_types|render|trim %}
+      {{ content.field_cancer_types }}
+    {% endif %}
+  </div>
+
+  {# --- Social Sharing --- #}
+  <div class="social-share">
+    <span class="social-share__label">{{ 'Share'|t }}</span>
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('<current>') }}" class="social-share__link" target="_blank" rel="noopener" aria-label="{{ 'Share on Facebook'|t }}">FB</a>
+    <a href="https://twitter.com/intent/tweet?url={{ url('<current>') }}&text={{ label }}" class="social-share__link" target="_blank" rel="noopener" aria-label="{{ 'Share on X'|t }}">X</a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ url('<current>') }}" class="social-share__link" target="_blank" rel="noopener" aria-label="{{ 'Share on LinkedIn'|t }}">LI</a>
+    <a href="mailto:?subject={{ label }}&body={{ url('<current>') }}" class="social-share__link" aria-label="{{ 'Share via Email'|t }}">✉</a>
+  </div>
+
+  {# --- Related Articles --- #}
+  {% if content.field_related_articles|render|trim %}
+    <section class="related-articles">
+      <h2 class="related-articles__title">{{ 'More Stories'|t }}</h2>
+      <div class="grid grid--3">
+        {{ content.field_related_articles }}
+      </div>
+    </section>
+  {% endif %}
+
+</article>

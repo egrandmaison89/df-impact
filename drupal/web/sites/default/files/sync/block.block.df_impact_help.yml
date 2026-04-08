@@ -1,0 +1,22 @@
+uuid: 0cb14d9d-45df-456c-bfb9-e888bd9fb63a
+langcode: en
+status: true
+dependencies:
+  module:
+    - help
+  theme:
+    - df_impact
+_core:
+  default_config_hash: VfPFqqxfkomud5CO8DUijw85QIl9GIxh_nIxLOYESxg
+id: df_impact_help
+theme: df_impact
+region: header
+weight: 0
+provider: null
+plugin: help_block
+settings:
+  id: help_block
+  label: Help
+  label_display: '0'
+  provider: help
+visibility: {  }

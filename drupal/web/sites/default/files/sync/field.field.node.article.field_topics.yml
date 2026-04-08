@@ -1,0 +1,24 @@
+uuid: 6a971a7b-3700-4cc2-8009-ae033ee679cf
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_topics
+    - node.type.article
+    - taxonomy.vocabulary.topics
+id: node.article.field_topics
+field_name: field_topics
+entity_type: node
+bundle: article
+label: Topics
+description: 'Select one or more editorial topics.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      topics: topics
+field_type: entity_reference

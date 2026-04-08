@@ -1,0 +1,22 @@
+uuid: 532d0ae6-9c19-4531-9e22-1a2e1c4fd0c1
+langcode: en
+status: true
+dependencies:
+  theme:
+    - df_impact
+_core:
+  default_config_hash: ydSxdq7R66I8UMC460rOzlfzvlUL4VRbdwc6z9DWaUI
+id: df_impact_secondary_local_tasks
+theme: df_impact
+region: highlighted
+weight: -2
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: 'Secondary tabs'
+  label_display: '0'
+  provider: core
+  primary: false
+  secondary: true
+visibility: {  }

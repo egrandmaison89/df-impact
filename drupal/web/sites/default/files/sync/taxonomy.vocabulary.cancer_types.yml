@@ -1,0 +1,9 @@
+uuid: 957e352f-18f2-44cb-9f8b-a0dbf72c77fb
+langcode: en
+status: true
+dependencies: {  }
+name: 'Cancer Types'
+vid: cancer_types
+description: 'Types of cancer for article tagging.'
+weight: 0
+new_revision: false

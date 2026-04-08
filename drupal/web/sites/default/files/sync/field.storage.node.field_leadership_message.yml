@@ -1,0 +1,19 @@
+uuid: c90062a4-0418-460d-9633-756fbb773f4f
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_leadership_message
+field_name: field_leadership_message
+entity_type: node
+type: entity_reference
+settings:
+  target_type: node
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

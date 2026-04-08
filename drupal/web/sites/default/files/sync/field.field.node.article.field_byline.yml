@@ -1,0 +1,19 @@
+uuid: c4ae2a8e-d639-4c55-b68c-cbc7ca2339e6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_byline
+    - node.type.article
+id: node.article.field_byline
+field_name: field_byline
+entity_type: node
+bundle: article
+label: Byline
+description: 'The author name, e.g., "By Amber Sinicrope".'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

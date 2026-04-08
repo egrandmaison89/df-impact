@@ -1,0 +1,49 @@
+uuid: c84af78b-e693-43af-905a-0dcd412062b9
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.article
+    - node.type.in_brief
+    - node.type.issue
+    - node.type.page
+    - workflows.workflow.editorial
+  module:
+    - coffee
+    - content_moderation
+    - media
+    - node
+    - system
+    - taxonomy
+    - toolbar
+id: issue_manager
+label: 'Issue Manager'
+weight: 5
+is_admin: false
+permissions:
+  - 'access coffee'
+  - 'access content'
+  - 'access content overview'
+  - 'access media overview'
+  - 'access toolbar'
+  - 'administer taxonomy'
+  - 'create article content'
+  - 'create in_brief content'
+  - 'create issue content'
+  - 'create media'
+  - 'create page content'
+  - 'edit any article content'
+  - 'edit any in_brief content'
+  - 'edit any issue content'
+  - 'edit any page content'
+  - 'edit own article content'
+  - 'edit own in_brief content'
+  - 'edit own issue content'
+  - 'update any media'
+  - 'use editorial transition archive'
+  - 'use editorial transition create_new_draft'
+  - 'use editorial transition publish'
+  - 'use editorial transition send_back'
+  - 'use editorial transition submit_for_review'
+  - 'view any unpublished content'
+  - 'view latest version'

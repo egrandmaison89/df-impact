@@ -1,0 +1,20 @@
+uuid: 6454d95e-9074-4f39-b918-5683e5b6f2d4
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: sL588ui1E_8-2c_UupwyYxcqX2OVyMFp3HTLbbFqvPc
+id: global
+label: Global
+tags:
+  title: '[current-page:title] | Dana-Farber Impact Magazine'
+  description: 'Stories from our community of support at Dana-Farber Cancer Institute and The Jimmy Fund.'
+  canonical_url: '[current-page:url]'
+  og_site_name: 'Dana-Farber Impact Magazine'
+  og_type: website
+  og_title: '[current-page:title]'
+  og_description: '[current-page:title] | Dana-Farber Impact Magazine'
+  og_url: '[current-page:url]'
+  twitter_cards_type: summary_large_image
+  twitter_cards_title: '[current-page:title]'
+  twitter_cards_description: '[current-page:title] | Dana-Farber Impact Magazine'

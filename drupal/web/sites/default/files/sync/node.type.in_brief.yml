@@ -1,0 +1,11 @@
+uuid: 7cc55082-ec0e-4197-9c37-d4dd8289bd84
+langcode: en
+status: true
+dependencies: {  }
+name: 'In Brief'
+type: in_brief
+description: 'Short-form content items for the "In Brief" section.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

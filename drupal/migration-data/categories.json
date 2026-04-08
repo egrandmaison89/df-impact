@@ -1,0 +1,170 @@
+[
+  {
+    "id": 15,
+    "name": "Access and Equity",
+    "slug": "access-and-equity",
+    "parent": 0,
+    "count": 51
+  },
+  {
+    "id": 62,
+    "name": "AI and Machine Learning",
+    "slug": "ai-and-machine-learning",
+    "parent": 0,
+    "count": 14
+  },
+  {
+    "id": 69,
+    "name": "Basic Science",
+    "slug": "basic-science",
+    "parent": 0,
+    "count": 46
+  },
+  {
+    "id": 90,
+    "name": "Breast Cancer",
+    "slug": "breast-cancer",
+    "parent": 0,
+    "count": 5
+  },
+  {
+    "id": 10,
+    "name": "Cancer Research",
+    "slug": "cancer-research",
+    "parent": 0,
+    "count": 437
+  },
+  {
+    "id": 4,
+    "name": "Digital Exclusives",
+    "slug": "digital-exclusives",
+    "parent": 0,
+    "count": 44
+  },
+  {
+    "id": 14,
+    "name": "Discovery Science",
+    "slug": "discovery-science",
+    "parent": 0,
+    "count": 49
+  },
+  {
+    "id": 13,
+    "name": "Drug Development",
+    "slug": "drug-development",
+    "parent": 0,
+    "count": 37
+  },
+  {
+    "id": 61,
+    "name": "Epigenetics",
+    "slug": "epigenetics",
+    "parent": 0,
+    "count": 12
+  },
+  {
+    "id": 59,
+    "name": "Essential Opportunities",
+    "slug": "essential-opportunities",
+    "parent": 0,
+    "count": 25
+  },
+  {
+    "id": 60,
+    "name": "Exceptional Expertise",
+    "slug": "exceptional-expertise",
+    "parent": 0,
+    "count": 48
+  },
+  {
+    "id": 40,
+    "name": "From Melany Duval",
+    "slug": "from-melany-duval",
+    "parent": 0,
+    "count": 9
+  },
+  {
+    "id": 9,
+    "name": "Grassroots Support",
+    "slug": "grassroots-support",
+    "parent": 0,
+    "count": 140
+  },
+  {
+    "id": 18,
+    "name": "Immunotherapy",
+    "slug": "immunotherapy",
+    "parent": 0,
+    "count": 68
+  },
+  {
+    "id": 91,
+    "name": "Lung Cancer",
+    "slug": "lung-cancer",
+    "parent": 0,
+    "count": 2
+  },
+  {
+    "id": 19,
+    "name": "Pediatrics",
+    "slug": "pediatrics",
+    "parent": 0,
+    "count": 84
+  },
+  {
+    "id": 16,
+    "name": "Planned Giving",
+    "slug": "planned-giving",
+    "parent": 0,
+    "count": 33
+  },
+  {
+    "id": 17,
+    "name": "Prevention and Early Detection",
+    "slug": "prevention-and-early-detection",
+    "parent": 0,
+    "count": 62
+  },
+  {
+    "id": 92,
+    "name": "Prostate Cancer",
+    "slug": "prostate-cancer",
+    "parent": 0,
+    "count": 1
+  },
+  {
+    "id": 63,
+    "name": "Rare and Resistant Cancers",
+    "slug": "rare-and-resistant-cancers",
+    "parent": 0,
+    "count": 48
+  },
+  {
+    "id": 12,
+    "name": "Recognition",
+    "slug": "recognition",
+    "parent": 0,
+    "count": 44
+  },
+  {
+    "id": 55,
+    "name": "The Dana-Farber Campaign",
+    "slug": "the-dana-farber-campaign",
+    "parent": 0,
+    "count": 30
+  },
+  {
+    "id": 11,
+    "name": "Total Patient Care",
+    "slug": "total-patient-care",
+    "parent": 0,
+    "count": 129
+  },
+  {
+    "id": 1,
+    "name": "Uncategorized",
+    "slug": "uncategorized",
+    "parent": 0,
+    "count": 0
+  }
+]

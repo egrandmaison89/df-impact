@@ -1,0 +1,22 @@
+uuid: e41b1715-8117-4230-b63d-04cf432db9df
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_stat_description
+    - paragraphs.paragraphs_type.stat_highlight
+  module:
+    - text
+id: paragraph.stat_highlight.field_stat_description
+field_name: field_stat_description
+entity_type: paragraph
+bundle: stat_highlight
+label: Description
+description: 'Optional additional context.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

@@ -1,0 +1,141 @@
+uuid: bd59892d-bb9f-4ecb-b37d-400d6bb5942f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_byline
+    - field.storage.node.field_excerpt
+    - field.storage.node.field_featured_image
+    - field.storage.node.field_topics
+    - node.type.article
+  module:
+    - node
+    - options
+    - text
+id: homepage_featured
+label: 'Homepage: Featured Articles'
+module: views
+description: 'Featured articles for the homepage hero section.'
+tag: ''
+base_table: node_field_data
+base_field: nid
+display:
+  default:
+    id: default
+    display_title: Default
+    display_plugin: default
+    position: 0
+    display_options:
+      title: 'Featured Articles'
+      fields:
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          plugin_id: field
+          label: ''
+          type: string
+          settings:
+            link_to_entity: true
+        field_featured_image:
+          id: field_featured_image
+          table: node__field_featured_image
+          field: field_featured_image
+          plugin_id: field
+          label: ''
+          type: entity_reference_entity_view
+        field_excerpt:
+          id: field_excerpt
+          table: node__field_excerpt
+          field: field_excerpt
+          plugin_id: field
+          label: ''
+        field_byline:
+          id: field_byline
+          table: node__field_byline
+          field: field_byline
+          plugin_id: field
+          label: ''
+        field_topics:
+          id: field_topics
+          table: node__field_topics
+          field: field_topics
+          plugin_id: field
+          label: ''
+          type: entity_reference_label
+      pager:
+        type: some
+        options:
+          items_per_page: 3
+      sorts:
+        sticky:
+          id: sticky
+          table: node_field_data
+          field: sticky
+          plugin_id: boolean
+          order: DESC
+        created:
+          id: created
+          table: node_field_data
+          field: created
+          plugin_id: date
+          order: DESC
+      filters:
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
+        type:
+          id: type
+          table: node_field_data
+          field: type
+          plugin_id: bundle
+          value:
+            article: article
+          group: 1
+        field_homepage_placement_value:
+          id: field_homepage_placement_value
+          table: node__field_homepage_placement
+          field: field_homepage_placement_value
+          plugin_id: list_field
+          value:
+            featured: featured
+          group: 1
+      style:
+        type: default
+      row:
+        type: fields
+      display_extenders: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - 'user.node_grants:view'
+      tags:
+        - 'config:field.storage.node.field_byline'
+        - 'config:field.storage.node.field_excerpt'
+        - 'config:field.storage.node.field_featured_image'
+        - 'config:field.storage.node.field_topics'
+  block_1:
+    id: block_1
+    display_title: Block
+    display_plugin: block
+    position: 1
+    display_options:
+      display_extenders: {  }
+      block_description: 'Homepage: Featured Articles'
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - 'user.node_grants:view'
+      tags:
+        - 'config:field.storage.node.field_byline'
+        - 'config:field.storage.node.field_excerpt'
+        - 'config:field.storage.node.field_featured_image'
+        - 'config:field.storage.node.field_topics'

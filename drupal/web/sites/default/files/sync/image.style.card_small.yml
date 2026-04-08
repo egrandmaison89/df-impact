@@ -1,0 +1,18 @@
+uuid: bb929cb9-b914-41c9-b7cb-f87ffab50efd
+langcode: en
+status: true
+dependencies:
+  module:
+    - focal_point
+name: card_small
+label: 'Card Small (350x200)'
+effects:
+  e2a90669-85bd-4bbb-8b40-c1b202fb7816:
+    uuid: e2a90669-85bd-4bbb-8b40-c1b202fb7816
+    id: focal_point_scale_and_crop
+    weight: null
+    data:
+      width: 350
+      height: 200
+      crop_type: focal_point
+pipeline: __default__

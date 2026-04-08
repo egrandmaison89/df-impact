@@ -1,0 +1,103 @@
+id: df_in_brief
+label: 'Import Dana-Farber Impact In Brief nodes'
+migration_group: df_migrate
+source:
+  plugin: url
+  data_fetcher_plugin: file
+  data_parser_plugin: json
+  urls:
+    - modules/custom/df_migrate/data/in_brief.json
+  item_selector: ''
+  fields:
+    - name: wp_id
+      label: 'WP Post ID'
+      selector: wp_id
+    - name: title
+      label: Title
+      selector: title
+    - name: slug
+      label: Slug
+      selector: slug
+    - name: status
+      label: Status
+      selector: status
+    - name: created
+      label: Created
+      selector: created
+    - name: body
+      label: Body
+      selector: body
+    - name: featured_image_url
+      label: 'Featured image URL'
+      selector: featured_image_url
+    - name: issue_name
+      label: 'Issue name'
+      selector: issue_name
+    - name: link
+      label: 'External link'
+      selector: link
+    - name: drupal_alias
+      label: 'Drupal alias'
+      selector: drupal_alias
+  ids:
+    wp_id:
+      type: integer
+
+process:
+  title: title
+  type:
+    plugin: default_value
+    default_value: in_brief
+  status:
+    plugin: static_map
+    source: status
+    map:
+      published: 1
+      draft: 0
+
+  moderation_state:
+    plugin: static_map
+    source: status
+    map:
+      published: published
+      draft: draft
+
+  created:
+    plugin: format_date
+    from_format: 'Y-m-d\TH:i:s'
+    to_format: 'U'
+    source: created
+
+  'field_summary/value': body
+  'field_summary/format':
+    plugin: default_value
+    default_value: full_html
+
+  # Map issue name to issue node ID
+  field_issue:
+    plugin: df_map_issue_name
+    source: issue_name
+    migration: df_issues
+
+  # Download image
+  field_image:
+    plugin: df_download_image
+    source: featured_image_url
+
+  # External link
+  'field_link/uri': link
+  'field_link/title': title
+
+  # Path alias
+  'path/alias': drupal_alias
+  'path/pathauto':
+    plugin: default_value
+    default_value: 0
+
+destination:
+  plugin: 'entity:node'
+  default_bundle: in_brief
+
+migration_dependencies:
+  required:
+    - df_issues

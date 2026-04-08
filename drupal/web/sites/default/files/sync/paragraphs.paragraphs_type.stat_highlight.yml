@@ -1,0 +1,10 @@
+uuid: 902f476b-ae49-4cf9-8e95-94539c9b705f
+langcode: en
+status: true
+dependencies: {  }
+id: stat_highlight
+label: 'Stat Highlight'
+icon_uuid: null
+icon_default: null
+description: 'A highlighted statistic with label and description.'
+behavior_plugins: {  }

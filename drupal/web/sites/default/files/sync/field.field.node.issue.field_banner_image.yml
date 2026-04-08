@@ -1,0 +1,24 @@
+uuid: ea0bc662-264c-404b-a675-88852e45c864
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_banner_image
+    - media.type.image
+    - node.type.issue
+id: node.issue.field_banner_image
+field_name: field_banner_image
+entity_type: node
+bundle: issue
+label: 'Banner Image'
+description: 'The issue page hero banner (recommended: 1750×677px).'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+field_type: entity_reference

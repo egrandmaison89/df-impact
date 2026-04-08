@@ -1,0 +1,45 @@
+{#
+/**
+ * @file
+ * Theme override for Article nodes (teaser / card view).
+ */
+#}
+<div{{ attributes.addClass('card') }}>
+  {% if content.field_featured_image|render|trim %}
+    <div class="card__image-wrapper">
+      <a href="{{ url }}">
+        {{ content.field_featured_image }}
+      </a>
+    </div>
+  {% endif %}
+
+  <div class="card__body">
+    {% if content.field_topics|render|trim %}
+      <div class="card__topics">
+        {{ content.field_topics }}
+      </div>
+    {% endif %}
+
+    {{ title_prefix }}
+    <h3 class="card__title">
+      <a href="{{ url }}">{{ label }}</a>
+    </h3>
+    {{ title_suffix }}
+
+    {% if content.field_excerpt|render|trim %}
+      <div class="card__excerpt">
+        {{ content.field_excerpt }}
+      </div>
+    {% elseif content.body|render|trim %}
+      <div class="card__excerpt">
+        {{ content.body }}
+      </div>
+    {% endif %}
+
+    {% if content.field_byline|render|trim %}
+      <div class="card__meta">
+        {{ content.field_byline }}
+      </div>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,18 @@
+uuid: ad8c1456-fd6a-4846-8e2a-adc4ef0a21b5
+langcode: en
+status: true
+dependencies:
+  module:
+    - focal_point
+name: in_brief
+label: 'In Brief (300x200)'
+effects:
+  07b0ea27-eada-4226-b2f2-646adc5b0cc3:
+    uuid: 07b0ea27-eada-4226-b2f2-646adc5b0cc3
+    id: focal_point_scale_and_crop
+    weight: null
+    data:
+      width: 300
+      height: 200
+      crop_type: focal_point
+pipeline: __default__

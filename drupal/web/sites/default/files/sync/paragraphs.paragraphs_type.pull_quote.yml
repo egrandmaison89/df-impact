@@ -1,0 +1,10 @@
+uuid: 62dd3255-d8b9-49b3-b62d-0f2b7f088150
+langcode: en
+status: true
+dependencies: {  }
+id: pull_quote
+label: 'Pull Quote'
+icon_uuid: null
+icon_default: null
+description: 'A highlighted quote with optional attribution.'
+behavior_plugins: {  }

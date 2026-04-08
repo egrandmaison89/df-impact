@@ -1,0 +1,22 @@
+uuid: 68aa15d2-8f07-4830-9c3d-9070e49f2e8e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_description
+    - node.type.issue
+  module:
+    - text
+id: node.issue.field_description
+field_name: field_description
+entity_type: node
+bundle: issue
+label: Description
+description: 'Optional editorial introduction for this issue.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

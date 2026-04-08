@@ -1,0 +1,23 @@
+uuid: b9e7d470-0515-41f4-97a1-625aa95d9350
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_homepage_placement
+    - node.type.article
+  module:
+    - options
+id: node.article.field_homepage_placement
+field_name: field_homepage_placement
+entity_type: node
+bundle: article
+label: 'Homepage Placement'
+description: 'Where this article should appear on the homepage.'
+required: false
+translatable: true
+default_value:
+  -
+    value: none
+default_value_callback: ''
+settings: {  }
+field_type: list_string

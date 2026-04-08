@@ -1,0 +1,24 @@
+uuid: d9489215-ebf6-4107-813c-ae9f47c96e65
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_leadership_message
+    - node.type.article
+    - node.type.issue
+id: node.issue.field_leadership_message
+field_name: field_leadership_message
+entity_type: node
+bundle: issue
+label: 'Leadership Message'
+description: 'Link to the "Message from Melany Duval" article for this issue.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      article: article
+field_type: entity_reference

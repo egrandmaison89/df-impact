@@ -1,0 +1,9 @@
+uuid: 48b209ef-c086-444c-b8ab-7bf72512557b
+langcode: en
+status: true
+dependencies: {  }
+name: Topics
+vid: topics
+description: 'Editorial topics for categorizing articles.'
+weight: 0
+new_revision: false

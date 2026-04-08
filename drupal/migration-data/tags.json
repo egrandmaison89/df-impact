@@ -1,0 +1,254 @@
+[
+  {
+    "id": 78,
+    "name": "20205",
+    "slug": "20205",
+    "count": 0
+  },
+  {
+    "id": 28,
+    "name": "2022",
+    "slug": "2022",
+    "count": 15
+  },
+  {
+    "id": 30,
+    "name": "2023",
+    "slug": "2023",
+    "count": 92
+  },
+  {
+    "id": 57,
+    "name": "2024",
+    "slug": "2024",
+    "count": 122
+  },
+  {
+    "id": 76,
+    "name": "2025",
+    "slug": "2025",
+    "count": 122
+  },
+  {
+    "id": 87,
+    "name": "2026",
+    "slug": "2026",
+    "count": 24
+  },
+  {
+    "id": 27,
+    "name": "Campaign Updates",
+    "slug": "campaign-updates",
+    "count": 9
+  },
+  {
+    "id": 5,
+    "name": "Digital Exclusives",
+    "slug": "digital-exclusives",
+    "count": 47
+  },
+  {
+    "id": 56,
+    "name": "Fall 2023",
+    "slug": "fall-2023",
+    "count": 24
+  },
+  {
+    "id": 71,
+    "name": "Fall 2024",
+    "slug": "fall-2024",
+    "count": 28
+  },
+  {
+    "id": 83,
+    "name": "Fall 2025",
+    "slug": "fall-2025",
+    "count": 34
+  },
+  {
+    "id": 75,
+    "name": "Ho",
+    "slug": "ho",
+    "count": 0
+  },
+  {
+    "id": 36,
+    "name": "Homepage DE",
+    "slug": "homepage-de",
+    "count": 3
+  },
+  {
+    "id": 8,
+    "name": "Homepage Featured",
+    "slug": "homepage-featured",
+    "count": 9
+  },
+  {
+    "id": 37,
+    "name": "Homepage Recent Highlights",
+    "slug": "homepage-recent-highlights",
+    "count": 13
+  },
+  {
+    "id": 80,
+    "name": "In Brief 2025",
+    "slug": "in-brief-2025",
+    "count": 0
+  },
+  {
+    "id": 58,
+    "name": "In Brief Fall 2023",
+    "slug": "in-brief-fall-2023",
+    "count": 24
+  },
+  {
+    "id": 72,
+    "name": "In Brief Fall 2024",
+    "slug": "in-brief-fall-2024",
+    "count": 17
+  },
+  {
+    "id": 84,
+    "name": "In Brief Fall 2025",
+    "slug": "in-brief-fall-2025",
+    "count": 27
+  },
+  {
+    "id": 35,
+    "name": "In Brief Spring 2023",
+    "slug": "in-brief-spring-2023",
+    "count": 23
+  },
+  {
+    "id": 66,
+    "name": "In Brief Spring 2024",
+    "slug": "in-brief-spring-2024",
+    "count": 24
+  },
+  {
+    "id": 79,
+    "name": "In Brief Spring 2025",
+    "slug": "in-brief-spring-2025",
+    "count": 27
+  },
+  {
+    "id": 89,
+    "name": "In Brief Spring 2026",
+    "slug": "in-brief-spring-2026",
+    "count": 24
+  },
+  {
+    "id": 54,
+    "name": "In Brief Summer 2023",
+    "slug": "in-brief-summer-2023",
+    "count": 16
+  },
+  {
+    "id": 70,
+    "name": "In Brief Summer 2024",
+    "slug": "in-brief-summer-2024",
+    "count": 32
+  },
+  {
+    "id": 82,
+    "name": "In Brief Summer 2025",
+    "slug": "in-brief-summer-2025",
+    "count": 23
+  },
+  {
+    "id": 65,
+    "name": "In Brief Winter 2023",
+    "slug": "in-brief-winter-2023",
+    "count": 6
+  },
+  {
+    "id": 74,
+    "name": "In Brief Winter 2024",
+    "slug": "in-brief-winter-2024",
+    "count": 13
+  },
+  {
+    "id": 86,
+    "name": "In Brief Winter 2025",
+    "slug": "in-brief-winter-2025",
+    "count": 17
+  },
+  {
+    "id": 38,
+    "name": "Issue Page Featured",
+    "slug": "issue-page-featured",
+    "count": 24
+  },
+  {
+    "id": 24,
+    "name": "Late Fall 2022",
+    "slug": "late-fall-2022",
+    "count": 15
+  },
+  {
+    "id": 26,
+    "name": "Melany Letters",
+    "slug": "melany-letters",
+    "count": 13
+  },
+  {
+    "id": 31,
+    "name": "Spring 2023",
+    "slug": "spring-2023",
+    "count": 21
+  },
+  {
+    "id": 67,
+    "name": "Spring 2024",
+    "slug": "spring-2024",
+    "count": 35
+  },
+  {
+    "id": 77,
+    "name": "Spring 2025",
+    "slug": "spring-2025",
+    "count": 36
+  },
+  {
+    "id": 88,
+    "name": "Spring 2026",
+    "slug": "spring-2026",
+    "count": 24
+  },
+  {
+    "id": 53,
+    "name": "Summer 2023",
+    "slug": "summer-2023",
+    "count": 20
+  },
+  {
+    "id": 68,
+    "name": "Summer 2024",
+    "slug": "summer-2024",
+    "count": 36
+  },
+  {
+    "id": 81,
+    "name": "Summer 2025",
+    "slug": "summer-2025",
+    "count": 27
+  },
+  {
+    "id": 64,
+    "name": "Winter 2023",
+    "slug": "winter-2023",
+    "count": 27
+  },
+  {
+    "id": 73,
+    "name": "Winter 2024",
+    "slug": "winter-2024",
+    "count": 23
+  },
+  {
+    "id": 85,
+    "name": "Winter 2025",
+    "slug": "winter-2025",
+    "count": 25
+  }
+]

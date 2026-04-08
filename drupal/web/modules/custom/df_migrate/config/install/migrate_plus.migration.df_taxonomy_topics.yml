@@ -1,0 +1,50 @@
+id: df_taxonomy_topics
+label: 'Import Dana-Farber Impact Topics taxonomy'
+migration_group: df_migrate
+source:
+  plugin: url
+  data_fetcher_plugin: file
+  data_parser_plugin: json
+  urls:
+    - modules/custom/df_migrate/data/topics.json
+  item_selector: ''
+  fields:
+    - name: name
+      label: 'Term name'
+      selector: name
+    - name: slug
+      label: Slug
+      selector: slug
+    - name: parent_name
+      label: 'Parent term name'
+      selector: parent_name
+    - name: is_parent
+      label: 'Is a parent term'
+      selector: is_parent
+  ids:
+    slug:
+      type: string
+
+process:
+  name: name
+  vid:
+    plugin: default_value
+    default_value: topics
+  # Parent terms are imported first; children reference them by name
+  parent:
+    plugin: skip_on_empty
+    source: parent_name
+    method: process
+  'parent/0':
+    plugin: migration_lookup
+    migration: df_taxonomy_topics
+    source: parent_name
+    no_stub: true
+
+destination:
+  plugin: 'entity:taxonomy_term'
+  default_bundle: topics
+
+migration_dependencies:
+  optional:
+    - df_taxonomy_topics

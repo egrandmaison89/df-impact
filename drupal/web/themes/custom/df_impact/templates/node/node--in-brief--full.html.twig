@@ -1,0 +1,35 @@
+{#
+/**
+ * @file
+ * Theme override for In Brief nodes (full view mode).
+ */
+#}
+<div{{ attributes.addClass('in-brief-item') }}>
+  {% if content.field_image|render|trim %}
+    <div class="in-brief-item__image">
+      {{ content.field_image }}
+    </div>
+  {% endif %}
+
+  <div class="in-brief-item__content">
+    {{ title_prefix }}
+    <h2 class="in-brief-item__title">
+      {% if content.field_link|render|trim %}
+        {{ content.field_link }}
+      {% else %}
+        {{ label }}
+      {% endif %}
+    </h2>
+    {{ title_suffix }}
+
+    <div class="in-brief-item__summary">
+      {{ content.field_summary }}
+    </div>
+
+    {% if content.field_issue|render|trim %}
+      <div class="in-brief-item__issue">
+        {{ content.field_issue }}
+      </div>
+    {% endif %}
+  </div>
+</div>

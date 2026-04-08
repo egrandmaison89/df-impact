@@ -1,0 +1,10 @@
+uuid: 8e7c0a91-5e64-46da-af4a-21338ae699a9
+langcode: en
+status: true
+dependencies: {  }
+id: cta
+label: 'Call to Action'
+icon_uuid: null
+icon_default: null
+description: 'A call-to-action block with heading, text, and button.'
+behavior_plugins: {  }

@@ -1,0 +1,135 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api.server.df_impact_search
+  module:
+    - node
+    - search_api
+    - search_api_db
+    - taxonomy
+id: df_impact_content
+name: 'Dana-Farber Impact Content'
+description: 'Search index for articles, issues, and in-brief items.'
+read_only: false
+field_settings:
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: text
+    boost: '5.0'
+    dependencies: {}
+  field_excerpt:
+    label: Excerpt
+    datasource_id: 'entity:node'
+    property_path: field_excerpt
+    type: text
+    boost: '2.0'
+    dependencies: {}
+  field_subtitle:
+    label: Subtitle
+    datasource_id: 'entity:node'
+    property_path: field_subtitle
+    type: text
+    boost: '3.0'
+    dependencies: {}
+  field_byline:
+    label: Byline
+    datasource_id: 'entity:node'
+    property_path: field_byline
+    type: text
+    boost: '1.0'
+    dependencies: {}
+  body:
+    label: Body
+    datasource_id: 'entity:node'
+    property_path: 'body:value'
+    type: text
+    boost: '1.0'
+    dependencies: {}
+  field_topics:
+    label: Topics
+    datasource_id: 'entity:node'
+    property_path: field_topics
+    type: integer
+    boost: '1.0'
+    dependencies: {}
+  field_cancer_types:
+    label: 'Cancer Types'
+    datasource_id: 'entity:node'
+    property_path: field_cancer_types
+    type: integer
+    boost: '1.0'
+    dependencies: {}
+  type:
+    label: 'Content type'
+    datasource_id: 'entity:node'
+    property_path: type
+    type: string
+    dependencies: {}
+  status:
+    label: Published
+    datasource_id: 'entity:node'
+    property_path: status
+    type: boolean
+    dependencies: {}
+  created:
+    label: Created
+    datasource_id: 'entity:node'
+    property_path: created
+    type: date
+    dependencies: {}
+datasource_settings:
+  'entity:node':
+    plugin_id: 'entity:node'
+    settings:
+      bundles:
+        default: false
+        selected:
+          - article
+          - issue
+          - in_brief
+      languages:
+        default: true
+        selected: {}
+tracker_settings:
+  default:
+    plugin_id: default
+    settings: {}
+processor_settings:
+  html_filter:
+    plugin_id: html_filter
+    weights:
+      preprocessor: -15
+    settings:
+      title: false
+      alt: true
+      tags:
+        h1: 5
+        h2: 3
+        h3: 2
+        strong: 2
+        b: 2
+  ignorecase:
+    plugin_id: ignorecase
+    weights:
+      postprocessor: 0
+    settings: {}
+  stopwords:
+    plugin_id: stopwords
+    weights:
+      postprocessor: 0
+    settings:
+      stopwords: "a\nan\nare\nas\nat\nbe\nbut\nby\nfor\nif\nin\ninto\nis\nit\nno\nnot\nof\non\nor\nsuch\nthat\nthe\ntheir\nthen\nthere\nthese\nthey\nthis\nto\nwas\nwill\nwith"
+  tokenizer:
+    plugin_id: tokenizer
+    weights:
+      postprocessor: 0
+    settings:
+      spaces: ''
+      ignored: ''
+options:
+  index_directly: false
+  cron_limit: 100
+server: df_impact_search

@@ -1,0 +1,131 @@
+{#
+/**
+ * @file
+ * Theme override for the front page.
+ *
+ * The homepage is assembled from Views blocks placed in regions,
+ * but we also provide a structural wrapper template here.
+ */
+#}
+<div class="page">
+
+  {# --- Header (same as page.html.twig) --- #}
+  <header class="header" role="banner">
+    <div class="header__inner">
+      <div class="header__logo">
+        <a href="{{ path('<front>') }}" rel="home" aria-label="{{ 'Dana-Farber Impact Magazine Home'|t }}">
+          <img src="/{{ directory }}/images/logo.svg" alt="{{ 'Dana-Farber Impact Magazine'|t }}" width="300" height="50">
+        </a>
+      </div>
+
+      <button class="header__menu-toggle" aria-label="{{ 'Toggle navigation'|t }}" aria-expanded="false" aria-controls="main-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="header__nav" id="main-nav" aria-label="{{ 'Main navigation'|t }}">
+        {{ page.header }}
+        <a href="{{ path('view.df_impact_search.page_1') }}" class="header__search-link" aria-label="{{ 'Search'|t }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span class="visually-hidden">{{ 'Search'|t }}</span>
+        </a>
+        <a href="https://danafarber.jimmyfund.org/give/dana-farber-donate" class="header__donate" target="_blank" rel="noopener">
+          {{ 'Donate'|t }}
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <hr class="divider-gradient" aria-hidden="true">
+
+  {# --- Hero Region --- #}
+  {% if page.hero %}
+    <section class="hero">
+      {{ page.hero }}
+    </section>
+  {% endif %}
+
+  <main id="main-content" class="page__content" role="main">
+
+    {# --- Featured Articles Section --- #}
+    <section class="homepage-section">
+      <div class="container">
+        <div class="homepage-section__header">
+          <h2 class="homepage-section__title">{{ 'Featured Stories'|t }}</h2>
+        </div>
+        <div class="grid grid--featured">
+          {{ drupal_view('homepage_featured', 'block_1') }}
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider-gradient" aria-hidden="true">
+
+    {# --- Recent Highlights Section --- #}
+    <section class="homepage-section homepage-section--gray">
+      <div class="container">
+        <div class="homepage-section__header">
+          <h2 class="homepage-section__title">{{ 'Recent Highlights'|t }}</h2>
+        </div>
+        <div class="grid grid--3">
+          {{ drupal_view('homepage_highlights', 'block_1') }}
+        </div>
+      </div>
+    </section>
+
+    {# --- Digital Exclusives Section --- #}
+    <section class="homepage-section">
+      <div class="container">
+        <div class="homepage-section__header">
+          <h2 class="homepage-section__title">{{ 'Digital Exclusives'|t }}</h2>
+          <a href="/in-brief" class="homepage-section__more">{{ 'View All'|t }}</a>
+        </div>
+        <div class="grid grid--4">
+          {{ drupal_view('homepage_digital_exclusives', 'block_1') }}
+        </div>
+      </div>
+    </section>
+
+    {# --- Any additional content from the content region --- #}
+    {% if page.content %}
+      {{ page.content }}
+    {% endif %}
+
+  </main>
+
+  {# --- Footer (same as page.html.twig) --- #}
+  <footer class="footer" role="contentinfo">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__logos">
+          <a href="https://www.dana-farber.org" target="_blank" rel="noopener" aria-label="{{ 'Dana-Farber Cancer Institute'|t }}">
+            <img src="/{{ directory }}/images/dfci-logo-white.svg" alt="{{ 'Dana-Farber Cancer Institute'|t }}" class="footer__logo-img" width="250" height="40">
+          </a>
+          <a href="https://www.jimmyfund.org" target="_blank" rel="noopener" aria-label="{{ 'The Jimmy Fund'|t }}">
+            <img src="/{{ directory }}/images/jimmy-fund-logo-white.svg" alt="{{ 'The Jimmy Fund'|t }}" class="footer__logo-img" width="200" height="40">
+          </a>
+        </div>
+
+        {% if page.footer_first %}
+          <div class="footer__column">{{ page.footer_first }}</div>
+        {% endif %}
+        {% if page.footer_second %}
+          <div class="footer__column">{{ page.footer_second }}</div>
+        {% endif %}
+        {% if page.footer_third %}
+          <div class="footer__column">{{ page.footer_third }}</div>
+        {% endif %}
+      </div>
+
+      <div class="footer__bottom">
+        <p>&copy; {{ 'now'|date('Y') }} {{ 'Dana-Farber Cancer Institute. All rights reserved.'|t }}</p>
+        <p>{{ 'Impact Magazine | Division of Philanthropy'|t }}</p>
+      </div>
+    </div>
+  </footer>
+
+</div>

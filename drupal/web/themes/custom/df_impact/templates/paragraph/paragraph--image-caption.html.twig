@@ -1,0 +1,22 @@
+{#
+/**
+ * @file
+ * Theme override for Image with Caption paragraphs.
+ */
+#}
+{% set display = content.field_display_mode['#items'].value ?? 'full_width' %}
+{% set modifier = '' %}
+{% if display == 'half_left' %}
+  {% set modifier = 'paragraph--image-caption--half-left' %}
+{% elseif display == 'half_right' %}
+  {% set modifier = 'paragraph--image-caption--half-right' %}
+{% endif %}
+
+<figure{{ attributes.addClass('paragraph--image-caption', modifier) }}>
+  {{ content.field_para_image }}
+  {% if content.field_caption|render|trim %}
+    <figcaption class="paragraph--image-caption__caption">
+      {{ content.field_caption }}
+    </figcaption>
+  {% endif %}
+</figure>

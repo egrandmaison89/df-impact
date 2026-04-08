@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * Issue card template for browse issues view.
+ */
+#}
+<div class="issue-card">
+  {% if fields.field_cover_image is defined and fields.field_cover_image.content|render|trim %}
+    <div class="issue-card__image">
+      {{ fields.field_cover_image.content }}
+    </div>
+  {% endif %}
+  <div class="issue-card__body">
+    {% if fields.title is defined %}
+      <h3 class="issue-card__title">{{ fields.title.content }}</h3>
+    {% endif %}
+  </div>
+</div>

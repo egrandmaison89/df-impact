@@ -1,0 +1,19 @@
+uuid: a99f9d48-605f-480b-937e-cf2ba32d0697
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_cta_button_text
+    - paragraphs.paragraphs_type.cta
+id: paragraph.cta.field_cta_button_text
+field_name: field_cta_button_text
+entity_type: paragraph
+bundle: cta
+label: 'Button Text'
+description: 'Button label (e.g., "Donate Now").'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

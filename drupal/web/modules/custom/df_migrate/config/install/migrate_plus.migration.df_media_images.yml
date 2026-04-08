@@ -1,0 +1,50 @@
+id: df_media_images
+label: 'Import Dana-Farber Impact media images'
+migration_group: df_migrate
+source:
+  plugin: url
+  data_fetcher_plugin: file
+  data_parser_plugin: json
+  urls:
+    - modules/custom/df_migrate/data/media.json
+  item_selector: ''
+  fields:
+    - name: wp_id
+      label: 'WP Media ID'
+      selector: wp_id
+    - name: source_url
+      label: 'Source URL'
+      selector: source_url
+    - name: title
+      label: Title
+      selector: title
+    - name: alt_text
+      label: 'Alt text'
+      selector: alt_text
+    - name: filename
+      label: Filename
+      selector: filename
+  ids:
+    wp_id:
+      type: integer
+
+process:
+  # Download file from WP and save to Drupal files
+  'file_download/source_url': source_url
+  'file_download/destination': filename
+
+  # Create file entity
+  uri:
+    plugin: file_copy
+    source:
+      - source_url
+      - '@filename'
+    file_exists: use existing
+
+  filename: filename
+  filemime:
+    plugin: default_value
+    default_value: 'image/jpeg'
+
+destination:
+  plugin: 'entity:file'

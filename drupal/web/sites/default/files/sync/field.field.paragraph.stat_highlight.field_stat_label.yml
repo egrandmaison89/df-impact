@@ -1,0 +1,19 @@
+uuid: 4a7a6282-1216-4f9a-a2a8-4278453edf8c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_stat_label
+    - paragraphs.paragraphs_type.stat_highlight
+id: paragraph.stat_highlight.field_stat_label
+field_name: field_stat_label
+entity_type: paragraph
+bundle: stat_highlight
+label: Label
+description: 'What the number represents (e.g., "raised in 2024").'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

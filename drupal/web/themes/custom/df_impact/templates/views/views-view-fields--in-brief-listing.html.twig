@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * In Brief item template.
+ */
+#}
+<div class="in-brief-item">
+  {% if fields.field_image is defined and fields.field_image.content|render|trim %}
+    <div class="in-brief-item__image">
+      {{ fields.field_image.content }}
+    </div>
+  {% endif %}
+  <div class="in-brief-item__body">
+    {% if fields.title is defined %}
+      <h3 class="in-brief-item__title">{{ fields.title.content }}</h3>
+    {% endif %}
+    {% if fields.field_summary is defined and fields.field_summary.content|render|trim %}
+      <div class="in-brief-item__summary">{{ fields.field_summary.content }}</div>
+    {% endif %}
+    {% if fields.field_link is defined and fields.field_link.content|render|trim %}
+      <div class="in-brief-item__link">{{ fields.field_link.content }}</div>
+    {% endif %}
+  </div>
+</div>

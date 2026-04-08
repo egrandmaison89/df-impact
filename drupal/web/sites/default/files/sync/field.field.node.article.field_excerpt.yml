@@ -1,0 +1,22 @@
+uuid: 5294f010-4da8-4bd6-8c51-0b9f58c1caf7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_excerpt
+    - node.type.article
+  module:
+    - text
+id: node.article.field_excerpt
+field_name: field_excerpt
+entity_type: node
+bundle: article
+label: Excerpt
+description: 'A 1-2 sentence summary. Leave blank to auto-generate from body.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

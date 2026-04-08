@@ -1,0 +1,21 @@
+uuid: db599b47-3703-48a8-bbb9-4bab3bafea41
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_season
+    - node.type.issue
+  module:
+    - options
+id: node.issue.field_season
+field_name: field_season
+entity_type: node
+bundle: issue
+label: Season
+description: 'The season for this issue.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

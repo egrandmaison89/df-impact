@@ -1,0 +1,119 @@
+{#
+/**
+ * @file
+ * Theme override to display a single page.
+ */
+#}
+<div class="page">
+
+  {# --- Header --- #}
+  <header class="header" role="banner">
+    <div class="header__inner">
+      <div class="header__logo">
+        <a href="{{ path('<front>') }}" rel="home" aria-label="{{ 'Dana-Farber Impact Magazine Home'|t }}">
+          <img src="/{{ directory }}/images/logo.svg" alt="{{ 'Dana-Farber Impact Magazine'|t }}" width="300" height="50">
+        </a>
+      </div>
+
+      <button class="header__menu-toggle" aria-label="{{ 'Toggle navigation'|t }}" aria-expanded="false" aria-controls="main-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="header__nav" id="main-nav" aria-label="{{ 'Main navigation'|t }}">
+        {{ page.header }}
+        <a href="{{ path('view.df_impact_search.page_1') }}" class="header__search-link" aria-label="{{ 'Search'|t }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span class="visually-hidden">{{ 'Search'|t }}</span>
+        </a>
+        <a href="https://danafarber.jimmyfund.org/give/dana-farber-donate" class="header__donate" target="_blank" rel="noopener">
+          {{ 'Donate'|t }}
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  {# --- Gradient Divider --- #}
+  <hr class="divider-gradient" aria-hidden="true">
+
+  {# --- Hero Region --- #}
+  {% if page.hero %}
+    <section class="hero">
+      {{ page.hero }}
+    </section>
+  {% endif %}
+
+  {# --- Highlighted Region --- #}
+  {% if page.highlighted %}
+    <div class="highlighted">
+      <div class="container">
+        {{ page.highlighted }}
+      </div>
+    </div>
+  {% endif %}
+
+  {# --- Main Content --- #}
+  <main id="main-content" class="page__content" role="main">
+    <a id="main-content-anchor" tabindex="-1"></a>
+
+    {% if page.sidebar %}
+      <div class="container">
+        <div class="layout-with-sidebar">
+          <div class="layout-with-sidebar__content">
+            {{ page.content }}
+          </div>
+          <aside class="layout-with-sidebar__sidebar" role="complementary">
+            {{ page.sidebar }}
+          </aside>
+        </div>
+      </div>
+    {% else %}
+      {{ page.content }}
+    {% endif %}
+  </main>
+
+  {# --- Footer --- #}
+  <footer class="footer" role="contentinfo">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__logos">
+          <a href="https://www.dana-farber.org" target="_blank" rel="noopener" aria-label="{{ 'Dana-Farber Cancer Institute'|t }}">
+            <img src="/{{ directory }}/images/dfci-logo-white.svg" alt="{{ 'Dana-Farber Cancer Institute'|t }}" class="footer__logo-img" width="250" height="40">
+          </a>
+          <a href="https://www.jimmyfund.org" target="_blank" rel="noopener" aria-label="{{ 'The Jimmy Fund'|t }}">
+            <img src="/{{ directory }}/images/jimmy-fund-logo-white.svg" alt="{{ 'The Jimmy Fund'|t }}" class="footer__logo-img" width="200" height="40">
+          </a>
+        </div>
+
+        {% if page.footer_first %}
+          <div class="footer__column">
+            {{ page.footer_first }}
+          </div>
+        {% endif %}
+
+        {% if page.footer_second %}
+          <div class="footer__column">
+            {{ page.footer_second }}
+          </div>
+        {% endif %}
+
+        {% if page.footer_third %}
+          <div class="footer__column">
+            {{ page.footer_third }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="footer__bottom">
+        <p>&copy; {{ 'now'|date('Y') }} {{ 'Dana-Farber Cancer Institute. All rights reserved.'|t }}</p>
+        <p>{{ 'Impact Magazine | Division of Philanthropy'|t }}</p>
+        <p>{{ '10 Brookline Place West, Brookline, MA 02445-7295'|t }}</p>
+      </div>
+    </div>
+  </footer>
+
+</div>

@@ -1,0 +1,11 @@
+uuid: 4566de63-4d38-42ef-9e6f-f7d7f8afddc3
+langcode: en
+status: true
+dependencies: {  }
+name: Issue
+type: issue
+description: 'A quarterly edition of Impact Magazine (e.g., Spring 2026).'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

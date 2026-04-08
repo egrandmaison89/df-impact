@@ -1,0 +1,17 @@
+{#
+/**
+ * @file
+ * Views unformatted template for browse issues.
+ * Renders as a 4-column grid.
+ */
+#}
+{% if title %}
+  <h3>{{ title }}</h3>
+{% endif %}
+<div class="grid grid--4">
+  {% for row in rows %}
+    <div{{ row.attributes }}>
+      {{ row.content }}
+    </div>
+  {% endfor %}
+</div>

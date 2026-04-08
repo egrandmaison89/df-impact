@@ -1,0 +1,14 @@
+uuid: 837425d7-ae8f-4677-b555-c835e28da52e
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.issue_manager
+  module:
+    - user
+id: user_remove_role_action.issue_manager
+label: 'Remove the Issue Manager role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: issue_manager

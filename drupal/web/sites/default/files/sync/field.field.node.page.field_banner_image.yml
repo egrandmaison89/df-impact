@@ -1,0 +1,24 @@
+uuid: db44ce1e-53be-4d9e-aacc-4dc079d4654d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_banner_image
+    - media.type.image
+    - node.type.page
+id: node.page.field_banner_image
+field_name: field_banner_image
+entity_type: node
+bundle: page
+label: 'Banner Image'
+description: 'Optional hero banner image for this page.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+field_type: entity_reference

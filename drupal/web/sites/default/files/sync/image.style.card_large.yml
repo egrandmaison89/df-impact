@@ -1,0 +1,18 @@
+uuid: b4037397-f645-4bab-9229-436581a5b7f8
+langcode: en
+status: true
+dependencies:
+  module:
+    - focal_point
+name: card_large
+label: 'Card Large (625x400)'
+effects:
+  d0c64422-7666-4c2e-a0b7-1805b5f81aa4:
+    uuid: d0c64422-7666-4c2e-a0b7-1805b5f81aa4
+    id: focal_point_scale_and_crop
+    weight: null
+    data:
+      width: 625
+      height: 400
+      crop_type: focal_point
+pipeline: __default__

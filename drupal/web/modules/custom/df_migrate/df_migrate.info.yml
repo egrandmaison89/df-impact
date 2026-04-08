@@ -1,0 +1,9 @@
+name: 'Dana-Farber Impact Migration'
+type: module
+description: 'Migrates content from WordPress to Drupal for the Impact Magazine site.'
+core_version_requirement: ^10 || ^11
+package: 'Dana-Farber Custom'
+dependencies:
+  - drupal:migrate
+  - migrate_plus:migrate_plus
+  - migrate_tools:migrate_tools

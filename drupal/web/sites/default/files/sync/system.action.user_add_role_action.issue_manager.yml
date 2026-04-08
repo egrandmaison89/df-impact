@@ -1,0 +1,14 @@
+uuid: 6895c88d-1e41-441c-b098-051fff923592
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.issue_manager
+  module:
+    - user
+id: user_add_role_action.issue_manager
+label: 'Add the Issue Manager role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: issue_manager

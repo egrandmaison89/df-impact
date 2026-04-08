@@ -1,0 +1,19 @@
+uuid: 749e0b86-243a-4a02-82b1-a5e174fbd0e1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_subtitle
+    - node.type.article
+id: node.article.field_subtitle
+field_name: field_subtitle
+entity_type: node
+bundle: article
+label: Subtitle
+description: 'A secondary headline or deck (optional).'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

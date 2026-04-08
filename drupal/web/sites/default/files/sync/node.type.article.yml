@@ -1,0 +1,13 @@
+uuid: 3dd23cc1-076e-4703-9185-09b880c17ccb
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: Fe3N1uqaAyyKJbVkqT-btXy3t98puW8GCRD822xjl10
+name: Article
+type: article
+description: 'A magazine article or story for Impact Magazine.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: true

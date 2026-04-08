@@ -1,0 +1,18 @@
+uuid: 674203af-dc9e-42a0-811a-94a8304986ef
+langcode: en
+status: true
+dependencies:
+  module:
+    - focal_point
+name: card_medium
+label: 'Card Medium (400x267)'
+effects:
+  a4bd77fc-9885-446f-9d15-55936fc4d373:
+    uuid: a4bd77fc-9885-446f-9d15-55936fc4d373
+    id: focal_point_scale_and_crop
+    weight: null
+    data:
+      width: 400
+      height: 267
+      crop_type: focal_point
+pipeline: __default__

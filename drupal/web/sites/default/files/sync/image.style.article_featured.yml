@@ -1,0 +1,18 @@
+uuid: b5e917a2-f4ae-4faa-b6a2-6e73e35f7aed
+langcode: en
+status: true
+dependencies:
+  module:
+    - focal_point
+name: article_featured
+label: 'Article Featured (1450x1040)'
+effects:
+  8915d2f1-c151-45ee-b11b-a142e4ca5343:
+    uuid: 8915d2f1-c151-45ee-b11b-a142e4ca5343
+    id: focal_point_scale_and_crop
+    weight: null
+    data:
+      width: 1450
+      height: 1040
+      crop_type: focal_point
+pipeline: __default__

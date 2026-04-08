@@ -1,0 +1,10 @@
+uuid: b09d49df-ea23-481e-9092-cc358baeafcc
+langcode: en
+status: true
+dependencies: {  }
+id: text_block
+label: 'Text Block'
+icon_uuid: null
+icon_default: null
+description: 'A rich text content block.'
+behavior_plugins: {  }

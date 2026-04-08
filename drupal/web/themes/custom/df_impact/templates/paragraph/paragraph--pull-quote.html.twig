@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * Theme override for Pull Quote paragraphs.
+ */
+#}
+<aside{{ attributes.addClass('paragraph--pull-quote') }} role="complementary">
+  <div class="paragraph--pull-quote__text">
+    {{ content.field_quote_text }}
+  </div>
+  {% if content.field_attribution|render|trim %}
+    <div class="paragraph--pull-quote__attribution">
+      — {{ content.field_attribution }}
+    </div>
+  {% endif %}
+</aside>

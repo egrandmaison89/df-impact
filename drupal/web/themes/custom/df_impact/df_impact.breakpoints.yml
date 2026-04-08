@@ -1,0 +1,31 @@
+df_impact.mobile:
+  label: Mobile
+  mediaQuery: ''
+  weight: 0
+  multipliers:
+    - 1x
+    - 2x
+
+df_impact.tablet:
+  label: Tablet
+  mediaQuery: 'all and (min-width: 768px)'
+  weight: 1
+  multipliers:
+    - 1x
+    - 2x
+
+df_impact.desktop:
+  label: Desktop
+  mediaQuery: 'all and (min-width: 1024px)'
+  weight: 2
+  multipliers:
+    - 1x
+    - 2x
+
+df_impact.wide:
+  label: Wide
+  mediaQuery: 'all and (min-width: 1440px)'
+  weight: 3
+  multipliers:
+    - 1x
+    - 2x

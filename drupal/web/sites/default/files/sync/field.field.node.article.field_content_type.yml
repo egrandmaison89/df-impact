@@ -1,0 +1,24 @@
+uuid: 6eb0ebf1-d459-4d0f-8648-cb1fc838a02b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_content_type
+    - node.type.article
+    - taxonomy.vocabulary.content_type
+id: node.article.field_content_type
+field_name: field_content_type
+entity_type: node
+bundle: article
+label: 'Content Type'
+description: 'The format of this article (Feature Story, Donor Profile, etc.).'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      content_type: content_type
+field_type: entity_reference

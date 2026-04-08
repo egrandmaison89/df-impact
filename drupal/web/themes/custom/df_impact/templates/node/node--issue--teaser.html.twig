@@ -1,0 +1,17 @@
+{#
+/**
+ * @file
+ * Theme override for Issue nodes (teaser / cover card).
+ */
+#}
+<div{{ attributes.addClass('issue-card') }}>
+  {% if content.field_cover_image|render|trim %}
+    <a href="{{ url }}">
+      {{ content.field_cover_image }}
+    </a>
+  {% endif %}
+
+  <div class="issue-card__label">
+    <a href="{{ url }}">{{ label }}</a>
+  </div>
+</div>

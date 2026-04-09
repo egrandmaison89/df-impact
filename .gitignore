@@ -1,1 +1,7 @@
 /.claude
+
+# Drupal — never commit generated public files (aggregation, Twig PHP, image style derivatives)
+drupal/web/sites/default/files/css/
+drupal/web/sites/default/files/js/
+drupal/web/sites/default/files/php/
+drupal/web/sites/default/files/styles/

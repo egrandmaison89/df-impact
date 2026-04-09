@@ -8,6 +8,17 @@
 use Drupal\node\NodeInterface;
 
 /**
+ * Implements hook_preprocess_html().
+ */
+function df_impact_preprocess_html(array &$variables): void {
+  // Safe defaults when df_site_snippets is disabled (module runs first when enabled).
+  $variables += [
+    'df_site_snippets_header' => NULL,
+    'df_site_snippets_footer' => NULL,
+  ];
+}
+
+/**
  * Implements hook_preprocess_page().
  */
 function df_impact_preprocess_page(&$variables) {

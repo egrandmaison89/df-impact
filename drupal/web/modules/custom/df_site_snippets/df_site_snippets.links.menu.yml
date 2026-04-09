@@ -1,0 +1,6 @@
+df_site_snippets.settings:
+  title: 'Site snippets'
+  description: 'Header and footer HTML for CSS, JavaScript, and other tags without a code deploy.'
+  parent: system.admin_config_system
+  route_name: df_site_snippets.settings
+  weight: 50

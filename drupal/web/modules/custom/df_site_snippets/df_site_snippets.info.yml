@@ -1,0 +1,5 @@
+name: 'DF Site snippets'
+type: module
+description: 'Trusted header and footer HTML snippets (CSS, JavaScript, meta) stored in configuration.'
+package: 'Dana-Farber Impact'
+core_version_requirement: ^10.3 || ^11

@@ -11,6 +11,9 @@
     <title>{{ head_title|safe_join(' | ') }}</title>
     <css-placeholder token="{{ placeholder_token }}">
     <js-placeholder token="{{ placeholder_token }}">
+    {% if df_site_snippets_header %}
+      {{ df_site_snippets_header }}
+    {% endif %}
   </head>
   <body{{ attributes }}>
     <a href="#main-content" class="visually-hidden focusable">
@@ -19,6 +22,9 @@
     {{ page_top }}
     {{ page }}
     {{ page_bottom }}
+    {% if df_site_snippets_footer %}
+      {{ df_site_snippets_footer }}
+    {% endif %}
     <js-bottom-placeholder token="{{ placeholder_token }}">
   </body>
 </html>

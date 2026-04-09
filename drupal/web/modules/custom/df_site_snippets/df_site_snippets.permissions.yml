@@ -1,0 +1,4 @@
+administer df site snippets:
+  title: 'Administer site snippets'
+  description: 'Edit site-wide header and footer HTML (equivalent to deploying front-end code; use only for highly trusted staff).'
+  restrict access: true

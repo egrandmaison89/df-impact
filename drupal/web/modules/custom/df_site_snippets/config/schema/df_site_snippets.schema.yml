@@ -1,0 +1,10 @@
+df_site_snippets.settings:
+  type: config_object
+  label: 'Site snippets'
+  mapping:
+    header_snippets:
+      type: text
+      label: 'HTML for head'
+    footer_snippets:
+      type: text
+      label: 'HTML before closing body'

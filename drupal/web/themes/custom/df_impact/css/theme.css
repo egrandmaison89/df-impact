@@ -119,8 +119,10 @@
   text-decoration: underline;
 }
 
-/* Article body — drop cap */
-.article__body > p:first-of-type::first-letter {
+/* Article body — drop cap (first paragraph, including inside WP wrapper blocks) */
+.article__body > p:first-of-type::first-letter,
+.article__body > .wp-block-group > p:first-of-type::first-letter,
+.article__body > .wp-block-column > p:first-of-type::first-letter {
   float: left;
   font-family: var(--font-heading);
   font-size: 4.5rem;

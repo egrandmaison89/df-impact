@@ -19,6 +19,7 @@ module:
   crop: 0
   datetime: 0
   dblog: 0
+  df_site_snippets: 0
   dynamic_page_cache: 0
   editor: 0
   editoria11y: 0

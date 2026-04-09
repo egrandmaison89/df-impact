@@ -106,7 +106,6 @@ process:
     plugin: default_value
     default_value: full_html
 
-  field_subtitle: excerpt
   field_byline: byline
   field_photo_credit: photo_credit
   field_excerpt: excerpt

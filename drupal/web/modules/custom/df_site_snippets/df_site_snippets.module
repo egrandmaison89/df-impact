@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Trusted header and footer HTML from configuration.
+ */
+
+use Drupal\Core\Render\Markup;
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function df_site_snippets_preprocess_html(array &$variables): void {
+  $config = \Drupal::config('df_site_snippets.settings');
+  $header = $config->get('header_snippets') ?? '';
+  $footer = $config->get('footer_snippets') ?? '';
+
+  $variables['df_site_snippets_header'] = $header === '' ? NULL : Markup::create($header);
+  $variables['df_site_snippets_footer'] = $footer === '' ? NULL : Markup::create($footer);
+
+  $variables['#cache']['tags'][] = 'config:df_site_snippets.settings';
+}

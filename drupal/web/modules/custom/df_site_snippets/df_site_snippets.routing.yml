@@ -1,0 +1,7 @@
+df_site_snippets.settings:
+  path: '/admin/config/system/site-snippets'
+  defaults:
+    _form: '\Drupal\df_site_snippets\Form\SiteSnippetsSettingsForm'
+    _title: 'Site snippets'
+  requirements:
+    _permission: 'administer df site snippets'

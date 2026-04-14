@@ -78,6 +78,20 @@ Optional contrib to reduce clutter: menu-per-role tools or a **Simplify**-style 
 
 ---
 
+## Frontend local tasks (editor strip)
+
+When a user with **View / Edit / Delete** (and similar) permissions browses **published** content on the public site (`df_impact` theme), Drupal shows **primary and secondary local tasks** in the theme’s **Highlighted** region—the familiar **View · Edit · Delete · Revisions** links.
+
+**Implementation (engineering):**
+
+- Twig: [`drupal/web/themes/custom/df_impact/templates/navigation/menu-local-tasks.html.twig`](../drupal/web/themes/custom/df_impact/templates/navigation/menu-local-tasks.html.twig) and [`menu-local-task.html.twig`](../drupal/web/themes/custom/df_impact/templates/navigation/menu-local-task.html.twig) add tab markup and accessibility (`<nav>`, `aria-labelledby`) so they match the tab styles in `df_impact` CSS.
+- Styling: [`drupal/web/themes/custom/df_impact/css/base.css`](../drupal/web/themes/custom/df_impact/css/base.css) (tabs, secondary row, delete accent) and [`layout.css`](../drupal/web/themes/custom/df_impact/css/layout.css) (`.highlighted` strip).
+- Preprocess: `df_impact_preprocess_menu_local_task()` in [`df_impact.theme`](../drupal/web/themes/custom/df_impact/df_impact.theme) flags the **Delete** task for subtle destructive styling.
+
+**Product note:** Full content forms and `/admin` use **Gin**; this strip is only the **in-context** shortcut bar on the frontend. Block placement remains in config export (for example `block.block.df_impact_primary_local_tasks`).
+
+---
+
 ## Recommendation summary
 
 | Stakeholder goal | Suggested path |
@@ -90,6 +104,6 @@ Optional contrib to reduce clutter: menu-per-role tools or a **Simplify**-style 
 
 ## Related documentation
 
-- Engineering status: [STANDUP.md](../STANDUP.md)
+- Engineering status: `standups/STANDUP.md` (local-only; folder gitignored)
 - Full project spec and ADRs: [DRUPAL_REBUILD_PLAN.md](../DRUPAL_REBUILD_PLAN.md)
 - Operational pointers: [AGENT_HANDOFF.md](AGENT_HANDOFF.md)

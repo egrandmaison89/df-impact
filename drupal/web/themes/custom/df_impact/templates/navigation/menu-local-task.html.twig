@@ -1,0 +1,11 @@
+{#
+/**
+ * @file
+ * Theme override for a single local task link.
+ *
+ * @see template_preprocess_menu_local_task()
+ */
+#}
+<li{{ attributes.addClass('tabs__tab', is_active ? 'is-active') }}>
+  {{ link }}
+</li>

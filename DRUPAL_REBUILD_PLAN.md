@@ -1129,10 +1129,10 @@ Custom admin view at `/admin/content/editorial-dashboard`:
 | CKEditor 5 Configuration | Complete | 2026-03-31 | Full HTML + Basic HTML toolbars |
 | Form Display / Field Groups | Complete | 2026-03-31 | 3 field groups on Article |
 | Theme Development | Complete | 2026-03-31 | df_impact theme: 4 CSS files, 17 Twig templates, JS, .theme file |
-| Migration Development | Complete | 2026-04-01 | Python pipeline + df_migrate; see STANDUP.md Phase D |
+| Migration Development | Complete | 2026-04-01 | Python pipeline + df_migrate; see `standups/STANDUP.md` Phase D (local) |
 | Migration Testing | Complete | 2026-04-01 | Counts verified; redirects + moderation_state fixes applied |
 | Search Configuration | Complete | 2026-04-01 | Search API DB, `/search` Views, 673 items indexed |
-| Performance Optimization | Complete | 2026-04-01 | Aggregate CSS/JS, page cache 900s — see STANDUP.md |
+| Performance Optimization | Complete | 2026-04-01 | Aggregate CSS/JS, page cache 900s — see `standups/STANDUP.md` (local) |
 | UAT | In progress | — | Editorial QA per STANDUP |
 | Launch | Not Started | — | GTM, HSTS, DNS cutover pending |
 | Site snippets (header/footer) | Complete | 2026-04-08 | Custom module `df_site_snippets` — Configuration → Site snippets |
@@ -1270,7 +1270,7 @@ Site-wide HTML snippets (for example inline CSS or JavaScript approved by the we
 
 The **`df_site_snippets`** module stores optional **header** and **footer** HTML in configuration (`df_site_snippets.settings`). Trusted users with the **Administer site snippets** permission can paste markup that is rendered in `<head>` and before `</body>` without a code deploy.
 
-**Security:** Treat this permission like code deployment access. Snippets run in every visitor’s browser; only highly trusted roles should edit them. Third-party script domains may require **Content-Security-Policy** updates in **Seckit** (or equivalent) if not already allow-listed — see STANDUP.md Phase E security section.
+**Security:** Treat this permission like code deployment access. Snippets run in every visitor’s browser; only highly trusted roles should edit them. Third-party script domains may require **Content-Security-Policy** updates in **Seckit** (or equivalent) if not already allow-listed — see `standups/STANDUP.md` Phase E security section (local).
 
 **Cache:** Pages are tagged with `config:df_site_snippets.settings`; saving the form invalidates affected caches.
 

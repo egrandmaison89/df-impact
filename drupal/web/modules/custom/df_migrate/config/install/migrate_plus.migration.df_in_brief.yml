@@ -68,7 +68,10 @@ process:
     to_format: 'U'
     source: created
 
-  'field_summary/value': body
+  'field_summary/value':
+    -
+      plugin: df_localize_inline_images
+      source: body
   'field_summary/format':
     plugin: default_value
     default_value: full_html

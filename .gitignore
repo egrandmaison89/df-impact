@@ -1,5 +1,11 @@
 /.claude
 
+# Local QA screenshots and scratch (not shared via git)
+/testing/
+
+# Local standups / demo prep (not shared via git)
+standups/
+
 # Drupal — never commit generated public files (aggregation, Twig PHP, image style derivatives)
 drupal/web/sites/default/files/css/
 drupal/web/sites/default/files/js/

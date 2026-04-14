@@ -14,6 +14,7 @@
   --color-gray-dark: #333333;
   --color-white: #ffffff;
   --color-black: #1a1a1a;
+  --color-danger: #b42318;
 
   /* Typography */
   --font-heading: 'Libre Baskerville', 'Georgia', serif;
@@ -197,6 +198,47 @@ ul, ol {
   color: var(--color-primary);
   border-bottom-color: var(--color-primary);
   font-weight: 600;
+}
+
+.tabs--secondary {
+  gap: var(--space-xs);
+  margin-top: calc(var(--space-sm) * -0.5);
+  margin-bottom: var(--space-sm);
+  border-bottom-width: 1px;
+  border-bottom-color: var(--color-gray-mid);
+}
+
+.tabs--secondary .tabs__link,
+.tabs--secondary a {
+  font-size: var(--font-size-xs);
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.tabs-wrapper--secondary {
+  margin-top: calc(var(--space-xs) * -1);
+}
+
+.tabs__tab--danger a,
+.tabs__tab--danger .tabs__link {
+  color: var(--color-danger);
+}
+
+.tabs__tab--danger a:hover,
+.tabs__tab--danger .tabs__link:hover {
+  color: #8f1b13;
+  border-bottom-color: var(--color-danger);
+}
+
+.tabs__tab--danger.is-active a,
+.tabs__tab--danger.is-active .tabs__link {
+  color: var(--color-danger);
+  border-bottom-color: var(--color-danger);
+}
+
+.tabs a:focus-visible,
+.tabs__tab a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 /* Google Fonts import */

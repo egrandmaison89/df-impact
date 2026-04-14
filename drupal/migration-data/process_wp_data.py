@@ -14,6 +14,7 @@ Produces:
 import json
 import re
 import os
+import html as html_lib
 
 # ─── CATEGORY → TOPIC/CANCER TYPE MAPPING ────────────────────────────────────
 # Determine which WP categories map to Topics vs Cancer Types vocabularies
@@ -290,6 +291,61 @@ def extract_photo_credit(content):
             return f"Photography by {m.group(1).strip()}"
     return ''
 
+def normalize_wp_lazy_images(content):
+    """Fix WordPress lazy-load img markup for hosts that do not run lazy-load JS.
+
+    WP used src=transparent GIF + data-src=real URL. Promote data-src to src and
+    strip lazy-load attributes so HTML is sane before/without Drupal migration.
+    """
+    if not content:
+        return content
+
+    def fix_img_tag(match):
+        tag = match.group(0)
+        ds = re.search(
+            r'data-src\s*=\s*["\']([^"\']+)["\']',
+            tag,
+            re.IGNORECASE,
+        )
+        if not ds:
+            return tag
+        real_url = html_lib.unescape(ds.group(1).strip())
+        if 'danafarberimpact.org' not in real_url:
+            return tag
+        tag = re.sub(
+            r'\ssrc\s*=\s*["\'][^"\']*["\']',
+            f' src="{real_url}"',
+            tag,
+            count=1,
+            flags=re.IGNORECASE,
+        )
+        tag = re.sub(r'\sdata-src\s*=\s*["\'][^"\']*["\']', '', tag, flags=re.IGNORECASE)
+        tag = re.sub(r'\sdata-srcset\s*=\s*["\'][^"\']*["\']', '', tag, flags=re.IGNORECASE)
+        tag = re.sub(r'\sdata-sizes\s*=\s*["\'][^"\']*["\']', '', tag, flags=re.IGNORECASE)
+        cls_m = re.search(r'\sclass\s*=\s*["\']([^"\']*)["\']', tag, re.IGNORECASE)
+        if cls_m:
+            new_cls = ' '.join(c for c in cls_m.group(1).split() if c != 'lazyload')
+            if new_cls:
+                tag = re.sub(
+                    r'\sclass\s*=\s*["\'][^"\']*["\']',
+                    f' class="{new_cls}"',
+                    tag,
+                    count=1,
+                    flags=re.IGNORECASE,
+                )
+            else:
+                tag = re.sub(
+                    r'\sclass\s*=\s*["\'][^"\']*["\']',
+                    '',
+                    tag,
+                    count=1,
+                    flags=re.IGNORECASE,
+                )
+        return tag
+
+    return re.sub(r'<img\b[^>]+>', fix_img_tag, content, flags=re.IGNORECASE)
+
+
 def clean_body(content, byline, photo_credit):
     """Remove extracted byline/photo credit paragraphs from body HTML."""
     if not content:
@@ -300,6 +356,7 @@ def clean_body(content, byline, photo_credit):
     content = re.sub(r'<p[^>]*>\s*Photos?\s+by\s+[A-Z][a-zA-Z\s,\.]+?\s*</p>', '', content, flags=re.IGNORECASE)
     # Clean up leading/trailing whitespace
     content = content.strip()
+    content = normalize_wp_lazy_images(content)
     return content
 
 def get_excerpt(post):

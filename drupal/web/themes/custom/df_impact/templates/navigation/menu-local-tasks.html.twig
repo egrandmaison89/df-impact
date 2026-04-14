@@ -1,0 +1,20 @@
+{#
+/**
+ * @file
+ * Theme override for primary and secondary local tasks (View / Edit / Delete / Revisions).
+ *
+ * Adds tab classes so base.css .tabs rules apply (core default omits them).
+ */
+#}
+{% if primary %}
+  <h2 id="primary-tabs-title" class="visually-hidden">{{ 'Primary tabs'|t }}</h2>
+  <nav class="tabs-wrapper" role="navigation" aria-labelledby="primary-tabs-title">
+    <ul class="tabs tabs--primary">{{ primary }}</ul>
+  </nav>
+{% endif %}
+{% if secondary %}
+  <h2 id="secondary-tabs-title" class="visually-hidden">{{ 'Secondary tabs'|t }}</h2>
+  <nav class="tabs-wrapper tabs-wrapper--secondary" role="navigation" aria-labelledby="secondary-tabs-title">
+    <ul class="tabs tabs--secondary">{{ secondary }}</ul>
+  </nav>
+{% endif %}

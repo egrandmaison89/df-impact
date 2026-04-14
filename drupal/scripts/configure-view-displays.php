@@ -12,14 +12,13 @@ use Drupal\Core\Entity\Entity\EntityViewDisplay;
 // --- ARTICLE: Default (Full) View Display ---
 $article_display = EntityViewDisplay::load('node.article.default');
 if ($article_display) {
-  // Featured image - rendered as image
+  // Featured image: entity reference to media (not a core image field).
   $article_display->setComponent('field_featured_image', [
-    'type' => 'image',
+    'type' => 'entity_reference_entity_view',
     'label' => 'hidden',
     'settings' => [
-      'image_link' => '',
-      'image_style' => '',
-      'image_loading' => ['attribute' => 'eager'],
+      'view_mode' => 'default',
+      'link' => FALSE,
     ],
     'weight' => -10,
     'region' => 'content',
@@ -132,12 +131,11 @@ if (!$teaser_display) {
 }
 
 $teaser_display->setComponent('field_featured_image', [
-  'type' => 'image',
+  'type' => 'entity_reference_entity_view',
   'label' => 'hidden',
   'settings' => [
-    'image_link' => 'content',
-    'image_style' => 'card_large',
-    'image_loading' => ['attribute' => 'lazy'],
+    'view_mode' => 'default',
+    'link' => FALSE,
   ],
   'weight' => -10,
   'region' => 'content',
@@ -183,24 +181,22 @@ echo "✅ Article teaser view display configured.\n";
 $issue_display = EntityViewDisplay::load('node.issue.default');
 if ($issue_display) {
   $issue_display->setComponent('field_banner_image', [
-    'type' => 'image',
+    'type' => 'entity_reference_entity_view',
     'label' => 'hidden',
     'settings' => [
-      'image_link' => '',
-      'image_style' => '',
-      'image_loading' => ['attribute' => 'eager'],
+      'view_mode' => 'default',
+      'link' => FALSE,
     ],
     'weight' => -10,
     'region' => 'content',
   ]);
 
   $issue_display->setComponent('field_cover_image', [
-    'type' => 'image',
+    'type' => 'entity_reference_entity_view',
     'label' => 'hidden',
     'settings' => [
-      'image_link' => '',
-      'image_style' => 'issue_cover',
-      'image_loading' => ['attribute' => 'eager'],
+      'view_mode' => 'default',
+      'link' => FALSE,
     ],
     'weight' => -9,
     'region' => 'content',
@@ -254,12 +250,11 @@ if (!$issue_teaser) {
 }
 
 $issue_teaser->setComponent('field_cover_image', [
-  'type' => 'image',
+  'type' => 'entity_reference_entity_view',
   'label' => 'hidden',
   'settings' => [
-    'image_link' => 'content',
-    'image_style' => 'issue_cover',
-    'image_loading' => ['attribute' => 'lazy'],
+    'view_mode' => 'default',
+    'link' => FALSE,
   ],
   'weight' => -10,
   'region' => 'content',
@@ -336,24 +331,20 @@ if ($inbrief_display) {
 // --- PAGE: Default View Display ---
 $page_display = EntityViewDisplay::load('node.page.default');
 if ($page_display) {
-  if ($page_display->getComponent('field_banner_image') === NULL) {
-    // Check if the field exists on the bundle first
-    $field_config = \Drupal\field\Entity\FieldConfig::loadByName('node', 'page', 'field_banner_image');
-    if ($field_config) {
-      $page_display->setComponent('field_banner_image', [
-        'type' => 'image',
-        'label' => 'hidden',
-        'settings' => [
-          'image_link' => '',
-          'image_style' => '',
-          'image_loading' => ['attribute' => 'eager'],
-        ],
-        'weight' => -10,
-        'region' => 'content',
-      ]);
-      $page_display->save();
-      echo "✅ Page default view display configured.\n";
-    }
+  $field_config = \Drupal\field\Entity\FieldConfig::loadByName('node', 'page', 'field_banner_image');
+  if ($field_config) {
+    $page_display->setComponent('field_banner_image', [
+      'type' => 'entity_reference_entity_view',
+      'label' => 'hidden',
+      'settings' => [
+        'view_mode' => 'default',
+        'link' => FALSE,
+      ],
+      'weight' => -10,
+      'region' => 'content',
+    ]);
+    $page_display->save();
+    echo "✅ Page default view display configured.\n";
   }
 }
 

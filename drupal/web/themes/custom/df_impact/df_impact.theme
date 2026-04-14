@@ -80,6 +80,23 @@ function df_impact_preprocess_block(&$variables) {
 }
 
 /**
+ * Implements hook_preprocess_HOOK() for menu-local-task.
+ */
+function df_impact_preprocess_menu_local_task(&$variables): void {
+  $variables['link']['#options']['attributes']['class'][] = 'tabs__link';
+
+  if (!empty($variables['is_active'])) {
+    $variables['link']['#options']['attributes']['class'][] = 'is-active';
+  }
+
+  $link = $variables['element']['#link'] ?? [];
+  if (!empty($link['url']) && $link['url']->getRouteName() === 'entity.node.delete_form') {
+    // During preprocess, attributes may still be an array (Attribute object is applied later).
+    $variables['attributes']['class'][] = 'tabs__tab--danger';
+  }
+}
+
+/**
  * Implements hook_preprocess_field().
  */
 function df_impact_preprocess_field(&$variables) {

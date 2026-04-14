@@ -101,7 +101,10 @@ process:
     to_format: 'U'
     source: changed
 
-  'body/value': body
+  'body/value':
+    -
+      plugin: df_localize_inline_images
+      source: body
   'body/format':
     plugin: default_value
     default_value: full_html
@@ -143,6 +146,7 @@ process:
   field_featured_image:
     plugin: df_download_image
     source: featured_image_url
+    media: true
 
   # Path alias
   'path/alias': drupal_alias

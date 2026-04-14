@@ -3,18 +3,25 @@
 namespace Drupal\df_migrate\Plugin\migrate\process;
 
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\file\FileInterface;
+use Drupal\media\Entity\Media;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
 
 /**
- * Downloads an image from a URL and creates a managed file entity.
+ * Downloads an image from a URL, creates a file, and a media (image) entity.
+ *
+ * Article featured image fields are entity references to media, not files.
  *
  * Usage:
  * @code
  * field_featured_image:
  *   plugin: df_download_image
  *   source: featured_image_url
+ *   media: true
+ *
+ * Image fields (core image type) must omit media or set media: false.
  * @endcode
  *
  * @MigrateProcessPlugin(
@@ -29,20 +36,30 @@ class DownloadImage extends ProcessPluginBase {
   protected static array $fileCache = [];
 
   /**
-   * {@inheritdoc}
+   * Static cache of fid -> media ID after media has been resolved or created.
    */
-  public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    if (empty($value)) {
+  protected static array $mediaByFid = [];
+
+  /**
+   * Downloads or reuses a managed file for a remote image URL.
+   *
+   * @param string $url
+   *   Absolute URL (may contain HTML entities; will be normalized).
+   *
+   * @return int|null
+   *   File entity ID, or NULL on failure.
+   */
+  public static function getOrCreateFileFromUrl(string $url): ?int {
+    $url = trim(html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    if ($url === '') {
       return NULL;
     }
 
-    // Check cache first
-    if (isset(static::$fileCache[$value])) {
-      return ['target_id' => static::$fileCache[$value]];
+    if (isset(static::$fileCache[$url])) {
+      return static::$fileCache[$url];
     }
 
-    // Check if a file with this URL already exists in the files table
-    $uri = $this->urlToUri($value);
+    $uri = static::urlToUri($url);
     $existing = \Drupal::entityQuery('file')
       ->condition('uri', $uri)
       ->accessCheck(FALSE)
@@ -50,13 +67,12 @@ class DownloadImage extends ProcessPluginBase {
 
     if (!empty($existing)) {
       $fid = (int) reset($existing);
-      static::$fileCache[$value] = $fid;
-      return ['target_id' => $fid];
+      static::$fileCache[$url] = $fid;
+      return $fid;
     }
 
-    // Download the file
     try {
-      $file_data = @file_get_contents($value, FALSE, stream_context_create([
+      $file_data = @file_get_contents($url, FALSE, stream_context_create([
         'http' => [
           'timeout' => 30,
           'user_agent' => 'Drupal/11 DFMigrate/1.0',
@@ -64,24 +80,21 @@ class DownloadImage extends ProcessPluginBase {
       ]));
 
       if ($file_data === FALSE) {
-        \Drupal::logger('df_migrate')->warning('Failed to download image: @url', ['@url' => $value]);
+        \Drupal::logger('df_migrate')->warning('Failed to download image: @url', ['@url' => $url]);
         return NULL;
       }
 
-      // Ensure destination directory exists
       $destination_dir = 'public://wp-images';
       \Drupal::service('file_system')->prepareDirectory(
         $destination_dir,
         FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS
       );
 
-      // Get filename from URL
-      $filename = basename(parse_url($value, PHP_URL_PATH));
+      $filename = basename(parse_url($url, PHP_URL_PATH) ?? '');
       $filename = rawurldecode($filename);
       $destination = $destination_dir . '/' . $filename;
 
-      // Save file
-      /** @var \Drupal\file\FileInterface $file */
+      /** @var \Drupal\file\FileInterface|false $file */
       $file = \Drupal::service('file.repository')->writeData(
         $file_data,
         $destination,
@@ -89,18 +102,18 @@ class DownloadImage extends ProcessPluginBase {
       );
 
       if (!$file) {
-        \Drupal::logger('df_migrate')->warning('Failed to save image: @url', ['@url' => $value]);
+        \Drupal::logger('df_migrate')->warning('Failed to save image: @url', ['@url' => $url]);
         return NULL;
       }
 
       $fid = (int) $file->id();
-      static::$fileCache[$value] = $fid;
+      static::$fileCache[$url] = $fid;
 
-      return ['target_id' => $fid];
+      return $fid;
     }
     catch (\Exception $e) {
       \Drupal::logger('df_migrate')->error('Error downloading @url: @msg', [
-        '@url' => $value,
+        '@url' => $url,
         '@msg' => $e->getMessage(),
       ]);
       return NULL;
@@ -110,10 +123,98 @@ class DownloadImage extends ProcessPluginBase {
   /**
    * Convert a public URL to a Drupal URI (for checking existing files).
    */
-  protected function urlToUri(string $url): string {
-    $filename = basename(parse_url($url, PHP_URL_PATH));
+  protected static function urlToUri(string $url): string {
+    $filename = basename(parse_url($url, PHP_URL_PATH) ?? '');
     $filename = rawurldecode($filename);
     return 'public://wp-images/' . $filename;
+  }
+
+  /**
+   * Returns an existing or new image media entity ID for a managed file.
+   */
+  public static function getOrCreateMediaFromFile(int $fid, Row $row): ?int {
+    if (isset(static::$mediaByFid[$fid])) {
+      return static::$mediaByFid[$fid];
+    }
+
+    /** @var \Drupal\file\FileInterface|null $file */
+    $file = \Drupal::entityTypeManager()->getStorage('file')->load($fid);
+    if (!$file instanceof FileInterface) {
+      return NULL;
+    }
+
+    $existing = \Drupal::entityQuery('media')
+      ->condition('bundle', 'image')
+      ->condition('field_media_image.target_id', $fid)
+      ->accessCheck(FALSE)
+      ->range(0, 1)
+      ->execute();
+
+    if (!empty($existing)) {
+      $mid = (int) reset($existing);
+      static::$mediaByFid[$fid] = $mid;
+      return $mid;
+    }
+
+    $alt = '';
+    try {
+      $title = $row->getSourceProperty('title');
+      if (is_string($title) && $title !== '') {
+        $alt = $title;
+      }
+    }
+    catch (\Throwable $e) {
+      // Source row may not define title; fall back below.
+    }
+    if ($alt === '') {
+      $basename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
+      $alt = ucfirst(trim(str_replace(['-', '_'], ' ', $basename))) ?: 'Image';
+    }
+
+    try {
+      $media = Media::create([
+        'bundle' => 'image',
+        'uid' => 1,
+        'name' => $file->getFilename(),
+        'field_media_image' => [
+          'target_id' => $fid,
+          'alt' => $alt,
+        ],
+        'status' => 1,
+      ]);
+      $media->save();
+      $mid = (int) $media->id();
+      static::$mediaByFid[$fid] = $mid;
+      return $mid;
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('df_migrate')->error('Failed to create media for fid @fid: @msg', [
+        '@fid' => $fid,
+        '@msg' => $e->getMessage(),
+      ]);
+      return NULL;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
+    if (empty($value)) {
+      return NULL;
+    }
+
+    $fid = static::getOrCreateFileFromUrl($value);
+    if ($fid === NULL) {
+      return NULL;
+    }
+
+    if (!empty($this->configuration['media'])) {
+      $mid = static::getOrCreateMediaFromFile($fid, $row);
+      return $mid !== NULL ? ['target_id' => $mid] : NULL;
+    }
+
+    return ['target_id' => $fid];
   }
 
 }

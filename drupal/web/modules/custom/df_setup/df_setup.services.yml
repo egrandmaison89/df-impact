@@ -1,0 +1,6 @@
+services:
+  df_setup.fix_home_front_page:
+    class: Drupal\df_setup\EventSubscriber\FixHomeFrontPageConfigSubscriber
+    arguments: ['@config.factory', '@entity_type.manager', '@path_alias.manager']
+    tags:
+      - { name: event_subscriber }

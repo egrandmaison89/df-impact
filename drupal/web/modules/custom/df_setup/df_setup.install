@@ -51,8 +51,22 @@ function _df_setup_ensure_home_landing(): void {
     }
   }
 
-  $config = \Drupal::configFactory()->getEditable('system.site');
-  if ($config->get('page.front') !== '/home') {
-    $config->set('page.front', '/home')->save();
+  // Front page must use the internal path (/node/NID), not the /home alias.
+  // PathMatcher::isFrontPage() compares the current route's internal path to
+  // this value; if they differ, the front page template is not used.
+  if (!$node instanceof Node) {
+    return;
   }
+  $front_path = '/node/' . $node->id();
+  $config = \Drupal::configFactory()->getEditable('system.site');
+  if ($config->get('page.front') !== $front_path) {
+    $config->set('page.front', $front_path)->save();
+  }
+}
+
+/**
+ * Set site front to Home node's system path so the front page layout renders.
+ */
+function df_setup_update_10001(): void {
+  _df_setup_ensure_home_landing();
 }

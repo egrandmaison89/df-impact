@@ -108,7 +108,7 @@ function df_impact_preprocess_node(&$variables) {
       }
       $referenced = $node->get($field_name)->entity;
       if ($referenced instanceof NodeInterface) {
-        $variables['issue_promo_cards'][] = $view_builder->view($referenced, 'teaser');
+        $variables['issue_promo_cards'][] = $view_builder->view($referenced, 'issue_promo');
       }
     }
   }

@@ -1,0 +1,20 @@
+{#
+/**
+ * @file
+ * Issue landing featured page — banner image and title only.
+ */
+#}
+<div{{ attributes.addClass('card', 'card--issue-promo') }}>
+  {% if content.field_banner_image|render|trim %}
+    <div class="card__image">
+      {{ content.field_banner_image }}
+    </div>
+  {% endif %}
+  <div class="card__body">
+    {{ title_prefix }}
+    <h3 class="card__title card__title--issue-promo">
+      <a href="{{ url }}">{{ label }}</a>
+    </h3>
+    {{ title_suffix }}
+  </div>
+</div>

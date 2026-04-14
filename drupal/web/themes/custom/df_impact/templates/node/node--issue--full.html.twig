@@ -3,8 +3,8 @@
  * @file
  * Theme override for Issue nodes (full view mode).
  *
- * Order matches WordPress issue pages: hero → intro → In This Issue (grid +
- * pager) → In Brief → featured promos.
+ * Order: hero → intro → In This Issue (grid + pager) → In Brief banner (CTA only) →
+ * featured items (no section header; image + title promos).
  */
 #}
 <div{{ attributes.addClass('issue-page') }}>
@@ -43,21 +43,20 @@
 
   <section class="issue-page__in-brief-region" aria-labelledby="issue-in-brief-heading">
     <div class="container">
-      <header class="issue-page__in-brief-header">
-        <h2 id="issue-in-brief-heading" class="issue-page__in-brief-title">{{ 'In Brief'|t }}</h2>
-        <p class="issue-page__in-brief-dek">{{ 'More highlights from our generous community'|t }}</p>
-      </header>
-      <div class="issue-page__in-brief-list">
-        {{ drupal_view('in_brief_listing', 'issue_teasers', node.id) }}
+      <div class="issue-page__in-brief-banner">
+        <header class="issue-page__in-brief-header">
+          <h2 id="issue-in-brief-heading" class="issue-page__in-brief-title">{{ 'In Brief'|t }}</h2>
+          <p class="issue-page__in-brief-dek">{{ 'More highlights from our generous community'|t }}</p>
+        </header>
+        <p class="issue-page__in-brief-action">
+          <a href="{{ path('view.in_brief_listing.page_1') }}" class="issue-page__view-all-briefs">{{ 'View All Briefs'|t }}</a>
+        </p>
       </div>
-      <p class="issue-page__in-brief-footer">
-        <a href="{{ path('view.in_brief_listing.page_1') }}" class="issue-page__view-all-briefs">{{ 'View all briefs'|t }}</a>
-      </p>
     </div>
   </section>
 
   {% if issue_promo_cards is not empty %}
-    <section class="issue-page__promos" aria-label="{{ 'Featured links'|t }}">
+    <div class="issue-page__promos">
       <div class="container">
         <div class="issue-page__promo-grid">
           {% for card in issue_promo_cards %}
@@ -67,7 +66,7 @@
           {% endfor %}
         </div>
       </div>
-    </section>
+    </div>
   {% endif %}
 
 </div>

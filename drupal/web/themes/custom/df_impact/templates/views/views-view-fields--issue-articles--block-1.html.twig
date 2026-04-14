@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * Issue page stories — image and title only (WordPress parity).
+ */
+#}
+<div class="card card--issue-story">
+  {% if fields.field_featured_image is defined and fields.field_featured_image.content|render|trim %}
+    <div class="card__image">
+      {{ fields.field_featured_image.content }}
+    </div>
+  {% endif %}
+  <div class="card__body">
+    {% if fields.title is defined %}
+      <h3 class="card__title card__title--issue-story">{{ fields.title.content }}</h3>
+    {% endif %}
+  </div>
+</div>

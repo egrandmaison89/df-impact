@@ -525,10 +525,17 @@
   border-color: var(--color-primary);
 }
 
-.pager__item--active span {
+.pager__item--active span,
+.pager__item.is-active a,
+.pager__item--active a {
   background: var(--color-primary);
   color: var(--color-white);
   border-color: var(--color-primary);
+}
+
+.pager__item.is-active a:hover,
+.pager__item--active a:hover {
+  color: var(--color-white);
 }
 
 /* --- Social Sharing --- */

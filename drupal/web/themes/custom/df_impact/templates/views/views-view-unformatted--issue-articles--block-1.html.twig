@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * Issue page story grid — two columns to match WordPress ULT layout.
+ */
+#}
+{% if title %}
+  <h3 class="visually-hidden">{{ title }}</h3>
+{% endif %}
+<div class="grid grid--2 issue-page__story-grid">
+  {% for row in rows %}
+    <div{{ row.attributes }}>
+      {{ row.content }}
+    </div>
+  {% endfor %}
+</div>

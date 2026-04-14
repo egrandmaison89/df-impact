@@ -1,0 +1,11 @@
+uuid: b4c8e1a2-3f5d-4e6b-9c0d-1a2b3c4d5e6f
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.issue_promo
+label: 'Issue promo'
+description: 'Image and title only for issue landing featured links.'
+targetEntityType: node
+cache: true

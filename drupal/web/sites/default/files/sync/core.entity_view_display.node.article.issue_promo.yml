@@ -1,0 +1,45 @@
+uuid: c5d9f2b3-40e6-5f7c-0d1e-2b3c4d5e6f70
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.issue_promo
+    - field.field.node.article.field_featured_image
+    - core.entity_view_display.media.image.default
+    - node.type.article
+  module:
+    - media
+    - user
+id: node.article.issue_promo
+targetEntityType: node
+bundle: article
+mode: issue_promo
+content:
+  field_featured_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  body: true
+  comment: true
+  field_byline: true
+  field_cancer_types: true
+  field_content_sections: true
+  field_content_type: true
+  field_excerpt: true
+  field_homepage_placement: true
+  field_image: true
+  field_issue: true
+  field_meta_description: true
+  field_photo_credit: true
+  field_related_articles: true
+  field_subtitle: true
+  field_tags: true
+  field_topics: true
+  links: true
+  search_api_excerpt: true

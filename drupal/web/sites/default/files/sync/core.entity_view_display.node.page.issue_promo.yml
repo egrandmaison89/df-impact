@@ -1,0 +1,31 @@
+uuid: d6e0a3c4-51f7-408d-9e2f-3c4d5e6f7081
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.issue_promo
+    - field.field.node.page.field_banner_image
+    - core.entity_view_display.media.image.default
+    - node.type.page
+  module:
+    - media
+    - user
+id: node.page.issue_promo
+targetEntityType: node
+bundle: page
+mode: issue_promo
+content:
+  field_banner_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  body: true
+  field_content_sections: true
+  links: true
+  search_api_excerpt: true

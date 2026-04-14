@@ -44,6 +44,9 @@ display:
           plugin_id: field
           label: ''
           type: entity_reference_entity_view
+          settings:
+            view_mode: default
+            link: false
         field_excerpt:
           id: field_excerpt
           table: node__field_excerpt

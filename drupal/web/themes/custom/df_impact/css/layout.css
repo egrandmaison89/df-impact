@@ -74,9 +74,29 @@
 }
 
 .header__supplement {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
   font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 500;
+}
+
+.header__gtranslate {
+  min-height: 1.75rem;
+}
+
+.header__supplement .gtranslate_wrapper > select,
+.header__supplement #gt-current-lang,
+.header__supplement #gtranslate_selector {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-primary);
+  cursor: pointer;
+  max-width: 100%;
 }
 
 .header__nav {

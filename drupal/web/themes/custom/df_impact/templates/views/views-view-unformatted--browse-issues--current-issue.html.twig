@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * Single current-issue spotlight (no multi-issue grid).
+ */
+#}
+{% if title %}
+  <h3 class="visually-hidden">{{ title }}</h3>
+{% endif %}
+<div class="homepage-current-issue-spotlight">
+  {% for row in rows %}
+    <div{{ row.attributes }}>
+      {{ row.content }}
+    </div>
+  {% endfor %}
+</div>

@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * Homepage "Explore the Latest Issue" — stories from the current issue only.
+ */
+#}
+{% if title %}
+  <h3 class="visually-hidden">{{ title }}</h3>
+{% endif %}
+<div class="grid grid--4 homepage-latest-issue-grid">
+  {% for row in rows %}
+    <div{{ row.attributes }}>
+      {{ row.content }}
+    </div>
+  {% endfor %}
+</div>

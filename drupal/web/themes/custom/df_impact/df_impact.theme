@@ -7,6 +7,7 @@
 
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
+use Drupal\views\Views;
 
 /**
  * Implements hook_preprocess_html().
@@ -62,6 +63,30 @@ function df_impact_preprocess_page(&$variables) {
     }
   }
   $variables['footer_topic_links'] = $footer_topic_links;
+
+  // Front page: stories from the newest issue (WordPress "Explore" band).
+  $variables['latest_issue_articles'] = NULL;
+  $variables['latest_issue_url'] = NULL;
+  $variables['latest_issue_label'] = NULL;
+  if (!empty($variables['is_front'])) {
+    $latest_nid = df_impact_get_latest_issue_nid();
+    if ($latest_nid !== NULL) {
+      $issue = \Drupal::entityTypeManager()->getStorage('node')->load($latest_nid);
+      if ($issue instanceof NodeInterface && $issue->bundle() === 'issue') {
+        $variables['latest_issue_url'] = $issue->toUrl()->toString();
+        $variables['latest_issue_label'] = df_impact_format_issue_label($issue);
+      }
+      $view = Views::getView('issue_articles');
+      if ($view) {
+        $view->setDisplay('homepage_latest');
+        $view->setArguments([(string) $latest_nid]);
+        $view->execute();
+        if (!empty($view->result)) {
+          $variables['latest_issue_articles'] = $view->buildRenderable('homepage_latest', [(string) $latest_nid]);
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -192,9 +217,54 @@ function df_impact_theme_suggestions_views_view_alter(array &$suggestions, array
 }
 
 /**
+ * Formats an issue node as "Spring 2026" for homepage labels.
+ */
+function df_impact_format_issue_label(NodeInterface $issue): ?string {
+  if ($issue->bundle() !== 'issue') {
+    return NULL;
+  }
+  $map = [
+    'spring' => 'Spring',
+    'summer' => 'Summer',
+    'fall' => 'Fall',
+    'winter' => 'Winter',
+  ];
+  $season_key = $issue->get('field_season')->value;
+  $season = $map[$season_key] ?? ($season_key ? ucfirst((string) $season_key) : '');
+  $year = $issue->get('field_year')->value;
+  if ($season !== '' && $year !== NULL && $year !== '') {
+    return $season . ' ' . $year;
+  }
+  if ($season !== '') {
+    return $season;
+  }
+  return $issue->label();
+}
+
+/**
+ * Returns the newest published issue node ID (year desc, season desc).
+ */
+function df_impact_get_latest_issue_nid(): ?int {
+  $nids = \Drupal::entityQuery('node')
+    ->condition('type', 'issue')
+    ->condition('status', 1)
+    ->sort('field_year', 'DESC')
+    ->sort('field_season', 'DESC')
+    ->range(0, 1)
+    ->accessCheck()
+    ->execute();
+  if (!$nids) {
+    return NULL;
+  }
+  return (int) reset($nids);
+}
+
+/**
  * Implements hook_page_attachments_alter().
  */
 function df_impact_page_attachments_alter(array &$attachments) {
+  $attachments['#attached']['library'][] = 'df_impact/gtranslate';
+
   // Add viewport meta tag.
   $viewport = [
     '#type' => 'html_tag',

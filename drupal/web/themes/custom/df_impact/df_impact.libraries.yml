@@ -1,3 +1,8 @@
+gtranslate:
+  version: 1.x
+  js:
+    js/gtranslate-init.js: {}
+
 global:
   version: 1.0
   css:

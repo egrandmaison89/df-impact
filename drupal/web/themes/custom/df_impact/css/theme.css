@@ -2,20 +2,80 @@
    THEME — Page-specific overrides and section styling
    ========================================================================== */
 
-/* --- Homepage hero --- */
-.hero__default {
+/* --- Homepage hero (collage when no Hero region block) --- */
+.hero__collage {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 2px;
   width: 100%;
-  max-height: min(55vh, 520px);
+  max-height: min(58vh, 540px);
+  min-height: 220px;
   overflow: hidden;
   background: var(--color-dark);
 }
 
-.hero__default .hero__image {
+.hero__collage-primary {
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.hero__collage-tile {
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.hero__collage-secondary {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  min-height: 0;
+}
+
+.hero__collage-img {
   width: 100%;
-  height: 100%;
-  max-height: min(55vh, 520px);
+  flex: 1;
+  min-height: 120px;
+  min-width: 0;
   object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.hero__collage-primary .hero__collage-img {
   object-position: center top;
+  min-height: min(58vh, 540px);
+}
+
+.hero__collage-secondary .hero__collage-img {
+  max-height: none;
+  height: 100%;
+}
+
+@media (max-width: 767px) {
+  .hero__collage {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(180px, 40vh) auto;
+    max-height: none;
+  }
+
+  .hero__collage-secondary {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    min-height: 140px;
+  }
+
+  .hero__collage-img {
+    max-height: 40vh;
+  }
+
+  .hero__collage-secondary .hero__collage-img {
+    max-height: 28vh;
+    min-height: 100px;
+  }
 }
 
 /* --- Homepage (front) --- */
@@ -39,7 +99,26 @@
 
 .homepage-section--explore .homepage-section__title {
   text-align: center;
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-sm);
+}
+
+.homepage-explore-issue-label {
+  font-family: var(--font-body);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-gray-dark);
+  text-align: center;
+  margin: 0 0 var(--space-xl);
+  letter-spacing: 0.02em;
+}
+
+.homepage-latest-issue-stories {
+  margin-top: var(--space-md);
+}
+
+.homepage-current-issue-spotlight {
+  max-width: 420px;
+  margin: 0 auto;
 }
 
 .homepage-current-issue {
@@ -67,6 +146,10 @@
 
 .homepage-section__footer-link a:hover {
   color: var(--color-primary-light);
+}
+
+.homepage-section__footer-sep {
+  color: var(--color-gray-mid);
 }
 
 /* --- Homepage Sections --- */

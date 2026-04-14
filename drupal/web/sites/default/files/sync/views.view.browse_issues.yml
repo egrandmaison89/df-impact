@@ -129,11 +129,14 @@ display:
     display_plugin: block
     position: 2
     display_options:
+      defaults:
+        pager: false
       title: ''
       pager:
         type: some
         options:
           items_per_page: 1
+          offset: 0
       display_extenders: {  }
       block_description: 'Homepage: current issue spotlight'
     cache_metadata:

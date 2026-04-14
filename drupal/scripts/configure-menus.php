@@ -8,6 +8,7 @@
  */
 
 use Drupal\menu_link_content\Entity\MenuLinkContent;
+use Drupal\node\NodeInterface;
 use Drupal\system\Entity\Menu;
 
 // =========================================================================
@@ -37,21 +38,69 @@ foreach ($existing_links as $link) {
 }
 echo "Cleared existing main menu links.\n";
 
+$season_rank = [
+  'winter' => 4,
+  'fall' => 3,
+  'summer' => 2,
+  'spring' => 1,
+];
+
+// --- Issues (parent + children), WordPress-style flyout ---
+$issues_parent = MenuLinkContent::create([
+  'title' => 'Issues',
+  'link' => ['uri' => 'route:<nolink>'],
+  'menu_name' => 'main',
+  'weight' => 0,
+  'expanded' => TRUE,
+]);
+$issues_parent->save();
+echo "Created menu link: Issues (parent)\n";
+
+$browse_all = MenuLinkContent::create([
+  'title' => 'Browse all issues',
+  'link' => ['uri' => 'internal:/issues'],
+  'menu_name' => 'main',
+  'parent' => 'menu_link_content:' . $issues_parent->uuid(),
+  'weight' => -50,
+  'expanded' => FALSE,
+]);
+$browse_all->save();
+echo "  Created child: Browse all issues\n";
+
+$issue_nodes = \Drupal::entityTypeManager()
+  ->getStorage('node')
+  ->loadByProperties(['type' => 'issue', 'status' => 1]);
+
+$issues_sorted = array_values(array_filter($issue_nodes, function ($node) {
+  return $node instanceof NodeInterface && $node->isPublished();
+}));
+
+usort($issues_sorted, function (NodeInterface $a, NodeInterface $b) use ($season_rank) {
+  $ya = (int) ($a->get('field_year')->value ?? 0);
+  $yb = (int) ($b->get('field_year')->value ?? 0);
+  if ($ya !== $yb) {
+    return $yb <=> $ya;
+  }
+  $sa = $season_rank[$a->get('field_season')->value] ?? 0;
+  $sb = $season_rank[$b->get('field_season')->value] ?? 0;
+  return $sb <=> $sa;
+});
+
+$issue_weight = 0;
+foreach ($issues_sorted as $issue) {
+  $child = MenuLinkContent::create([
+    'title' => $issue->label(),
+    'link' => ['uri' => 'entity:node/' . $issue->id()],
+    'menu_name' => 'main',
+    'parent' => 'menu_link_content:' . $issues_parent->uuid(),
+    'weight' => $issue_weight++,
+    'expanded' => FALSE,
+  ]);
+  $child->save();
+  echo '  Created issue link: ' . $issue->label() . "\n";
+}
+
 $main_links = [
-  [
-    'title' => 'Current Issue',
-    'link' => ['uri' => 'internal:/issues'],
-    'menu_name' => 'main',
-    'weight' => 0,
-    'expanded' => FALSE,
-  ],
-  [
-    'title' => 'Browse Issues',
-    'link' => ['uri' => 'internal:/issues'],
-    'menu_name' => 'main',
-    'weight' => 1,
-    'expanded' => FALSE,
-  ],
   [
     'title' => 'In Brief',
     'link' => ['uri' => 'internal:/in-brief'],
@@ -68,7 +117,7 @@ $main_links = [
   ],
 ];
 
-// Create Topics parent first.
+// Topics parent + children.
 $topics_parent = MenuLinkContent::create([
   'title' => 'Topics',
   'link' => ['uri' => 'route:<nolink>'],
@@ -79,7 +128,6 @@ $topics_parent = MenuLinkContent::create([
 $topics_parent->save();
 echo "Created menu link: Topics (parent)\n";
 
-// Topics children.
 $topics = \Drupal::entityTypeManager()
   ->getStorage('taxonomy_term')
   ->loadByProperties(['vid' => 'topics', 'parent' => 0]);
@@ -98,17 +146,16 @@ foreach ($topics as $term) {
   echo "  Created topic link: {$term->getName()}\n";
 }
 
-// Create remaining main links.
 foreach ($main_links as $link_data) {
   $link = MenuLinkContent::create($link_data);
   $link->save();
   echo "Created menu link: {$link_data['title']}\n";
 }
 
-// Donate button (external link).
+// Donate (skipped in theme menu template when Jimmy Fund donation URL).
 $donate = MenuLinkContent::create([
   'title' => 'Donate',
-  'link' => ['uri' => 'https://danafarber.jimmyfund.org/give/dana-farber-donate'],
+  'link' => ['uri' => 'https://danafarber.jimmyfund.org/site/Donation2?df_id=2101&mfc_pref=T&2101.donation=form1&utm_source=dfimpact&utm_medium=button&utm_campaign=AGDFI031323&s_src=AGDFI031323&s_subsrc=AGDFI031323'],
   'menu_name' => 'main',
   'weight' => 10,
   'expanded' => FALSE,
@@ -120,6 +167,12 @@ echo "Created menu link: Donate (external)\n";
 // Footer Links
 // =========================================================================
 echo "\n=== Creating Footer Links ===\n";
+
+$existing_footer = $storage->loadByProperties(['menu_name' => 'footer']);
+foreach ($existing_footer as $link) {
+  $link->delete();
+}
+echo "Cleared existing footer menu links.\n";
 
 $footer_links = [
   ['title' => 'Dana-Farber Cancer Institute', 'link' => ['uri' => 'https://www.dana-farber.org'], 'weight' => 0],

@@ -16,8 +16,19 @@
     {% if page.hero %}
       {{ page.hero }}
     {% else %}
-      <div class="hero__default">
-        <img src="/sites/default/files/wp-images/DFCI1450_Impact-Cover-1024x734.jpg" width="1024" height="734" alt="{{ 'Dana-Farber Impact Magazine cover collage'|t }}" class="hero__image" loading="eager" fetchpriority="high">
+      {# WordPress-style collage: large cover + two supporting tiles. #}
+      <div class="hero__collage" role="group" aria-label="{{ 'Magazine feature imagery'|t }}">
+        <div class="hero__collage-primary">
+          <img src="/sites/default/files/wp-images/DFCI1450_Impact-Cover-1024x734.jpg" width="1024" height="734" alt="{{ 'Dana-Farber Impact Magazine cover'|t }}" class="hero__collage-img" loading="eager" fetchpriority="high">
+        </div>
+        <div class="hero__collage-secondary">
+          <div class="hero__collage-tile">
+            <img src="/sites/default/files/wp-images/PanMassChallenge_1450-1024x734.jpg" width="1024" height="734" alt="" class="hero__collage-img" loading="lazy">
+          </div>
+          <div class="hero__collage-tile">
+            <img src="/sites/default/files/wp-images/DFI1450_Barb-Sirvis-2022-Shirt-1024x734.jpg" width="1024" height="734" alt="" class="hero__collage-img" loading="lazy">
+          </div>
+        </div>
       </div>
     {% endif %}
   </section>
@@ -32,10 +43,23 @@
     <section class="homepage-section homepage-section--explore" aria-labelledby="homepage-explore-heading">
       <div class="container">
         <h2 id="homepage-explore-heading" class="homepage-section__title">{{ 'Explore the Latest Issue'|t }}</h2>
-        <div class="homepage-current-issue">
-          {{ drupal_view('browse_issues', 'current_issue') }}
-        </div>
+        {% if latest_issue_label %}
+          <p class="homepage-explore-issue-label">{{ latest_issue_label }}</p>
+        {% endif %}
+        {% if latest_issue_articles %}
+          <div class="homepage-latest-issue-stories">
+            {{ latest_issue_articles }}
+          </div>
+        {% else %}
+          <div class="homepage-current-issue">
+            {{ drupal_view('browse_issues', 'current_issue') }}
+          </div>
+        {% endif %}
         <p class="homepage-section__footer-link">
+          {% if latest_issue_url %}
+            <a href="{{ latest_issue_url }}">{{ 'Read this issue'|t }}</a>
+            <span class="homepage-section__footer-sep" aria-hidden="true"> · </span>
+          {% endif %}
           <a href="{{ path('view.browse_issues.page_1') }}">{{ 'Browse all issues'|t }}</a>
         </p>
       </div>
@@ -78,7 +102,7 @@
         <div class="homepage-section__header">
           <h2 id="homepage-highlights-heading" class="homepage-section__title">{{ 'Recent Highlights'|t }}</h2>
         </div>
-        <div class="grid grid--3">
+        <div class="grid grid--4">
           {{ drupal_view('homepage_highlights', 'block_1') }}
         </div>
       </div>

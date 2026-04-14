@@ -21,6 +21,8 @@ settings:
   label: 'Main navigation'
   label_display: '0'
   provider: system
+  # Level must stay 1: values > 1 mean "only show this block on pages inside that
+  # menu depth", which hides the entire nav on the homepage (Drupal core behavior).
   level: 1
   depth: 2
   expand_all_items: true

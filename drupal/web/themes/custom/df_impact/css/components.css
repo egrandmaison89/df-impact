@@ -68,6 +68,27 @@
   color: var(--color-primary-light);
 }
 
+/* Topic line on homepage / archive cards (Views: .card__category) */
+.card__category {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.card__category a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.card__category a:hover,
+.card__category a:focus {
+  color: var(--color-primary-light);
+  text-decoration: underline;
+}
+
 .card__title {
   font-family: var(--font-heading);
   font-size: var(--font-size-lg);
@@ -89,6 +110,10 @@
   font-size: var(--font-size-sm);
   color: var(--color-gray-dark);
   line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
 }
 
 .card__meta {

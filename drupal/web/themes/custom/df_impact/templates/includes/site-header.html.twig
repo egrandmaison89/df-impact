@@ -19,11 +19,12 @@
     </button>
 
     <div class="header__drawer" id="header-drawer">
-      {% if page.header_supplement %}
-        <div class="header__supplement">
+      <div class="header__supplement">
+        <div class="gtranslate_wrapper header__gtranslate" aria-label="{{ 'Translate this site'|t }}"></div>
+        {% if page.header_supplement %}
           {{ page.header_supplement }}
-        </div>
-      {% endif %}
+        {% endif %}
+      </div>
 
       <nav class="header__nav" id="main-nav" aria-label="{{ 'Main navigation'|t }}">
         {{ page.nav_main }}

@@ -98,6 +98,21 @@ function df_impact_preprocess_node(&$variables) {
   // Add view mode class.
   $variables['attributes']['class'][] = 'node--view-mode-' . str_replace('_', '-', $variables['view_mode']);
 
+  // Issue full: promo cards below In Brief (WordPress layout).
+  if ($node->bundle() === 'issue' && $variables['view_mode'] === 'full') {
+    $variables['issue_promo_cards'] = [];
+    $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
+    foreach (['field_leadership_message', 'field_issue_promo_2'] as $field_name) {
+      if (!$node->hasField($field_name) || $node->get($field_name)->isEmpty()) {
+        continue;
+      }
+      $referenced = $node->get($field_name)->entity;
+      if ($referenced instanceof NodeInterface) {
+        $variables['issue_promo_cards'][] = $view_builder->view($referenced, 'teaser');
+      }
+    }
+  }
+
   // For articles, make the issue link available.
   if ($node->bundle() === 'article' && $node->hasField('field_issue') && !$node->get('field_issue')->isEmpty()) {
     $issue = $node->get('field_issue')->entity;

@@ -145,6 +145,7 @@ $issue_fields = [
   'field_banner_image' => ['weight' => 4, 'type' => 'media_library_widget', 'settings' => ['media_types' => ['image']]],
   'field_description' => ['weight' => 5, 'type' => 'text_textarea', 'settings' => ['rows' => 5]],
   'field_leadership_message' => ['weight' => 6, 'type' => 'entity_reference_autocomplete'],
+  'field_issue_promo_2' => ['weight' => 7, 'type' => 'entity_reference_autocomplete'],
 ];
 
 foreach ($issue_fields as $field_name => $config) {

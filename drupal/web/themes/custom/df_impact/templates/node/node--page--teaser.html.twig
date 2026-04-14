@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * Teaser for basic pages (issue promo cards, etc.).
+ */
+#}
+<div{{ attributes.addClass('card', 'card--page-teaser') }}>
+  {% if content.field_banner_image|render|trim %}
+    <div class="card__image-wrapper">
+      <a href="{{ url }}">
+        {{ content.field_banner_image }}
+      </a>
+    </div>
+  {% endif %}
+
+  <div class="card__body">
+    {{ title_prefix }}
+    <h3 class="card__title">
+      <a href="{{ url }}">{{ label }}</a>
+    </h3>
+    {{ title_suffix }}
+
+    {% if content.body|render|trim %}
+      <div class="card__excerpt">
+        {{ content.body }}
+      </div>
+    {% endif %}
+  </div>
+</div>

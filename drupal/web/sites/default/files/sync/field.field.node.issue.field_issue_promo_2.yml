@@ -1,18 +1,18 @@
-uuid: d9489215-ebf6-4107-813c-ae9f47c96e65
+uuid: 7d9f5b3a-02c4-5e2d-9f80-3b0c1d2e4f60
 langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_leadership_message
+    - field.storage.node.field_issue_promo_2
     - node.type.article
     - node.type.issue
     - node.type.page
-id: node.issue.field_leadership_message
-field_name: field_leadership_message
+id: node.issue.field_issue_promo_2
+field_name: field_issue_promo_2
 entity_type: node
 bundle: issue
-label: 'First featured link'
-description: 'Large promo below In Brief (e.g. From the Chief Philanthropy Officer). Article or page.'
+label: 'Second featured link'
+description: 'Optional second large promo below In Brief (e.g. Future Cancer Hospital page).'
 required: false
 translatable: true
 default_value: {  }

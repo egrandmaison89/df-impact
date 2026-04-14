@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * In Brief items on issue pages — grid layout.
+ */
+#}
+{% if title %}
+  <h3>{{ title }}</h3>
+{% endif %}
+<div class="issue-page__in-brief-grid">
+  {% for row in rows %}
+    <div{{ row.attributes }}>
+      {{ row.content }}
+    </div>
+  {% endfor %}
+</div>

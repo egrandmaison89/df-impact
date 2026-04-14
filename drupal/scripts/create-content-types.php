@@ -142,13 +142,33 @@ _create_field_instance('field_description', 'node', 'issue', 'Description', [
 _create_field_storage('field_leadership_message', 'node', 'entity_reference', [
   'settings' => ['target_type' => 'node'],
 ]);
-_create_field_instance('field_leadership_message', 'node', 'issue', 'Leadership Message', [
+_create_field_instance('field_leadership_message', 'node', 'issue', 'First featured link', [
   'required' => FALSE,
-  'description' => 'Link to the "Message from Melany Duval" article for this issue.',
+  'description' => 'Large promo below In Brief (e.g. From the Chief Philanthropy Officer). Article or page.',
   'settings' => [
     'handler' => 'default:node',
     'handler_settings' => [
-      'target_bundles' => ['article' => 'article'],
+      'target_bundles' => [
+        'article' => 'article',
+        'page' => 'page',
+      ],
+    ],
+  ],
+]);
+
+_create_field_storage('field_issue_promo_2', 'node', 'entity_reference', [
+  'settings' => ['target_type' => 'node'],
+]);
+_create_field_instance('field_issue_promo_2', 'node', 'issue', 'Second featured link', [
+  'required' => FALSE,
+  'description' => 'Optional second large promo below In Brief (e.g. Future Cancer Hospital page).',
+  'settings' => [
+    'handler' => 'default:node',
+    'handler_settings' => [
+      'target_bundles' => [
+        'article' => 'article',
+        'page' => 'page',
+      ],
     ],
   ],
 ]);

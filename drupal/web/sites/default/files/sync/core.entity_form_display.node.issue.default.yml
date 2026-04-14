@@ -6,6 +6,7 @@ dependencies:
     - field.field.node.issue.field_banner_image
     - field.field.node.issue.field_cover_image
     - field.field.node.issue.field_description
+    - field.field.node.issue.field_issue_promo_2
     - field.field.node.issue.field_leadership_message
     - field.field.node.issue.field_season
     - field.field.node.issue.field_year
@@ -54,6 +55,16 @@ content:
   field_leadership_message:
     type: entity_reference_autocomplete
     weight: 6
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_issue_promo_2:
+    type: entity_reference_autocomplete
+    weight: 7
     region: content
     settings:
       match_operator: CONTAINS

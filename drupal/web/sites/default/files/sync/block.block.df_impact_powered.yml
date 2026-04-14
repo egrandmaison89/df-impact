@@ -1,6 +1,6 @@
 uuid: 3d5fb840-2352-4bb5-a83a-d61d2eef8089
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - system
@@ -10,7 +10,7 @@ _core:
   default_config_hash: eYL19CLDyinGTWYQfBD1DswWzglEotE_kHnHx3AxTXM
 id: df_impact_powered
 theme: df_impact
-region: header
+region: hidden
 weight: 0
 provider: null
 plugin: system_powered_by_block

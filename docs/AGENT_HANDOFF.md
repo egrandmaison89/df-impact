@@ -4,6 +4,7 @@ Quick context for engineers and AI agents picking up this repository.
 
 ## Canonical docs
 
+- **[docs/PATH_FORWARD.md](PATH_FORWARD.md)** — Gap analysis vs WordPress, phased roadmap, and implementation log.
 - **[DRUPAL_REBUILD_PLAN.md](../DRUPAL_REBUILD_PLAN.md)** — Product and technical source of truth (content model, ADRs, editorial guide, appendices).
 - **`standups/STANDUP.md`** — Dated engineering snapshot (what shipped, pre-launch checklist, operational notes). The `standups/` folder is **gitignored**; keep a local copy or sync out of band.
 - **[docs/ADMIN_UX_OPTIONS.md](ADMIN_UX_OPTIONS.md)** — Stakeholder-facing admin UX options; includes **frontend local tasks** (public-site editor strip).
@@ -38,6 +39,24 @@ ddev drush cr
 
 If `drush status` shows no installation, either import a SQL dump (`ddev import-db --file=…`) or run a minimal site install, then import config. A full editorial site is not reproducible from Git alone without a DB dump or re-running migrations.
 
+### Homepage, paths, and redirects (after migration)
+
+1. **`df_setup`** (enabled in config): on install it creates a **Home** basic page at `/home` and sets `system.site.page.front` to `/home`. Import config with `drush cim` after pulling.
+2. **Bulk path + placement + redirects** from JSON/maps:
+
+   ```bash
+   cd drupal
+   ddev drush php:script web/modules/custom/df_migrate/scripts/df_sync_wordpress_paths.php
+   ```
+
+3. **Inline image / lazy-load repair** on existing nodes (optional re-run):
+
+   ```bash
+   ddev drush php:script web/modules/custom/df_migrate/scripts/fix_inline_body_images.php
+   ```
+
+The front template shows a **default hero image** when no block is placed in the Hero region; editors can override by placing a block there.
+
 ### QA screenshots
 
 Repo-root **`testing/`** is **gitignored**. Use it for local screenshots and scratch artifacts from UI or migration QA (not for files that must ship with the project).
@@ -65,6 +84,7 @@ Exports live under **`drupal/web/sites/default/files/sync/`**. Import/export wit
 | Module | Purpose |
 |--------|---------|
 | `df_migrate` | WordPress → Drupal JSON migrations |
+| `df_setup` | Creates `/home` landing page and sets site front path on install |
 | `df_site_snippets` | Configurable header/footer HTML for trusted editors |
 
 ## Mistakes log

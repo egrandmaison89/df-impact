@@ -10,8 +10,8 @@ _core:
   default_config_hash: VhBzWb7lMRtIOg9G7VSw_0uopi-7zXeHq4vXqqV1HFE
 id: df_impact_breadcrumbs
 theme: df_impact
-region: header
-weight: 0
+region: content
+weight: -50
 provider: null
 plugin: system_breadcrumb_block
 settings:
@@ -19,4 +19,8 @@ settings:
   label: Breadcrumbs
   label_display: '0'
   provider: system
-visibility: {  }
+visibility:
+  request_path:
+    id: request_path
+    negate: true
+    pages: '<front>'

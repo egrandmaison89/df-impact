@@ -34,18 +34,18 @@
   Drupal.behaviors.dfImpactMobileMenu = {
     attach: function (context) {
       once('df-mobile-menu', '.header__menu-toggle', context).forEach(function (toggle) {
-        var nav = document.querySelector('.header__nav');
-        if (!nav) return;
+        var drawer = document.getElementById('header-drawer');
+        if (!drawer) return;
 
         toggle.addEventListener('click', function () {
-          var isOpen = nav.classList.toggle('header__nav--open');
+          var isOpen = drawer.classList.toggle('header__drawer--open');
           toggle.setAttribute('aria-expanded', isOpen);
         });
 
         // Close on escape key
         document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape' && nav.classList.contains('header__nav--open')) {
-            nav.classList.remove('header__nav--open');
+          if (e.key === 'Escape' && drawer.classList.contains('header__drawer--open')) {
+            drawer.classList.remove('header__drawer--open');
             toggle.setAttribute('aria-expanded', 'false');
             toggle.focus();
           }

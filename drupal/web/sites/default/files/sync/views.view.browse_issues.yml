@@ -123,3 +123,26 @@ display:
         - 'config:field.storage.node.field_cover_image'
         - 'config:field.storage.node.field_season'
         - 'config:field.storage.node.field_year'
+  current_issue:
+    id: current_issue
+    display_title: 'Current issue'
+    display_plugin: block
+    position: 2
+    display_options:
+      title: ''
+      pager:
+        type: some
+        options:
+          items_per_page: 1
+      display_extenders: {  }
+      block_description: 'Homepage: current issue spotlight'
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - 'user.node_grants:view'
+      tags:
+        - 'config:field.storage.node.field_cover_image'
+        - 'config:field.storage.node.field_season'
+        - 'config:field.storage.node.field_year'

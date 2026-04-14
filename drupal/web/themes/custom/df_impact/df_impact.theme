@@ -5,6 +5,7 @@
  * Functions to support theming in the Dana-Farber Impact theme.
  */
 
+use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 
 /**
@@ -27,6 +28,40 @@ function df_impact_preprocess_page(&$variables) {
 
   // Check if we're on the front page.
   $variables['is_front'] = \Drupal::service('path.matcher')->isFrontPage();
+
+  // Donate CTA — match legacy WordPress / Jimmy Fund campaign parameters.
+  $variables['donate_url'] = 'https://danafarber.jimmyfund.org/site/Donation2?df_id=2101&mfc_pref=T&2101.donation=form1&utm_source=dfimpact&utm_medium=button&utm_campaign=AGDFI031323&s_src=AGDFI031323&s_subsrc=AGDFI031323';
+
+  $variables['about_impact_url'] = Url::fromUri('internal:/about-impact')->toString();
+
+  $topic_order = [
+    'Cancer Research',
+    'Total Patient Care',
+    'Prevention and Early Detection',
+    'Access and Equity',
+    'Immunotherapy',
+    'Drug Development',
+    'Pediatrics',
+    'Grassroots Support',
+    'Discovery Science',
+    'Planned Giving',
+  ];
+  $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $footer_topic_links = [];
+  foreach ($topic_order as $name) {
+    $terms = $term_storage->loadByProperties([
+      'vid' => 'topics',
+      'name' => $name,
+    ]);
+    $term = reset($terms);
+    if ($term && $term->isPublished()) {
+      $footer_topic_links[] = [
+        'title' => $term->label(),
+        'url' => Url::fromUri('internal:/topics/' . $term->id())->toString(),
+      ];
+    }
+  }
+  $variables['footer_topic_links'] = $footer_topic_links;
 }
 
 /**
@@ -44,6 +79,26 @@ function df_impact_preprocess_node(&$variables) {
     if ($issue) {
       $variables['issue_title'] = $issue->label();
       $variables['issue_url'] = $issue->toUrl()->toString();
+    }
+  }
+
+  // Related articles by shared topics when editors did not pick manual related nodes.
+  if ($node->bundle() === 'article' && $variables['view_mode'] === 'full') {
+    if ($node->hasField('field_related_articles') && $node->get('field_related_articles')->isEmpty()) {
+      $topic_ids = [];
+      if ($node->hasField('field_topics')) {
+        foreach ($node->get('field_topics') as $item) {
+          $topic_ids[] = $item->target_id;
+        }
+      }
+      if ($topic_ids !== []) {
+        $variables['related_by_topic'] = views_embed_view(
+          'related_articles',
+          'block_1',
+          implode('+', $topic_ids),
+          (string) $node->id(),
+        );
+      }
     }
   }
 }

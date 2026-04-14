@@ -12,7 +12,7 @@ _core:
   default_config_hash: KWAiziL39uEzmOJEql_wbUP2RtqGceL3WM2CfxhMelE
 id: df_impact_main_menu
 theme: df_impact
-region: header
+region: nav_main
 weight: 0
 provider: null
 plugin: 'system_menu_block:main'

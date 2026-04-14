@@ -1,0 +1,41 @@
+{#
+/**
+ * @file
+ * Site header — aligned with danafarberimpact.org chrome.
+ */
+#}
+<header class="header" role="banner">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="{{ path('<front>') }}" rel="home" aria-label="{{ 'Dana-Farber Impact Magazine Home'|t }}">
+        <img src="/{{ directory }}/images/ImpactDFJF_HeaderLogo_878.png" alt="{{ 'Dana-Farber Cancer Institute and The Jimmy Fund — Impact Magazine'|t }}" width="878" height="235" class="header__logo-img" decoding="async">
+      </a>
+    </div>
+
+    <button class="header__menu-toggle" type="button" aria-label="{{ 'Toggle navigation'|t }}" aria-expanded="false" aria-controls="header-drawer">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="header__drawer" id="header-drawer">
+      {% if page.header_supplement %}
+        <div class="header__supplement">
+          {{ page.header_supplement }}
+        </div>
+      {% endif %}
+
+      <nav class="header__nav" id="main-nav" aria-label="{{ 'Main navigation'|t }}">
+        {{ page.nav_main }}
+        <a href="{{ path('view.df_impact_search.page_1') }}" class="header__search-link" aria-label="{{ 'Search'|t }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span class="visually-hidden">{{ 'Search'|t }}</span>
+        </a>
+        <a href="{{ donate_url }}" class="header__donate" target="_blank" rel="noopener">{{ 'Donate'|t }}</a>
+      </nav>
+    </div>
+  </div>
+</header>

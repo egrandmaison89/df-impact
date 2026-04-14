@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for DF Impact setup.
+ */
+
+use Drupal\node\Entity\Node;
+use Drupal\pathauto\PathautoState;
+
+/**
+ * Implements hook_install().
+ */
+function df_setup_install(): void {
+  _df_setup_ensure_home_landing();
+}
+
+/**
+ * Creates the Home basic page and sets it as the site front if missing.
+ */
+function _df_setup_ensure_home_landing(): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'Home')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+
+  $pathauto_skip = class_exists(PathautoState::class) ? PathautoState::SKIP : 0;
+
+  if (!$nids) {
+    $node = Node::create([
+      'type' => 'page',
+      'title' => 'Home',
+      'uid' => 1,
+      'status' => 1,
+      'body' => [
+        'value' => '',
+        'format' => 'basic_html',
+      ],
+    ]);
+    $node->set('path', ['alias' => '/home', 'pathauto' => $pathauto_skip]);
+    $node->save();
+  }
+  else {
+    $node = $storage->load(reset($nids));
+    if ($node instanceof Node) {
+      $node->set('path', ['alias' => '/home', 'pathauto' => $pathauto_skip]);
+      $node->save();
+    }
+  }
+
+  $config = \Drupal::configFactory()->getEditable('system.site');
+  if ($config->get('page.front') !== '/home') {
+    $config->set('page.front', '/home')->save();
+  }
+}

@@ -463,8 +463,8 @@ for post in posts:
     # SEO
     meta_description = get_yoast_meta(post)
 
-    # Drupal path alias (preserve WP URL structure)
-    drupal_alias = f"/{wp_slug}" if not is_in_brief else f"/in-brief/{wp_slug}"
+    # Drupal path alias (canonical article URLs use /stories/ per Pathauto pattern)
+    drupal_alias = f"/stories/{wp_slug}" if not is_in_brief else f"/in-brief/{wp_slug}"
 
     base_data = {
         'wp_id': post['id'],

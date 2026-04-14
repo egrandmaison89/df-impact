@@ -1,0 +1,50 @@
+uuid: 7a8b9c0d-1e2f-3456-789a-bcdef0123456
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.issue.field_banner_image
+    - field.field.node.issue.field_cover_image
+    - field.field.node.issue.field_description
+    - field.field.node.issue.field_leadership_message
+    - field.field.node.issue.field_season
+    - field.field.node.issue.field_year
+    - node.type.issue
+  module:
+    - media
+    - text
+    - user
+id: node.issue.default
+targetEntityType: node
+bundle: issue
+mode: default
+content:
+  field_banner_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_description:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_leadership_message:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 2
+    region: content
+hidden:
+  field_cover_image: true
+  field_season: true
+  field_year: true
+  links: true

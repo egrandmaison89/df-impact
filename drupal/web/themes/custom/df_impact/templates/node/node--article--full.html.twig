@@ -76,12 +76,19 @@
     <a href="mailto:?subject={{ label }}&body={{ url('<current>') }}" class="social-share__link" aria-label="{{ 'Share via Email'|t }}">✉</a>
   </div>
 
-  {# --- Related Articles --- #}
+  {# --- Related Articles (manual picks or automatic by shared topics) --- #}
   {% if content.field_related_articles|render|trim %}
     <section class="related-articles">
       <h2 class="related-articles__title">{{ 'More Stories'|t }}</h2>
       <div class="grid grid--3">
         {{ content.field_related_articles }}
+      </div>
+    </section>
+  {% elseif related_by_topic is defined and related_by_topic|render|trim %}
+    <section class="related-articles">
+      <h2 class="related-articles__title">{{ 'More Stories'|t }}</h2>
+      <div class="grid grid--3">
+        {{ related_by_topic }}
       </div>
     </section>
   {% endif %}

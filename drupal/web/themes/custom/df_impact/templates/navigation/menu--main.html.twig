@@ -23,8 +23,9 @@
       {% endif %}
       <li{{ item.attributes.addClass(item_classes) }}>
         {% if menu_level == 0 %}
-          {% if item.url.toString() == 'https://danafarber.jimmyfund.org/give/dana-farber-donate' %}
-            {# Skip donate link - it's hardcoded in the page template #}
+          {% set item_url = item.url.toString() %}
+          {% if 'jimmyfund.org' in item_url and ('Donation2' in item_url or '/give/' in item_url or 'donate' in item_url|lower) %}
+            {# Skip donate link — CTA is hardcoded in the header include. #}
           {% else %}
             <a href="{{ item.url }}" class="header__nav-link"{{ item.below ? ' aria-expanded="false" aria-haspopup="true"' }}>
               {{ item.title }}

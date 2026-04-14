@@ -143,7 +143,14 @@ final class InlineImageHtmlProcessor {
    * Whether the URL points at WordPress media for this site (including Photon).
    */
   public static function isWordPressImageUrl(string $url): bool {
-    return str_contains($url, 'danafarberimpact.org');
+    if (str_contains($url, 'danafarberimpact.org')) {
+      return TRUE;
+    }
+    // Jetpack Photon / WordPress.com CDN mirrors this site’s media.
+    if (str_contains($url, 'i0.wp.com') && str_contains($url, 'danafarberimpact')) {
+      return TRUE;
+    }
+    return FALSE;
   }
 
   /**

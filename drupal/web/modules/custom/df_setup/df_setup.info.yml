@@ -1,0 +1,5 @@
+name: 'DF Impact setup'
+type: module
+description: 'Ensures a Home landing node and front page path for the Impact theme layout.'
+package: 'Dana-Farber Impact'
+core_version_requirement: ^10.3 || ^11

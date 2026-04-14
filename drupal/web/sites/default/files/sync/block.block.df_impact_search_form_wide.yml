@@ -1,6 +1,6 @@
 uuid: efab5526-b5ce-414a-8377-9dcdc4fc51dc
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - search
@@ -10,7 +10,7 @@ _core:
   default_config_hash: pbbed0hdqGDF-_QWVVTWRAwgDIotFuAvWH5mWUZu0fA
 id: df_impact_search_form_wide
 theme: df_impact
-region: header
+region: hidden
 weight: -5
 provider: null
 plugin: search_form_block

@@ -8,8 +8,8 @@ _core:
   default_config_hash: 6aOgWsNTXjqrDm98TXSAjP6qd2nCijD1xw45MrnbK-Y
 id: df_impact_page_title
 theme: df_impact
-region: header
-weight: -5
+region: content
+weight: -49
 provider: null
 plugin: page_title_block
 settings:
@@ -17,4 +17,8 @@ settings:
   label: 'Page title'
   label_display: '0'
   provider: core
-visibility: {  }
+visibility:
+  request_path:
+    id: request_path
+    negate: true
+    pages: '<front>'

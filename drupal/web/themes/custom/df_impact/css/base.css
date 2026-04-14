@@ -9,6 +9,8 @@
   --color-primary-light: #68a0c1;
   --color-accent: #ffa300;
   --color-dark: #0f0e17;
+  --color-footer-navy: #003354;
+  --color-header-border: #f4f4f4;
   --color-gray-light: #f6f6f6;
   --color-gray-mid: #d5d5da;
   --color-gray-dark: #333333;
@@ -135,6 +137,18 @@ blockquote {
   font-style: italic;
   font-size: var(--font-size-lg);
   color: var(--color-gray-dark);
+}
+
+/* WordPress / Gutenberg drop cap migrated with body HTML */
+.article__body > p.has-drop-cap:first-of-type::first-letter,
+.text-formatted > p.has-drop-cap:first-of-type::first-letter {
+  float: left;
+  font-family: var(--font-heading);
+  font-size: 3.25em;
+  line-height: 0.88;
+  font-weight: 700;
+  margin: 0.04em 0.1em 0 0;
+  color: var(--color-primary);
 }
 
 ul, ol {

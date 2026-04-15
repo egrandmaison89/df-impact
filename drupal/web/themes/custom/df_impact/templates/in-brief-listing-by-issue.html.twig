@@ -1,0 +1,21 @@
+{#
+/**
+ * @file
+ * In Brief archive: one section per issue, "Load more" per section.
+ */
+#}
+{% for section in sections %}
+  <section class="in-brief-page__issue-section">
+    <h2 class="in-brief-page__issue-heading">{{ section.issue_label }}</h2>
+    <div class="in-brief-page__items">
+      {% for item in section.items %}
+        {{ item }}
+      {% endfor %}
+    </div>
+    {% if section.show_more %}
+      <button type="button" class="in-brief-page__load-more js-in-brief-load-more">
+        {{ 'Load More Briefs'|t }}
+      </button>
+    {% endif %}
+  </section>
+{% endfor %}

@@ -665,6 +665,52 @@
   padding: var(--space-2xl) var(--space-md);
 }
 
+.in-brief-page__issue-section {
+  margin-bottom: var(--space-2xl);
+  padding-bottom: var(--space-xl);
+  border-bottom: 1px solid var(--color-gray-mid);
+}
+
+.in-brief-page__issue-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.in-brief-page__issue-heading {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+  margin: 0 0 var(--space-lg);
+}
+
+.in-brief-page__items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.in-brief-page__item.is-collapsed {
+  display: none;
+}
+
+.in-brief-page__load-more {
+  margin-top: var(--space-lg);
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-primary);
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.in-brief-page__load-more:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+
 /* --- Search Results --- */
 .search-results {
   max-width: var(--container-max);

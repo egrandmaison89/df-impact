@@ -3,6 +3,14 @@ gtranslate:
   js:
     js/gtranslate-init.js: {}
 
+in_brief_page:
+  version: 1.0
+  js:
+    js/in-brief-page.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
 global:
   version: 1.0
   css:

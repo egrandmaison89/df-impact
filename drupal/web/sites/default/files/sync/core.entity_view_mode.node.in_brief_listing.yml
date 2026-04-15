@@ -1,0 +1,10 @@
+uuid: a1c2e3f4-5b6d-7890-abcd-ef1234567890
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.in_brief_listing
+label: 'In Brief listing'
+targetEntityType: node
+cache: true

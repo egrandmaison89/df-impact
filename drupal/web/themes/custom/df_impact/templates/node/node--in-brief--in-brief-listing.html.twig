@@ -1,0 +1,27 @@
+{#
+/**
+ * @file
+ * Compact In Brief item for the /in-brief archive (grouped by issue).
+ */
+#}
+<div{{ attributes.addClass('in-brief-item') }}>
+  {% if content.field_image|render|trim %}
+    <div class="in-brief-item__image">
+      {{ content.field_image }}
+    </div>
+  {% endif %}
+  <div class="in-brief-item__body">
+    {{ title_prefix }}
+    <h3 class="in-brief-item__title">
+      {% if content.field_link|render|trim %}
+        {{ content.field_link }}
+      {% else %}
+        {{ label }}
+      {% endif %}
+    </h3>
+    {{ title_suffix }}
+    {% if content.field_summary|render|trim %}
+      <div class="in-brief-item__summary">{{ content.field_summary }}</div>
+    {% endif %}
+  </div>
+</div>

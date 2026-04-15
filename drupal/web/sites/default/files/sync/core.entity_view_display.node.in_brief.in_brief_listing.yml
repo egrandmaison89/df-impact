@@ -1,0 +1,50 @@
+uuid: b2d3e4f5-6c7d-8901-bcde-f12345678901
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.in_brief.field_image
+    - field.field.node.in_brief.field_issue
+    - field.field.node.in_brief.field_link
+    - field.field.node.in_brief.field_summary
+    - node.type.in_brief
+  module:
+    - link
+    - text
+    - user
+id: node.in_brief.in_brief_listing
+targetEntityType: node
+bundle: in_brief
+mode: in_brief_listing
+content:
+  field_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_link:
+    type: link_default
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: '0'
+      target: '0'
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_summary:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+hidden:
+  field_issue: true
+  links: true

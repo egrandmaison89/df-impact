@@ -7,7 +7,176 @@
 
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
+use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
+
+/**
+ * Implements hook_theme().
+ */
+function df_impact_theme($existing, $type, $theme, $path) {
+  return [
+    'in_brief_listing_by_issue' => [
+      'variables' => [
+        'sections' => [],
+      ],
+    ],
+  ];
+}
+
+/**
+ * Groups In Brief nodes by issue; issues newest-first (year, then season).
+ *
+ * @return list<array{issue_label: string, briefs: \Drupal\node\NodeInterface[]}>
+ */
+function df_impact_group_in_brief_nodes_by_issue(): array {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'in_brief')
+    ->condition('status', 1)
+    ->accessCheck()
+    ->execute();
+  if (!$nids) {
+    return [];
+  }
+
+  /** @var \Drupal\node\NodeInterface[] $nodes */
+  $nodes = $storage->loadMultiple($nids);
+  $by_issue = [];
+  foreach ($nodes as $node) {
+    if (!$node->hasField('field_issue') || $node->get('field_issue')->isEmpty()) {
+      continue;
+    }
+    $issue_id = (string) $node->get('field_issue')->target_id;
+    $by_issue[$issue_id][] = $node;
+  }
+
+  foreach ($by_issue as &$briefs) {
+    usort($briefs, static function (NodeInterface $a, NodeInterface $b): int {
+      return $b->getCreatedTime() <=> $a->getCreatedTime();
+    });
+  }
+
+  $season_weight = [
+    'spring' => 1,
+    'summer' => 2,
+    'fall' => 3,
+    'winter' => 4,
+  ];
+
+  $issue_ids = array_keys($by_issue);
+  /** @var \Drupal\node\NodeInterface[] $issues */
+  $issues = $storage->loadMultiple($issue_ids);
+  usort($issue_ids, static function (string $a, string $b) use ($issues, $season_weight): int {
+    $ia = $issues[$a] ?? NULL;
+    $ib = $issues[$b] ?? NULL;
+    if (!$ia || !$ib || $ia->bundle() !== 'issue' || $ib->bundle() !== 'issue') {
+      return 0;
+    }
+    $ya = (int) ($ia->get('field_year')->value ?? 0);
+    $yb = (int) ($ib->get('field_year')->value ?? 0);
+    if ($ya !== $yb) {
+      return $yb <=> $ya;
+    }
+    $wa = $season_weight[$ia->get('field_season')->value] ?? 0;
+    $wb = $season_weight[$ib->get('field_season')->value] ?? 0;
+    return $wb <=> $wa;
+  });
+
+  $out = [];
+  foreach ($issue_ids as $issue_id) {
+    $issue = $issues[$issue_id] ?? NULL;
+    if (!$issue || $issue->bundle() !== 'issue') {
+      continue;
+    }
+    $label = df_impact_format_issue_label($issue);
+    if ($label === NULL) {
+      $label = $issue->label();
+    }
+    $out[] = [
+      'issue_label' => $label,
+      'briefs' => $by_issue[$issue_id],
+    ];
+  }
+
+  return $out;
+}
+
+/**
+ * Build renderable sections for the In Brief archive (per-issue wrappers).
+ *
+ * @param list<array{issue_label: string, briefs: \Drupal\node\NodeInterface[]}>|null $grouped
+ *   Grouped nodes; loads when NULL.
+ */
+function df_impact_build_in_brief_listing_sections(?array $grouped = NULL): array {
+  $grouped ??= df_impact_group_in_brief_nodes_by_issue();
+  $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
+  $sections = [];
+
+  foreach ($grouped as $row) {
+    $items = [];
+    foreach ($row['briefs'] as $i => $node) {
+      $build = $view_builder->view($node, 'in_brief_listing');
+      $classes = ['in-brief-page__item', 'js-in-brief-item'];
+      if ($i >= 5) {
+        $classes[] = 'is-collapsed';
+      }
+      $items[] = [
+        '#type' => 'container',
+        '#attributes' => ['class' => $classes],
+        'node' => $build,
+      ];
+    }
+    $sections[] = [
+      'issue_label' => $row['issue_label'],
+      'items' => $items,
+      'show_more' => count($row['briefs']) > 5,
+    ];
+  }
+
+  return $sections;
+}
+
+/**
+ * Implements hook_views_post_render().
+ */
+function df_impact_views_post_render(ViewExecutable $view, array &$output, $cache): void {
+  if ($view->storage->id() !== 'in_brief_listing' || $view->current_display !== 'page_1') {
+    return;
+  }
+
+  $grouped = df_impact_group_in_brief_nodes_by_issue();
+  if ($grouped === []) {
+    return;
+  }
+
+  $sections = df_impact_build_in_brief_listing_sections($grouped);
+  $tags = [];
+  foreach ($grouped as $row) {
+    foreach ($row['briefs'] as $node) {
+      $tags[] = 'node:' . $node->id();
+      if ($node->hasField('field_issue') && !$node->get('field_issue')->isEmpty()) {
+        $tags[] = 'node:' . $node->get('field_issue')->target_id;
+      }
+    }
+  }
+
+  // Theme variables must use #name keys when the element has #theme
+  // (ThemeManager::render); plain 'sections' is ignored.
+  $output['#rows'] = [
+    '#theme' => 'in_brief_listing_by_issue',
+    '#attached' => [
+      'library' => ['df_impact/in_brief_page'],
+    ],
+    '#cache' => [
+      'tags' => array_values(array_unique($tags)),
+    ],
+    '#sections' => $sections,
+  ];
+
+  if ($sections !== []) {
+    $output['#empty'] = [];
+  }
+}
 
 /**
  * Implements hook_preprocess_html().

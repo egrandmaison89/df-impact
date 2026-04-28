@@ -11,7 +11,7 @@ dependencies:
     - taxonomy
 id: df_impact_content
 name: 'Dana-Farber Impact Content'
-description: 'Search index for articles, issues, and in-brief items.'
+description: 'Search index for articles, issues, pages, and in-brief items.'
 read_only: false
 field_settings:
   title:
@@ -90,6 +90,7 @@ datasource_settings:
         selected:
           - article
           - issue
+          - page
           - in_brief
       languages:
         default: true

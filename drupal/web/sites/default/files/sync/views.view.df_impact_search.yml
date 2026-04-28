@@ -57,6 +57,7 @@ display:
               article: teaser
               issue: default
               in_brief: default
+              page: teaser
       filters:
         search_api_fulltext:
           id: search_api_fulltext

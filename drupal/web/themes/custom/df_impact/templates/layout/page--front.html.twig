@@ -3,30 +3,23 @@
  * @file
  * Theme override for the front page.
  *
- * Section order aligns with the legacy WordPress homepage pattern:
- * primary frame → current issue → featured row → digital exclusives → recent highlights.
+ * Section order aligns with the legacy WordPress homepage pattern.
  */
 #}
 <div class="page">
 
   {% include '@df_impact/includes/site-header.html.twig' %}
 
-  {# --- Hero: region block overrides default collage --- #}
-  <section class="hero" aria-label="{{ 'Magazine feature imagery'|t }}">
+  {# --- Hero: region block overrides default banner --- #}
+  <section class="hero hero--front" aria-label="{{ 'Magazine feature imagery'|t }}">
     {% if page.hero %}
       {{ page.hero }}
     {% else %}
-      {# WordPress-style collage: large cover + two supporting tiles. #}
-      <div class="hero__collage" role="group" aria-label="{{ 'Magazine feature imagery'|t }}">
-        <div class="hero__collage-primary">
-          <img src="/sites/default/files/wp-images/DFCI1450_Impact-Cover-1024x734.jpg" width="1024" height="734" alt="{{ 'Dana-Farber Impact Magazine cover'|t }}" class="hero__collage-img" loading="eager" fetchpriority="high">
-        </div>
-        <div class="hero__collage-secondary">
-          <div class="hero__collage-tile">
-            <img src="/sites/default/files/wp-images/PanMassChallenge_1450-1024x734.jpg" width="1024" height="734" alt="" class="hero__collage-img" loading="lazy">
-          </div>
-          <div class="hero__collage-tile">
-            <img src="/sites/default/files/wp-images/DFI1450_Barb-Sirvis-2022-Shirt-1024x734.jpg" width="1024" height="734" alt="" class="hero__collage-img" loading="lazy">
+      <div class="hero__banner" role="group" aria-label="{{ 'Magazine feature imagery'|t }}">
+        <img src="/{{ directory }}/images/Impact_Homepage_Banner_2560.jpg" width="2560" height="981" alt="{{ 'Blue-toned collage of Dana-Farber staff and patients'|t }}" class="hero__banner-img" loading="eager" fetchpriority="high">
+        <div class="hero__banner-overlay">
+          <div class="hero__banner-inner">
+            <h1 class="hero__banner-title">{{ 'Stories From Our Community of Support'|t }}</h1>
           </div>
         </div>
       </div>
@@ -34,10 +27,6 @@
   </section>
 
   <main id="main-content" class="page__content page__content--front" role="main">
-
-    <div class="container">
-      <h1 class="homepage-hero-title">{{ 'Stories From Our Community of Support'|t }}</h1>
-    </div>
 
     {# --- Explore the latest issue --- #}
     <section class="homepage-section homepage-section--explore" aria-labelledby="homepage-explore-heading">
@@ -57,60 +46,39 @@
         {% endif %}
         <p class="homepage-section__footer-link">
           {% if latest_issue_url %}
-            <a href="{{ latest_issue_url }}">{{ 'Read this issue'|t }}</a>
-            <span class="homepage-section__footer-sep" aria-hidden="true"> · </span>
+            <a href="{{ latest_issue_url }}" class="btn btn--primary btn--homepage">{{ 'See Full Issue'|t }}</a>
+          {% else %}
+            <a href="{{ path('view.browse_issues.page_1') }}" class="btn btn--primary btn--homepage">{{ 'See Full Issue'|t }}</a>
           {% endif %}
-          <a href="{{ path('view.browse_issues.page_1') }}">{{ 'Browse all issues'|t }}</a>
         </p>
       </div>
     </section>
-
-    <hr class="divider-gradient" aria-hidden="true">
-
-    {# --- Featured articles --- #}
-    <section class="homepage-section" aria-labelledby="homepage-featured-heading">
-      <div class="container">
-        <div class="homepage-section__header">
-          <h2 id="homepage-featured-heading" class="homepage-section__title">{{ 'Featured Stories'|t }}</h2>
-        </div>
-        <div class="grid grid--featured">
-          {{ drupal_view('homepage_featured', 'block_1') }}
-        </div>
-      </div>
-    </section>
-
-    <hr class="divider-gradient" aria-hidden="true">
 
     {# --- Digital exclusives (before recent highlights, matching WordPress) --- #}
     <section class="homepage-section" aria-labelledby="homepage-de-heading">
       <div class="container">
         <div class="homepage-section__header">
           <h2 id="homepage-de-heading" class="homepage-section__title">{{ 'Digital Exclusives'|t }}</h2>
-          <a href="{{ path('view.digital_exclusives_archive.page_1') }}" class="homepage-section__more">{{ 'View All'|t }}</a>
         </div>
-        <div class="grid grid--4">
-          {{ drupal_view('homepage_digital_exclusives', 'block_1') }}
-        </div>
+        {{ drupal_view('homepage_digital_exclusives', 'block_1') }}
+        <p class="homepage-section__footer-link">
+          <a href="{{ path('view.digital_exclusives_archive.page_1') }}" class="btn btn--primary btn--homepage">{{ 'All Digital Exclusives'|t }}</a>
+        </p>
       </div>
     </section>
 
-    <hr class="divider-gradient" aria-hidden="true">
-
     {# --- Recent highlights --- #}
-    <section class="homepage-section homepage-section--gray" aria-labelledby="homepage-highlights-heading">
+    <section class="homepage-section" aria-labelledby="homepage-highlights-heading">
       <div class="container">
         <div class="homepage-section__header">
           <h2 id="homepage-highlights-heading" class="homepage-section__title">{{ 'Recent Highlights'|t }}</h2>
         </div>
-        <div class="grid grid--4">
-          {{ drupal_view('homepage_highlights', 'block_1') }}
-        </div>
+        {{ drupal_view('homepage_highlights', 'block_1') }}
+        <p class="homepage-section__footer-link">
+          <a href="{{ path('view.browse_issues.page_1') }}" class="btn btn--primary btn--homepage">{{ 'See All Issues'|t }}</a>
+        </p>
       </div>
     </section>
-
-    {% if page.content %}
-      {{ page.content }}
-    {% endif %}
 
   </main>
 

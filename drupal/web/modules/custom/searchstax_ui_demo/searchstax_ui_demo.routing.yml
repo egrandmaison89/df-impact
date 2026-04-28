@@ -1,0 +1,7 @@
+searchstax_ui_demo.page:
+  path: '/searchstax-ui-demo'
+  defaults:
+    _controller: '\Drupal\searchstax_ui_demo\Controller\SearchstaxUiDemoController::content'
+    _title: 'SearchStax UI demo'
+  requirements:
+    _permission: 'access content'

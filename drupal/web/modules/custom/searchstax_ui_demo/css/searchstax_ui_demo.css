@@ -1,0 +1,13 @@
+/**
+ * Spacing around the demo mount points; SearchStax CSS provides component styles.
+ */
+.searchstax-ui-demo {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.searchstax-ui-demo__intro {
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}

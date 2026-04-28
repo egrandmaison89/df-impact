@@ -4,21 +4,21 @@
  * Article card template for digital exclusives view.
  */
 #}
-<div class="card">
+<article class="home-card home-card--digital">
   {% if fields.field_featured_image is defined and fields.field_featured_image.content|render|trim %}
-    <div class="card__image">
+    <div class="home-card__image">
       {{ fields.field_featured_image.content }}
     </div>
   {% endif %}
-  <div class="card__body">
+  <div class="home-card__body">
     {% if fields.field_topics is defined and fields.field_topics.content|render|trim %}
-      <div class="card__category">{{ fields.field_topics.content }}</div>
+      <div class="home-card__category">{{ fields.field_topics.content }}</div>
     {% endif %}
     {% if fields.title is defined %}
-      <h3 class="card__title">{{ fields.title.content }}</h3>
+      <h3 class="home-card__title">{{ fields.title.content }}</h3>
     {% endif %}
     {% if fields.field_excerpt is defined and fields.field_excerpt.content|render|trim %}
-      <div class="card__excerpt">{{ fields.field_excerpt.content }}</div>
+      <div class="home-card__excerpt">{{ fields.field_excerpt.content }}</div>
     {% endif %}
   </div>
-</div>
+</article>

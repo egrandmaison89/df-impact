@@ -1,0 +1,8 @@
+searchstax_ui_demo:
+  version: VERSION
+  css:
+    theme:
+      https://static.searchstax.com/studio-js/v4.1.55/css/search-ux.css: { type: external, minified: true }
+      css/searchstax_ui_demo.css: {}
+  js:
+    js/searchstax_ui_demo.js: {}

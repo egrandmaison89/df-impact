@@ -7,7 +7,7 @@
 {% if title %}
   <h3 class="visually-hidden">{{ title }}</h3>
 {% endif %}
-<div class="grid grid--4 homepage-latest-issue-grid">
+<div class="homepage-latest-issue-grid">
   {% for row in rows %}
     <div{{ row.attributes }}>
       {{ row.content }}

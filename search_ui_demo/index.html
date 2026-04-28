@@ -1,0 +1,1732 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- <link
+      rel="stylesheet"
+      href="https://static.searchstax.com/studio-js/v4.1.55/css/search-ux.css"
+    /> -->
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      href="https://static.searchstax.com/studio-js/v4.1.55/css/feedbackWidget.css"
+      rel="stylesheet"
+    />
+    <style lang="css">
+      .searchstax-result-item-link-wrapping:focus-visible {
+        height: auto;
+      }
+
+      .searchstax-view-styles-container {
+        display: inline-block;
+        margin-top: -5px;
+        margin-right: 10px;
+      }
+      .searchstax-view-styles-container .searchstax-view-styles-text {
+        display: inline;
+        font-size: 13px;
+      }
+      .searchstax-view-styles-container #toggle-view-style {
+        background-color: #f5f5f5;
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 1px solid black;
+      }
+      .searchstax-view-styles-container #toggle-view-style:focus-visible {
+        box-shadow: 0 0 0 2px #0a2a66;
+        outline: none;
+        border: 1px solid #f5f5f5;
+      }
+      .searchstax-view-styles-container #toggle-view-style .icon-grid {
+        background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJiIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMTAuNzIiIGhlaWdodD0iMzA5LjM4MSIgdmlld0JveD0iMCAwIDMxMC43MiAzMDkuMzgxIj48ZGVmcz48c3R5bGU+LmR7ZmlsbDojNjk2OTY5O308L3N0eWxlPjwvZGVmcz48ZyBpZD0iYyI+PGc+PGc+PHJlY3QgY2xhc3M9ImQiIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgcng9IjgiIHJ5PSI4Ii8+PHJlY3QgY2xhc3M9ImQiIHg9IjExMC4zNiIgd2lkdGg9IjkwIiBoZWlnaHQ9IjkwIiByeD0iOCIgcnk9IjgiLz48cmVjdCBjbGFzcz0iZCIgeD0iMjIwLjcyIiB3aWR0aD0iOTAiIGhlaWdodD0iOTAiIHJ4PSI4IiByeT0iOCIvPjwvZz48Zz48cmVjdCBjbGFzcz0iZCIgeT0iMTA5LjY5IiB3aWR0aD0iOTAiIGhlaWdodD0iOTAiIHJ4PSI4IiByeT0iOCIvPjxyZWN0IGNsYXNzPSJkIiB4PSIxMTAuMzYiIHk9IjEwOS42OSIgd2lkdGg9IjkwIiBoZWlnaHQ9IjkwIiByeD0iOCIgcnk9IjgiLz48cmVjdCBjbGFzcz0iZCIgeD0iMjIwLjcyIiB5PSIxMDkuNjkiIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgcng9IjgiIHJ5PSI4Ii8+PC9nPjxnPjxyZWN0IGNsYXNzPSJkIiB5PSIyMTkuMzgxIiB3aWR0aD0iOTAiIGhlaWdodD0iOTAiIHJ4PSI4IiByeT0iOCIvPjxyZWN0IGNsYXNzPSJkIiB4PSIxMTAuMzYiIHk9IjIxOS4zODEiIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgcng9IjgiIHJ5PSI4Ii8+PHJlY3QgY2xhc3M9ImQiIHg9IjIyMC43MiIgeT0iMjE5LjM4MSIgd2lkdGg9IjkwIiBoZWlnaHQ9IjkwIiByeD0iOCIgcnk9IjgiLz48L2c+PC9nPjwvZz48L3N2Zz4=");
+        background-size: cover;
+        height: 15px;
+        width: 15px;
+      }
+      .searchstax-view-styles-container #toggle-view-style .icon-list {
+        background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJiIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMTAuNzIiIGhlaWdodD0iMzA5LjM4MSIgdmlld0JveD0iMCAwIDMxMC43MiAzMDkuMzgxIj48ZGVmcz48c3R5bGU+LmR7ZmlsbDojNjk2OTY5O308L3N0eWxlPjwvZGVmcz48ZyBpZD0iYyI+PGc+PHBhdGggY2xhc3M9ImQiIGQ9Im0zMDIuNzIsMEg4QzMuNTgyLDAsMCwzLjU4MiwwLDh2NzRjMCw0LjQxOCwzLjU4Miw4LDgsOGgyOTQuNzJjNC40MTgsMCw4LTMuNTgyLDgtOFY4YzAtNC40MTgtMy41ODItOC04LThaIi8+PHBhdGggY2xhc3M9ImQiIGQ9Im0zMDIuNzIsMTA5LjY5SDhjLTQuNDE4LDAtOCwzLjU4Mi04LDh2NzRjMCw0LjQxOCwzLjU4Miw4LDgsOGgyOTQuNzJjNC40MTgsMCw4LTMuNTgyLDgtOHYtNzRjMC00LjQxOC0zLjU4Mi04LTgtOFoiLz48cGF0aCBjbGFzcz0iZCIgZD0ibTMwMi43MiwyMTkuMzgxSDhjLTQuNDE4LDAtOCwzLjU4Mi04LDh2NzRjMCw0LjQxOCwzLjU4Miw4LDgsOGgyOTQuNzJjNC40MTgsMCw4LTMuNTgyLDgtOHYtNzRjMC00LjQxOC0zLjU4Mi04LTgtOFoiLz48L2c+PC9nPjwvc3ZnPg==");
+        background-size: cover;
+        height: 15px;
+        width: 15px;
+      }
+
+      .searchstax-results-container-grid
+        .searchstax-search-results-container
+        .searchstax-search-results {
+        display: flex;
+        align-items: stretch;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .searchstax-results-container-grid
+        .searchstax-search-results-container
+        .searchstax-search-results
+        .searchstax-result-item-link {
+        display: block !important;
+        height: auto;
+        flex: 0 0 calc(33.333333% - 30px);
+        max-width: calc(33.333333% - 30px);
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+        margin-bottom: 30px;
+        display: table-column;
+      }
+
+      .searchstax-results-container-grid
+        .searchstax-search-results-container
+        .searchstax-search-results
+        .searchstax-search-result {
+        min-height: calc(100% - 155px) !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+      }
+
+      .searchstax-results-container-grid
+        .searchstax-search-results-container
+        .searchstax-search-results
+        .searchstax-result-item-link
+        .searchstax-thumbnail {
+        left: 0;
+        top: 0;
+        height: 155px !important;
+        width: 100%;
+      }
+
+      .searchstax-results-container-grid
+        .searchstax-search-results-container
+        .searchstax-search-results
+        .searchstax-search-result.has-thumbnail {
+        padding-left: 10px !important;
+        padding-top: 155px;
+      }
+
+      .searchstax-search-result .searchstax-search-result-ribbon {
+        z-index: 1;
+      }
+
+      .searchstax-lightweight-widget-separator-inline {
+        margin-top: 17px;
+      }
+
+      .searchstax-lightweight-widget-container {
+        padding-top: 18px;
+      }
+
+      #searchstax-search-input {
+        padding-right: 155px;
+      }
+
+      .searchstax-answer-wrap a::before {
+        margin-top: -3px;
+      }
+
+      @media (max-width: 1200px) {
+        .searchstax-results-container-grid
+          .searchstax-search-results-container
+          .searchstax-search-results
+          .searchstax-result-item-link {
+          display: block !important;
+          flex: 0 0 calc(50% - 30px);
+          max-width: calc(50% - 30px);
+        }
+      }
+      @media (max-width: 767px) {
+        .searchstax-results-container-grid
+          .searchstax-search-results-container
+          .searchstax-search-results
+          .searchstax-result-item-link {
+          display: block !important;
+          flex: 0 0 calc(100% - 20px);
+          max-width: calc(100% - 20px);
+        }
+      }
+
+      .searchstax-search-input-container.searchstax-alternative-render {
+        width: 65%;
+        margin-right: auto;
+        margin-left: auto;
+      }
+
+      .searchstax-location-input-container
+        .searchstax-location-input-wrapper
+        input {
+        margin-top: 0px;
+      }
+
+      .searchstax-location-input-container
+        .searchstax-location-input-wrapper
+        select {
+        margin-top: 0px;
+      }
+
+      .searchstax-search-input-container.searchstax-alternative-render
+        .searchstax-search-icon {
+        margin-top: 0px;
+      }
+
+      .searchstax-location-input-container
+        .searchstax-location-input-wrapper
+        .searchstax-location-input-label {
+        line-height: 32px;
+      }
+
+      #searchstax-search-input {
+        background: none !important;
+      }
+
+      @media (max-width: 500px) {
+        #searchstax-search-input {
+          background: none !important;
+          padding-right: 0px !important;
+        }
+      }
+
+      @media (max-width: 1120px) {
+        .searchstax-alternative-render {
+          width: 100% !important;
+        }
+        .searchstax-page-layout-container {
+          width: 100% !important;
+          margin-left: 0;
+        }
+        .searchstax-alternative-render {
+          width: 100% !important;
+          padding-left: 0;
+        }
+      }
+      @media (max-width: 550px) {
+        .searchstax-alternative-render {
+          display: block !important;
+        }
+        .searchstax-alternative-render .searchstax-location-input-container {
+          width: 100% !important;
+        }
+        .searchstax-alternative-render .searchstax-location-input-wrapper {
+          display: block !important;
+        }
+        .searchstax-alternative-render
+          .searchstax-location-input-wrapper
+          .searchstax-location-input-label {
+          display: block;
+        }
+        .searchstax-alternative-render .searchstax-location-input-wrapper input,
+        .searchstax-alternative-render
+          .searchstax-location-input-wrapper
+          select {
+          width: 100% !important;
+          padding: 0;
+          padding-left: 10px;
+        }
+        .searchstax-alternative-render
+          .searchstax-location-input-wrapper
+          select {
+          width: calc(100% + 10px) !important;
+          padding-right: 10px;
+        }
+        .searchstax-search-input-container {
+          height: auto;
+        }
+
+        .searchstax-location-input {
+          width: calc(100% + 10px) !important;
+        }
+      }
+    </style>
+    <title>Search Site | Jimmy Fund</title>
+  </head>
+  <body>
+    <main>
+      <!-- <div>
+        <p>
+          This page is built with version v4.1.55 of the libraries, ensuring
+          your code stays stable and won’t be impacted by future updates. If you
+          prefer to automatically receive the latest updates, you can switch to
+          v4 version.
+        </p>
+        <p>
+          We recommend creating your page using the npm libraries for easier
+          maintenance and upgrades. You can find an example implementation in
+          our
+          <a
+            href="https://github.com/searchstax/searchstudio-ux-samples/tree/master/pages/js"
+            target="_blank"
+          >
+            SearchStax UX Samples repo </a
+          >.
+        </p>
+        <p>
+          Newly indexed content items may take up to 10 minutes to appear in the
+          Hosted Search Experience.
+        </p>
+      </div> -->
+      <!-- <div id="sf-feedback"></div> -->
+
+      <header class="site-header">
+        <nav class="header-nav">
+          <div class="header-logo-container">
+            <!-- Replace with your logo image or SVG -->
+            <a href="/" class="header-logo-link" aria-label="Home">
+              <img
+                src="./images/JF-DF_Logo.svg"
+                alt="Jimmy Fund Logo"
+                class="header-logo-img"
+              />
+            </a>
+          </div>
+          <div class="mobile-menu-button">
+            <span></span>
+          </div>
+          <!-- <div class="mobile-menu-button">
+            <button class="hamburger hamburger--collapse" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+          </div> -->
+          <div class="header-nav-links-container">
+            <a href="#" class="header-nav-link">About Us</a>
+            <a href="#" class="header-nav-link">Get Involved</a>
+            <a href="#" class="header-nav-link">Impact &amp; Stories</a>
+            <button class="header-donate-btn">Donate</button>
+            <div class="header-lang-dropdown">
+              <div aria-label="Language" class="header-lang-select">
+                <span>English</span>
+                <img src="./images/arrow-down.svg" alt="down arrow icon" />
+              </div>
+            </div>
+            <button class="header-search-btn" aria-label="Search">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 22 22"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="7"
+                  stroke="#003354"
+                  stroke-width="2"
+                />
+                <line
+                  x1="16"
+                  y1="16"
+                  x2="21"
+                  y2="21"
+                  stroke="#003354"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </nav>
+      </header>
+      <div class="searchstax-page-layout-container">
+        <h2 class="page-heading">Search Site</h2>
+        <!-- <div id="searchstax-feedback-container"></div> -->
+        <div id="searchstax-input-container"></div>
+        <div id="searchstax-answer-container"></div>
+        <div class="search-details-container">
+          <div id="search-feedback-container"></div>
+          <div
+            class="searchstax-view-styles-container"
+            style="visibility: hidden"
+          >
+            <span class="searchstax-view-styles-text">View Style</span>
+            <div
+              id="toggle-view-style"
+              role="button"
+              aria-label="View Style Change Button"
+              tabindex="0"
+            >
+              <span id="icon-view-style"></span>
+              <!-- <span class="icon-list"></span> -->
+            </div>
+          </div>
+          <div id="search-sorting-container"></div>
+        </div>
+
+        <div class="searchstax-page-layout-facet-result-container">
+          <div class="searchstax-page-layout-facet-container">
+            <div id="searchstax-facets-container"></div>
+          </div>
+
+          <div class="searchstax-page-layout-result-container">
+            <div id="searchstax-related-searches-container"></div>
+            <div id="searchstax-external-promotions-layout-container"></div>
+            <div id="searchstax-results-container"></div>
+            <div id="searchstax-pagination-container"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script type="module">
+      import SearchstaxFeedbackWidget from "https://static.searchstax.com/studio-js/v4.1.55/js/feedbackWidget.mjs";
+      function makeId(length) {
+        let result = "";
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength),
+          );
+        }
+        return result;
+      }
+      const MAX_DESCRIPTION_LENGTH = 5120;
+
+      const config = {
+        language: "en",
+        searchURL:
+          "https://searchcloud-19-us-east-1.searchstax.com/29847/jimmyfunddemo-9082/emselect",
+        suggesterURL:
+          "https://searchcloud-19-us-east-1.searchstax.com/29847/jimmyfunddemo-9082_suggester/emsuggest",
+        searchAuth: "59443d830d5cb68fcbbdd7b59748005fbb7b218c",
+        trackApiKey: "DRtQgTLOzs8RmhdqQ9Xhd6AEbTFWl8az5HfqJG2dss4",
+        authType: "token",
+        relatedSearchesURL:
+          "https://app.searchstax.com/api/v1/9082/related-search/",
+        relatedSearchesAPIKey: "51481ca12b0ad50a4e8912a4afd8061ef966e368",
+        analyticsBaseUrl: "https://analytics-us.searchstax.com",
+        questionURL: "https://search-ai-us.searchstax.com/api/v1/9082/answer/",
+        geocodingURL: "https://geocoding.searchstax.com",
+        countryCode: "us",
+        appId: "9082",
+        analyticsSrc:
+          "https://static.searchstax.com/studio-js/v4.1.55/js/studio-analytics.js",
+        sessionId: makeId(25),
+      };
+
+      const renderConfig = {
+        inputWidget: {},
+        facetsWidget: {
+          itemsPerPageDesktop: 3,
+          itemsPerPageMobile: 99,
+          facetingType: "and", // "and" | "or" | "showUnavailable" | "tabs"
+        },
+        resultsWidget: {
+          renderMethod: "pagination", //'infiniteScroll' or 'pagination'
+        },
+      };
+
+      window.onload = (event) => {
+        let searchstaxQuery = "";
+        var script = document.createElement("script");
+        script.src =
+          "https://static.searchstax.com/studio-js/v4.1.55/js/search-ux.js";
+        script.onload = function (some) {
+          const searchstax = new window[
+            "@searchstaxInc/searchstudioUxJs"
+          ].Searchstax();
+
+          function searchstaxFeedbackTextAreaOverride() {
+            if (!searchstax) {
+              return "";
+            } else {
+              return (
+                (searchstax.dataLayer.searchObject.query === "undefined"
+                  ? ""
+                  : searchstax.dataLayer.searchObject.query) +
+                " " +
+                searchstax.dataLayer.parsedData.getAnswerData
+              );
+            }
+          }
+
+          searchstax.initialize({
+            language: config.language,
+            searchURL: config.searchURL,
+            suggesterURL: config.suggesterURL,
+            searchAuth: config.searchAuth,
+            trackApiKey: config.trackApiKey,
+            authType: config.authType,
+            analyticsBaseUrl: config.analyticsBaseUrl,
+            sessionId: config.sessionId,
+            questionURL: config.questionURL,
+            analyticsSrc: config.analyticsSrc,
+            hooks: {
+              beforeSearch: (searchObj) => {
+                searchstaxQuery = searchObj.query;
+                return searchObj;
+              },
+              afterSearch: (results) => {
+                var container = document.querySelector(
+                  ".searchstax-view-styles-container",
+                );
+                if (container) {
+                  if (results.length === 0) {
+                    container.style.visibility = "hidden";
+                  } else {
+                    container.style.visibility = "visible";
+                  }
+                }
+
+                console.log(results);
+
+                // FALLBACK DESCRIPTION LOGIC
+                results = results.map((result) => {
+                  if (
+                    (!result.description || result.description.trim() === "") &&
+                    Array.isArray(result.unmappedFields)
+                  ) {
+                    const descField = result.unmappedFields.find(
+                      (field) =>
+                        field.key === "description" &&
+                        typeof field.value === "string",
+                    );
+                    if (descField) {
+                      result.description = descField.value;
+                    }
+                  }
+
+                  // delete description from unmappedFields to avoid duplication in the UI
+                  if (Array.isArray(result.unmappedFields)) {
+                    result.unmappedFields = result.unmappedFields.filter(
+                      (field) => field.key !== "description",
+                    );
+                  }
+                  console.log("using description: ", result.description);
+                  // if (
+                  //   result.description &&
+                  //   result.description.length > MAX_DESCRIPTION_LENGTH
+                  // ) {
+                  //   result.description =
+                  //     result.description.substring(0, MAX_DESCRIPTION_LENGTH) +
+                  //     "...";
+                  // }
+                  return result;
+                });
+
+                return results;
+              },
+            },
+          });
+
+          searchstax.addSearchLocationWidget("searchstax-location-container", {
+            templates: {
+              mainTemplate: {
+                template: `
+        <div class="searchstax-location-input-container" data-test-id="searchstax-location-input-container">
+            <div class="searchstax-location-input-wrapper">
+                <span class="searchstax-location-input-label">NEAR</span>
+               <div class="searchstax-location-input-wrapper-inner">
+                  <input type="text" id="searchstax-location-input" class="searchstax-location-input" placeholder="Zip, Postal Code or City..." aria-label="Search Location Input" data-test-id="searchstax-location-input" />
+                  <button id="searchstax-location-get-current-location" class="searchstax-get-current-location-button">Use my current location</button>
+                </div>
+                {{#shouldShowLocationDistanceDropdown}}
+                  <span class="searchstax-location-input-label">WITHIN</span>
+                  <select id="searchstax-location-radius-select" class="searchstax-location-radius-select" aria-label="Search Location Radius Select" data-test-id="searchstax-location-radius-select">
+                    {{#locationSearchDistanceValues}}
+                      <option value="{{value}}" {{#isSelected}}selected{{/isSelected}}>{{label}}</option>
+                    {{/locationSearchDistanceValues}}
+                  </select>
+                {{/shouldShowLocationDistanceDropdown}}
+            </div>
+        </div>
+        `,
+              },
+            },
+            hooks: {
+              locationDecode: (term) => {
+                const app_id = config.appId;
+                const countryCode = config.countryCode || "US";
+
+                return new Promise((resolve) => {
+                  const geocodingURL = `${config.geocodingURL}/forward?location=${encodeURIComponent(term)}&components=country:us&app_id=9082`;
+                  fetch(geocodingURL, {
+                    headers: {
+                      Authorization: `Token ${config.relatedSearchesAPIKey}`,
+                      "Content-Type": "application/json",
+                    },
+                  })
+                    .then((response) => response.json())
+                    .then((data) => {
+                      if (data.status === "OK" && data.results.length > 0) {
+                        const result = data.results[0];
+                        const location = {
+                          lat: result.geometry.lat,
+                          lon: result.geometry.lng,
+                          address: result.formatted_address,
+                        };
+                        resolve(location);
+                      } else {
+                        resolve({
+                          address: undefined,
+                          lat: undefined,
+                          lon: undefined,
+                          error: true,
+                        });
+                      }
+                    })
+                    .catch(() => {
+                      resolve({
+                        address: undefined,
+                        lat: undefined,
+                        lon: undefined,
+                        error: true,
+                      });
+                    });
+                });
+              },
+              locationDecodeCoordinatesToAddress: (lat, lon) => {
+                return new Promise((resolve) => {
+                  fetch(
+                    `${config.geocodingURL}/reverse?location=${lat},${lon}&components=country:us&app_id=9082`,
+                    {
+                      method: "GET",
+                      headers: {
+                        Authorization: `Token ${config.relatedSearchesAPIKey}`,
+                      },
+                    },
+                  )
+                    .then((response) => response.json())
+                    .then((data) => {
+                      if (data.status === "OK" && data.results.length > 0) {
+                        const result = data.results[0];
+                        resolve({
+                          address: result.formatted_address,
+                          lat: lat,
+                          lon: lon,
+                          error: false,
+                        });
+                      } else {
+                        resolve({
+                          address: undefined,
+                          lat: lat,
+                          lon: lon,
+                          error: true,
+                        });
+                      }
+                    })
+                    .catch(() => {
+                      resolve({
+                        address: undefined,
+                        lat: lat,
+                        lon: lon,
+                        error: true,
+                      });
+                    });
+                });
+              },
+            },
+            locationSearchEnabled: false,
+            locationValuesOverride: {
+              locationDistanceEnabled: false,
+              filterValues: [],
+              filterUnit: "",
+              locationFilterDefaultValue: "",
+            },
+          });
+
+          //         new SearchstaxFeedbackWidget({
+          //           analyticsKey: "DRtQgTLOzs8RmhdqQ9Xhd6AEbTFWl8az5HfqJG2dss4",
+          //           model: "Main Profile",
+          //           containerId: "searchstax-feedback-container",
+          //           lightweight: false,
+          //           mainTemplateOverride: `
+          //   <div class="sf-widget-container">
+          //   <div id="sf-widget" class="sf-main">
+          //   <a role="button" href="#" id="searchstax-open-feedback" class="sf-open-feedback" tabindex="0" aria-label="Open Search Feedback">[ - ] Search Feedback</a>
+          //   <div class="sf-modal-content {{#feedbackOpen}}sf-open{{/feedbackOpen}}{{^feedbackOpen}}sf-close{{/feedbackOpen}}" role="dialog" aria-modal="true" aria-label="search feedback modal">
+          //     <div class="sf-modal-header">
+          //       <h2 class="sf-title">Search Feedback</h2>
+          //       <button class="sf-modal-close" aria-label="Close Search Feedback">
+          //         <span>
+          //           <img alt="" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJDYXBhXzEiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDM4Ni42NjcgMzg2LjY2NyIgaGVpZ2h0PSI1MTIiIHZpZXdCb3g9IjAgMCAzODYuNjY3IDM4Ni42NjciIHdpZHRoPSI1MTIiIGNsYXNzPSIiPjxnPjxwYXRoIGQ9Im0zODYuNjY3IDQ1LjU2NC00NS41NjQtNDUuNTY0LTE0Ny43NyAxNDcuNzY5LTE0Ny43NjktMTQ3Ljc2OS00NS41NjQgNDUuNTY0IDE0Ny43NjkgMTQ3Ljc2OS0xNDcuNzY5IDE0Ny43NyA0NS41NjQgNDUuNTY0IDE0Ny43NjktMTQ3Ljc2OSAxNDcuNzY5IDE0Ny43NjkgNDUuNTY0LTQ1LjU2NC0xNDcuNzY4LTE0Ny43N3oiIGRhdGEtb3JpZ2luYWw9IiMwMDAwMDAiIGNsYXNzPSJhY3RpdmUtcGF0aCIgc3R5bGU9ImZpbGw6I2Q2MzIwMiIgZGF0YS1vbGRfY29sb3I9IiMwMDAwMDAiPjwvcGF0aD48L2c+IDwvc3ZnPg==" />
+          //         </span>
+          //       </button>
+          //     </div>
+          //     <form id="sf-rating-form">
+          //       <div class="sf-modal-body">
+          //         <div class="form-group">
+          //           <fieldset class="form-group">
+          //             <legend>How would you rate your search experience?</legend>
+          //             <div class="sf-rate-experience">
+          //               {{#ratings}}
+          //               <div class="sf-custom-control">
+          //                 <input type="radio" id="sf-rate-{{index}}" tabindex="0" name="sf-rating" class="sf-custom-control-input" value="{{index}}" {{#isSelected}}checked{{/isSelected}}>
+          //                 <label for="sf-rate-{{index}}" class="sf-custom-control-label">{{index}}</label>
+          //               </div>
+          //               {{/ratings}}
+          //             </div>
+          //           </fieldset>
+          //           <div class="sf-rate">
+          //             <p><small>0 = Very Dissatisfied</small></p>
+          //             <p><small>10 = Very Satisfied</small></p>
+          //           </div>
+          //           <div class="sf-error-rating alert alert-danger {{#errors.rating}}sf-show{{/errors.rating}}{{^errors.rating}}sf-hide{{/errors.rating}}">
+          //             Please Rate your experience.
+          //           </div>
+          //         </div>
+          //         <div class="sf-comments sf-form-group">
+          //           <label>Comments <small>(Optional)</small> <small> (<span class="searchstax-characters-remaining-container">2000</span> characters remaining)</small></label>
+          //           <textarea aria-label="Comments (Optional)" maxlength="{{maxLength}}" class="sf-form-control" id="sf-comments" placeholder="Enter any comments relating to your search experience">{{feedbackTextArea}}</textarea>
+          //         </div>
+          //         <div class="sf-email sf-form-group">
+          //           <label for="sf-email">Email <small>(Optional)</small></label>
+          //           <input class="sf-form-control" type="email" id="sf-email" placeholder="Enter an email address if you want a response" value="{{emailInput}}">
+          //           <div class="sf-error-email alert alert-danger {{#errors.email}}sf-show{{/errors.email}}{{^errors.email}}sf-hide{{/errors.email}}">
+          //             Please enter a valid email id
+          //           </div>
+          //         </div>
+          //       </div>
+          //       <div class="sf-modal-footer">
+          //         <a href="http://searchstax.com/" target="_blank" class="left" tabindex="0" aria-label="Searchstax website link">
+          //           <img tabindex="-1" alt="Searchstax logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI0LjIuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxMzEuNSAzOS44IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMzEuNSAzOS44OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6I2Q2MzIwMjt9Cgkuc3Qxe2ZpbGw6IzMzNDc1QTt9Cgkuc3Qye2VuYWJsZS1iYWNrZ3JvdW5kOm5ldyAgICA7fQo8L3N0eWxlPgo8Zz4KCTxnIGlkPSJsb2dvX3g1Rl9jb2xvcl8xXyI+CgkJPGc+CgkJCTxnPgoJCQkJPGcgaWQ9IlhNTElEXzhfIj4KCQkJCQk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMC4zLDMxLjhMMS44LDMxYzAuMS0wLjEsMC4zLTAuMSwwLjUsMGw3LjQsNC4yYzAuMSwwLjEsMC4zLDAuMSwwLjUsMGw3LjMtNC4yYzAuMi0wLjEsMC4zLTAuMSwwLjUsMAoJCQkJCQlsMS40LDAuOWMwLjMsMC4yLDAuMywwLjYsMCwwLjhsLTkuMiw1LjRjLTAuMSwwLjEtMC4zLDAuMS0wLjUsMGwtOS40LTUuNEMwLDMyLjUsMCwzMiwwLjMsMzEuOHoiLz4KCQkJCTwvZz4KCQkJCTxnIGlkPSJYTUxJRF83XyI+CgkJCQkJPHBhdGggY2xhc3M9InN0MCIgZD0iTTAuMywyNi41bDEuNi0wLjljMC4xLTAuMSwwLjMtMC4xLDAuNSwwbDcuMiw0LjJjMC4xLDAuMSwwLjMsMC4xLDAuNSwwbDcuMy00LjJjMC4xLTAuMSwwLjItMC4yLDAuMi0wLjQKCQkJCQkJVjI0YzAtMC40LTAuNC0wLjYtMC43LTAuNGwtNi43LDMuOWMtMC4xLDAuMS0wLjMsMC4xLTAuNSwwTDAuMiwyMmMtMC4zLTAuMi0wLjMtMC42LDAtMC44bDkuMy01LjVjMC4xLTAuMSwwLjMtMC4xLDAuNSwwCgkJCQkJCWw1LjMsM2MwLjMsMC4yLDAuMywwLjYsMCwwLjhsLTEuNCwwLjljLTAuMiwwLjEtMC4zLDAuMS0wLjUsMGwtMy40LTJjLTAuMi0wLjEtMC4zLTAuMS0wLjUsMGwtNC40LDIuN2MtMC4zLDAuMi0wLjMsMC42LDAsMC44CgkJCQkJCWw0LjQsMi42YzAuMSwwLjEsMC4zLDAuMSwwLjUsMGw3LjMtNC4yYzAuMS0wLjEsMC4zLTAuMSwwLjUsMGwyLDEuMWMwLjIsMC4xLDAuMiwwLjIsMC4yLDAuNHY0LjdjMCwwLjItMC4xLDAuMy0wLjIsMC40CgkJCQkJCWwtOS42LDUuN2MtMC4xLDAuMS0wLjMsMC4xLTAuNSwwbC05LjQtNS41Qy0wLjEsMjcuMi0wLjEsMjYuNywwLjMsMjYuNXoiLz4KCQkJCTwvZz4KCQkJPC9nPgoJCQk8ZyBpZD0iRElOX3g1Rl9OZXh0X3g1Rl9MVF94NUZfUHJvX3g1Rl9MaWdodF94MEFfXzFfIj4KCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yNC45LDMxLjNjLTAuMS0wLjEtMC4xLTAuMiwwLTAuMmwwLjQtMC41YzAuMS0wLjEsMC4yLTAuMSwwLjIsMGMwLjcsMC42LDEuOSwxLjEsMy4yLDEuMQoJCQkJCWMxLjgsMCwyLjgtMC45LDIuOC0yLjJjMC0xLjEtMC42LTEuOS0yLjYtMi4xbC0wLjUtMC4xYy0yLjEtMC4zLTMuMi0xLjMtMy4yLTIuOWMwLTEuOSwxLjQtMy4xLDMuNS0zLjFjMS4yLDAsMi40LDAuNCwzLjEsMC45CgkJCQkJYzAuMSwwLDAuMSwwLjEsMCwwLjJsLTAuMywwLjVjLTAuMSwwLjEtMC4xLDAuMS0wLjIsMGMtMC45LTAuNS0xLjctMC44LTIuNy0wLjhjLTEuNiwwLTIuNSwwLjktMi41LDIuMWMwLDEuMSwwLjcsMS44LDIuNiwyLjEKCQkJCQlsMC41LDAuMWMyLjIsMC4zLDMuMiwxLjMsMy4yLDNjMCwxLjktMS4zLDMuMi0zLjksMy4yQzI3LjEsMzIuNiwyNS43LDMyLDI0LjksMzEuM3oiLz4KCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zNi42LDIxLjZjMC0wLjEsMC4xLTAuMiwwLjItMC4yaDYuM2MwLjEsMCwwLjIsMC4xLDAuMiwwLjJ2MC42YzAsMC4xLTAuMSwwLjItMC4yLDAuMmgtNQoJCQkJCWMtMC4zLDAtMC42LDAuMy0wLjYsMC42djNjMCwwLjMsMC4zLDAuNiwwLjYsMC42aDQuMmMwLjEsMCwwLjIsMC4xLDAuMiwwLjJ2MC42YzAsMC4xLTAuMSwwLjItMC4yLDAuMmgtNC4yCgkJCQkJYy0wLjMsMC0wLjYsMC4zLTAuNiwwLjZWMzFjMCwwLjMsMC4zLDAuNiwwLjYsMC42aDVjMC4xLDAsMC4yLDAuMSwwLjIsMC4ydjAuNmMwLDAuMS0wLjEsMC4yLTAuMiwwLjJoLTYuMwoJCQkJCWMtMC4xLDAtMC4yLTAuMS0wLjItMC4yVjIxLjZ6Ii8+CgkJCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNTAuMSwyMS42YzAtMC4xLDAuMS0wLjIsMC4yLTAuMmgwLjZjMC4xLDAsMC4yLDAuMSwwLjIsMC4ybDMuOCwxMC43YzAsMC4xLDAsMC4yLTAuMSwwLjJoLTAuNwoJCQkJCWMtMC4xLDAtMC4yLDAtMC4yLTAuMkw1MywyOS45Yy0wLjEtMC4yLTAuMi0wLjMtMC40LTAuM2gtNC4xYy0wLjIsMC0wLjQsMC4xLTAuNCwwLjNsLTAuOSwyLjRjMCwwLjEtMC4xLDAuMi0wLjIsMC4yaC0wLjYKCQkJCQljLTAuMSwwLTAuMS0wLjEtMC4xLTAuMkw1MC4xLDIxLjZ6IE01MS45LDI4LjdjMC4zLDAsMC42LTAuMywwLjQtMC42TDUwLjUsMjNsMCwwbC0xLjgsNWMtMC4xLDAuMywwLjEsMC42LDAuNCwwLjZoMi44VjI4Ljd6IgoJCQkJCS8+CgkJCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNjUsMzIuNGMtMC4xLDAtMC4xLDAtMC4yLTAuMWwtMi4zLTQuOGgtMC4ySDYwYy0wLjMsMC0wLjYsMC4zLTAuNiwwLjZ2NC4yYzAsMC4xLTAuMSwwLjItMC4yLDAuMmgtMC42CgkJCQkJYy0wLjEsMC0wLjItMC4xLTAuMi0wLjJWMjEuNmMwLTAuMSwwLjEtMC4yLDAuMi0wLjJoMy43YzIuMSwwLDMuNCwxLjIsMy40LDNjMCwxLjMtMC42LDIuMy0xLjgsMi44Yy0wLjMsMC4xLTAuNCwwLjQtMC4yLDAuNgoJCQkJCWwyLjEsNC40YzAuMSwwLjEsMCwwLjItMC4xLDAuMkg2NUw2NSwzMi40eiBNNjQuOCwyNC41YzAtMS40LTAuOS0yLjItMi40LTIuMkg2MGMtMC4zLDAtMC42LDAuMy0wLjYsMC42djMuMgoJCQkJCWMwLDAuMywwLjMsMC42LDAuNiwwLjZoMi4zQzYzLjksMjYuNiw2NC44LDI1LjksNjQuOCwyNC41eiIvPgoJCQkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTY5LjYsMjYuOWMwLTAuOCwwLTEuNSwwLjEtMS45YzAuMi0yLjMsMi4zLTQuMSw0LjYtMy42YzEuMSwwLjIsMS45LDAuOSwyLjQsMS45YzAsMC4xLDAsMC4yLDAsMC4yCgkJCQkJbC0wLjUsMC4zYy0wLjEsMC0wLjIsMC0wLjItMC4xYy0wLjUtMC45LTEuMy0xLjYtMi41LTEuNmMtMS4zLDAtMi4yLDAuNi0yLjYsMS44Yy0wLjEsMC40LTAuMiwxLjEtMC4yLDNjMCwxLjgsMC4xLDIuNSwwLjIsMwoJCQkJCWMwLjQsMS4yLDEuMiwxLjgsMi42LDEuOGMxLjIsMCwyLTAuNiwyLjUtMS42YzAtMC4xLDAuMS0wLjEsMC4yLTAuMWwwLjUsMC4zYzAuMSwwLDAuMSwwLjEsMCwwLjJjLTAuNiwxLjMtMS44LDItMy4zLDIKCQkJCQljLTEuNywwLTIuOS0wLjgtMy41LTIuNUM2OS43LDI5LjYsNjkuNiwyOC44LDY5LjYsMjYuOXoiLz4KCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik04MC42LDIxLjZjMC0wLjEsMC4xLTAuMiwwLjItMC4yaDAuNmMwLjEsMCwwLjIsMC4xLDAuMiwwLjJ2NC4yYzAsMC4zLDAuMywwLjYsMC42LDAuNmg0LjUKCQkJCQljMC4zLDAsMC42LTAuMywwLjYtMC42di00LjJjMC0wLjEsMC4xLTAuMiwwLjItMC4yaDAuNmMwLjEsMCwwLjIsMC4xLDAuMiwwLjJ2MTAuN2MwLDAuMS0wLjEsMC4yLTAuMiwwLjJoLTAuNgoJCQkJCWMtMC4xLDAtMC4yLTAuMS0wLjItMC4ydi00LjRjMC0wLjMtMC4zLTAuNi0wLjYtMC42aC00LjVjLTAuMywwLTAuNiwwLjMtMC42LDAuNnY0LjRjMCwwLjEtMC4xLDAuMi0wLjIsMC4yaC0wLjYKCQkJCQljLTAuMSwwLTAuMi0wLjEtMC4yLTAuMlYyMS42TDgwLjYsMjEuNnoiLz4KCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik05Mi4zLDMxLjNjLTAuMS0wLjEtMC4xLTAuMiwwLTAuMmwwLjQtMC41YzAuMS0wLjEsMC4yLTAuMSwwLjIsMGMwLjcsMC42LDEuOSwxLjEsMy4yLDEuMQoJCQkJCWMxLjgsMCwyLjgtMC45LDIuOC0yLjJjMC0xLjEtMC42LTEuOS0yLjYtMi4xbC0wLjUtMC4xYy0yLjEtMC4zLTMuMi0xLjMtMy4yLTIuOWMwLTEuOSwxLjQtMy4xLDMuNS0zLjFjMS4yLDAsMi40LDAuNCwzLjEsMC45CgkJCQkJYzAuMSwwLDAuMSwwLjEsMCwwLjJsLTAuMywwLjVjLTAuMSwwLjEtMC4xLDAuMS0wLjIsMGMtMC45LTAuNS0xLjctMC44LTIuNy0wLjhjLTEuNiwwLTIuNSwwLjktMi41LDIuMWMwLDEuMSwwLjcsMS44LDIuNiwyLjEKCQkJCQlsMC41LDAuMWMyLjIsMC4zLDMuMiwxLjMsMy4yLDNjMCwxLjktMS4zLDMuMi0zLjksMy4yQzk0LjUsMzIuNiw5MywzMiw5Mi4zLDMxLjN6Ii8+CgkJCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMTA2LjIsMzIuNGMtMC4xLDAtMC4yLTAuMS0wLjItMC4ydi05LjRjMC0wLjMtMC4zLTAuNi0wLjYtMC42aC0yLjdjLTAuMSwwLTAuMi0wLjEtMC4yLTAuMnYtMC42CgkJCQkJYzAtMC4xLDAuMS0wLjIsMC4yLTAuMmg3LjRjMC4xLDAsMC4yLDAuMSwwLjIsMC4yVjIyYzAsMC4xLTAuMSwwLjItMC4yLDAuMmgtMi43Yy0wLjMsMC0wLjYsMC4zLTAuNiwwLjZ2OS40CgkJCQkJYzAsMC4xLTAuMSwwLjItMC4yLDAuMkgxMDYuMkwxMDYuMiwzMi40eiIvPgoJCQkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTExNS41LDIxLjZjMC0wLjEsMC4xLTAuMiwwLjItMC4yaDAuNmMwLjEsMCwwLjIsMC4xLDAuMiwwLjJsMy44LDEwLjdjMCwwLjEsMCwwLjItMC4xLDAuMmgtMC42CgkJCQkJYy0wLjEsMC0wLjIsMC0wLjItMC4ybC0wLjktMi40Yy0wLjEtMC4yLTAuMi0wLjMtMC40LTAuM0gxMTRjLTAuMiwwLTAuNCwwLjEtMC40LDAuM2wtMC45LDIuNGMwLDAuMS0wLjEsMC4yLTAuMiwwLjJoLTAuNgoJCQkJCWMtMC4xLDAtMC4xLTAuMS0wLjEtMC4yTDExNS41LDIxLjZ6IE0xMTcuNCwyOC43YzAuMywwLDAuNi0wLjMsMC40LTAuNkwxMTYsMjNsMCwwbC0xLjgsNS4xYy0wLjEsMC4zLDAuMSwwLjYsMC40LDAuNkgxMTcuNHoiCgkJCQkJLz4KCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMjkuOSwzMi40Yy0wLjEsMC0wLjIsMC0wLjItMC4xbC0yLjgtNC43bDAsMGwtMi44LDQuN2MwLDAuMS0wLjEsMC4xLTAuMiwwLjFoLTAuNwoJCQkJCWMtMC4xLDAtMC4xLTAuMS0wLjEtMC4ybDMuMi01LjNjMC4xLTAuMiwwLjEtMC4zLDAtMC41bC0yLjktNC44Yy0wLjEtMC4xLDAtMC4yLDAuMS0wLjJoMC43YzAuMSwwLDAuMiwwLDAuMiwwLjFsMi41LDQuMmwwLDAKCQkJCQlsMi41LTQuMmMwLjEtMC4xLDAuMS0wLjEsMC4yLTAuMWgwLjdjMC4xLDAsMC4xLDAuMSwwLjEsMC4ybC0yLjksNC44Yy0wLjEsMC4yLTAuMSwwLjMsMCwwLjVsMy4yLDUuM2MwLDAuMSwwLDAuMi0wLjEsMC4yCgkJCQkJSDEyOS45TDEyOS45LDMyLjR6Ii8+CgkJCTwvZz4KCQk8L2c+Cgk8L2c+Cgk8ZyBjbGFzcz0ic3QyIj4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMS40LDIuMUMyLDIsMi42LDEuOSwzLjUsMS45YzEsMCwxLjgsMC4yLDIuMywwLjdjMC40LDAuNCwwLjcsMSwwLjcsMS43QzYuNCw1LDYuMiw1LjYsNS44LDYKCQkJQzUuMyw2LjYsNC40LDYuOSwzLjMsNi45Yy0wLjMsMC0wLjYsMC0wLjgtMC4xVjEwaC0xVjIuMXogTTIuNSw2QzIuNyw2LDMsNiwzLjQsNmMxLjMsMCwyLTAuNiwyLTEuN2MwLTEuMS0wLjgtMS42LTEuOS0xLjYKCQkJYy0wLjUsMC0wLjgsMC0xLDAuMVY2eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMi44LDcuMWMwLDIuMS0xLjUsMy4xLTIuOSwzLjFjLTEuNiwwLTIuOC0xLjItMi44LTNjMC0xLjksMS4zLTMuMSwyLjktMy4xQzExLjYsNC4xLDEyLjgsNS4zLDEyLjgsNy4xegoJCQkgTTguMSw3LjJjMCwxLjMsMC43LDIuMiwxLjgsMi4yYzEsMCwxLjgtMC45LDEuOC0yLjNjMC0xLTAuNS0yLjItMS43LTIuMkM4LjcsNC45LDguMSw2LDguMSw3LjJ6Ii8+CgkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTE0LjQsNC4ybDAuOCwzYzAuMiwwLjYsMC4zLDEuMiwwLjQsMS44aDBjMC4xLTAuNiwwLjMtMS4yLDAuNS0xLjhsMC45LTNIMThsMC45LDIuOQoJCQljMC4yLDAuNywwLjQsMS4zLDAuNSwxLjloMGMwLjEtMC42LDAuMy0xLjIsMC40LTEuOWwwLjgtMi45aDFMMTkuOSwxMGgtMWwtMC45LTIuOGMtMC4yLTAuNi0wLjQtMS4yLTAuNS0xLjloMAoJCQljLTAuMSwwLjctMC4zLDEuMy0wLjUsMS45TDE2LjEsMTBoLTFsLTEuOC01LjhIMTQuNHoiLz4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjMuMyw3LjNjMCwxLjQsMC45LDIsMiwyYzAuOCwwLDEuMi0wLjEsMS42LTAuM2wwLjIsMC44Yy0wLjQsMC4yLTEsMC40LTEuOSwwLjRjLTEuOCwwLTIuOS0xLjItMi45LTIuOQoJCQlzMS0zLjEsMi43LTMuMWMxLjksMCwyLjQsMS43LDIuNCwyLjdjMCwwLjIsMCwwLjQsMCwwLjVIMjMuM3ogTTI2LjQsNi42YzAtMC43LTAuMy0xLjctMS41LTEuN2MtMS4xLDAtMS41LDEtMS42LDEuN0gyNi40eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yOC43LDZjMC0wLjcsMC0xLjMsMC0xLjhoMC45bDAsMS4xaDBjMC4zLTAuOCwwLjktMS4zLDEuNi0xLjNjMC4xLDAsMC4yLDAsMC4zLDB2MWMtMC4xLDAtMC4yLDAtMC40LDAKCQkJYy0wLjcsMC0xLjMsMC42LTEuNCwxLjRjMCwwLjEsMCwwLjMsMCwwLjVWMTBoLTFWNnoiLz4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMzMuMSw3LjNjMCwxLjQsMC45LDIsMiwyYzAuOCwwLDEuMi0wLjEsMS42LTAuM2wwLjIsMC44Yy0wLjQsMC4yLTEsMC40LTEuOSwwLjRjLTEuOCwwLTIuOS0xLjItMi45LTIuOQoJCQlzMS0zLjEsMi43LTMuMWMxLjksMCwyLjQsMS43LDIuNCwyLjdjMCwwLjIsMCwwLjQsMCwwLjVIMzMuMXogTTM2LjIsNi42YzAtMC43LTAuMy0xLjctMS41LTEuN2MtMS4xLDAtMS41LDEtMS42LDEuN0gzNi4yeiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik00My42LDEuNXY3YzAsMC41LDAsMS4xLDAsMS41aC0wLjlsMC0xaDBjLTAuMywwLjYtMSwxLjEtMiwxLjFjLTEuNCwwLTIuNS0xLjItMi41LTNjMC0xLjksMS4yLTMuMSwyLjYtMy4xCgkJCWMwLjksMCwxLjUsMC40LDEuOCwwLjloMFYxLjVINDMuNnogTTQyLjUsNi42YzAtMC4xLDAtMC4zLDAtMC40Yy0wLjItMC43LTAuNy0xLjItMS41LTEuMmMtMS4xLDAtMS43LDEtMS43LDIuMgoJCQljMCwxLjIsMC42LDIuMSwxLjcsMi4xYzAuNywwLDEuNC0wLjUsMS41LTEuM2MwLTAuMSwwLTAuMywwLTAuNVY2LjZ6Ii8+CgkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTQ3LjgsMTBjMC0wLjQsMC0xLDAtMS41di03aDF2My42aDBjMC40LTAuNiwxLTEuMSwyLTEuMWMxLjQsMCwyLjUsMS4yLDIuNCwzYzAsMi4xLTEuMywzLjEtMi42LDMuMQoJCQljLTAuOCwwLTEuNS0wLjMtMS45LTEuMWgwbDAsMUg0Ny44eiBNNDguOSw3LjdjMCwwLjEsMCwwLjMsMCwwLjRjMC4yLDAuNywwLjgsMS4yLDEuNiwxLjJjMS4xLDAsMS44LTAuOSwxLjgtMi4yCgkJCWMwLTEuMi0wLjYtMi4yLTEuNy0yLjJjLTAuNywwLTEuNCwwLjUtMS42LDEuM2MwLDAuMS0wLjEsMC4zLTAuMSwwLjRWNy43eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik01NSw0LjJsMS4zLDMuNGMwLjEsMC40LDAuMywwLjgsMC40LDEuMmgwYzAuMS0wLjMsMC4yLTAuOCwwLjQtMS4ybDEuMi0zLjRoMS4xbC0xLjYsNC4xYy0wLjgsMi0xLjMsMy0yLDMuNgoJCQljLTAuNSwwLjUtMSwwLjYtMS4zLDAuN2wtMC4zLTAuOWMwLjMtMC4xLDAuNi0wLjMsMC45LTAuNWMwLjMtMC4yLDAuNi0wLjYsMC45LTEuMkM1NiwxMCw1Niw5LjksNTYsOS45YzAtMC4xLDAtMC4xLTAuMS0wLjMKCQkJbC0yLjEtNS4zSDU1eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik02MC4zLDUuMmMwLTAuNCwwLjMtMC44LDAuNy0wLjhjMC40LDAsMC43LDAuMywwLjcsMC44YzAsMC40LTAuMywwLjctMC43LDAuN0M2MC42LDUuOSw2MC4zLDUuNiw2MC4zLDUuMnoKCQkJIE02MC4zLDkuNGMwLTAuNCwwLjMtMC44LDAuNy0wLjhjMC40LDAsMC43LDAuMywwLjcsMC44YzAsMC40LTAuMywwLjctMC43LDAuN0M2MC42LDEwLjIsNjAuMyw5LjksNjAuMyw5LjR6Ii8+Cgk8L2c+CjwvZz4KPC9zdmc+Cg==" class="sf-foot-logo" tabindex="-1">
+          //         </a>
+          //         {{#submitted}}
+          //         <span class="sf-btn sf-btn-sent sf-btn-success" aria-disabled="true">&check; Sent</span>
+          //         {{/submitted}}
+          //         {{^submitted}}
+          //         <button class="sf-btn sf-btn-primary js-send-feedback" type="button" tabindex="0">
+          //           <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 100 100" class="sf-checkmark hidden">
+          //               <circle class="sf-circle" cx="50" cy="50" r="46"/>
+          //               <polyline class="sf-tick" points="25,55 45,70 75,33" pathLength="48"/>
+          //          </svg>
+          //          <span class="sf-btn-text">Send</span>
+          //         </button>
+          //         {{/submitted}}
+          //       </div>
+          //     </form>
+          //   </div>
+          // </div>
+          // <div class="sf-widget-container">
+          //     `,
+          //           analyticsSrc:
+          //             "https://static.searchstax.com/studio-js/v4.1.55/js/studio-analytics.js",
+          //         });
+
+          if (true) {
+            searchstax.addAnswerWidget("searchstax-answer-container", {
+              showMoreAfterWordCount: 100,
+              templates: {
+                main: {
+                  template: `
+        {{#shouldShowAnswer}}
+        <div class="searchstax-answer-wrap">
+            <div class="searchstax-answer-icon"></div>
+            <div>
+                <div class="searchstax-answer-container {{#showMoreButtonVisible}}searchstax-answer-show-more{{/showMoreButtonVisible}}">
+                    <div class="searchstax-answer-title">Smart Answers</div>
+                    {{#shouldShowAnswerError}}
+                        <div class="searchstax-answer-error">{{{answerErrorMessage}}}</div>
+                    {{/shouldShowAnswerError}}
+                    <div class="searchstax-answer-description">
+                        {{{fullAnswerFormatted}}}
+                        {{^showMoreButtonVisible}}
+                            {{#answerLoading}}
+                                <div class="searchstax-answer-loading"></div>
+                            {{/answerLoading}}
+                        {{/showMoreButtonVisible}}
+                    </div>
+
+                </div>
+
+                {{#showMoreButtonVisible}}
+                    <div class="searchstax-answer-load-more-button-container">
+                        {{#answerLoading}}
+                            <div class="searchstax-answer-loading"></div>
+                        {{/answerLoading}}
+                        <button class="searchstax-answer-load-more-button">Read More</button>
+                    </div>
+                {{/showMoreButtonVisible}}
+            </div>
+            <div class="searchstax-answer-footer">
+                <div id="feedbackWidgetContainer"></div>
+                <div class="searchstax-lightweight-widget-separator-inline"></div>
+                <p class="searchstax-disclaimer">Generative AI is Experimental</p>
+            </div>
+            </div>
+        {{/shouldShowAnswer}}
+        `,
+                },
+              },
+              feedbackwidget: {
+                renderFeedbackWidget: true,
+                thumbsUpValue: 10,
+                thumbsDownValue: 0,
+                lightweightTemplateOverride: `
+     <div class="searchstax-lightweight-widget-container">
+     <div class="searchstax-lightweight-widget-thumbs-up {{#thumbsUpActive}}active{{/thumbsUpActive}}">
+     <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4.85079 7.59996L7.83141 1C8.4243 1 8.9929 1.23178 9.41213 1.64436C9.83136 2.05694 10.0669 2.61651 10.0669 3.19999V6.1333H14.2845C14.5005 6.13089 14.7145 6.17474 14.9116 6.26179C15.1087 6.34885 15.2842 6.47704 15.426 6.63747C15.5677 6.79791 15.6723 6.98676 15.7326 7.19094C15.7928 7.39513 15.8072 7.60975 15.7748 7.81996L14.7465 14.4199C14.6926 14.7696 14.5121 15.0884 14.2382 15.3175C13.9643 15.5466 13.6156 15.6706 13.2562 15.6666H4.85079M4.85079 7.59996V15.6666M4.85079 7.59996H2.61531C2.22006 7.59996 1.84099 7.75448 1.5615 8.02953C1.28201 8.30458 1.125 8.67763 1.125 9.06661V14.1999C1.125 14.5889 1.28201 14.9619 1.5615 15.237C1.84099 15.512 2.22006 15.6666 2.61531 15.6666H4.85079"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+</div>
+     <div class="searchstax-lightweight-widget-separator"></div>
+     <div class="searchstax-lightweight-widget-thumbs-down {{#thumbsDownActive}}active{{/thumbsDownActive}}">
+      <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.1492 9.06801L9.16859 15.668C8.5757 15.668 8.0071 15.4362 7.58787 15.0236C7.16864 14.611 6.93311 14.0515 6.93311 13.468V10.5347H2.71552C2.4995 10.5371 2.28552 10.4932 2.08842 10.4062C1.89132 10.3191 1.71581 10.1909 1.57405 10.0305C1.43229 9.87006 1.32766 9.6812 1.26743 9.47702C1.2072 9.27284 1.19279 9.05822 1.22521 8.84801L2.25353 2.24806C2.30742 1.89833 2.48793 1.57955 2.76179 1.35046C3.03566 1.12136 3.38443 0.997398 3.74384 1.0014H12.1492M12.1492 9.06801V1.0014M12.1492 9.06801H14.3847C14.7799 9.06801 15.159 8.91349 15.4385 8.63844C15.718 8.36339 15.875 7.99034 15.875 7.60135V2.46805C15.875 2.07907 15.718 1.70602 15.4385 1.43097C15.159 1.15592 14.7799 1.0014 14.3847 1.0014H12.1492"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+     </div>
+     </div>
+      `,
+              },
+            });
+          }
+
+          searchstax.addSearchFeedbackWidget("search-feedback-container", {
+            templates: {
+              main: {
+                template: `
+        {{#searchExecuted}}
+            <a href="#searchstax-search-results" data-test-id="searchstax-skip" class="searchstax-skip">Skip to results section</a>
+            <h4 class="searchstax-feedback-container" data-test-id="searchstax-feedback-container">
+              {{#hasResults}}
+                 <span> Showing <b>{{startResultIndex}} - {{endResultIndex}}</b> </span> of <b>{{totalResults}}</b> results {{#searchTerm}} for "<b>{{searchTerm}}</b>" {{/searchTerm}}
+                  <div class="searchstax-feedback-container-suggested" data-test-id="searchstax-feedback-container-suggested">
+                    {{#autoCorrectedQuery}}
+                      Search instead for <a href="#" aria-label="Search instead for: {{originalQuery}}" class="searchstax-feedback-original-query" data-test-id="searchstax-feedback-original-query">{{originalQuery}}</a>
+                    {{/autoCorrectedQuery}}
+                  </div>
+                {{/hasResults}}
+            </h4>
+        {{/searchExecuted}}
+        `,
+                originalQueryClass: `searchstax-feedback-original-query`,
+              },
+            },
+          });
+
+          searchstax.addSearchInputWidget("searchstax-input-container", {
+            templates: {
+              mainTemplate: {
+                template: `
+        
+          <label for="searchstax-search-input" class="searchstax-search-input-label">Enter your keywords</label>
+          <div class="searchstax-search-input-container searchstax-search-input-container-new {{#locationEnabled}}searchstax-alternative-render{{/locationEnabled}}">
+          <div class="searchstax-search-input-wrapper">
+            <input type="text" id="searchstax-search-input" class="searchstax-search-input" placeholder="Search this site..." aria-label="Search" />
+          </div>
+          <div id="searchstax-location-container" class="searchstax-location-container"></div>
+          <button class="searchstax-spinner-icon" id="searchstax-search-input-action-button" aria-label="search" role="button"></button>
+        </div>
+        `,
+                searchInputId: "searchstax-search-input",
+              },
+              autosuggestItemTemplate: {
+                template: `
+        <div class="searchstax-autosuggest-item-term-container">{{{term}}}</div>
+        `,
+              },
+            },
+          });
+
+          searchstax.addFacetsWidget("searchstax-facets-container", {
+            facetingType: renderConfig.facetsWidget.facetingType,
+            itemsPerPageDesktop: renderConfig.facetsWidget.itemsPerPageDesktop,
+            itemsPerPageMobile: renderConfig.facetsWidget.itemsPerPageMobile,
+            templates: {
+              mainTemplateDesktop: {
+                template: `
+      {{#hasResultsOrExternalPromotions}}
+        <div class="searchstax-facets-container-desktop"></div>
+      {{/hasResultsOrExternalPromotions}}
+      `,
+                facetsContainerId: "",
+              },
+              mainTemplateMobile: {
+                template: `
+        <div class="searchstax-facets-pills-container">
+          <div class="searchstax-facets-pills-selected">
+          </div>
+        </div>
+
+        <div class="searchstax-facets-mobile-overlay {{#overlayOpened}} searchstax-show{{/overlayOpened}}" data-test-id="searchstax-facets-mobile-overlay">
+          <div class="searchstax-facets-mobile-overlay-header">
+            <div class="searchstax-facets-mobile-overlay-header-title">Filter By</div>
+            <div class="searchstax-search-close" tabindex="0" aria-label="close overlay" role="button" data-test-id="searchstax-search-close"></div>
+          </div>
+          <div class="searchstax-facets-container-mobile"></div>
+          <button class="searchstax-facets-mobile-overlay-done" data-test-id="searchstax-facets-mobile-overlay-done">Done</button>
+        </div>
+      `,
+                facetsContainerClass: `searchstax-facets-container-mobile`,
+                closeOverlayTriggerClasses: [
+                  "searchstax-facets-mobile-overlay-done",
+                  "searchstax-search-close",
+                ],
+                filterByContainerClass: `searchstax-facets-pills-container`,
+                selectedFacetsContainerClass: `searchstax-facets-pills-selected`,
+              },
+              showMoreButtonContainerTemplate: {
+                template: `
+      <div class="searchstax-facet-show-more-container" data-test-id="searchstax-facet-show-more-container">
+      {{#showingAllFacets}}
+        <div class="searchstax-facet-show-less-button searchstax-facet-show-button" tabindex="0" data-test-id="searchstax-facet-show-less-button" data-focus="{{focusId}}" role="button">less</div>
+      {{/showingAllFacets}}
+      {{^showingAllFacets}}
+        <div class="searchstax-facet-show-more-button  searchstax-facet-show-button" tabindex="0" data-test-id="searchstax-facet-show-more-button" data-focus="{{focusId}}" role="button">more {{onShowMoreLessClick}}</div>
+      {{/showingAllFacets}}
+    </div>
+      `,
+                showMoreButtonClass: `searchstax-facet-show-more-container`,
+              },
+              facetItemContainerTemplate: {
+                template: `
+      <div>
+        <div class="searchstax-facet-title-container" data-test-id="searchstax-facet-title-container">
+            <div class="searchstax-facet-title" aria-label="Facet group: {{label}}" tabindex="0" role="button">
+            {{label}}
+            </div>
+            <div class="searchstax-facet-title-arrow active"></div>
+        </div>
+        <div class="searchstax-facet-values-container"></div>
+      </div>
+      `,
+                facetListTitleContainerClass: `searchstax-facet-title-container`,
+                facetListTitleContainerInner: `searchstax-facet-title`,
+                facetListContainerClass: `searchstax-facet-values-container`,
+              },
+              clearFacetsTemplate: {
+                template: `
+      {{#shouldShow}}
+        <div class="searchstax-facets-pill searchstax-clear-filters searchstax-facets-pill-clear-all" tabindex="0" role="button" data-test-id="searchstax-facets-pill-clear-all">
+        <div class="searchstax-facets-pill-label">Clear Filters</div>
+        </div>
+      {{/shouldShow}}
+      `,
+                containerClass: `searchstax-facets-pill-clear-all`,
+              },
+              facetItemTemplate: {
+                template: `
+      <div class="searchstax-facet-input">
+        <input type="checkbox" class="searchstax-facet-input-checkbox" data-test-id="searchstax-facet-input-checkbox" {{#disabled}}disabled{{/disabled}} {{#isChecked}}checked{{/isChecked}} aria-label="{{value}} {{count}}" tabindex="0"/>
+      </div>
+      <div class="searchstax-facet-value-label" data-test-id="searchstax-facet-value-label">{{value}}</div>
+      <div class="searchstax-facet-value-count" data-test-id="searchstax-facet-value-count">({{count}})</div>
+      `,
+                inputCheckboxClass: `searchstax-facet-input-checkbox`,
+                checkTriggerClasses: [
+                  "searchstax-facet-value-label",
+                  "searchstax-facet-value-count",
+                ],
+              },
+              filterByTemplate: {
+                template: `
+      <div class="searchstax-facets-pill searchstax-facets-pill-filter-by" tabindex="0" role="button" data-test-id="searchstax-facets-pill-filter-by" >
+        <div class="searchstax-facets-pill-label">Filter By</div>
+      </div>
+      `,
+                containerClass: `searchstax-facets-pill-filter-by`,
+              },
+              selectedFacetsTemplate: {
+                template: `
+      <div class="searchstax-facets-pill searchstax-facets-pill-facets" tabindex="0" role="button" data-test-id="searchstax-facets-pill-facets">
+        <div class="searchstax-facets-pill-label">{{value}} ({{count}})</div>
+        <div class="searchstax-facets-pill-icon-close"></div>
+      </div>
+      `,
+                containerClass: `searchstax-facets-pill-facets`,
+              },
+            },
+          });
+
+          searchstax.addSearchSortingWidget("search-sorting-container", {
+            templates: {
+              main: {
+                template: `
+      {{#searchExecuted}}
+        {{#hasResultsOrExternalPromotions}}
+        {{#sortOptions.length}}
+        <div class="searchstax-sorting-container" data-test-id="searchstax-sorting-container">
+            <label class="searchstax-sorting-label" data-test-id="searchstax-sorting-label" for="searchstax-search-order-select">Sort By</label>
+            <select id="searchstax-search-order-select" class="searchstax-search-order-select" data-test-id="searchstax-search-order-select" >
+            {{#sortOptions}}
+                <option value="{{key}}">
+                {{value}}
+                </option>
+            {{/sortOptions}}
+            </select>
+        </div>
+        {{/sortOptions.length}}
+        {{/hasResultsOrExternalPromotions}}
+      {{/searchExecuted}}
+      `,
+                selectId: `searchstax-search-order-select`,
+              },
+            },
+          });
+
+          searchstax.addSearchResultsWidget("searchstax-results-container", {
+            templates: {
+              mainTemplate: {
+                template: `
+        <section aria-label="search results container" tabindex="0">
+            <div class="searchstax-search-results-container" id="searchstax-search-results-container" data-test-id="searchstax-search-results-container">
+                <div class="searchstax-search-results" id="searchstax-search-results"></div>
+            </div>
+        </section>
+            `,
+                searchResultsContainerId: "searchstax-search-results",
+              },
+              searchResultTemplate: {
+                template: `
+    <a href="{{url}}" data-searchstax-unique-result-id="{{uniqueId}}" data-test-id="searchstax-result-item-link" class="searchstax-result-item-link searchstax-result-item-link-wrapping" tabindex="0">
+    <div class="searchstax-search-result searchstax-search-result-wrapping {{#thumbnail}} has-thumbnail {{/thumbnail}}">
+        {{#promoted}}
+            <div class="searchstax-search-result-promoted" data-test-id="searchstax-search-result-promoted"></div>
+        {{/promoted}}
+
+        {{#ribbon}}
+            <div class="searchstax-search-result-ribbon" data-test-id="searchstax-search-result-ribbon">
+            {{{ribbon}}}
+            </div>
+        {{/ribbon}}
+
+        {{#thumbnail}}
+            <img alt="" src="{{thumbnail}}" alt="image" class="searchstax-thumbnail" data-test-id="searchstax-thumbnail">
+        {{/thumbnail}}
+        <div class="searchstax-search-result-title-container" data-test-id="searchstax-search-result-title-container">
+            <h3 class="searchstax-search-result-title" id="title-{{uniqueId}}">{{{title}}}</h3>
+        </div>
+
+        {{#paths}}
+            <p class="searchstax-search-result-common" data-test-id="searchstax-search-result-common">
+                {{{paths}}}
+            </p>
+        {{/paths}}
+
+        {{#description}}
+            <p class="searchstax-search-result-description searchstax-search-result-common" data-test-id="searchstax-search-result-description">
+                {{{description}}}
+            </p>
+        {{/description}}
+
+        {{#unmappedFields}}
+            {{#isImage}}
+                <div class="searchstax-search-result-image-container">
+                <img alt="" src="{{value}}" alt="image" class="searchstax-result-image" data-test-id="searchstax-result-image">
+                </div>
+            {{/isImage}}
+            {{^isImage}}
+                <p class="searchstax-search-result-common">
+                {{{value}}}
+                </p>
+            {{/isImage}}
+        {{/unmappedFields}}
+        {{#distance}}
+            <p class="searchstax-search-result-distance searchstax-search-result-common" data-test-id="searchstax-search-result-distance">
+                {{distance}} {{unit}}
+            </p>
+        {{/distance}}
+        </div>
+        </a>
+            `,
+                searchResultUniqueIdAttribute:
+                  "data-searchstax-unique-result-id",
+              },
+              noSearchResultTemplate: {
+                template: `
+    {{#searchExecuted}}
+    <div class="searchstax-no-results-wrap" data-test-id="searchstax-no-results-wrap">
+      <div class="searchstax-no-results" data-test-id="searchstax-no-results">
+          Showing <strong>no results</strong> for <strong>"{{ searchTerm }}"</strong>
+          <br>
+          {{#spellingSuggestion}}
+              <span>&nbsp;Did you mean <a href="#" aria-label="Did you mean: {{originalQuery}}" class="searchstax-suggestion-term" onclick="searchCallback('{{ spellingSuggestion }}')">{{ spellingSuggestion }}</a>?</span>
+          {{/spellingSuggestion}}
+      </div>
+      <ul class="searchstax-no-results-list" data-test-id="searchstax-no-results-list">
+          <li>Try searching for search related terms or topics. We offer a wide variety of content to help you get the information you need.</li>
+          <li>Lost? Click on the ‘X” in the Search Box to reset your search.</li>
+      </ul>
+    </div>
+  {{/searchExecuted}}
+            `,
+              },
+            },
+            renderMethod: renderConfig.resultsWidget.renderMethod,
+          });
+
+          searchstax.addPaginationWidget("searchstax-pagination-container", {
+            templates: {
+              mainTemplate: {
+                template: `
+      {{#results.length}}
+        <div class="searchstax-pagination-container" data-test-id="searchstax-pagination-container">
+          <div class="searchstax-pagination-content">
+            <a role="link" class="searchstax-pagination-previous {{#isFirstPage}}disabled{{/isFirstPage}}" aria-disabled="{{#isFirstPage}}true{{/isFirstPage}}{{^isFirstPage}}false{{/isFirstPage}}"  id="searchstax-pagination-previous" data-test-id="searchstax-pagination-previous" tabindex="0" aria-label="Previous Page">< Previous</a>
+            <div class="searchstax-pagination-details" data-test-id="searchstax-pagination-details">
+              {{startResultIndex}} - {{endResultIndex}} of {{totalResults}}
+            </div>
+              <a role="link" class="searchstax-pagination-next {{#isLastPage}}disabled{{/isLastPage}}" aria-disabled="{{#isLastPage}}true{{/isLastPage}}{{^isLastPage}}false{{/isLastPage}}" data-test-id="searchstax-pagination-next" id="searchstax-pagination-next" tabindex="0" aria-label="Next Page">Next ></a>
+          </div>
+        </div>
+      {{/results.length}}
+      `,
+                previousButtonClass: "searchstax-pagination-previous",
+                nextButtonClass: "searchstax-pagination-next",
+              },
+              infiniteScrollTemplate: {
+                template: `
+      {{#results.length}}
+        <div class="searchstax-pagination-container" data-test-id="searchstax-pagination-container">
+          <div class="searchstax-pagination-content">
+            <a role="link" class="searchstax-pagination-previous {{#isFirstPage}}disabled{{/isFirstPage}}" aria-disabled="{{#isFirstPage}}true{{/isFirstPage}}{{^isFirstPage}}false{{/isFirstPage}}"  id="searchstax-pagination-previous" data-test-id="searchstax-pagination-previous" tabindex="0" aria-label="Previous Page">< Previous</a>
+            <div class="searchstax-pagination-details" data-test-id="searchstax-pagination-details">
+              {{startResultIndex}} - {{endResultIndex}} of {{totalResults}}
+            </div>
+              <a role="link" class="searchstax-pagination-next {{#isLastPage}}disabled{{/isLastPage}}" aria-disabled="{{#isLastPage}}true{{/isLastPage}}{{^isLastPage}}false{{/isLastPage}}" data-test-id="searchstax-pagination-next" id="searchstax-pagination-next" tabindex="0" aria-label="Next Page">Next ></a>
+          </div>
+        </div>
+      {{/results.length}}
+      `,
+                loadMoreButtonClass: "searchstax-pagination-load-more",
+              },
+            },
+          });
+
+          searchstax.addRelatedSearchesWidget(
+            "searchstax-related-searches-container",
+            {
+              relatedSearchesURL: config.relatedSearchesURL,
+              relatedSearchesAPIKey: config.relatedSearchesAPIKey,
+              templates: {
+                main: {
+                  template: `
+        {{#hasRelatedSearches}}
+            <div class="searchstax-related-searches-container" data-test-id="searchstax-related-searches-container" id="searchstax-related-searches-container">
+                Related searches: <span id="searchstax-related-searches"></span>
+                {{#relatedSearches}}
+                <span class="searchstax-related-search">
+
+                </span>
+            {{/relatedSearches}}
+            </div>
+        {{/hasRelatedSearches}}
+        `,
+                  relatedSearchesContainerClass: `searchstax-related-search`,
+                },
+                relatedSearch: {
+                  template: `
+        <span role="link" class="searchstax-related-search searchstax-related-search-item" data-test-id="searchstax-related-search-item" aria-label="Related search: {{related_search}}" tabindex="0">
+            {{ related_search }}{{^last}}<span>,</span>{{/last}}
+        </span>
+        `,
+                  relatedSearchContainerClass: `searchstax-related-search-item`,
+                },
+              },
+            },
+          );
+
+          searchstax.addExternalPromotionsWidget(
+            "searchstax-external-promotions-layout-container",
+            {
+              templates: {
+                mainTemplate: {
+                  template: `
+        {{#hasExternalPromotions}}
+            <div class="searchstax-external-promotions-container" id="searchstax-external-promotions-container" data-test-id="searchstax-external-promotions-container">
+                 External promotions go here
+            </div>
+        {{/hasExternalPromotions}}
+    `,
+                  externalPromotionsContainerId: `searchstax-external-promotions-container`,
+                },
+                externalPromotion: {
+                  template: `
+        <div class="searchstax-external-promotion searchstax-search-result" data-test-id="searchstax-external-promotion">
+            <div class="icon-elevated"></div>
+            {{#url}}
+            <a href="{{url}}" data-searchstax-unique-result-id="{{uniqueId}}" class="searchstax-result-item-link" data-test-id="searchstax-result-item-link"></a>
+            {{/url}}
+            <div class="searchstax-search-result-title-container">
+                <span class="searchstax-search-result-title" data-test-id="searchstax-search-result-title">{{name}}</span>
+            </div>
+            {{#description}}
+            <p class="searchstax-search-result-description searchstax-search-result-common" data-test-id="searchstax-search-result-description">
+            {{description}}
+            </p>
+            {{/description}}
+            {{#url}}
+            <p class="searchstax-search-result-description searchstax-search-result-common">
+            {{url}}
+            </p>
+            {{/url}}
+        </div>
+        `,
+                },
+              },
+            },
+          );
+          const currentViewStyle = localStorage.getItem("viewStyle") || "list";
+          console.log("currentViewStyle", currentViewStyle);
+          const viewStyleElement = document.getElementById("icon-view-style");
+          const toggleElement = document.getElementById("toggle-view-style");
+          viewStyleElement.classList.add(`icon-${currentViewStyle}`);
+          if (currentViewStyle === "list") {
+            toggleElement.setAttribute(
+              "aria-label",
+              "View Style Change Button. Current view style is: list",
+            );
+          } else {
+            toggleElement.setAttribute(
+              "aria-label",
+              "View Style Change Button. Current view style is: grid",
+            );
+          }
+          // add class to .searchstax-results-container
+          const searchResultsContainer = document.getElementById(
+            "searchstax-results-container",
+          );
+          searchResultsContainer.classList.add(
+            `searchstax-results-container-${currentViewStyle}`,
+          );
+
+          const changeViewStyle = () => {
+            const currentViewStyle =
+              localStorage.getItem("viewStyle") || "list";
+            const newViewStyle = currentViewStyle === "list" ? "grid" : "list";
+            localStorage.setItem("viewStyle", newViewStyle);
+            searchResultsContainer.classList.add(
+              `searchstax-results-container-${newViewStyle}`,
+            );
+            searchResultsContainer.classList.remove(
+              `searchstax-results-container-${currentViewStyle}`,
+            );
+
+            viewStyleElement.classList.remove(`icon-${currentViewStyle}`);
+            viewStyleElement.classList.add(`icon-${newViewStyle}`);
+
+            const accessibilityElement = document.createElement("span");
+            accessibilityElement.setAttribute("id", "searchAccessibility");
+
+            accessibilityElement.innerHTML =
+              newViewStyle === "grid"
+                ? "View style changed to grid view"
+                : "View style changed to list view";
+
+            if (newViewStyle === "list") {
+              toggleElement.setAttribute(
+                "aria-label",
+                "View Style Change Button. Current view style is: list",
+              );
+            } else {
+              toggleElement.setAttribute(
+                "aria-label",
+                "View Style Change Button. Current view style is: grid",
+              );
+            }
+
+            const existingContainerElement = document.getElementById(
+              "searchAccessibilityContainer",
+            );
+            if (existingContainerElement) {
+              setTimeout(() => {
+                existingContainerElement.appendChild(accessibilityElement);
+              }, 100);
+            }
+          };
+
+          toggleElement.addEventListener("keyup", (event) => {
+            if (event.code === "Space" || event.code === "Enter") {
+              changeViewStyle();
+            }
+          });
+
+          // on click of #toggle-view-style change the view style
+          toggleElement.addEventListener("click", function () {
+            changeViewStyle();
+          });
+        };
+        document.head.appendChild(script);
+      };
+    </script>
+
+    <style type="text/css">
+      a.sf-open-feedback {
+        color: #d63202 !important;
+      }
+
+      #sf-widget-custom {
+        position: relative;
+        padding: 0;
+        margin: 0;
+        z-index: 99;
+        height: auto;
+        text-align: right;
+        font-family: "Roboto", sans-serif;
+      }
+      #sf-widget-custom p,
+      #sf-widget-custom a,
+      #sf-widget-custom button {
+        font-family: "Roboto", sans-serif;
+      }
+      #sf-widget-custom *,
+      #sf-widget-custom *:focus,
+      #sf-widget-custom *:hover {
+        outline: none;
+      }
+      #sf-widget-custom *,
+      #sf-widget-custom ::before,
+      #sf-widget-custom ::after {
+        box-sizing: border-box;
+      }
+      #sf-widget-custom .sf-open,
+      #sf-widget-custom .sf-show {
+        display: block;
+      }
+      #sf-widget-custom .sf-close,
+      #sf-widget-custom .sf-hide {
+        display: none;
+      }
+      #sf-widget-custom a.sf-open-feedback {
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+        font-family: "Roboto", sans-serif;
+        color: #d63202;
+      }
+      #sf-widget-custom a.sf-open-feedback:focus-visible {
+        box-shadow: 0 0 0 2px #0a2a66;
+      }
+      #sf-widget-custom .sf-modal-close {
+        position: absolute;
+        right: 10px;
+        top: 0;
+        margin: 0;
+        padding: 12px 0;
+        line-height: 1;
+        color: #d63202;
+        cursor: pointer;
+        background-color: transparent;
+        border: 0;
+      }
+      #sf-widget-custom .sf-modal-close:focus-visible {
+        box-shadow: 0 0 0 2px #0a2a66;
+      }
+      #sf-widget-custom .sf-modal-close img {
+        width: 16px;
+        height: 16px;
+      }
+      #sf-widget-custom .sf-modal-content {
+        position: absolute;
+        z-index: 9999999;
+        top: 100%;
+        right: 0;
+        width: 405px;
+        text-align: left;
+        background-color: #f2f2f2;
+        box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+      }
+      @media only screen and (max-width: 500px) {
+        #sf-widget-custom .sf-modal-content {
+          width: 100vw;
+          height: 95vh;
+          position: fixed;
+          top: 0;
+          left: 0;
+        }
+      }
+      #sf-widget-custom .sf-modal-body {
+        padding: 1.25rem 1rem 1rem 1rem;
+      }
+      #sf-widget-custom .sf-modal-header {
+        position: relative;
+        padding: 0.9rem 22px;
+        line-height: 1;
+        border-radius: 4px 4px 0 0;
+        background-color: #e4e4e4;
+      }
+      #sf-widget-custom .sf-modal-header .sf-title {
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+        font-family: "Roboto", sans-serif;
+        line-height: 1;
+        color: #33475a;
+        text-transform: uppercase;
+      }
+      #sf-widget-custom .sf-modal-header .sf-close {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 7px 22px;
+        font-size: 36px;
+        color: #d63202;
+      }
+      #sf-widget-custom .sf-modal-footer {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 0.75rem;
+        border-top: 1px solid #dee2e6;
+        border-bottom-right-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
+      #sf-widget-custom .sf-modal-footer .sf-foot-logo {
+        width: 130px;
+      }
+      #sf-widget-custom .sf-form-control {
+        margin-bottom: 8px;
+        height: calc(2.5em + 1rem + 2px);
+        display: block;
+        width: 100%;
+        padding: 5px;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.5;
+        font-family: "Roboto", sans-serif;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        transition:
+          border-color 0.15s ease-in-out,
+          box-shadow 0.15s ease-in-out;
+      }
+      #sf-widget-custom .sf-form-control:focus-visible {
+        box-shadow: 0 0 0 2px #0a2a66;
+      }
+      #sf-widget-custom textarea.sf-form-control {
+        min-height: 76px;
+        max-height: 200px;
+      }
+      #sf-widget-custom .sf-form-group {
+        margin-bottom: 1rem;
+      }
+      #sf-widget-custom .sf-btn {
+        display: inline-block;
+        padding: 10px 37px;
+        padding-left: 50px;
+        padding-right: 50px;
+        font-weight: 400;
+        color: #212529;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-radius: 4px;
+        background-color: transparent;
+        border: 1px solid transparent;
+        transition:
+          color 0.15s ease-in-out,
+          background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out,
+          box-shadow 0.15s ease-in-out;
+        user-select: none;
+      }
+      #sf-widget-custom .sf-btn.sf-btn-primary {
+        color: #fff;
+        background-color: #097d76;
+        border-color: #097d76;
+      }
+      #sf-widget-custom .sf-btn.sf-btn-primary:focus-visible {
+        box-shadow: 0 0 0 2px #0a2a66;
+      }
+      #sf-widget-custom .sf-btn.sf-btn-primary:hover,
+      #sf-widget-custom .sf-btn.sf-btn-primary:focus {
+        color: #fff;
+        background-color: #0c8c84;
+        border-color: #0c8c84;
+        outline: 0;
+      }
+      #sf-widget-custom .sf-btn.sf-btn-success {
+        color: #fff;
+        background-color: #097d76;
+        border-color: #097d76;
+      }
+      #sf-widget-custom label {
+        display: inline-block;
+        margin-bottom: 4px;
+        padding: 0;
+        font-size: 13px;
+        font-family: "Roboto", sans-serif;
+      }
+      #sf-widget-custom .sf-rate {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #454749;
+      }
+      #sf-widget-custom .sf-rate p {
+        margin: 0;
+        padding: 0;
+        line-height: 1;
+        color: #454749;
+      }
+      #sf-widget-custom #sf-rating-form .sf-rate-experience {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding-top: 12px;
+      }
+      #sf-widget-custom #sf-rating-form .sf-rate-experience .sf-custom-control {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        padding-top: 18px;
+        display: inline-flex;
+      }
+      #sf-widget-custom
+        #sf-rating-form
+        .sf-rate-experience
+        .sf-custom-control-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        margin: 0;
+        padding: 0;
+        width: 1rem;
+        height: 1.25rem;
+        opacity: 0;
+        overflow: visible;
+        box-sizing: border-box;
+      }
+      #sf-widget-custom
+        #sf-rating-form
+        .sf-rate-experience
+        .sf-custom-control-input:focus-visible
+        + .sf-custom-control-label:after {
+        box-shadow: 0 0 0 2px #0a2a66;
+      }
+      #sf-widget-custom
+        #sf-rating-form
+        .sf-rate-experience
+        .sf-custom-control-input:checked
+        ~ .sf-custom-control-label:after {
+        background-color: #d63202;
+        border-color: #d63202;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+      }
+      #sf-widget-custom
+        #sf-rating-form
+        .sf-rate-experience
+        .sf-custom-control:hover
+        .sf-custom-control-label:before {
+        border-color: #d63202;
+      }
+      #sf-widget-custom
+        #sf-rating-form
+        .sf-rate-experience
+        .sf-custom-control-label {
+        position: relative;
+        margin: 0;
+        padding-top: 3px;
+        min-width: 1rem;
+        font-size: 9px;
+        text-align: center;
+        color: #454749;
+        transition:
+          background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out,
+          box-shadow 0.15s ease-in-out;
+        cursor: pointer;
+      }
+      #sf-widget-custom
+        #sf-rating-form
+        .sf-rate-experience
+        .sf-custom-control-label:before,
+      #sf-widget-custom
+        #sf-rating-form
+        .sf-rate-experience
+        .sf-custom-control-label:after {
+        position: absolute;
+        content: "";
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+      }
+      #sf-widget-custom
+        #sf-rating-form
+        .sf-rate-experience
+        .sf-custom-control-label:before {
+        top: -18px;
+        left: 0;
+        background-color: #fff;
+        border: 1px solid #adb5bd;
+      }
+      #sf-widget-custom
+        #sf-rating-form
+        .sf-rate-experience
+        .sf-custom-control-label:after {
+        top: -18px;
+        left: 0;
+        background: no-repeat 50% / 50% 50%;
+      }
+      #sf-widget-custom .alert {
+        position: relative;
+        padding: 2px 6px;
+        margin-bottom: 10px;
+        margin-top: 10px;
+        font-size: 12px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+      }
+      #sf-widget-custom .alert.alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+      }
+
+      .searchstax-answer-load-more-button {
+        width: 125px !important;
+      }
+
+      /* .searchstax-search-result
+        .searchstax-search-result-title-container
+        .searchstax-search-result-title {
+        background-image: linear-gradient(#41b6e6, #41b6e6);
+        background-position: 0% 100%;
+        background-repeat: no-repeat;
+        background-size: 100% 0px;
+        color: #0067a3;
+        font-size: 1.25rem;
+        line-height: 1;
+        padding-right: 4px;
+        text-decoration: none;
+        transition:
+          background-size 0.3s ease-in-out,
+          color 0.3s ease-in-out,
+          padding-right 0.3s ease-in-out;
+      } */
+
+      .searchstax-search-result
+        .searchstax-search-result-title-container
+        .searchstax-search-result-title {
+        color: #0067a3;
+        font-size: 1.25rem;
+        padding-right: 5px;
+        text-decoration: underline 0.125rem #fff;
+        text-decoration-skip-ink: none;
+        text-underline-offset: 5px;
+        transition: text-decoration-color 300ms;
+      }
+
+      /* .searchstax-search-result
+        .searchstax-search-result-title-container
+        .searchstax-search-result-title:hover {
+        color: #003354;
+        background-size: 100% 2px;
+        padding-right: 0;
+      } */
+
+      .searchstax-search-result
+        .searchstax-search-result-title-container
+        .searchstax-search-result-title:hover {
+        text-decoration-color: #41b6e6;
+      }
+
+      .searchstax-search-result
+        .searchstax-search-result-title-container
+        .searchstax-search-result-title::after {
+        color: #003354;
+        content: "\2192";
+        display: inline-block;
+        font-family: "Font Awesome 6 Pro";
+        font-weight: 800;
+        font-size: larger;
+        margin-left: 0.3125rem;
+        transition:
+          color 0.3s ease-in-out,
+          margin-left 0.3s ease-in-out,
+          transform 0.3s ease-in-out;
+      }
+
+      .searchstax-search-result
+        .searchstax-search-result-title-container
+        .searchstax-search-result-title:hover::after {
+        color: #41b6e6;
+        margin-left: calc(0.3125rem + 4px);
+      }
+
+      .searchstax-search-result-title-container {
+        display: inline-flex;
+        align-items: center;
+        /* border-bottom: 2px solid #0072ce; */
+        transition:
+          border-bottom-width 0.3s ease,
+          border-bottom-color 0.3s ease;
+        padding-bottom: 2px;
+      }
+
+      .searchstax-search-result-title-container:hover {
+        border-bottom-width: 4px;
+      }
+
+      .searchstax-search-input-container {
+        border-radius: 5px;
+        background-color: #f1f2f2;
+        border: 1px solid #77787b;
+      }
+
+      .searchstax-search-result {
+        box-shadow: none;
+        border-bottom: 1px solid #e4e4e4;
+      }
+
+      em {
+        font-style: normal;
+        font-weight: 900;
+      }
+
+      .searchstax-search-result-title {
+        font-weight: 600;
+      }
+
+      .searchstax-search-result-description {
+        font-size: 1rem !important;
+      }
+
+      #searchstax-search-input {
+        background: none !important;
+        background-color: #f1f2f2;
+        /* border: 1px solid #77787b; */
+        border-radius: 5px;
+        /* padding: 1.25rem; */
+        font-family:
+          Poppins,
+          Arial,
+          sans-serif,
+          Segoe UI Symbol;
+        /* font-size: 0.9375rem;
+        font-weight: 400;
+        line-height: 1.5; */
+      }
+
+      .page-heading {
+        /* font-family:
+          DM Serif Text,
+          Georgia,
+          Roboto Serif,
+          serif,
+          Roboto; */
+        background: linear-gradient(93deg, #003354 0.87%, #00629b 39.21%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: rgba(0, 0, 0, 0);
+        padding-bottom: 0.1em;
+        font-size: 4.5rem;
+        letter-spacing: -0.5px;
+        line-height: 1;
+        font-family: Times;
+        margin-bottom: 1rem;
+      }
+
+      .searchstax-search-icon {
+        color: #003354;
+      }
+    </style>
+  </body>
+</html>

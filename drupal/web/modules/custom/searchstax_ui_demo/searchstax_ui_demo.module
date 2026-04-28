@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * SearchStax UI demo — embeds Studio JS for learning; uses public demo API.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_theme().
+ */
+function searchstax_ui_demo_theme(array $existing, string $type, string $theme, string $path): array {
+  $module_path = \Drupal::service('extension.list.module')->getPath('searchstax_ui_demo');
+  return [
+    'searchstax_ui_demo_page' => [
+      'variables' => [],
+      'template' => 'searchstax-ui-demo-page',
+      'path' => $module_path . '/templates',
+    ],
+  ];
+}

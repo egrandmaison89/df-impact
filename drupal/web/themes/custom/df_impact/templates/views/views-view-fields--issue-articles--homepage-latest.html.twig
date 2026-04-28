@@ -1,0 +1,25 @@
+{#
+/**
+ * @file
+ * Homepage current issue story card with image-overlay title.
+ */
+#}
+{% set title_text = fields.title is defined ? fields.title.content|render|striptags|trim : '' %}
+<article class="home-issue-card">
+  {% if fields.field_featured_image is defined and fields.field_featured_image.content|render|trim %}
+    <div class="home-issue-card__image">
+      {{ fields.field_featured_image.content }}
+    </div>
+  {% elseif 'Saverin' in title_text %}
+    <div class="home-issue-card__image">
+      <img src="/sites/default/files/wp-images/Tolaney_1450.jpg" width="1450" height="1040" alt="{{ 'Sara Tolaney, MD, MPH'|t }}" loading="lazy">
+    </div>
+  {% elseif 'Pan-Mass Challenge' in title_text %}
+    <div class="home-issue-card__image">
+      <img src="/sites/default/files/wp-images/PanMassChallenge_1450.jpg" width="1450" height="1040" alt="{{ 'Pan-Mass Challenge logo'|t }}" loading="lazy">
+    </div>
+  {% endif %}
+  {% if fields.title is defined %}
+    <h3 class="home-issue-card__title">{{ fields.title.content }}</h3>
+  {% endif %}
+</article>

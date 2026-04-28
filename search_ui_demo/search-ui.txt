@@ -1,0 +1,7 @@
+### SearchStax materials to forward with the RFP
+ 
+- [UI Kits](https://support.searchstax.com/hc/en-us/articles/40395876668685-UI-Kits)
+- [Import hosted search experience into Drupal](https://support.searchstax.com/hc/en-us/articles/39983586698893-Import-Hosted-Search-Experience-Into-Drupal)
+- [Adding search with the hosted search experience](https://support.searchstax.com/hc/en-us/articles/38268294029581-Adding-Search-with-the-Hosted-Search-Experience)
+- Live demo (Jimmy Fund–style search site): [searchstax.github.io/solutions-scripts](https://searchstax.github.io/solutions-scripts/)
+- Widget / sample code: [github.com/searchstax/searchstudio-ux-samples](https://github.com/searchstax/searchstudio-ux-samples)

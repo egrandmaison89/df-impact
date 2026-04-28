@@ -1,0 +1,5 @@
+name: 'SearchStax UI demo (example)'
+type: module
+description: 'Embeds the SearchStax Studio JS on a sample page using SearchStax public demo endpoints (no local index). For learning only; disable in production if unused.'
+core_version_requirement: ^10.3 || ^11
+package: 'Development'

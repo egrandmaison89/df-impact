@@ -251,13 +251,13 @@
 
 /* --- Footer (light main + navy legal bar) --- */
 .footer {
-  margin-top: var(--space-2xl);
+  margin-top: var(--space-xl);
   color: var(--color-black);
 }
 
 .footer__main {
   background: var(--color-gray-light);
-  padding: var(--space-2xl) 0;
+  padding: var(--space-xl) 0 var(--space-lg);
 }
 
 .footer__inner {
@@ -275,9 +275,9 @@
 
 .footer__heading {
   font-family: var(--font-body);
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin: 0 0 1.25rem;
+  margin: 0 0 0.95rem;
   color: var(--color-black);
 }
 
@@ -294,7 +294,7 @@
 .footer__link {
   color: var(--color-primary);
   text-decoration: underline;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
   transition: color var(--transition-fast);
 }
 
@@ -304,7 +304,7 @@
 }
 
 .footer__address {
-  font-size: 1rem;
+  font-size: 0.8125rem;
   line-height: 1.6;
   margin-bottom: var(--space-md);
   color: var(--color-black);
@@ -319,17 +319,17 @@
 
 .footer__brand-img {
   height: auto;
-  max-height: 52px;
+  max-height: 35px;
   width: auto;
   display: block;
 }
 
 .footer__brand-img--jf {
-  max-height: 48px;
+  max-height: 35px;
 }
 
 .footer__disclaimer {
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   line-height: 1.6;
   color: var(--color-black);
   margin-bottom: var(--space-md);
@@ -358,18 +358,18 @@
   display: block;
   width: auto;
   height: auto;
-  max-width: 110px;
+  max-width: 73px;
 }
 
 .footer__dei {
   background: var(--color-gray-light);
   border-top: 1px solid var(--color-gray-mid);
-  padding: var(--space-lg) 0;
+  padding: var(--space-md) 0;
 }
 
 .footer__dei-inner .footer__dei-text {
   max-width: 56rem;
-  font-size: 1rem;
+  font-size: 0.8125rem;
   line-height: 1.65;
   margin: 0;
   color: var(--color-black);
@@ -378,7 +378,7 @@
 .footer__legal {
   background: var(--color-footer-navy);
   color: var(--color-white);
-  padding: var(--space-md) 0;
+  padding: 0.9rem 0;
 }
 
 .footer__legal-inner {
@@ -391,7 +391,7 @@
 
 .footer__copyright {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
   color: var(--color-white);
 }
@@ -423,8 +423,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 1.85rem;
+  height: 1.85rem;
   border-radius: 50%;
   background: var(--color-primary);
   color: var(--color-white);

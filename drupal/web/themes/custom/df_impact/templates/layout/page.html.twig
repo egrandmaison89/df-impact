@@ -16,7 +16,7 @@
   {% endif %}
 
   {# --- Highlighted Region --- #}
-  {% if page.highlighted %}
+  {% if page.highlighted and not is_about_impact %}
     <div class="highlighted">
       <div class="container">
         {{ page.highlighted }}

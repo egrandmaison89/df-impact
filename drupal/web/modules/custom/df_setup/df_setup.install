@@ -13,6 +13,7 @@ use Drupal\pathauto\PathautoState;
  */
 function df_setup_install(): void {
   _df_setup_ensure_home_landing();
+  _df_setup_ensure_about_impact_page();
 }
 
 /**
@@ -69,4 +70,102 @@ function _df_setup_ensure_home_landing(): void {
  */
 function df_setup_update_10001(): void {
   _df_setup_ensure_home_landing();
+}
+
+/**
+ * Creates the editable About Impact page if missing.
+ */
+function _df_setup_ensure_about_impact_page(): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $pathauto_skip = class_exists(PathautoState::class) ? PathautoState::SKIP : 0;
+
+  $nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+
+  $body = <<<'HTML'
+<div class="about-impact-page__intro">
+  <div class="about-impact-page__intro-copy">
+    <p>Impact is a magazine of Dana-Farber Cancer Institute and the Jimmy Fund, published by the Division of Philanthropy. Impact features stories on the individuals, corporations, foundations, and events that support Dana-Farber and the Jimmy Fund, and the advances in cancer science and medicine made possible by their generosity.</p>
+    <p>Dana-Farber Cancer Institute provides expert, compassionate, and equitable care to children and adults and is home to groundbreaking cancer discoveries. Since its founding in 1948, the Jimmy Fund has raised millions of dollars through thousands of community efforts to advance Dana-Farber’s lifesaving mission.</p>
+    <p>Dana-Farber Cancer Institute has been the top-ranked cancer hospital in New England by U.S. News &amp; World Report for 25 consecutive years, and is the only cancer center in the country ranked in the top 3 for both adult and pediatric cancer programs.</p>
+    <p class="about-impact-page__tagline"><strong>It takes more than courage to beat cancer®</strong></p>
+  </div>
+  <figure class="about-impact-page__intro-media">
+    <img src="/themes/custom/df_impact/images/Impact_About_Courage_725.jpg" alt="Wall with the words Courage, Hope, and Inspiration" width="725" height="520">
+  </figure>
+</div>
+
+<section class="about-impact-page__section" aria-labelledby="about-impact-philanthropy">
+  <h2 id="about-impact-philanthropy" class="about-impact-page__section-title">Division of Philanthropy</h2>
+  <div class="about-impact-page__staff-grid">
+    <div class="about-impact-page__staff-column">
+      <p><strong>Senior Vice President and Chief Philanthropy Officer</strong><br>Melany N. Duval</p>
+      <p><strong>Vice President, Philanthropy Communications &amp; Marketing</strong><br>Zuhirah Khaldun-Diarra</p>
+      <p><strong>Assistant Vice President, Integrated Philanthropy Marketing</strong><br>Brian Beirne</p>
+      <p><strong>Editor</strong><br>Tarice Gray</p>
+      <p><strong>Assistant Editor</strong><br>Hannah White Hannah</p>
+    </div>
+    <div class="about-impact-page__staff-column">
+      <p><strong>Creative Director</strong><br>Claudia de Piante</p>
+      <p><strong>Art Directors</strong><br>Grace Howard, Sharon Veino</p>
+      <p><strong>Print Production Manager</strong><br>Danielle Gray</p>
+      <p><strong>Photography Manager</strong><br>Jessamyn Martin</p>
+    </div>
+    <div class="about-impact-page__staff-column">
+      <p><strong>Director, Web Development</strong><br>Sarah Cunningham</p>
+      <p><strong>Web Developer</strong><br>Alicia Lazzaro</p>
+    </div>
+  </div>
+</section>
+
+<section class="about-impact-page__section about-impact-page__section--contact" aria-labelledby="about-impact-contact">
+  <h2 id="about-impact-contact" class="visually-hidden">Contact Information</h2>
+  <p><strong>Contact Information</strong><br>Tarice Gray<br>Dana-Farber Cancer Institute &amp; The Jimmy Fund<br>Division of Philanthropy<br>10 Brookline Place West<br>Brookline, MA 02445-7295<br><a href="mailto:tarice_gray@dfci.harvard.edu">Tarice_Gray@dfci.harvard.edu</a></p>
+  <p><strong>Opt-out</strong><br>If you’d like to opt out of <em>Impact</em>, please complete our <a href="https://www.jimmyfund.org/about-us/contact-us/print-opt-out/">online form</a>.</p>
+</section>
+HTML;
+
+  if (!$nids) {
+    $node = Node::create([
+      'type' => 'page',
+      'title' => 'About Impact',
+      'uid' => 1,
+      'status' => 1,
+      'moderation_state' => 'published',
+      'body' => [
+        'value' => $body,
+        'format' => 'full_html',
+      ],
+    ]);
+  }
+  else {
+    $node = $storage->load(reset($nids));
+    if (!$node instanceof Node) {
+      return;
+    }
+    if (!$node->hasField('body') || $node->get('body')->isEmpty()) {
+      $node->set('body', [
+        'value' => $body,
+        'format' => 'full_html',
+      ]);
+    }
+  }
+
+  $node->set('path', ['alias' => '/about-impact', 'pathauto' => $pathauto_skip]);
+  if ($node->hasField('moderation_state')) {
+    $node->set('moderation_state', 'published');
+  }
+  $node->setPublished();
+  $node->save();
+}
+
+/**
+ * Create the editable About Impact page.
+ */
+function df_setup_update_10002(): void {
+  _df_setup_ensure_about_impact_page();
 }

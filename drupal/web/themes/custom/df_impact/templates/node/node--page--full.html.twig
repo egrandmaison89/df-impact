@@ -4,6 +4,19 @@
  * Theme override for Basic Page nodes (full view mode).
  */
 #}
+{% if is_about_impact_node %}
+  <article{{ attributes.addClass('page-node', 'about-impact-page') }} aria-labelledby="about-impact-title">
+    <div class="about-impact-page__inner">
+      {{ title_prefix }}
+      <h1 id="about-impact-title" class="about-impact-page__title">{{ label }}</h1>
+      {{ title_suffix }}
+
+      <div class="about-impact-page__body">
+        {{ content.body }}
+      </div>
+    </div>
+  </article>
+{% else %}
 <div{{ attributes.addClass('page-node') }}>
 
   {% if content.field_banner_image|render|trim %}
@@ -29,3 +42,4 @@
   </div>
 
 </div>
+{% endif %}

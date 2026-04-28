@@ -198,6 +198,7 @@ function df_impact_preprocess_page(&$variables) {
 
   // Check if we're on the front page.
   $variables['is_front'] = \Drupal::service('path.matcher')->isFrontPage();
+  $variables['is_about_impact'] = df_impact_is_about_impact_page();
 
   // Donate CTA — match legacy WordPress / Jimmy Fund campaign parameters.
   $variables['donate_url'] = 'https://danafarber.jimmyfund.org/site/Donation2?df_id=2101&mfc_pref=T&2101.donation=form1&utm_source=dfimpact&utm_medium=button&utm_campaign=AGDFI031323&s_src=AGDFI031323&s_subsrc=AGDFI031323';
@@ -266,6 +267,7 @@ function df_impact_preprocess_node(&$variables) {
 
   // Add view mode class.
   $variables['attributes']['class'][] = 'node--view-mode-' . str_replace('_', '-', $variables['view_mode']);
+  $variables['is_about_impact_node'] = df_impact_is_about_impact_page($node);
 
   // Issue full: promo cards below In Brief (WordPress layout).
   if ($node->bundle() === 'issue' && $variables['view_mode'] === 'full') {
@@ -341,6 +343,16 @@ function df_impact_preprocess_block(&$variables) {
   $node = \Drupal::routeMatch()->getParameter('node');
   $variables['is_node'] = $node instanceof NodeInterface;
   $variables['is_front'] = \Drupal::service('path.matcher')->isFrontPage();
+  $variables['is_about_impact'] = df_impact_is_about_impact_page();
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for breadcrumb.
+ */
+function df_impact_preprocess_breadcrumb(array &$variables): void {
+  if (df_impact_is_about_impact_page()) {
+    $variables['breadcrumb'] = [];
+  }
 }
 
 /**
@@ -423,6 +435,31 @@ function df_impact_format_issue_label(NodeInterface $issue): ?string {
     return $season;
   }
   return $issue->label();
+}
+
+/**
+ * Determines whether the current or provided node is the editable About page.
+ */
+function df_impact_is_about_impact_page(?NodeInterface $node = NULL): bool {
+  if (!$node) {
+    $route_node = \Drupal::routeMatch()->getParameter('node');
+    $node = $route_node instanceof NodeInterface ? $route_node : NULL;
+  }
+
+  if (!$node instanceof NodeInterface || $node->bundle() !== 'page') {
+    return FALSE;
+  }
+
+  try {
+    if ($node->toUrl()->toString() === '/about-impact') {
+      return TRUE;
+    }
+  }
+  catch (\Exception) {
+    // Fall back to the stable title used by the setup update hook.
+  }
+
+  return $node->label() === 'About Impact';
 }
 
 /**

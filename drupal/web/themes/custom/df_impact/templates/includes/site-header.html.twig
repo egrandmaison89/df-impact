@@ -27,7 +27,7 @@
       </div>
 
       <nav class="header__nav" id="main-nav" aria-label="{{ 'Main navigation'|t }}">
-        {% if is_front %}
+        {% if is_front or is_about_impact %}
           <ul class="header__nav-list">
             <li class="header__nav-item">
               <a href="{{ path('view.browse_issues.page_1') }}" class="header__nav-link">{{ 'Issues'|t }}</a>

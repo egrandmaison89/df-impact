@@ -374,3 +374,61 @@ function df_setup_update_10006(): string {
 
   return sprintf('Normalized HTML entities in %d article title(s) and %d media image alt(s).', $nodes_fixed, $media_fixed);
 }
+
+/**
+ * Remove obsolete Redirect entities that mapped WP /category/foo to legacy /topics/foo.
+ *
+ * Canonical topic archives now live at /category/{slug}; those redirects fought the view route.
+ */
+function df_setup_update_10007(): string {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  if (!$entity_type_manager->hasDefinition('redirect')) {
+    return 'Redirect module not present; skipped category redirect cleanup.';
+  }
+  /** @var \Drupal\Core\Entity\EntityStorageInterface $storage */
+  $storage = $entity_type_manager->getStorage('redirect');
+  /** @var int[] $ids */
+  $ids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('redirect_source.path', 'category%', 'LIKE')
+    ->execute();
+  if (!$ids) {
+    return 'No matching category/* redirects to remove.';
+  }
+  $removed = 0;
+  foreach ($storage->loadMultiple($ids) as $redirect) {
+    $link = $redirect->get('redirect_redirect')->first();
+    $uri = '';
+    if ($link && !$link->isEmpty()) {
+      $uri = (string) $link->uri;
+    }
+    if ($uri !== '' && str_contains($uri, 'topics/')) {
+      $redirect->delete();
+      $removed++;
+    }
+  }
+  return sprintf('Removed %d redirect(s) that pointed category/* to /topics/*.', $removed);
+}
+
+/**
+ * Rebuild taxonomy_index for published articles so topic archives resolve via taxonomy_index.
+ */
+function df_setup_update_10008(): string {
+  if (!function_exists('taxonomy_build_node_index')) {
+    return 'Taxonomy unavailable; skipped taxonomy_index rebuild.';
+  }
+  /** @var \Drupal\node\NodeStorageInterface $node_storage */
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $node_storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('status', 1)
+    ->execute();
+  if (!$nids) {
+    return 'No published articles found for taxonomy index rebuild.';
+  }
+  foreach ($node_storage->loadMultiple($nids) as $node) {
+    taxonomy_build_node_index($node);
+  }
+  return sprintf('Rebuilt taxonomy_index for %d published article(s).', count($nids));
+}

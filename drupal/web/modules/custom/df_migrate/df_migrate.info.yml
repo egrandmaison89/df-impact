@@ -4,6 +4,7 @@ description: 'Migrates content from WordPress to Drupal for the Impact Magazine 
 core_version_requirement: ^10 || ^11
 package: 'Dana-Farber Custom'
 dependencies:
+  - df_setup:df_setup
   - drupal:file
   - drupal:media
   - drupal:migrate

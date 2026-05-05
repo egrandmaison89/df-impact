@@ -134,9 +134,12 @@ $topics = \Drupal::entityTypeManager()
 
 $topic_weight = 0;
 foreach ($topics as $term) {
+  $slug = function_exists('df_setup_topic_category_slug')
+    ? df_setup_topic_category_slug($term->getName())
+    : strtolower(preg_replace('/[^a-z0-9]+/i', '-', trim($term->getName())));
   $child = MenuLinkContent::create([
     'title' => $term->getName(),
-    'link' => ['uri' => 'internal:/topics/' . $term->id()],
+    'link' => ['uri' => 'internal:/category/' . $slug],
     'menu_name' => 'main',
     'parent' => 'menu_link_content:' . $topics_parent->uuid(),
     'weight' => $topic_weight++,

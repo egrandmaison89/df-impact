@@ -4,6 +4,8 @@ description: 'Ensures a Home landing node and front page path for the Impact the
 package: 'Dana-Farber Impact'
 core_version_requirement: ^10.3 || ^11
 dependencies:
+  - drupal:file
+  - drupal:media
   - drupal:node
   - drupal:path_alias
   - drupal:taxonomy

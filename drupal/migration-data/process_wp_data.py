@@ -15,6 +15,7 @@ import json
 import re
 import os
 import html as html_lib
+from urllib.parse import urlparse
 
 # ─── CATEGORY → TOPIC/CANCER TYPE MAPPING ────────────────────────────────────
 # Determine which WP categories map to Topics vs Cancer Types vocabularies
@@ -257,6 +258,120 @@ print(f"Media: {len(media_output)}")
 
 # ─── HELPER: Extract byline and photo credit from content ────────────────────
 
+def _strip_tags_min(html_snippet):
+    return re.sub(r'<[^>]+>', '', html_snippet)
+
+
+def stem_basename(basename):
+    basename = basename.split('?')[0]
+    basename = re.sub(r'-\d+x\d+(?=\.[^.]+$)', '', basename, flags=re.IGNORECASE)
+    return basename.lower()
+
+
+def stem_from_url(url):
+    if not url:
+        return ''
+    path = urlparse(url.strip()).path
+    base = os.path.basename(path) if path else os.path.basename(url)
+    return stem_basename(base)
+
+
+def is_issue_summary_deck_href(href, anchor_inner_html=''):
+    href = (href or '').strip()
+    if not href:
+        return False
+    path = urlparse(href).path or href
+    path = '/' + path.lstrip('/')
+    if re.match(r'^/issues/[a-z-]+-\d{4}(/|$)', path, re.I):
+        return True
+    if re.search(r'/(spring|summer|fall|winter)-\d{4}-issue', path, re.I):
+        return True
+    if re.match(r'^/node/\d+$', path, re.I):
+        return False
+    if 'danafarberimpact.org' in href:
+        wp_path = urlparse(href).path or ''
+        if re.search(r'/(spring|summer|fall|winter)-\d{4}-issue', wp_path, re.I):
+            return True
+        if 'issue' in wp_path.lower() and not re.search(r'/\d{4}/\d{2}/', wp_path):
+            return True
+    text = re.sub(r'<[^>]+>', '', anchor_inner_html or '')
+    text = html_lib.unescape(text.strip())
+    if re.match(r'^(Spring|Summer|Fall|Winter|Late Fall)\s+\d{4}\s*$', text, re.I):
+        return True
+    return False
+
+
+def strip_lead_figure_if_matches(content, featured_image_url):
+    """Remove first <figure> when it shows the same file as featured media.
+
+    Returns (updated_html, figcaption_text_or_empty).
+    """
+    stem = stem_from_url(featured_image_url)
+    if not stem:
+        return content, ''
+    m = re.match(
+        r'^\s*(<figure\b[^>]*>[\s\S]*?</figure>)',
+        content,
+        re.IGNORECASE,
+    )
+    if not m:
+        return content, ''
+    fig = m.group(1)
+    src_m = re.search(r'(?:src|data-src)=["\']([^"\']+)["\']', fig, re.I)
+    if not src_m:
+        return content, ''
+    img_url = html_lib.unescape(src_m.group(1).strip())
+    ipath = urlparse(img_url).path or img_url
+    base = os.path.basename(ipath.split('?')[0])
+    if stem_basename(base) != stem:
+        return content, ''
+    cap_m = re.search(r'<figcaption\b[^>]*>([\s\S]*?)</figcaption>', fig, re.I)
+    caption = ''
+    if cap_m:
+        caption = re.sub(r'<[^>]+>', '', cap_m.group(1))
+        caption = html_lib.unescape(caption)
+        caption = re.sub(r'\s+', ' ', caption).strip()
+    rest = content[m.end():].lstrip()
+    return rest, caption
+
+
+def extract_issue_deck_and_remove(content):
+    """Remove issue link + By/Photography deck (WP or /issues/... paths)."""
+    if not content:
+        return content, '', ''
+    deck_pattern = re.compile(
+        r'<p\b[^>]*>\s*'
+        r'<a\s+[^>]*\bhref=["\']([^"\']+)["\'][^>]*>([^<]*)</a>'
+        r'(?:\s*<br\s*/?>\s*((?:By|Written by)\s+[^<]+?))?'
+        r'(?:\s*<br\s*/?>\s*((?:Photograph(?:y|s)?|Photos?)\s+by\s*[^<]+?))?'
+        r'\s*</p>',
+        re.IGNORECASE | re.DOTALL,
+    )
+    byline = ''
+    photo_credit = ''
+    limit = 8
+    while limit > 0:
+        limit -= 1
+        m = deck_pattern.search(content)
+        if not m:
+            break
+        if not is_issue_summary_deck_href(m.group(1), m.group(2) or ''):
+            break
+        if m.group(3):
+            line = _strip_tags_min(m.group(3)).strip()
+            line = html_lib.unescape(line)
+            line = re.sub(r'^Written by\s+', '', line, flags=re.I)
+            if line and not byline:
+                byline = line if re.match(r'^by\s+', line, re.I) else 'By ' + line
+        if m.group(4):
+            line = _strip_tags_min(m.group(4)).strip()
+            line = html_lib.unescape(line)
+            if line and not photo_credit:
+                photo_credit = line if re.match(r'(?i)^photograph', line) else 'Photography by ' + line
+        content = deck_pattern.sub('', content, count=1)
+    return content, byline, photo_credit
+
+
 def extract_byline(content):
     """Extract 'By [Name]' from article body HTML."""
     if not content:
@@ -446,10 +561,16 @@ for post in posts:
     # Get content
     title = post.get('title', {}).get('rendered', '').strip()
     content = post.get('content', {}).get('rendered', '')
+    featured_image_url = get_featured_image_url(post)
+    featured_image_id = get_featured_image_id(post)
 
-    byline = extract_byline(content)
-    photo_credit = extract_photo_credit(content)
+    content, deck_byline, deck_photo = extract_issue_deck_and_remove(content)
+    byline = deck_byline or extract_byline(content)
+    photo_credit = deck_photo or extract_photo_credit(content)
     clean_content = clean_body(content, byline, photo_credit)
+    clean_content, fig_caption = strip_lead_figure_if_matches(clean_content, featured_image_url)
+    if fig_caption and not photo_credit:
+        photo_credit = fig_caption
     excerpt = get_excerpt(post)
 
     # Get WP metadata
@@ -458,10 +579,6 @@ for post in posts:
     wp_status = post.get('status', 'publish')
     wp_date = post.get('date', '')
     wp_modified = post.get('modified', '')
-
-    # Featured image
-    featured_image_url = get_featured_image_url(post)
-    featured_image_id = get_featured_image_id(post)
 
     # SEO
     meta_description = get_yoast_meta(post)

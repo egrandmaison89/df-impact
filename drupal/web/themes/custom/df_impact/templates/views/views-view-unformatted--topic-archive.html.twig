@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * Topic archive: stacked cards (matches Digital Exclusives archive layout).
+ */
+#}
+{% if title %}
+  <h2 class="de-archive__subsection-title">{{ title }}</h2>
+{% endif %}
+<div class="de-archive-grid">
+  {% for row in rows %}
+    <div{{ row.attributes.addClass('views-row', 'de-archive-grid__item') }}>
+      {{ row.content }}
+    </div>
+  {% endfor %}
+</div>

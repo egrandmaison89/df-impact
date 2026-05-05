@@ -108,6 +108,8 @@ process:
     -
       plugin: df_localize_inline_images
       source: body
+    -
+      plugin: df_clean_article_body
   'body/format':
     plugin: default_value
     default_value: full_html

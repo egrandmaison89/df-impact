@@ -1,4 +1,10 @@
 services:
+  df_setup.article_body_cleaner:
+    class: Drupal\df_setup\ArticleBodyCleaner
+    arguments:
+      - '@entity_type.manager'
+      - '@file_url_generator'
+
   df_setup.digital_exclusive_channels:
     class: Drupal\df_setup\DigitalExclusiveChannels
     arguments: ['@entity_type.manager']
@@ -14,3 +20,14 @@ services:
     arguments: ['@df_setup.digital_exclusive_channels']
     tags:
       - { name: event_subscriber }
+
+  df_setup.legacy_topics_path_redirect:
+    class: Drupal\df_setup\EventSubscriber\LegacyTopicsPathRedirectSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  df_setup.path_processor.topic_archive:
+    class: Drupal\df_setup\PathProcessor\TopicTermArchivePathProcessor
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: path_processor_outbound, priority: 200 }

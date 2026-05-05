@@ -483,6 +483,16 @@
     clamp(2rem, 4.5vw, 3.5rem);
 }
 
+/* Topic archive (WordPress /category/[name]): match archive heading weight. */
+.path-category-archive .page-title {
+  margin: 0 0 clamp(0.35rem, 1vw, 0.65rem);
+  font-family: var(--font-heading);
+  font-size: clamp(1.65rem, 3.2vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.18;
+  color: var(--color-text, #1a1a1a);
+}
+
 .de-archive-grid {
   display: flex;
   flex-direction: column;
@@ -852,41 +862,15 @@
   padding: var(--space-2xl) var(--space-md);
 }
 
-.article__hero {
-  margin: 0 calc(-1 * ((100vw - var(--container-narrow)) / 2 + var(--space-md)));
-  margin-bottom: var(--space-2xl);
-}
-
-@media (max-width: 968px) {
-  .article__hero {
-    margin-left: calc(-1 * var(--space-md));
-    margin-right: calc(-1 * var(--space-md));
-  }
-}
-
-.article__hero img {
-  width: 100%;
-  max-height: 600px;
-  object-fit: cover;
-}
-
-.article__hero-caption {
-  max-width: var(--container-narrow);
-  margin: var(--space-xs) auto 0;
-  padding: 0 var(--space-md);
-  font-size: var(--font-size-sm);
-  color: var(--color-gray-dark);
-  font-style: italic;
-}
-
 .article__header {
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-lg);
 }
 
 .article__title {
   font-size: var(--font-size-3xl);
   margin-bottom: var(--space-sm);
   color: var(--color-black);
+  line-height: var(--line-height-tight);
 }
 
 .article__subtitle {
@@ -895,32 +879,134 @@
   font-weight: 400;
   color: var(--color-gray-dark);
   margin-bottom: var(--space-md);
+  line-height: 1.45;
 }
 
 .article__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-md);
+  align-items: baseline;
+  gap: 0;
+  font-family: var(--font-body);
   font-size: var(--font-size-sm);
+  line-height: 1.5;
   color: var(--color-gray-dark);
+  margin-bottom: var(--space-xl);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--color-gray-mid);
 }
 
 .article__meta-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+}
+
+.article__meta-item + .article__meta-item::before {
+  content: "·";
+  display: inline-block;
+  margin-right: 0.65rem;
+  color: var(--color-gray-mid);
+  font-weight: 400;
+}
+
+.article__meta-item--date {
+  font-weight: 400;
+}
+
+.article__meta-item--credit {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.article__meta .field,
+.article__meta .field__items,
+.article__meta .field__item {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.article__meta a {
+  color: var(--color-primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.article__meta a:hover,
+.article__meta a:focus-visible {
+  text-decoration: underline;
 }
 
 .article__issue-link {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-primary);
   text-decoration: none;
 }
 
 .article__issue-link:hover {
   text-decoration: underline;
+}
+
+/* Lead image floats beside body (WordPress-style article lead) */
+.article__lead--has-media {
+  margin-bottom: var(--space-xl);
+}
+
+.article__lead--has-media::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.article__figure {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .article__lead--has-media .article__figure {
+    float: left;
+    width: 42%;
+    max-width: 400px;
+    margin: 0 var(--space-lg) var(--space-sm) 0;
+  }
+}
+
+.article__figure .contextual-region,
+.article__figure .field,
+.article__figure .field__items,
+.article__figure .field__item,
+.article__figure .media {
+  margin: 0;
+}
+
+.article__figure img,
+.article__figure picture img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--border-radius);
+}
+
+.article__figure-caption {
+  margin-top: var(--space-sm);
+  padding-top: var(--space-xs);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--color-gray-dark);
+  font-style: italic;
+  border-top: 1px solid var(--color-gray-mid);
+}
+
+@media (max-width: 767px) {
+  .article__lead--has-media .article__figure {
+    float: none;
+    width: 100%;
+    max-width: none;
+    margin: 0 0 var(--space-lg);
+  }
 }
 
 /* Article body — drop cap (first paragraph, including inside WP wrapper blocks) */

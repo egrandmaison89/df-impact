@@ -26,6 +26,7 @@ dependencies:
     - node.type.article
   module:
     - comment
+    - entity_reference_revisions
     - text
     - user
 _core:
@@ -44,12 +45,86 @@ content:
     third_party_settings: {  }
     weight: -10
     region: content
+  field_subtitle:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: -9
+    region: content
+  field_issue:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: -8
+    region: content
+  field_byline:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: -7
+    region: content
+  field_photo_credit:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: -6
+    region: content
   body:
     type: text_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
     weight: 0
+    region: content
+  field_topics:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 5
+    region: content
+  field_cancer_types:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  field_content_sections:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 20
+    region: content
+  field_related_articles:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: teaser
+      link: false
+    third_party_settings: {  }
+    weight: 50
+    region: content
+  field_tags:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 10
     region: content
   comment:
     type: comment_default
@@ -60,32 +135,17 @@ content:
     third_party_settings: {  }
     weight: 110
     region: content
-  field_tags:
-    type: entity_reference_label
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    weight: 10
-    region: content
   links:
     settings: {  }
     third_party_settings: {  }
     weight: 100
     region: content
 hidden:
-  field_byline: true
-  field_cancer_types: true
   field_channels: true
-  field_content_sections: true
   field_content_type: true
   field_excerpt: true
   field_homepage_placement: true
-  field_issue: true
   field_meta_description: true
-  field_photo_credit: true
-  field_related_articles: true
-  field_subtitle: true
-  field_topics: true
+  field_tags: true
   field_image: true
   search_api_excerpt: true

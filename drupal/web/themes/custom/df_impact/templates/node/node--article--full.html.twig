@@ -6,19 +6,10 @@
 #}
 {{ attach_library('df_impact/global') }}
 
-<article{{ attributes.addClass('article') }}>
+{% set has_lead_image = node.hasField('field_featured_image') and not node.field_featured_image.isEmpty %}
+{% set has_photo_credit = node.hasField('field_photo_credit') and not node.field_photo_credit.isEmpty %}
 
-  {# --- Featured Image (full-bleed) --- #}
-  {% if content.field_featured_image|render|trim %}
-    <div class="article__hero">
-      {{ content.field_featured_image }}
-      {% if content.field_photo_credit|render|trim %}
-        <div class="article__hero-caption">
-          {{ content.field_photo_credit }}
-        </div>
-      {% endif %}
-    </div>
-  {% endif %}
+<article{{ attributes.addClass('article') }}>
 
   {# --- Header --- #}
   <header class="article__header">
@@ -37,18 +28,42 @@
         </span>
       {% endif %}
 
+      {% if article_published is defined and article_published %}
+        <time class="article__meta-item article__meta-item--date" datetime="{{ article_published_iso }}">{{ article_published }}</time>
+      {% endif %}
+
       {% if content.field_byline|render|trim %}
         <span class="article__meta-item">
           {{ content.field_byline }}
         </span>
       {% endif %}
+
+      {% if has_photo_credit and not has_lead_image %}
+        <span class="article__meta-item article__meta-item--credit">
+          {{ content.field_photo_credit }}
+        </span>
+      {% endif %}
     </div>
   </header>
 
-  {# --- Article Body --- #}
-  <div class="article__body">
-    {{ content.body }}
-  </div>
+  {% if has_lead_image %}
+    <div class="article__lead article__lead--has-media">
+      <figure class="article__figure">
+        {{ content.field_featured_image }}
+        {% if has_photo_credit %}
+          <figcaption class="article__figure-caption">{{ content.field_photo_credit }}</figcaption>
+        {% endif %}
+      </figure>
+      <div class="article__body">
+        {{ content.body }}
+      </div>
+    </div>
+  {% else %}
+    {# --- Article Body (no lead image) --- #}
+    <div class="article__body">
+      {{ content.body }}
+    </div>
+  {% endif %}
 
   {# --- Content Sections (Paragraphs) --- #}
   {% if content.field_content_sections|render|trim %}

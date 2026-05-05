@@ -3,17 +3,21 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.media.image.default
     - field.storage.node.field_excerpt
     - field.storage.node.field_featured_image
     - field.storage.node.field_topics
     - node.type.article
+    - taxonomy.vocabulary.topics
   module:
+    - media
     - node
+    - taxonomy
     - text
 id: topic_archive
 label: 'Topic Archive'
 module: views
-description: 'Articles filtered by topic taxonomy term.'
+description: 'Articles filtered by topic (WordPress /category/[slug] parity).'
 tag: ''
 base_table: node_field_data
 base_field: nid
@@ -24,7 +28,7 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: 'Articles on %1'
+      title: '%1'
       fields:
         title:
           id: title
@@ -41,12 +45,18 @@ display:
           field: field_featured_image
           plugin_id: field
           label: ''
+          type: entity_reference_entity_view
+          settings:
+            view_mode: default
+            link: false
         field_excerpt:
           id: field_excerpt
           table: node__field_excerpt
           field: field_excerpt
           plugin_id: field
           label: ''
+          type: text_default
+          settings: {  }
         field_topics:
           id: field_topics
           table: node__field_topics
@@ -54,11 +64,19 @@ display:
           plugin_id: field
           label: ''
           type: entity_reference_label
+          settings:
+            link: true
       pager:
         type: full
         options:
           items_per_page: 12
       sorts:
+        sticky:
+          id: sticky
+          table: node_field_data
+          field: sticky
+          plugin_id: boolean
+          order: DESC
         created:
           id: created
           table: node_field_data
@@ -66,14 +84,47 @@ display:
           plugin_id: date
           order: DESC
       arguments:
-        field_topics_target_id:
-          id: field_topics_target_id
-          table: node__field_topics
-          field: field_topics_target_id
-          plugin_id: numeric
+        tid:
+          id: tid
+          table: taxonomy_index
+          field: tid
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: taxonomy_index_tid
           default_action: 'not found'
+          exception:
+            value: all
+            title_enable: false
+            title: All
           title_enable: true
           title: '%1'
+          default_argument_type: fixed
+          default_argument_options:
+            argument: ''
+          summary_options:
+            base_path: ''
+            count: true
+            override: false
+            items_per_page: 25
+          summary:
+            sort_order: asc
+            number_of_records: 0
+            format: default_summary
+          specify_validation: true
+          validate:
+            type: 'entity:taxonomy_term'
+            fail: 'not found'
+          validate_options:
+            bundles:
+              topics: topics
+            operation: view
+            access: true
+            multiple: 1
+          break_phrase: true
+          add_table: false
+          require_value: false
+          reduce_duplicates: false
       filters:
         status:
           id: status
@@ -114,7 +165,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: topics/%
+      path: category/%
     cache_metadata:
       max-age: -1
       contexts:

@@ -682,7 +682,7 @@ _save_view('in_brief_listing', [
 _save_view('topic_archive', [
   'id' => 'topic_archive',
   'label' => 'Topic Archive',
-  'description' => 'Articles filtered by topic taxonomy term.',
+  'description' => 'Articles filtered by topic (WordPress /category/[slug] parity).',
   'base_table' => 'node_field_data',
   'core' => '10.x',
   'display' => [
@@ -692,7 +692,7 @@ _save_view('topic_archive', [
       'display_plugin' => 'default',
       'position' => 0,
       'display_options' => [
-        'title' => 'Articles on %1',
+        'title' => '%1',
         'fields' => [
           'title' => [
             'id' => 'title',
@@ -709,6 +709,11 @@ _save_view('topic_archive', [
             'field' => 'field_featured_image',
             'label' => '',
             'plugin_id' => 'field',
+            'type' => 'entity_reference_entity_view',
+            'settings' => [
+              'view_mode' => 'default',
+              'link' => FALSE,
+            ],
           ],
           'field_excerpt' => [
             'id' => 'field_excerpt',
@@ -716,6 +721,8 @@ _save_view('topic_archive', [
             'field' => 'field_excerpt',
             'label' => '',
             'plugin_id' => 'field',
+            'type' => 'text_default',
+            'settings' => [],
           ],
           'field_topics' => [
             'id' => 'field_topics',
@@ -724,17 +731,60 @@ _save_view('topic_archive', [
             'label' => '',
             'plugin_id' => 'field',
             'type' => 'entity_reference_label',
+            'settings' => [
+              'link' => TRUE,
+            ],
           ],
         ],
         'arguments' => [
-          'field_topics_target_id' => [
-            'id' => 'field_topics_target_id',
-            'table' => 'node__field_topics',
-            'field' => 'field_topics_target_id',
+          'tid' => [
+            'id' => 'tid',
+            'table' => 'taxonomy_index',
+            'field' => 'tid',
+            'relationship' => 'none',
+            'group_type' => 'group',
+            'admin_label' => '',
+            'plugin_id' => 'taxonomy_index_tid',
             'default_action' => 'not found',
+            'exception' => [
+              'value' => 'all',
+              'title_enable' => FALSE,
+              'title' => 'All',
+            ],
             'title_enable' => TRUE,
             'title' => '%1',
-            'plugin_id' => 'numeric',
+            'default_argument_type' => 'fixed',
+            'default_argument_options' => [
+              'argument' => '',
+            ],
+            'summary_options' => [
+              'base_path' => '',
+              'count' => TRUE,
+              'override' => FALSE,
+              'items_per_page' => 25,
+            ],
+            'summary' => [
+              'sort_order' => 'asc',
+              'number_of_records' => 0,
+              'format' => 'default_summary',
+            ],
+            'specify_validation' => TRUE,
+            'validate' => [
+              'type' => 'entity:taxonomy_term',
+              'fail' => 'not found',
+            ],
+            'validate_options' => [
+              'bundles' => [
+                'topics' => 'topics',
+              ],
+              'operation' => 'view',
+              'access' => TRUE,
+              'multiple' => 1,
+            ],
+            'break_phrase' => TRUE,
+            'add_table' => FALSE,
+            'require_value' => FALSE,
+            'reduce_duplicates' => FALSE,
           ],
         ],
         'filters' => [
@@ -756,6 +806,13 @@ _save_view('topic_archive', [
           ],
         ],
         'sorts' => [
+          'sticky' => [
+            'id' => 'sticky',
+            'table' => 'node_field_data',
+            'field' => 'sticky',
+            'order' => 'DESC',
+            'plugin_id' => 'boolean',
+          ],
           'created' => [
             'id' => 'created',
             'table' => 'node_field_data',
@@ -782,7 +839,7 @@ _save_view('topic_archive', [
       'display_plugin' => 'page',
       'position' => 1,
       'display_options' => [
-        'path' => 'topics/%',
+        'path' => 'category/%',
       ],
     ],
   ],

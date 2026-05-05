@@ -5,6 +5,7 @@
  * Functions to support theming in the Dana-Farber Impact theme.
  */
 
+use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\views\ViewExecutable;
@@ -187,6 +188,14 @@ function df_impact_preprocess_html(array &$variables): void {
     'df_site_snippets_header' => NULL,
     'df_site_snippets_footer' => NULL,
   ];
+  $route = \Drupal::routeMatch()->getRouteName();
+  if (
+    $route === 'view.topic_archive.page_1'
+    && isset($variables['attributes'])
+    && $variables['attributes'] instanceof Attribute
+  ) {
+    $variables['attributes']->addClass('path-category-archive');
+  }
 }
 
 /**
@@ -228,7 +237,7 @@ function df_impact_preprocess_page(&$variables) {
     if ($term && $term->isPublished()) {
       $footer_topic_links[] = [
         'title' => $term->label(),
-        'url' => Url::fromUri('internal:/topics/' . $term->id())->toString(),
+        'url' => Url::fromUri('internal:/category/' . df_setup_topic_category_slug($term->label()))->toString(),
       ];
     }
   }
@@ -295,6 +304,11 @@ function df_impact_preprocess_node(&$variables) {
 
   // Related articles by shared topics when editors did not pick manual related nodes.
   if ($node->bundle() === 'article' && $variables['view_mode'] === 'full') {
+    $df = \Drupal::service('date.formatter');
+    $created = $node->getCreatedTime();
+    $variables['article_published'] = $df->format($created, 'custom', 'F j, Y');
+    $variables['article_published_iso'] = $df->format($created, 'custom', 'c');
+
     if ($node->hasField('field_related_articles') && $node->get('field_related_articles')->isEmpty()) {
       $topic_ids = [];
       if ($node->hasField('field_topics')) {
@@ -478,6 +492,27 @@ function df_impact_get_latest_issue_nid(): ?int {
     return NULL;
   }
   return (int) reset($nids);
+}
+
+/**
+ * Implements hook_preprocess_page_title().
+ *
+ * Fixes Views page title callback returning literal %1 for topic archives.
+ */
+function df_impact_preprocess_page_title(array &$variables): void {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if ($route_name !== 'view.topic_archive.page_1') {
+    return;
+  }
+  $slug_raw = \Drupal::routeMatch()->getParameter('arg_0');
+  $slug = is_scalar($slug_raw) ? mb_strtolower(trim((string) $slug_raw), 'UTF-8') : '';
+  if ($slug === '' || !function_exists('df_setup_topic_term_load_by_category_slug')) {
+    return;
+  }
+  $term = df_setup_topic_term_load_by_category_slug($slug);
+  if ($term && $term->isPublished()) {
+    $variables['title'] = $term->getName();
+  }
 }
 
 /**

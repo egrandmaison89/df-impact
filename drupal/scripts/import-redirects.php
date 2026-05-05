@@ -83,23 +83,14 @@ foreach ($redirects_data as $item) {
 // WP used /{slug}/ and sometimes /year/month/slug/ patterns
 // The main ones we need: slug directly in root
 
-// Add redirects for WP category archive URLs
-$category_redirects = [
-  'category/cancer-research' => '/topics/cancer-research',
-  'category/grassroots-support' => '/topics/grassroots-support',
-  'category/total-patient-care' => '/topics/total-patient-care',
-  'category/access-and-equity' => '/topics/access-and-equity',
-  'category/immunotherapy' => '/topics/immunotherapy',
-  'category/drug-development' => '/topics/drug-development',
-  'category/discovery-science' => '/topics/discovery-science',
-  'category/prevention-and-early-detection' => '/topics/prevention-and-early-detection',
-  'category/pediatrics' => '/topics/pediatrics',
-  'category/planned-giving' => '/topics/planned-giving',
-  'category/recognition' => '/topics/recognition',
+// Category archive URLs now match WordPress: /category/{slug} is served directly
+// by the topic_archive view; no redirects from category/* to topics/* needed.
+$wp_category_archive_redirects = [
+  // Separate landing (not taxonomy): keep mapping from WP path.
   'category/digital-exclusives' => '/digital-exclusives',
 ];
 
-foreach ($category_redirects as $source => $dest) {
+foreach ($wp_category_archive_redirects as $source => $dest) {
   $existing = $storage->loadByProperties(['redirect_source__path' => $source]);
   if (empty($existing)) {
     try {

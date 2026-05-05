@@ -11,6 +11,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
+use Drupal\taxonomy\TermInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Plugin\views\query\Sql;
 use Drupal\views\ViewExecutable;
@@ -157,6 +158,30 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
 }
 
 /**
+ * Implements hook_views_pre_build().
+ *
+ * Resolves /category/{slug} path components to term IDs before taxonomy_index
+ * contextual filters run (entity:taxonomy_term validation expects a TID).
+ */
+function df_setup_views_pre_build(ViewExecutable $view): void {
+  if ($view->id() !== 'topic_archive' || ($view->current_display ?? '') !== 'page_1') {
+    return;
+  }
+  $raw = $view->args[0] ?? '';
+  if ($raw === '' || $raw === NULL) {
+    return;
+  }
+  if (ctype_digit((string) $raw)) {
+    return;
+  }
+  $slug = mb_strtolower(trim((string) $raw), 'UTF-8');
+  $tids = df_setup_topic_term_tids_for_category_slug($slug);
+  if ($tids !== []) {
+    $view->args[0] = implode('+', $tids);
+  }
+}
+
+/**
  * Implements hook_entity_presave().
  *
  * Clears stray HTML entities in titles/alts migrated from WordPress so escaper
@@ -192,4 +217,63 @@ function df_setup_entity_presave(EntityInterface $entity): void {
   if ($changed) {
     $entity->set('field_media_image', $values);
   }
+}
+
+/**
+ * Builds a WP-style category slug from a topic term label (e.g. /category/cancer-research).
+ */
+function df_setup_topic_category_slug(string $name): string {
+  $name = trim(Html::decodeEntities($name));
+  $lower = mb_strtolower($name, 'UTF-8');
+  $slug = preg_replace('/[^a-z0-9]+/u', '-', $lower);
+  $slug = preg_replace('/-+/', '-', (string) $slug);
+  return trim((string) $slug, '-');
+}
+
+/**
+ * Returns topic term IDs matching a URL slug (WP /category/[name] parity).
+ *
+ * The topics vocabulary sometimes contains duplicate terms with identical
+ * names (likely from migrated revisions). Articles may reference whichever
+ * duplicate has content; callers must UNION all IDs for correct listings.
+ *
+ * @return int[]
+ */
+function df_setup_topic_term_tids_for_category_slug(string $slug): array {
+  $slug = trim(mb_strtolower($slug, 'UTF-8'), '/');
+  if ($slug === '') {
+    return [];
+  }
+  /** @var \Drupal\taxonomy\TermStorageInterface $storage */
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $tree = $storage->loadTree('topics', 0, NULL, TRUE);
+  $tids = [];
+  foreach ($tree as $item) {
+    if (!$item instanceof TermInterface) {
+      continue;
+    }
+    if (!$item->isPublished()) {
+      continue;
+    }
+    if (df_setup_topic_category_slug($item->getName()) === $slug) {
+      $tids[] = (int) $item->id();
+    }
+  }
+  sort($tids);
+  return array_values(array_unique($tids));
+}
+
+/**
+ * Loads one published topics term matching a slug (first ID after sorting).
+ */
+function df_setup_topic_term_load_by_category_slug(string $slug): ?TermInterface {
+  $tids = df_setup_topic_term_tids_for_category_slug($slug);
+  if (!$tids) {
+    return NULL;
+  }
+  /** @var \Drupal\taxonomy\TermStorageInterface $storage */
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  /** @var \Drupal\taxonomy\TermInterface|null $term */
+  $term = $storage->load($tids[0]);
+  return $term instanceof TermInterface ? $term : NULL;
 }

@@ -5,6 +5,7 @@
  * Install hooks for DF Impact setup.
  */
 
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
 
@@ -211,4 +212,89 @@ function df_setup_update_10003(): string {
   }
 
   return sprintf('Migrated %d article(s) from homepage placement "digital_exclusives" to Channels (term ID %d).', $updated, $tid);
+}
+
+/**
+ * Clear legacy digital_exclusives list values before field allowed_values change (cim).
+ *
+ * Saves affected node IDs in state so a follow-up update can attach field_channels
+ * after the field is created via config import.
+ */
+function df_setup_update_10004(): string {
+  $db = \Drupal::database();
+  $base = 'node__field_homepage_placement';
+  if (!$db->schema()->tableExists($base)) {
+    return 'Homepage placement field table not found.';
+  }
+
+  $q = $db->select($base, 'h');
+  $q->addField('h', 'entity_id');
+  $q->distinct();
+  $q->condition('h.bundle', 'article');
+  $q->condition('h.field_homepage_placement_value', 'digital_exclusives');
+  /** @var int[] $nids */
+  $nids = array_map('intval', $q->execute()->fetchCol());
+  sort($nids);
+  \Drupal::state()->set('df_setup.pending_de_channel_nids', array_values(array_unique($nids)));
+
+  $db->update($base)
+    ->fields(['field_homepage_placement_value' => 'none'])
+    ->condition('bundle', 'article')
+    ->condition('field_homepage_placement_value', 'digital_exclusives')
+    ->execute();
+
+  $rev = 'node_revision__field_homepage_placement';
+  if ($db->schema()->tableExists($rev)) {
+    $db->update($rev)
+      ->fields(['field_homepage_placement_value' => 'none'])
+      ->condition('bundle', 'article')
+      ->condition('field_homepage_placement_value', 'digital_exclusives')
+      ->execute();
+  }
+
+  return sprintf(
+    'Cleared homepage placement digital_exclusives from the database (%d articles). Pending channel backfill IDs stored; run config import, then updates again.',
+    count($nids)
+  );
+}
+
+/**
+ * Attach Digital Exclusives channel to articles that used legacy placement after cim.
+ */
+function df_setup_update_10005(): string {
+  $pending = \Drupal::state()->get('df_setup.pending_de_channel_nids', []);
+  if ($pending === [] || !$pending) {
+    return 'No pending Digital Exclusive channel backfill.';
+  }
+
+  $field_storage = FieldStorageConfig::loadByName('node', 'field_channels');
+  if (!$field_storage) {
+    return 'Run config import to create field_channels, then drush updatedb again to complete Digital Exclusive backfill.';
+  }
+
+  /** @var \Drupal\df_setup\DigitalExclusiveChannels $channels */
+  $channels = \Drupal::service('df_setup.digital_exclusive_channels');
+  $tid = $channels->ensureTermId();
+  if (!$tid) {
+    return 'Digital Exclusives term missing; retry after Channels vocabulary imports.';
+  }
+
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $attached = 0;
+  foreach ($pending as $nid) {
+    $node = $storage->load($nid);
+    if (!$node instanceof Node || $node->bundle() !== 'article') {
+      continue;
+    }
+    $referenced = array_map('intval', array_column($node->get('field_channels')->getValue(), 'target_id'));
+    if (!in_array($tid, $referenced, TRUE)) {
+      $node->get('field_channels')->appendItem(['target_id' => $tid]);
+      $node->save();
+      $attached++;
+    }
+  }
+
+  \Drupal::state()->delete('df_setup.pending_de_channel_nids');
+
+  return sprintf('Attached Digital Exclusives channel to %d article(s).', $attached);
 }

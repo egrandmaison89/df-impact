@@ -72,7 +72,8 @@ Deliver a **reader- and editor-friendly** Drupal site that matches the Impact Ma
 ## 5. Operational notes
 
 - **Config canonical path:** `drupal/web/sites/default/files/sync/` (see DRUPAL_REBUILD_PLAN Appendix A).
-- **After pulling these changes:** From `drupal/`: `ddev drush cim -y && ddev drush cr`, then reindex search (`ddev drush sapi-i` or Search API UI). Run `df_sync_wordpress_paths.php` when `articles.json` / `redirects.json` change. Re-run `process_wp_data.py` before that if WP exports changed.
+- **After pulling these changes:** Run `ddev drush updatedb -y && ddev drush cim -y && ddev drush updatedb -y && ddev drush cr` (updates run twice around `cim`: first clears legacy homepage placement keys from the DB; second attaches **Channels** after `field_channels` exists).
+- Reindex search if needed (`ddev drush sapi-i`). Run `df_sync_wordpress_paths.php` when `articles.json` / `redirects.json` change; re-run `process_wp_data.py` before that when WP exports changed.
 - **Hero image:** The front page shows a **default** Impact cover image when the Hero region is empty; place a block in **Hero** to override.
 
 ---

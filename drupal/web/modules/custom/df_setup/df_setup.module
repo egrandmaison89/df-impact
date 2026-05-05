@@ -7,9 +7,119 @@
 
 declare(strict_types=1);
 
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Plugin\views\query\Sql;
 use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_form_FORM_ID_alter() for article add/edit forms.
+ *
+ * Mirrors the WordPress "Digital Exclusives" category: independent of Issue.
+ */
+function df_setup_form_node_article_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!method_exists($form_object, 'getEntity')) {
+    return;
+  }
+  /** @var \Drupal\Core\Entity\EntityInterface $entity */
+  $entity = $form_object->getEntity();
+  if (!$entity instanceof NodeInterface || $entity->bundle() !== 'article') {
+    return;
+  }
+
+  /** @var \Drupal\df_setup\DigitalExclusiveChannels $channels */
+  $channels = \Drupal::service('df_setup.digital_exclusive_channels');
+  $tid = $channels->ensureTermId();
+  if (!$tid) {
+    return;
+  }
+
+  $builders = &$form['#entity_builders'];
+  $builders = is_array($builders) ? $builders : [];
+  if (!in_array('df_setup_entity_builder_article_digital_exclusive', $builders, TRUE)) {
+    $builders[] = 'df_setup_entity_builder_article_digital_exclusive';
+  }
+
+  $form['df_digital_exclusive_checkbox'] = [
+    '#type' => 'checkbox',
+    '#title' => (string) t('Show under Digital Exclusives'),
+    '#description' => (string) t('Lists this story in the homepage Digital Exclusives row and on /digital-exclusives—the same intent as choosing the Digital Exclusives category in WordPress. You can assign a magazine Issue and turn this on; they are independent, like on the previous site.'),
+    '#default_value' => _df_setup_article_channels_has_exclusive_term($entity, $tid),
+    '#weight' => 10,
+  ];
+
+  // Place Issue first, then placement for DE list, then channel refinements for admins.
+  if (isset($form['field_issue'])) {
+    $form['field_issue']['#weight'] = 9;
+  }
+  if (isset($form['field_channels'])) {
+    $form['field_channels']['#weight'] = 11;
+    $form['field_channels']['#description'] = (string) t('Only needed for additional Channels terms besides Digital Exclusives. Editors typically leave this blank and use only the checkbox above.');
+    // Taxonomy admins can still assign arbitrary channel terms; others use the checkbox.
+    $form['field_channels']['#access'] = \Drupal::currentUser()->hasPermission('administer taxonomy');
+  }
+}
+
+/**
+ * Applies the Digital Exclusive checkbox onto field_channels during entity_build.
+ *
+ * Runs after widgets copy onto the draft entity.
+ */
+function df_setup_entity_builder_article_digital_exclusive(string $entity_type_id, EntityInterface $entity, array &$form, FormStateInterface $form_state): void {
+  unset($entity_type_id);
+  if (!$entity instanceof NodeInterface || !$entity->hasField('field_channels')) {
+    return;
+  }
+
+  /** @var \Drupal\df_setup\DigitalExclusiveChannels $channels */
+  $channels = \Drupal::service('df_setup.digital_exclusive_channels');
+  $tid = $channels->ensureTermId();
+  if (!$tid || !isset($form['df_digital_exclusive_checkbox'])) {
+    return;
+  }
+
+  $want = !$form_state->isValueEmpty('df_digital_exclusive_checkbox');
+
+  /** @var int[] $tids */
+  $tids = array_map(static function (array $row): int {
+    return (int) ($row['target_id'] ?? 0);
+  }, $entity->get('field_channels')->getValue());
+
+  $tids = array_values(array_filter(array_unique($tids), static fn ($id) => $id > 0));
+  $has_exclusive = in_array($tid, $tids, TRUE);
+
+  if ($want && !$has_exclusive) {
+    $tids[] = $tid;
+  }
+  elseif (!$want && $has_exclusive) {
+    $tids = array_values(array_filter($tids, static fn ($id) => $id !== $tid));
+  }
+
+  $references = [];
+  foreach ($tids as $id) {
+    $references[] = ['target_id' => $id];
+  }
+  $entity->set('field_channels', $references);
+}
+
+/**
+ * Checks whether node already references Digital Exclusives tid.
+ */
+function _df_setup_article_channels_has_exclusive_term(NodeInterface $node, int $tid): bool {
+  if (!$node->hasField('field_channels')) {
+    return FALSE;
+  }
+  foreach ($node->get('field_channels')->getValue() as $row) {
+    if ((int) ($row['target_id'] ?? 0) === $tid) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
 
 /**
  * Implements hook_views_query_alter().
@@ -38,16 +148,9 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
     return;
   }
 
-  $database = \Drupal::database();
-  /** @var \Drupal\Core\Database\Query\Select $subquery */
-  $subquery = $database->select('node__field_channels', 'fc');
-  $subquery->addField('fc', 'entity_id');
-  $subquery->condition('fc.bundle', 'article');
-  $subquery->condition('fc.deleted', 0);
-  $subquery->condition('fc.field_channels_target_id', $tid);
-
-  $sql = $subquery->__toString();
-  $args = $subquery->arguments();
-  $snippet = $base_table . '.' . $base_field . ' IN (' . $sql . ')';
-  $query->addWhereExpression(0, $snippet, $args);
+  $base_alias = $query->ensureTable($base_table) ?: $base_table;
+  // Integer literal avoids placeholder collisions inside Views' formula WHERE clauses.
+  $tid_sql = (int) $tid;
+  $snippet = "{$base_alias}.{$base_field} IN (SELECT fc.entity_id FROM {node__field_channels} fc WHERE fc.bundle = 'article' AND fc.deleted = 0 AND fc.field_channels_target_id = {$tid_sql})";
+  $query->addWhereExpression(0, $snippet);
 }

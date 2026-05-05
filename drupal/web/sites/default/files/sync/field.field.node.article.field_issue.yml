@@ -11,7 +11,7 @@ field_name: field_issue
 entity_type: node
 bundle: article
 label: Issue
-description: 'The quarterly magazine issue when this story ran in print. Omit for web-only exclusives if there is no print issue.'
+description: 'The quarterly magazine Issue when this story appears in print. This is unrelated to Digital Exclusives: you may pick an Issue and still surface the piece on Digital Exclusives via the checkbox in the same tab (WordPress behaved the same when both Issue and Digital Exclusives category applied).'
 required: false
 translatable: true
 default_value: {  }

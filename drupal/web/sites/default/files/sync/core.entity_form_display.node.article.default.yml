@@ -53,18 +53,19 @@ third_party_settings:
     group_metadata:
       children:
         - field_issue
+        - df_digital_exclusive_checkbox
         - field_channels
         - field_topics
         - field_cancer_types
         - field_content_type
         - field_homepage_placement
-      label: Metadata
+      label: 'Publication & placement'
       region: content
       parent_name: ''
       weight: 1
       format_type: tab
       format_settings:
-        label: Metadata
+        label: 'Publication & placement'
         direction: vertical
     group_seo:
       children:

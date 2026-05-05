@@ -11,7 +11,7 @@ field_name: field_channels
 entity_type: node
 bundle: article
 label: Channels
-description: 'Add Digital Exclusives to list this story in the Digital Exclusives homepage row and on the full Digital Exclusives archive (matching the former WordPress category).'
+description: 'Optional; see the “Publication & placement” tab checkbox for Digital Exclusives. Use this field only when additional channel terms besides Digital Exclusives are introduced (typically administrators only).'
 required: false
 translatable: true
 default_value: {  }

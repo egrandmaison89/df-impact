@@ -3,12 +3,14 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.media.image.default
     - field.storage.node.field_excerpt
     - field.storage.node.field_featured_image
     - field.storage.node.field_channels
     - field.storage.node.field_topics
     - node.type.article
   module:
+    - media
     - node
     - text
 id: digital_exclusives_archive
@@ -42,12 +44,18 @@ display:
           field: field_featured_image
           plugin_id: field
           label: ''
+          type: entity_reference_entity_view
+          settings:
+            view_mode: default
+            link: false
         field_excerpt:
           id: field_excerpt
           table: node__field_excerpt
           field: field_excerpt
           plugin_id: field
           label: ''
+          type: text_default
+          settings: {  }
         field_topics:
           id: field_topics
           table: node__field_topics
@@ -55,6 +63,8 @@ display:
           plugin_id: field
           label: ''
           type: entity_reference_label
+          settings:
+            link: true
       pager:
         type: full
         options:

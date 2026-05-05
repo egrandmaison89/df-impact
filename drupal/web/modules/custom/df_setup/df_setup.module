@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
@@ -153,4 +154,42 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
   $tid_sql = (int) $tid;
   $snippet = "{$base_alias}.{$base_field} IN (SELECT fc.entity_id FROM {node__field_channels} fc WHERE fc.bundle = 'article' AND fc.deleted = 0 AND fc.field_channels_target_id = {$tid_sql})";
   $query->addWhereExpression(0, $snippet);
+}
+
+/**
+ * Implements hook_entity_presave().
+ *
+ * Clears stray HTML entities in titles/alts migrated from WordPress so escaper
+ * does not produce literals like "&amp;" for visitors.
+ */
+function df_setup_entity_presave(EntityInterface $entity): void {
+  if ($entity instanceof NodeInterface && $entity->bundle() === 'article') {
+    $title = $entity->getTitle();
+    $decoded = Html::decodeEntities($title);
+    if ($decoded !== $title && $decoded !== '') {
+      $entity->setTitle($decoded);
+    }
+    return;
+  }
+
+  if ($entity->getEntityTypeId() !== 'media' || $entity->bundle() !== 'image' || !$entity->hasField('field_media_image')) {
+    return;
+  }
+
+  $values = $entity->get('field_media_image')->getValue();
+  $changed = FALSE;
+  foreach ($values as $i => $row) {
+    if (empty($row['alt'])) {
+      continue;
+    }
+    $alt = (string) $row['alt'];
+    $decoded_alt = Html::decodeEntities($alt);
+    if ($decoded_alt !== $alt && $decoded_alt !== '') {
+      $values[$i]['alt'] = $decoded_alt;
+      $changed = TRUE;
+    }
+  }
+  if ($changed) {
+    $entity->set('field_media_image', $values);
+  }
 }

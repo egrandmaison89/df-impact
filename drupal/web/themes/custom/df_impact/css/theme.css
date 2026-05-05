@@ -475,6 +475,190 @@
   }
 }
 
+/* =============================================================================
+   Digital exclusives archive (/digital-exclusives) — WP category parity
+   ============================================================================= */
+.de-archive {
+  padding-block: clamp(0.85rem, 2.4vw, 2.35rem)
+    clamp(2rem, 4.5vw, 3.5rem);
+}
+
+.de-archive-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: clamp(0.35rem, 1.2vw, 0.75rem);
+}
+
+.de-archive-grid > .views-row {
+  margin: 0;
+}
+
+.de-archive-card {
+  display: grid;
+  grid-template-columns: minmax(0, 17.5rem) minmax(0, 1fr);
+  gap: clamp(1rem, 2.6vw, 1.85rem);
+  align-items: start;
+  padding: clamp(1.1rem, 2.8vw, 1.85rem) 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.de-archive-grid .views-row:first-child .de-archive-card {
+  padding-top: clamp(0.55rem, 1.6vw, 1rem);
+}
+
+.de-archive-grid .views-row:last-child .de-archive-card {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.de-archive-card__media {
+  position: relative;
+  aspect-ratio: 1.42 / 1;
+  overflow: hidden;
+  background: var(--color-gray-light, #f0f0f0);
+  border-radius: 2px;
+}
+
+.de-archive-card__media .contextual-region,
+.de-archive-card__media .field,
+.de-archive-card__media .field__item {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.de-archive-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.de-archive-card__body {
+  min-width: 0;
+}
+
+.de-archive-card__topics {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-sans, sans-serif);
+  font-size: clamp(0.66rem, 1.08vw, 0.82rem);
+  line-height: 1.38;
+}
+
+.de-archive-card__topics .field {
+  margin: 0;
+}
+
+.de-archive-card__topics .field__item {
+  display: inline;
+}
+
+.de-archive-card__topics .field__item:not(:first-child)::before {
+  content: ' · ';
+  color: #757575;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.de-archive-card__topics a {
+  color: var(--color-link, #004f7c);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.de-archive-card__topics a:hover,
+.de-archive-card__topics a:focus-visible {
+  text-decoration-thickness: 2px;
+}
+
+.de-archive-card__title {
+  margin: 0 0 0.55rem;
+  font-family: var(--font-heading);
+  font-size: clamp(1.02rem, 2.05vw, 1.52rem);
+  font-weight: 700;
+  line-height: 1.22;
+  color: var(--color-text, #1a1a1a);
+}
+
+.de-archive-card__title a {
+  color: var(--color-link, #004f7c);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.de-archive-card__title a:hover,
+.de-archive-card__title a:focus-visible {
+  text-decoration-thickness: 2px;
+}
+
+.de-archive-card__excerpt {
+  margin: 0;
+  font-size: clamp(0.76rem, 1.28vw, 0.94rem);
+  line-height: 1.62;
+  color: var(--color-text-muted, #333);
+}
+
+.de-archive-card__excerpt > *:first-child {
+  margin-top: 0;
+}
+
+.de-archive-card__excerpt > *:last-child {
+  margin-bottom: 0;
+}
+
+.de-archive .pager {
+  margin-top: clamp(1.85rem, 3.8vw, 3rem);
+  margin-bottom: 0;
+}
+
+.de-archive .pager__items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem 0.65rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: clamp(0.72rem, 1.05vw, 0.88rem);
+}
+
+.de-archive .pager__item {
+  margin: 0;
+}
+
+.de-archive .pager__item.is-active a {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  .de-archive-card {
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+    gap: clamp(0.75rem, 2vw, 1.15rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .de-archive-card {
+    grid-template-columns: 1fr;
+  }
+
+  .de-archive-card__media {
+    max-width: 100%;
+    aspect-ratio: 16 / 10;
+  }
+
+  .de-archive-card__body {
+    padding-top: 0.1rem;
+  }
+}
+
 /* --- Compact site chrome matching the Impact homepage reference --- */
 .header {
   position: relative;

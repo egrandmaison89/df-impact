@@ -1,0 +1,28 @@
+{#
+/**
+ * @file
+ * Single archive row: image + taxonomy + title + excerpt (WordPress archive parity).
+ */
+#}
+<article class="de-archive-card">
+  {% if fields.field_featured_image is defined and fields.field_featured_image.content|render|trim %}
+    <div class="de-archive-card__media">
+      {{ fields.field_featured_image.content }}
+    </div>
+  {% endif %}
+  <div class="de-archive-card__body">
+    {% if fields.field_topics is defined and fields.field_topics.content|render|trim %}
+      <div class="de-archive-card__topics">
+        {{ fields.field_topics.content }}
+      </div>
+    {% endif %}
+    {% if fields.title is defined %}
+      <h2 class="de-archive-card__title">{{ fields.title.content }}</h2>
+    {% endif %}
+    {% if fields.field_excerpt is defined and fields.field_excerpt.content|render|trim %}
+      <div class="de-archive-card__excerpt">
+        {{ fields.field_excerpt.content }}
+      </div>
+    {% endif %}
+  </div>
+</article>

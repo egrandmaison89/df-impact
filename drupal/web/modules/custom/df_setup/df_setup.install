@@ -5,6 +5,7 @@
  * Install hooks for DF Impact setup.
  */
 
+use Drupal\Component\Utility\Html;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
@@ -297,4 +298,79 @@ function df_setup_update_10005(): string {
   \Drupal::state()->delete('df_setup.pending_de_channel_nids');
 
   return sprintf('Attached Digital Exclusives channel to %d article(s).', $attached);
+}
+
+/**
+ * Decode HTML entities in article titles and image media alt text (migration).
+ */
+function df_setup_update_10006(): string {
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+
+  /** @var int[] $nids */
+  // Any '&' catches &amp;, &#8217;, etc. migrated literally into the title string.
+  $nids = $node_storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('title', '&', 'CONTAINS')
+    ->execute();
+
+  $nodes_fixed = 0;
+  foreach ($node_storage->loadMultiple($nids) as $node) {
+    if (!$node instanceof Node || $node->bundle() !== 'article') {
+      continue;
+    }
+    $decoded = Html::decodeEntities($node->getTitle());
+    if ($decoded !== $node->getTitle() && $decoded !== '') {
+      $node->setTitle($decoded);
+      $node->save();
+      $nodes_fixed++;
+    }
+  }
+
+  /** @var int[] $mids */
+  $mids = [];
+  $schema = \Drupal::database()->schema();
+  if ($schema->tableExists('media__field_media_image')) {
+    $db = \Drupal::database();
+    $alt_column = 'field_media_image_alt';
+    if ($schema->fieldExists('media__field_media_image', $alt_column)) {
+      $or = $db->condition('OR');
+      $or->condition("fi.{$alt_column}", '%&amp;%', 'LIKE');
+      $or->condition("fi.{$alt_column}", '%&#%', 'LIKE');
+      $mids = $db->select('media__field_media_image', 'fi')
+        ->fields('fi', ['entity_id'])
+        ->condition($or)
+        ->distinct()
+        ->execute()
+        ->fetchCol();
+    }
+  }
+
+
+  $media_storage = \Drupal::entityTypeManager()->getStorage('media');
+  $media_fixed = 0;
+  foreach ($media_storage->loadMultiple($mids) as $media) {
+    if ($media->bundle() !== 'image' || !$media->hasField('field_media_image')) {
+      continue;
+    }
+    $values = $media->get('field_media_image')->getValue();
+    $changed = FALSE;
+    foreach ($values as $i => $row) {
+      if (empty($row['alt'])) {
+        continue;
+      }
+      $decoded_alt = Html::decodeEntities((string) $row['alt']);
+      if ($decoded_alt !== (string) $row['alt'] && $decoded_alt !== '') {
+        $values[$i]['alt'] = $decoded_alt;
+        $changed = TRUE;
+      }
+    }
+    if ($changed) {
+      $media->set('field_media_image', $values);
+      $media->save();
+      $media_fixed++;
+    }
+  }
+
+  return sprintf('Normalized HTML entities in %d article title(s) and %d media image alt(s).', $nodes_fixed, $media_fixed);
 }

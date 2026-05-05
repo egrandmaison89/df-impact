@@ -57,6 +57,9 @@ source:
     - name: homepage_placement
       label: 'Homepage placement'
       selector: homepage_placement
+    - name: channels
+      label: Channels
+      selector: channels
     - name: content_type
       label: 'Content type'
       selector: content_type
@@ -114,15 +117,21 @@ process:
   field_excerpt: excerpt
   field_meta_description: meta_description
 
-  # Map homepage placement
+  # Map homepage placement (featured / recent highlights only).
   field_homepage_placement:
     plugin: static_map
     source: homepage_placement
     map:
       featured: featured
       recent_highlights: recent_highlights
-      digital_exclusives: digital_exclusives
       none: none
+      digital_exclusives: none
+
+  # Digital Exclusives channel (WordPress category parity).
+  field_channels:
+    plugin: df_map_term_names
+    source: channels
+    vocabulary: channels
 
   # Map issue name to issue node
   field_issue:
@@ -163,3 +172,4 @@ migration_dependencies:
     - df_issues
     - df_taxonomy_topics
     - df_taxonomy_cancer_types
+    - df_taxonomy_channels

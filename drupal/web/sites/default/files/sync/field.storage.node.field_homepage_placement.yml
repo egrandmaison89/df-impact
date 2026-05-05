@@ -20,9 +20,6 @@ settings:
     -
       value: recent_highlights
       label: 'Recent Highlights'
-    -
-      value: digital_exclusives
-      label: 'Digital Exclusives (homepage row)'
   allowed_values_function: ''
 module: options
 locked: false

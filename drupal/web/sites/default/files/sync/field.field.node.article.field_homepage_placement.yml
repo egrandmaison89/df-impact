@@ -12,7 +12,7 @@ field_name: field_homepage_placement
 entity_type: node
 bundle: article
 label: 'Homepage Placement'
-description: 'Featured and Recent Highlights control the primary homepage rows. Digital Exclusives (homepage row) adds the story to the homepage Digital Exclusives grid (see also /digital-exclusives for the full issue-less archive).'
+description: 'Featured and Recent Highlights placement on the homepage. For the Digital Exclusives homepage row and the /digital-exclusives archive, use Channels (Digital Exclusives taxonomy) on each article.'
 required: false
 translatable: true
 default_value:

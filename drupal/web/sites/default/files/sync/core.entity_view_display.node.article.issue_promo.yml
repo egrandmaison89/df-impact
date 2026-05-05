@@ -5,6 +5,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.issue_promo
     - field.field.node.article.field_featured_image
+    - field.field.node.article.field_channels
     - core.entity_view_display.media.image.default
     - node.type.article
   module:
@@ -29,6 +30,7 @@ hidden:
   comment: true
   field_byline: true
   field_cancer_types: true
+  field_channels: true
   field_content_sections: true
   field_content_type: true
   field_excerpt: true

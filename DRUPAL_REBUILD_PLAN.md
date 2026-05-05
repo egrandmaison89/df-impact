@@ -1248,8 +1248,8 @@ Fully documented in Phase 2 sections:
 The homepage is populated automatically based on article settings:
 - To **feature an article** in the hero section: Edit the article → set "Homepage Placement" to "Featured"
 - To add an article to **Recent Highlights**: Edit the article → set "Homepage Placement" to "Recent Highlights"
-- To **remove an article** from the homepage: Edit the article → set "Homepage Placement" to "None"
-- **Digital Exclusives** section auto-populates from the most recent articles tagged with the "Digital Exclusive" content type.
+- To **remove an article** from Featured or Recent Highlights only: Edit the article → set "Homepage Placement" to "None"
+- **Digital Exclusives** homepage row shows the three newest articles that have **Channels → Digital Exclusives** checked (sticky posts sort first). The `/digital-exclusives` archive lists every article with that channel, newest first—matching the WordPress Digital Exclusives category archive.
 
 ### Finding and Editing Content
 

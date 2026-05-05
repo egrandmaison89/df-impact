@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * @file
+ * Setup helpers for DF Impact front page and Digital Exclusives Views filters.
+ */
+
+declare(strict_types=1);
+
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\Plugin\views\query\Sql;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_views_query_alter().
+ *
+ * Filters Digital Exclusives Views by field_channels (taxonomy) because term IDs
+ * are environment-specific and cannot be stored reliably in exported Views config.
+ */
+function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query): void {
+  $ids = ['homepage_digital_exclusives', 'digital_exclusives_archive'];
+  if (!in_array($view->storage->id(), $ids, TRUE)) {
+    return;
+  }
+  if (!$query instanceof Sql) {
+    return;
+  }
+
+  /** @var \Drupal\df_setup\DigitalExclusiveChannels $channels */
+  $channels = \Drupal::service('df_setup.digital_exclusive_channels');
+  $tid = $channels->findTermId() ?? $channels->ensureTermId();
+
+  $base_table = $view->storage->get('base_table');
+  $base_field = $view->storage->get('base_field');
+
+  if (!$tid) {
+    $query->addWhereExpression(0, '1 = 0');
+    return;
+  }
+
+  $database = \Drupal::database();
+  /** @var \Drupal\Core\Database\Query\Select $subquery */
+  $subquery = $database->select('node__field_channels', 'fc');
+  $subquery->addField('fc', 'entity_id');
+  $subquery->condition('fc.bundle', 'article');
+  $subquery->condition('fc.deleted', 0);
+  $subquery->condition('fc.field_channels_target_id', $tid);
+
+  $sql = $subquery->__toString();
+  $args = $subquery->arguments();
+  $snippet = $base_table . '.' . $base_field . ' IN (' . $sql . ')';
+  $query->addWhereExpression(0, $snippet, $args);
+}

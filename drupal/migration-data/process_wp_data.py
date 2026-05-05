@@ -426,19 +426,22 @@ for post in posts:
     cancer_type_cats = [CANCER_TYPE_CATS[cid] for cid in cat_ids
                         if cid in cancer_type_cat_ids]
 
-    # Homepage placement
+    # Homepage placement (Featured / Recent Highlights only; Digital Exclusives → Channels).
     placement = 'none'
     if any(tid in HOMEPAGE_FEATURED_TAG_IDS for tid in tag_ids):
         placement = 'featured'
     elif any(tid in HOMEPAGE_HIGHLIGHTS_TAG_IDS for tid in tag_ids):
         placement = 'recent_highlights'
-    elif any(tid in HOMEPAGE_DE_TAG_IDS for tid in tag_ids) or \
-         any(tid in DIGITAL_EXCLUSIVES_TAG_IDS for tid in tag_ids):
-        placement = 'digital_exclusives'
 
-    # Is digital exclusive?
+    # Is digital exclusive (WordPress category)?
     is_digital_exclusive = (4 in cat_ids)  # WP cat "Digital Exclusives"
     content_type_value = 'digital_exclusive' if is_digital_exclusive else 'print'
+
+    # Drupal Channels taxonomy (mirror WP category + legacy DE homepage tags).
+    channels = []
+    if is_digital_exclusive or any(tid in HOMEPAGE_DE_TAG_IDS for tid in tag_ids) \
+            or any(tid in DIGITAL_EXCLUSIVES_TAG_IDS for tid in tag_ids):
+        channels = ['Digital Exclusives']
 
     # Get content
     title = post.get('title', {}).get('rendered', '').strip()
@@ -509,6 +512,7 @@ for post in posts:
     else:
         article_data = {**base_data,
                         'homepage_placement': placement,
+                        'channels': channels,
                         'content_type': content_type_value,
                         'is_digital_exclusive': is_digital_exclusive}
         articles_output.append(article_data)

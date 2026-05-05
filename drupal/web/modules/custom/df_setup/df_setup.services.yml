@@ -1,6 +1,16 @@
 services:
+  df_setup.digital_exclusive_channels:
+    class: Drupal\df_setup\DigitalExclusiveChannels
+    arguments: ['@entity_type.manager']
+
   df_setup.fix_home_front_page:
     class: Drupal\df_setup\EventSubscriber\FixHomeFrontPageConfigSubscriber
     arguments: ['@config.factory', '@entity_type.manager', '@path_alias.manager']
+    tags:
+      - { name: event_subscriber }
+
+  df_setup.ensure_digital_exclusive_term:
+    class: Drupal\df_setup\EventSubscriber\EnsureDigitalExclusiveTermSubscriber
+    arguments: ['@df_setup.digital_exclusive_channels']
     tags:
       - { name: event_subscriber }

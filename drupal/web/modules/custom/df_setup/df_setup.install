@@ -14,6 +14,9 @@ use Drupal\pathauto\PathautoState;
 function df_setup_install(): void {
   _df_setup_ensure_home_landing();
   _df_setup_ensure_about_impact_page();
+  /** @var \Drupal\df_setup\DigitalExclusiveChannels $channels */
+  $channels = \Drupal::service('df_setup.digital_exclusive_channels');
+  $channels->ensureTermId();
 }
 
 /**
@@ -168,4 +171,44 @@ HTML;
  */
 function df_setup_update_10002(): void {
   _df_setup_ensure_about_impact_page();
+}
+
+/**
+ * Migrate legacy Digital Exclusives homepage placement to Channels taxonomy.
+ */
+function df_setup_update_10003(): string {
+  /** @var \Drupal\df_setup\DigitalExclusiveChannels $channels */
+  $channels = \Drupal::service('df_setup.digital_exclusive_channels');
+  $tid = $channels->ensureTermId();
+  if (!$tid) {
+    return 'Digital Exclusives taxonomy term was not created (channels vocabulary missing). Run config import, then re-run updates.';
+  }
+
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'article')
+    ->condition('field_homepage_placement', 'digital_exclusives')
+    ->accessCheck(FALSE)
+    ->execute();
+
+  $updated = 0;
+  foreach ($nids as $nid) {
+    $node = $storage->load($nid);
+    if (!$node instanceof Node || $node->bundle() !== 'article') {
+      continue;
+    }
+    if ($node->hasField('field_channels')) {
+      $referenced = array_map('intval', array_column($node->get('field_channels')->getValue(), 'target_id'));
+      if (!in_array($tid, $referenced, TRUE)) {
+        $node->get('field_channels')->appendItem(['target_id' => $tid]);
+      }
+    }
+    if ($node->hasField('field_homepage_placement')) {
+      $node->set('field_homepage_placement', 'none');
+    }
+    $node->save();
+    $updated++;
+  }
+
+  return sprintf('Migrated %d article(s) from homepage placement "digital_exclusives" to Channels (term ID %d).', $updated, $tid);
 }

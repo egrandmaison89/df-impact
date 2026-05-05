@@ -255,7 +255,7 @@ _save_view('homepage_highlights', [
 _save_view('homepage_digital_exclusives', [
   'id' => 'homepage_digital_exclusives',
   'label' => 'Homepage: Digital Exclusives',
-  'description' => 'Latest Digital Exclusive articles for the homepage.',
+  'description' => 'Latest Digital Exclusives channel articles for the homepage; channel filter applied in df_setup.module.',
   'base_table' => 'node_field_data',
   'core' => '10.x',
   'display' => [
@@ -309,16 +309,15 @@ _save_view('homepage_digital_exclusives', [
             'plugin_id' => 'bundle',
             'group' => 1,
           ],
-          'field_issue_target_id' => [
-            'id' => 'field_issue_target_id',
-            'table' => 'node__field_issue',
-            'field' => 'field_issue_target_id',
-            'operator' => 'empty',
-            'plugin_id' => 'numeric',
-            'group' => 1,
-          ],
         ],
         'sorts' => [
+          'sticky' => [
+            'id' => 'sticky',
+            'table' => 'node_field_data',
+            'field' => 'sticky',
+            'plugin_id' => 'boolean',
+            'order' => 'DESC',
+          ],
           'created' => [
             'id' => 'created',
             'table' => 'node_field_data',
@@ -329,7 +328,7 @@ _save_view('homepage_digital_exclusives', [
         ],
         'pager' => [
           'type' => 'some',
-          'options' => ['items_per_page' => 4],
+          'options' => ['items_per_page' => 3],
         ],
         'style' => [
           'type' => 'default',

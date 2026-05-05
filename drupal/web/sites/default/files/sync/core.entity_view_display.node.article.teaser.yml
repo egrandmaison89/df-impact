@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.article.comment
     - field.field.node.article.field_byline
     - field.field.node.article.field_cancer_types
+    - field.field.node.article.field_channels
     - field.field.node.article.field_content_sections
     - field.field.node.article.field_content_type
     - field.field.node.article.field_excerpt
@@ -62,6 +63,7 @@ hidden:
   comment: true
   field_byline: true
   field_cancer_types: true
+  field_channels: true
   field_content_sections: true
   field_content_type: true
   field_homepage_placement: true

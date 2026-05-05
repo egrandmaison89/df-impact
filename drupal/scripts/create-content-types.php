@@ -242,7 +242,7 @@ _create_field_storage('field_issue', 'node', 'entity_reference', [
 ]);
 _create_field_instance('field_issue', 'node', 'article', 'Issue', [
   'required' => FALSE,
-  'description' => 'The quarterly issue this article belongs to. Leave empty for Digital Exclusives.',
+  'description' => 'The quarterly magazine issue when this story ran in print. Omit for web-only exclusives if there is no print issue.',
   'settings' => [
     'handler' => 'default:node',
     'handler_settings' => [
@@ -263,6 +263,22 @@ _create_field_instance('field_topics', 'node', 'article', 'Topics', [
     'handler' => 'default:taxonomy_term',
     'handler_settings' => [
       'target_bundles' => ['topics' => 'topics'],
+    ],
+  ],
+]);
+
+// field_channels (taxonomy: site sections / Digital Exclusives)
+_create_field_storage('field_channels', 'node', 'entity_reference', [
+  'cardinality' => -1,
+  'settings' => ['target_type' => 'taxonomy_term'],
+]);
+_create_field_instance('field_channels', 'node', 'article', 'Channels', [
+  'required' => FALSE,
+  'description' => 'Assign Digital Exclusives to list this story in the homepage Digital Exclusives row and on /digital-exclusives.',
+  'settings' => [
+    'handler' => 'default:taxonomy_term',
+    'handler_settings' => [
+      'target_bundles' => ['channels' => 'channels'],
     ],
   ],
 ]);

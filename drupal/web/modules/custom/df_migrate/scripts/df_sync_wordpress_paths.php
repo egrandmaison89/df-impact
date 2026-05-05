@@ -45,9 +45,26 @@ if ($database->schema()->tableExists('migrate_map_df_in_brief')) {
 $placement_map = [
   'featured' => 'featured',
   'recent_highlights' => 'recent_highlights',
-  'digital_exclusives' => 'digital_exclusives',
   'none' => 'none',
+  'digital_exclusives' => 'none',
 ];
+
+$de_tid = NULL;
+if (\Drupal::hasService('df_setup.digital_exclusive_channels')) {
+  /** @var \Drupal\df_setup\DigitalExclusiveChannels $de_channels */
+  $de_channels = \Drupal::service('df_setup.digital_exclusive_channels');
+  $de_tid = $de_channels->ensureTermId();
+}
+if (!$de_tid) {
+  $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $de_tids = $term_storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('vid', 'channels')
+    ->condition('name', 'Digital Exclusives')
+    ->range(0, 1)
+    ->execute();
+  $de_tid = $de_tids ? (int) reset($de_tids) : NULL;
+}
 
 $pathauto_skip = class_exists(PathautoState::class) ? PathautoState::SKIP : 0;
 
@@ -65,6 +82,30 @@ foreach ($articles as $row) {
   $placement = $row['homepage_placement'] ?? 'none';
   $placement_val = $placement_map[$placement] ?? 'none';
   $node->set('field_homepage_placement', $placement_val);
+
+  if ($de_tid && $node->hasField('field_channels')) {
+    $want_de = !empty($row['channels']) && is_array($row['channels'])
+      && in_array('Digital Exclusives', $row['channels'], TRUE);
+    $has_de = FALSE;
+    foreach ($node->get('field_channels')->getValue() as $item) {
+      if ((int) ($item['target_id'] ?? 0) === $de_tid) {
+        $has_de = TRUE;
+        break;
+      }
+    }
+    if ($want_de && !$has_de) {
+      $node->get('field_channels')->appendItem(['target_id' => $de_tid]);
+    }
+    if (!$want_de && $has_de) {
+      $new_vals = [];
+      foreach ($node->get('field_channels')->getValue() as $item) {
+        if ((int) ($item['target_id'] ?? 0) !== $de_tid) {
+          $new_vals[] = $item;
+        }
+      }
+      $node->set('field_channels', $new_vals);
+    }
+  }
 
   $alias = $row['drupal_alias'] ?? '';
   if (is_string($alias) && $alias !== '' && str_starts_with($alias, '/')) {

@@ -26,7 +26,7 @@ Deliver a **reader- and editor-friendly** Drupal site that matches the Impact Ma
 |------|-------------------------|------------------------|
 | Homepage order & copy | H1 “Stories…”, Explore latest issue, featured row, Digital Exclusives, Recent Highlights | Different H2 order; no explore-latest; “View all” pointed at `/in-brief` |
 | Hero | Full-width collage | `hero` region existed but no exported block |
-| Digital Exclusives | Curated tags + category semantics | View used “no issue”; migration mapped `digital_exclusives` to a **list value the field did not allow** |
+| Digital Exclusives | Category + tags | Channels taxonomy (`field_channels`), Views alter for stable filtering |
 | Article URLs | Plan: `/stories/...` | `articles.json` aliases were `/slug`; redirects targeted `/stories/...` |
 | Front page | Real homepage | `system.site.page.front` was `/node` (invalid UX) |
 | Search | Working search page | Theme linked to `view.df_impact_search` **missing from config sync** |
@@ -40,13 +40,13 @@ Deliver a **reader- and editor-friendly** Drupal site that matches the Impact Ma
 
 ### Phase A — Foundations (parity-critical)
 
-1. **Homepage placement + Digital Exclusives** — Add `digital_exclusives` to `field_homepage_placement`; drive the homepage DE block from that field (not “issue empty”). *(Implemented in repo.)*
+1. **Digital Exclusives** — Channels vocabulary (`Digital Exclusives` term); homepage + archive Views filter `field_channels` (applied in `df_setup.module` because term IDs are environment-specific).
 2. **Article URLs** — Emit `/stories/{slug}` from the Python pipeline; keep redirects consistent. *(Implemented in `process_wp_data.py`; re-run script to regenerate JSON.)*
 3. **Front page** — **`df_setup`** module creates a **Home** page at **`/home`** and sets the front path; **`system.site.yml`** ships with `page.front: /home`. Run `drush cim` so the module installs.
 4. **Search** — Export Search API server + index into `files/sync` and add `views.view.df_impact_search`. *(Implemented.)*
 5. **Homepage layout** — Reorder sections to match WordPress; add “Explore the Latest Issue” (`browse_issues` block display); fix DE “View all” to `/digital-exclusives`. *(Implemented.)*
-6. **Digital exclusives archive** — View page at `/digital-exclusives` for issue-less articles (browse-all semantics aligned with prior “web exclusive” filter). *(Implemented.)*
-7. **Bulk sync script** — `df_migrate/scripts/df_sync_wordpress_paths.php` updates aliases, homepage placement from `articles.json`, and imports `redirects.json` plus dated `/YYYY/MM/slug` sources. *(Implemented.)*
+6. **Digital exclusives archive** — View page at `/digital-exclusives` filtered by Digital Exclusives channel (taxonomy parity with WP category archive). *(Implemented.)*
+7. **Bulk sync script** — `df_migrate/scripts/df_sync_wordpress_paths.php` updates aliases, homepage placement and **Channels** from `articles.json`, and imports `redirects.json` plus dated `/YYYY/MM/slug` sources. *(Implemented.)*
 8. **Default hero** — Front page uses Impact cover imagery when the Hero region has no block. *(Implemented.)*
 
 ### Phase B — Article & issue presentation
@@ -81,10 +81,11 @@ Deliver a **reader- and editor-friendly** Drupal site that matches the Impact Ma
 
 | Change | Location / notes |
 |--------|------------------|
-| `digital_exclusives` allowed value | `field.storage.node.field_homepage_placement.yml` |
-| Homepage DE view filter | `views.view.homepage_digital_exclusives.yml` |
+| `field_channels` + `channels` vocab | `field.*.field_channels.yml`, `taxonomy.vocabulary.channels.yml`; term created by `df_setup` on config import |
+| Homepage placement list | `field.storage.node.field_homepage_placement.yml` — Featured / Highlights / None only |
+| Homepage DE view | `views.view.homepage_digital_exclusives.yml` — published articles; WHERE clause from `df_setup_views_query_alter()` |
 | Current issue block | `views.view.browse_issues.yml` — display `current_issue` |
-| DE archive page | `views.view.digital_exclusives_archive.yml` — path `/digital-exclusives` |
+| DE archive page | `views.view.digital_exclusives_archive.yml` — path `/digital-exclusives`; channel filter via `df_setup_views_query_alter()` |
 | Homepage template | `page--front.html.twig` |
 | Article aliases | `drupal/migration-data/process_wp_data.py` → `/stories/{slug}` |
 | Search in sync | `search_api.server.*`, `search_api.index.df_impact_content.yml`, `views.view.df_impact_search.yml` |

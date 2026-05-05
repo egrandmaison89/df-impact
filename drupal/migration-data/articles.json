@@ -23,6 +23,7 @@
     ],
     "meta_description": "The Elaine and Eduardo Saverin Foundation made a $20 million grant to Dana-Farber to accelerate research and care for people with stage IV breast cancer.",
     "homepage_placement": "featured",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -49,6 +50,7 @@
     "cancer_types": [],
     "meta_description": "For the first time, the Jimmy Fund Walk passed the $10 million threshold for groundbreaking research and patient care at Dana-Farber.",
     "homepage_placement": "featured",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -74,6 +76,7 @@
     "cancer_types": [],
     "meta_description": "In 2025, 140 Jimmy Fund Golf events raised more than $6.5 million for cancer care and research\u2014simply by doing what they love.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -99,6 +102,7 @@
     "cancer_types": [],
     "meta_description": "Sarah Salter Levy and Steven Levy made a $3 million gift to Dana-Farber\u2019s Future of Cancer Care Fund to support the future cancer hospital.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -123,7 +127,10 @@
     ],
     "cancer_types": [],
     "meta_description": "In 2025, over 8,000 supporters across the country donated more than $2.6 million for GivingTuesday to benefit Dana-Farber Cancer Institute.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -150,6 +157,7 @@
     "cancer_types": [],
     "meta_description": "ALSF granted more than $1.8 million in Young Investigator Awards in 2024 and 2025 to five Dana-Farber researchers in pediatric oncology.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -177,6 +185,7 @@
     ],
     "meta_description": "The estate of Ruth Freedlander made a $1.8 million bequest to Dana-Farber Cancer Institute to advance research into inflammatory breast cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -203,6 +212,7 @@
     "cancer_types": [],
     "meta_description": "The Cancer Research Institute (CRI) is advancing bold new strategies to harness the immune system against cancer through two grants at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -229,6 +239,7 @@
     "cancer_types": [],
     "meta_description": "Recently, the IWMF took a significant step in combating WM, awarding more than $1.4 million in grants to three Dana-Farber investigators.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -255,6 +266,7 @@
     "cancer_types": [],
     "meta_description": "Runners from Dana-Farber Cancer Institute\u2019s 2025 Boston Half team raised a record-breaking $1 million, the highest fundraising total in the team\u2019s history.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -280,6 +292,7 @@
     "cancer_types": [],
     "meta_description": "Expect Miracles Foundation made a $1.1 million gift to Dana-Farber Cancer Institute\u2019s Robert and Ren\u00e9e Belfer Center for Applied Cancer Science.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -305,6 +318,7 @@
     "cancer_types": [],
     "meta_description": "Brian and Jane Crowley made a generous gift to support the Jane and Brian Crowley Fund for CLL Research at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -332,6 +346,7 @@
     ],
     "meta_description": "Donald M. Ephraim recently gave $1 million to support the research of Alicia Morgans, MD, MPH, in prostate cancer and survivorship.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -357,6 +372,7 @@
     "cancer_types": [],
     "meta_description": "For 52 years, Steve Farber and Dee Curley have supported presidential initiatives, capital campaigns, endowed chairs, and other Dana-Farber priorities.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -382,6 +398,7 @@
     "cancer_types": [],
     "meta_description": "Conquer Cancer\u00ae, the ASCO Foundation, has fueled research at Dana-Farber Cancer Institute for decades, recently giving $1.3 million.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -407,6 +424,7 @@
     "cancer_types": [],
     "meta_description": "The Leonard P. Zakim Center for Integrative Therapies and Healthy Living at Dana-Farber celebrated its 25th anniversary in October 2025.",
     "homepage_placement": "featured",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -432,6 +450,7 @@
     "cancer_types": [],
     "meta_description": "Together, Dana-Farber community fundraising heroes organize events of all types and sizes, raising more than $6.5 million annually.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -457,6 +476,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber Cancer Institute Trustee Liz Rappaport and Tom Mathes received the 2025 Ken Coleman Extra Mile Award.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -482,6 +502,7 @@
     "cancer_types": [],
     "meta_description": "The Office of Faculty Development supports career development, builds community, aids faculty members, and ensures that Dana-Farber is a place to thrive.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -507,6 +528,7 @@
     "cancer_types": [],
     "meta_description": "On Oct. 6, 2025, Jimmy Fund Co-Chairs Tom Caron and Brock Holt hosted the inaugural Jimmy Fund Pro-Am Golf Tournament.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -532,6 +554,7 @@
     "cancer_types": [],
     "meta_description": "The Pan-Mass Challenge (PMC) is relocating its starting line and hub site from Sturbridge to Worcester.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -557,6 +580,7 @@
     "cancer_types": [],
     "meta_description": "The Red Sox brought some warmth and inspiration to the pediatric cancer patients at the Jimmy Fund Clinic at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -582,6 +606,7 @@
     "cancer_types": [],
     "meta_description": "The Massachusetts Public Health Council voted to approve a Determination of Need for Dana-Farber to build a cancer hospital in the Longwood Medical Area.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -609,6 +634,7 @@
     "cancer_types": [],
     "meta_description": "Letter from Melany Duval, Senior Vice President and Chief Philanthropy Officer of The Jimmy Fund for the Spring 2026 issue of Impact Magazine.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -636,6 +662,7 @@
     "cancer_types": [],
     "meta_description": "The PMC has built an unparalleled track record for success strengthened by traditions and improvements in the pursuit of defying cancer.",
     "homepage_placement": "recent_highlights",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -663,6 +690,7 @@
     "cancer_types": [],
     "meta_description": "How can exercise and diet improve the cognitive and physical abilities of cancer survivors who are 65 and older?",
     "homepage_placement": "recent_highlights",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -698,6 +726,7 @@
     ],
     "meta_description": "Dana-Farber aspires to provide the care and treatment our patients deserve. We achieve these ambitions because of our donor community.",
     "homepage_placement": "recent_highlights",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -726,6 +755,7 @@
     ],
     "meta_description": "The WEEI/NESN Jimmy Fund Radio-Telethon presented by Arbella Insurance continued to be a beacon of support with a record-breaking year.",
     "homepage_placement": "recent_highlights",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -753,6 +783,7 @@
     "cancer_types": [],
     "meta_description": "The American Cancer Society (ACS) recently awarded more than $3.1 million in grants to 11 Dana-Farber Cancer Institute investigators.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -779,6 +810,7 @@
     "cancer_types": [],
     "meta_description": "Joseph S. Deitch is a philanthropist with a bold vision: to amplify changemakers and inspire collective action.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -805,6 +837,7 @@
     "cancer_types": [],
     "meta_description": "When Jane Rodgers was diagnosed with cancer in 2019, her family took comfort in the fact that she was receiving the best care at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -831,6 +864,7 @@
     "cancer_types": [],
     "meta_description": "The Tyler Family donated $3 million to the Tyler Family Fund for Parkinson's Research, supporting the work of Bruce Spiegelman, PhD.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -858,6 +892,7 @@
     "cancer_types": [],
     "meta_description": "In 2025, Dana-Farber Cancer Institute received an extraordinary estate gift of $2,464,652 from the Dolores E. Tassinari estate.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -884,6 +919,7 @@
     "cancer_types": [],
     "meta_description": "In addition to unrestricted giving, Suprenant focused her donations on the Program for Older Adults with Breast Cancer and the Zakim Center.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -910,6 +946,7 @@
     "cancer_types": [],
     "meta_description": "Kicks for Cancer has grown into a celebration that unites the community to honor those impacted by cancer and support Dana-Farber research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -935,6 +972,7 @@
     "cancer_types": [],
     "meta_description": "Shannon and Jason Robins, made a $1 million gift to Dana-Farber, helping to launch a palliative care education program for nurses.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -961,6 +999,7 @@
     "cancer_types": [],
     "meta_description": "Shelby Roseman, PhD, and Amanda Smythers, PhD, were named the latest group of Trustee Science Committee Postdoctoral Fellows at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -986,6 +1025,7 @@
     "cancer_types": [],
     "meta_description": "This year, runners from Dana-Farber Cancer Institute\u2019s 2025 Falmouth Road Race team raised a record-breaking $1,105,554.90.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1012,6 +1052,7 @@
     "cancer_types": [],
     "meta_description": "Over the past year, Dana-Farber Cancer Institute researchers have earned a total of $845,000 in competitive ASH grants.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1036,7 +1077,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Trustee Stephen B. Farber and his wife Deirdre E. Curley made a $1 million unrestricted gift to the Ellen Farber Schmidt Fund at Dana-Farber.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -1062,6 +1106,7 @@
     "cancer_types": [],
     "meta_description": "After more than a decade in Philanthropy Communications at Dana-Farber, Assistant Vice President, Joyce Gallagher is retiring.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1088,6 +1133,7 @@
     "cancer_types": [],
     "meta_description": "The PMC community came together at Rochambeau Restaurant in Boston on Sunday, Nov. 2, for the 2025 PMC Check Presentation.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1115,6 +1161,7 @@
     ],
     "meta_description": "Legendary rock icon Sir Roger Daltrey, lead singer of The Who and co-founder of Teen Cancer America (TCA), visited Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1145,6 +1192,7 @@
     ],
     "meta_description": "The DFS is a group of visionary donors who are changing lives and creating a legacy through a planned gift.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1170,6 +1218,7 @@
     "cancer_types": [],
     "meta_description": "EMF received the 2025 Boston Red Sox Jimmy Fund Award\u2014the Jimmy Fund\u2019s highest honor\u2014during a special on-field ceremony at Fenway Park.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1195,6 +1244,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber celebrated its commitment to nurturing future leaders in medicine at the Lubin Family Foundation Scholar Award Annual Symposium.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1220,6 +1270,7 @@
     "cancer_types": [],
     "meta_description": "Family of the late Heather McMahon attended a ribbon-cutting ceremony outside the laboratory of Jean Zhao, PhD at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1246,6 +1297,7 @@
     "cancer_types": [],
     "meta_description": "When you donate to Dana-Farber and the Jimmy Fund today, your gift doubles, thanks to a matching challenge from Arbella Insurance Group.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1273,6 +1325,7 @@
     "cancer_types": [],
     "meta_description": "As I reflect on this past year, I am filled with immense gratitude for the generosity and unwavering commitment of our Dana-Farber community.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1301,6 +1354,7 @@
     "cancer_types": [],
     "meta_description": "On Monday, April 21, more than 500 runners completed the 129th Boston Marathon\u00ae as part of the 2025 Dana-Farber Marathon Challenge team.",
     "homepage_placement": "featured",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1333,6 +1387,7 @@
     ],
     "meta_description": "Dana-Farber marks a transformative year under President and CEO and Susan Smith Professor of Medicine at HMS Benjamin L. Ebert, MD, PhD",
     "homepage_placement": "featured",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1361,6 +1416,7 @@
     "cancer_types": [],
     "meta_description": "Blood Cancer United awarded $4.2 million to DFCI physician-scientists working to understand, treat, and potentially cure bloodborne cancers.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1389,6 +1445,7 @@
     ],
     "meta_description": "DFCI has been awarded more than $3 million in funding as part of Cancer Grand Challenge to find new treatments for solid tumors in children.",
     "homepage_placement": "featured",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1415,6 +1472,7 @@
     "cancer_types": [],
     "meta_description": "Robert and Dana Smith recently made a $3 million gift to continue supporting Paul Richardson's advanced MM clinical trials research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1440,6 +1498,7 @@
     "cancer_types": [],
     "meta_description": "Larry and Susan Marx established Larry and Susan Marx Fund for Early Detection with a $2.6 million gift, supporting early detection efforts.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1467,6 +1526,7 @@
     ],
     "meta_description": "The late Robert P. Cingolani made a $2 million estate gift to support pediatric cancer research at Dana-Farber in memory of his son, Michael.",
     "homepage_placement": "recent_highlights",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1495,6 +1555,7 @@
     "cancer_types": [],
     "meta_description": "$2 million gift from Russ Agrusa will provide critical funding for colorectal cancer research initiatives at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1524,6 +1585,7 @@
     "cancer_types": [],
     "meta_description": "The Goldfarb and Rudkin Family International Fellowships in Breast Oncology at Dana-Farber have accelerated science and cancer care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1550,6 +1612,7 @@
     "cancer_types": [],
     "meta_description": "Komen awarded three new Career Transition Awards totaling $1.95 million, alongside 12 active research grants, to DFCI physician-scientists.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1576,6 +1639,7 @@
     "cancer_types": [],
     "meta_description": "The V Foundation for Cancer Research has awarded $1.4 million in grants to two exceptional investigators at DFCI.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1603,6 +1667,7 @@
     "cancer_types": [],
     "meta_description": "The G. Harold and Leila Y. Mathers Charitable Foundation awarded Dana-Farber $1.47 million to support basic science research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1630,6 +1695,7 @@
     "cancer_types": [],
     "meta_description": "A $1.25 million gift from the Ilene Beal Charitable Foundation supports pancreatic cancer early-detection research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1656,6 +1722,7 @@
     "cancer_types": [],
     "meta_description": "IWMF combats Waldenstr\u00f6m\u2019s macroglobulinemia (WM) by awarding four Dana-Farber scientists more than $1.1 million in grants.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1681,6 +1748,7 @@
     "cancer_types": [],
     "meta_description": "Pomeroy gifted more than $1 million to DFCI, supporting research and clinical trials leading toward more successful transplants.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1707,6 +1775,7 @@
     "cancer_types": [],
     "meta_description": "The Haroun Family Fund supports innovative research aimed at discovering the next breakthroughs in treating Ewing sarcoma in adults.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1733,6 +1802,7 @@
     "cancer_types": [],
     "meta_description": "Anne P. Olsen has bequeathed $1 million to Dana-Farber directed to the Hilary J. Olsen Fund for Metastatic Breast Cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1759,6 +1829,7 @@
     "cancer_types": [],
     "meta_description": "PCF awarded $1,050,000 to three DFCI researchers through two Young Investigator Awards and a Challenge Award, all focused on prostate cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1785,6 +1856,7 @@
     "cancer_types": [],
     "meta_description": "The Kesslers donated $1 million to advance AML research led by Robert Soiffer, MD, chief of the Division of Hematologic Malignancies.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1810,6 +1882,7 @@
     "cancer_types": [],
     "meta_description": "Donahue Family gifts $1 million to the Donahue Family Fund for Prostate Cancer and the Donahue Family Fund for Cancer Interception at DFCI.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1836,6 +1909,7 @@
     "cancer_types": [],
     "meta_description": "Donna and John Hale gift $1 million to establish research fund in support of The Mellen and Eisenson Family Center for BRCA and Related Genes.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1861,6 +1935,7 @@
     "cancer_types": [],
     "meta_description": "DFCI received approvals to advance plans to build New England\u2019s only dedicated inpatient cancer hospital for adult patients.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -1886,7 +1961,10 @@
     ],
     "cancer_types": [],
     "meta_description": "AACR awarded $580,000 to three DFCI physician-scientists investigating new methods of prevention, diagnosis, and treatment of various cancers.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -1914,7 +1992,10 @@
       "Pediatrics"
     ],
     "meta_description": "Cookies for Kids\u2019 Cancer awarded two grants totaling $600,000 to Dana-Farber to support groundbreaking pediatric cancer research.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -1940,7 +2021,10 @@
     ],
     "cancer_types": [],
     "meta_description": "The Ben and Catherine Ivy Foundation has awarded $524,081 to Dana-Farber to advance novel immunotherapy approaches to treat glioblastoma.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -1966,7 +2050,10 @@
     ],
     "cancer_types": [],
     "meta_description": "METAvivor has awarded three grants totaling $850,000 to advance metastatic breast cancer research at Dana-Farber Cancer Institute.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -1992,7 +2079,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Dana-Farber Cancer Institute received nearly $800,000 in support from the MLSC to advance cancer research and workforce development.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -2020,7 +2110,10 @@
       "Pediatrics"
     ],
     "meta_description": "Rally Foundation for Childhood Cancer Research awarded $450,000 in grants to four DFCI researchers developing treatments for pediatric cancer.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -2049,6 +2142,7 @@
     "cancer_types": [],
     "meta_description": "DFCI and the Jimmy Fund\u2019s annual Giving Day united patients, families, employees, and supporters worldwide in giving to defy cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2074,6 +2168,7 @@
     "cancer_types": [],
     "meta_description": "The Kraft Family Blood Donor Center celebrates the individuals who give so generously at the center\u2019s annual Breakfast of Champions.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2100,6 +2195,7 @@
     "cancer_types": [],
     "meta_description": "On May 5, the Institute celebrated Anne Gross, the inaugural incumbent of the Ning Zhao Chair of Nursing at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2125,6 +2221,7 @@
     ],
     "meta_description": "On May 17, dozens of PMC Pedal Partners gathered at The 521 Overlook at Fenway Park to meet cyclists participating in the PMC on Aug. 2 and 3.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2152,6 +2249,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber Trustees, Pan-Mass Challenge Heavy Hitters, supporters, and friends gathered at Cure in New York City.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2179,6 +2277,7 @@
     "cancer_types": [],
     "meta_description": "",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2208,6 +2307,7 @@
     ],
     "meta_description": "Cindy and AJ Janower\u2019s introduction to childhood cancer began when their daughter, Samantha \u201cSammi,\u201d was just three years old.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2235,6 +2335,7 @@
     "cancer_types": [],
     "meta_description": "Cutlers structure $2 million gift to be shared between Dana-Farber and BIDMC\u2014the first-ever joint gift in support of the two institutions.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2264,6 +2365,7 @@
     "cancer_types": [],
     "meta_description": "Building on past support, BCRF recently made grants totaling more than $4 million to 12 physician-scientists at Dana-Farber.",
     "homepage_placement": "recent_highlights",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2290,6 +2392,7 @@
     "cancer_types": [],
     "meta_description": "Matthew Freedman, MD, was named the inaugural incumbent of the David Goldstein Chair at Dana-Farber to support kidney cancer research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2317,6 +2420,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber received over $3M from the Damon Runyon Cancer Research Foundation in 2024 supporting physician-scientists and researchers.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2346,6 +2450,7 @@
     ],
     "meta_description": "HomeGoods and the TJX Foundation have made a three-year commitment to donate at least $3.6 million to Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2372,6 +2477,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber launched the Neuro-Inclusive Oncology Care and Empowerment Program to provide specialized cancer care for adults with IDD.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2398,6 +2504,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber Cancer Institute received a $2.5 million grant from the IASLC and LCRF for researching a cure for non-small cell lung carcinoma.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2424,6 +2531,7 @@
     "cancer_types": [],
     "meta_description": "Ross Mayer has established The Ross Mayer Endowed Fellowship in Prostate Cancer and the accompanying Mayer Fellow Advancement Fund.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2450,6 +2558,7 @@
     "cancer_types": [],
     "meta_description": "The Bekensteins recently made a generous gift to Dana-Farber Cancer Institute to establish the Meredith and Billy Starr Investigatorship.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2476,6 +2585,7 @@
     "cancer_types": [],
     "meta_description": "The Edward P. Evans Foundation has awarded $1.65 million to Dana-Farber researchers studying conditions caused by malfunctioning bone marrow.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2502,6 +2612,7 @@
     "cancer_types": [],
     "meta_description": "NYSCF awarded $1.5 million to Judith Agudo for her work to make cancerous tumors more susceptible to immunotherapies.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2528,6 +2639,7 @@
     "cancer_types": [],
     "meta_description": "With a $1 million gift, the Carney Family Charitable Foundation has expanded breast cancer immuno-oncology research at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2554,6 +2666,7 @@
     "cancer_types": [],
     "meta_description": "With a gift of $1 million, the Dakolias established the Dakolias Family and Lavine Family Fund for Career Development in Nursing.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2580,6 +2693,7 @@
     "cancer_types": [],
     "meta_description": "Jonathan and Shelley Isaacson have gifted $1 million to Dana-Farber to establish The Isaacson Family Fellowship in Ocular Melanoma.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2605,6 +2719,7 @@
     "cancer_types": [],
     "meta_description": "The Palm Beach community raised over $1.31 million to support Dana-Farber through their Palm Beach Annual appeal.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2630,7 +2745,10 @@
     ],
     "cancer_types": [],
     "meta_description": "With a $750,000 gift, Patricia and Steve Chubb established The Alice Fund to support Heather Parsons' ctDNA research.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2657,6 +2775,7 @@
     "cancer_types": [],
     "meta_description": "Perpetuating the philanthropic legacy of the team\u2019s owners, Tom and Jean Yawkey, The Yawkey Foundation made gifts totaling $180,000 in 2024.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2683,6 +2802,7 @@
     "cancer_types": [],
     "meta_description": "John T. DiLiegro Jr. passed away from glioblastoma at age 49. His sister Karen formed the John T. Foundation in his memory.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2708,6 +2828,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber leadership welcomed members of the PMC community for a special event celebrating their success raising more than $1 billion.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2736,6 +2857,7 @@
     "cancer_types": [],
     "meta_description": "The Defy Cancer Celebration at Fenway Park on Sunday, March 30, was a day filled with hope, progress, and community.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2761,6 +2883,7 @@
     "cancer_types": [],
     "meta_description": "Bill Lawrence received the 2024 Ken Coleman Extra Mile Award for over two decades of support for Jimmy Fund Golf.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2787,6 +2910,7 @@
     "cancer_types": [],
     "meta_description": "Boston Red Sox pitcher Garrett Whitlock has been named the Jimmy Fund Captain for his third consecutive season.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2813,6 +2937,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber celebrated over $1 million cumulatively raised by the family of the late Sharon Crowley Martin through events like Derby Day.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2838,6 +2963,7 @@
     "cancer_types": [],
     "meta_description": "The Pan-Mass Challenge (PMC) kicked off its 2025 fundraising year at the 10th PMC Winter Cycle on Feb. 1 at Fenway Park.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2863,6 +2989,7 @@
     "cancer_types": [],
     "meta_description": "The Awards and Milestones Reception recognized participants of the 2024 Jimmy Fund Walk presented by Hyundai who raised nearly $9.4 million.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2890,6 +3017,7 @@
     ],
     "meta_description": "Every day our philanthropic community supports a relentless commitment to possibilities in cancer care at Dana-Farber\u2014and that gives me hope.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2916,6 +3044,7 @@
     "cancer_types": [],
     "meta_description": "Thanks to more than 8,400 participants, the 2024 Jimmy Fund Walk surpassed $185 million in funds raised over 37 years for Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2946,6 +3075,7 @@
     "cancer_types": [],
     "meta_description": "Richard and Nancy Lubin were honored for their visionary philanthropy and unwavering commitment to cancer science and care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -2979,6 +3109,7 @@
     "cancer_types": [],
     "meta_description": "A generous group of Trustees, colleagues, friends, and supporters contributed over $3 million to commemorate Glimcher\u2019s legacy.",
     "homepage_placement": "featured",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3005,6 +3136,7 @@
     "cancer_types": [],
     "meta_description": "Jimmy Fund Golf presented by Mohegan Sun raised $6.8 million in 2024, thanks to more than 140 events across the country.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3036,6 +3168,7 @@
     "cancer_types": [],
     "meta_description": "Out of gratitude for the excellent care received by his late wife, Gerry Martineau left a generous bequest to Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3061,6 +3194,7 @@
     "cancer_types": [],
     "meta_description": "On GivingTuesday 2024, Dana-Farber and the Jimmy Fund\u2019s community of support far surpassed our $1 million goal.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3088,6 +3222,7 @@
     "cancer_types": [],
     "meta_description": "California-based Troper Wojcicki Foundation provides nearly $2.2 million to advance innovation at Dana-Farber,",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3115,6 +3250,7 @@
     ],
     "meta_description": "The Pediatric Brain Tumor Foundation is accelerating research into pediatric low-grade gliomas, most common brain tumors in children.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3142,6 +3278,7 @@
     "cancer_types": [],
     "meta_description": "With their gifts to Dana-Farber, David and JoEllen Sweet hope to alleviate the burden of Lynch syndrome for future generations.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3169,6 +3306,7 @@
     "cancer_types": [],
     "meta_description": "A generous gift from the trust of the late Steve and Anne Dodge will provide unrestricted support to Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3196,6 +3334,7 @@
     "cancer_types": [],
     "meta_description": "Gift may help improve production, cost, and personalization of cancer vaccines to be more effective in many types of cancers.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3223,6 +3362,7 @@
     "cancer_types": [],
     "meta_description": "A crucial infusion of funds from Michele and Howard Kessler is enabling the clinical trial of a promising combination treatment.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3249,6 +3389,7 @@
     "cancer_types": [],
     "meta_description": "Homai Khanna and her family are improving access to Dana-Farber's high-quality care with generous support for the Patient Navigator Program.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3276,6 +3417,7 @@
     "cancer_types": [],
     "meta_description": "Expect Miracles Foundation's support for innovative drug development at Dana-Farber surpassed $15 million in 2024.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3303,6 +3445,7 @@
     "cancer_types": [],
     "meta_description": "For nearly a decade, OOFOS has supported breast cancer research at Dana-Farber through its Project Pink initiative.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3328,7 +3471,10 @@
     ],
     "cancer_types": [],
     "meta_description": "A $900,000 Team Science grant will advance collaboration and innovation in immunotherapies for melanoma at Dana-Farber.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -3356,7 +3502,10 @@
       "Pediatrics"
     ],
     "meta_description": "The foundation's Game Changer Grant will enable concurrent genetic and epigenetic analysis to accelerate progress toward a cure.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -3383,7 +3532,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Former Dana-Farber anesthesiologist Anthony Sordillo left a generous unrestricted bequest to advance our lifesaving mission.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -3410,7 +3562,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Bowen's generous bequest shows the impact one individual can have on cancer research and care for people around the world.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -3439,7 +3594,10 @@
       "Pediatrics"
     ],
     "meta_description": "Conquer Cancer\u00ae, the ASCO Foundation, is accelerating discovery Institute-wide, from pediatrics to rare sarcomas.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -3470,6 +3628,7 @@
     ],
     "meta_description": "Funds raised help to advance personalized immunotherapy for DIPG, a rare and aggressive pediatric brain tumor.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3497,6 +3656,7 @@
     "cancer_types": [],
     "meta_description": "The Friends of Dana-Farber hosted a variety of events in 2024 that raised more than $600,000 for lifesaving cancer research and patient care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3526,6 +3686,7 @@
     "cancer_types": [],
     "meta_description": "This endowed chair is the first in the field of artificial intelligence to be established at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3551,6 +3712,7 @@
     "cancer_types": [],
     "meta_description": "PMC Unpaved riders contributed $1.2 million to the Pan-Mass Challenge's record-breaking gift of $75 million in 2024.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3578,6 +3740,7 @@
     "cancer_types": [],
     "meta_description": "The event offers trial lawyers a unique opportunity to learn from industry leaders while helping to combat Waldenstr\u00f6m\u2019s macroglobulinemia.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3606,6 +3769,7 @@
     "cancer_types": [],
     "meta_description": "Event attendees explored Dana-Farber's patient-first approach to cancer care with Institute leaders and special guest Doris Kearns Goodwin.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3634,6 +3798,7 @@
     "cancer_types": [],
     "meta_description": "Funds from The Dana-Farber Campaign allow us to expand access to underserved populations and improve research to reduce disparities.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3665,6 +3830,7 @@
     "cancer_types": [],
     "meta_description": "The Dana-Farber Campaign dramatically advanced the prevention, early detection, and interception of cancers on a wide variety of fronts.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3692,6 +3858,7 @@
     "cancer_types": [],
     "meta_description": "Funds raised through The Dana-Farber campaign are expanding the benefits of personalized cancer vaccines pioneered here.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3718,6 +3885,7 @@
     "cancer_types": [],
     "meta_description": "The Dana-Farber Campaign has enabled an ambitious program to enhance the patient experience and boost clinical innovation in nursing.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3747,6 +3915,7 @@
     ],
     "meta_description": "Support for The Dana-Farber Campaign advanced research leading to approval of the new treatment for pediatric low-grade glioma (PLGA).",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3774,6 +3943,7 @@
     "cancer_types": [],
     "meta_description": "The Dana-Farber Campaign established 49 new endowed positions, including support for early career investigators.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3801,6 +3971,7 @@
     "cancer_types": [],
     "meta_description": "The best place to deliver advanced cancer care is in a setting solely dedicated to treating people with cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3826,6 +3997,7 @@
     "cancer_types": [],
     "meta_description": "The Campaign Cabinet devoted their time, talents, and resources to advancing The Dana-Farber Campaign\u2019s mission to Defy Cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3860,6 +4032,7 @@
     ],
     "meta_description": "Because of your support, our impact and growth will expand by an order of magnitude we have only begun to imagine.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3892,6 +4065,7 @@
     "cancer_types": [],
     "meta_description": "Your generosity has funded paradigm-shifting initiatives that lessen the burden of cancer for patients and families around the globe.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3921,6 +4095,7 @@
     "cancer_types": [],
     "meta_description": "In 2024, the Pan-Mass Challenge raised a record $75 million and surpassed an extraordinary $1.047 billion in lifetime fundraising since 1980.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3946,6 +4121,7 @@
     "cancer_types": [],
     "meta_description": "On October 1, 2024, Laurie H. Glimcher, MD, was succeeded by Benjamin L. Ebert, MD, PhD, as President and CEO of Dana-Farber Cancer Institute.",
     "homepage_placement": "featured",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3974,6 +4150,7 @@
     "cancer_types": [],
     "meta_description": "A gift from the Kraft Family will bring Dana-Farber\u2019s lifesaving early detection and prevention programs to more people at risk of cancer.",
     "homepage_placement": "featured",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -3999,6 +4176,7 @@
     "cancer_types": [],
     "meta_description": "The WEEI/NESN Jimmy Fund Radio-Telethon presented by Arbella Insurance raised nearly $4 million for Dana-Farber in August 2024.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4030,6 +4208,7 @@
     ],
     "meta_description": "American Cancer Society grants fund innovative projects across Dana-Farber, from basic science to pediatric cancer disparities.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4057,6 +4236,7 @@
     "cancer_types": [],
     "meta_description": "Donations from HomeGoods and Homesense shoppers at more than 900 locations nationwide funded cancer research and patient care at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4084,6 +4264,7 @@
     "cancer_types": [],
     "meta_description": "Marielle and Angel Kaifer are supporting Dana-Farber research into a blood test to detect and monitor bladder cancers.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4113,6 +4294,7 @@
     "cancer_types": [],
     "meta_description": "McDonough gift fuels collaboration to harness the power of AI and speed development of novel therapies against prostate cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4141,6 +4323,7 @@
     "cancer_types": [],
     "meta_description": "The American Association for Cancer Research recently awarded more than $1 million in grants to Dana-Farber Cancer Institute investigators.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4166,6 +4349,7 @@
     "cancer_types": [],
     "meta_description": "On August 18, 352 runners ran the ASICS Falmouth Road Race for Dana-Farber, raising nearly $1 million for cancer research and patient care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4191,6 +4375,7 @@
     "cancer_types": [],
     "meta_description": "Holt and Caron will be the lead ambassadors and public spokespeople on behalf of the Jimmy Fund, helping to raise funds and awareness.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4220,7 +4405,10 @@
       "Pediatrics"
     ],
     "meta_description": "The V Foundation is taking aim at pediatric AML with a grant to enhance Dana-Farber's search for more effective and durable treatments.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -4246,7 +4434,10 @@
     ],
     "cancer_types": [],
     "meta_description": "The Mark Foundation grant advances groundbreaking research into the role of lactate in controlling cell proliferation at Dana-Farber.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -4273,6 +4464,7 @@
     "cancer_types": [],
     "meta_description": "Over three sunny days in June, more than 10,000 enthusiasts gathered to enjoy unlimited ice cream, with proceeds supporting Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4299,6 +4491,7 @@
     "cancer_types": [],
     "meta_description": "A recent grant will help launch a personalized program to preserve breast cancer patients\u2019 strength, endurance, and mobility.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4325,6 +4518,7 @@
     "cancer_types": [],
     "meta_description": "This prestigious investigatorship enables McGregor to pursue high-risk, high-reward kidney cancer research at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4352,6 +4546,7 @@
     "cancer_types": [],
     "meta_description": "The girlygirl P.A.R.T.S. 5K/Walk for Ovarian Cancer has surpassed $1 million in total funds raised for Dana-Farber since 2009.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4382,6 +4577,7 @@
     ],
     "meta_description": "The 2024 Boston Red Sox Jimmy Fund Award was presented to The Herb Chambers Companies and Team Beans at a special Fenway Park ceremony.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4408,6 +4604,7 @@
     "cancer_types": [],
     "meta_description": "The Dana-Farber Society honor those who have made a legacy gift, helping to secure future progress for Dana-Farber research and care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4435,6 +4632,7 @@
     "cancer_types": [],
     "meta_description": "The Faculty Research Fund supports Dana-Farber Cancer Institute priorities that facilitate breakthroughs across all cancer types.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4462,6 +4660,7 @@
     "cancer_types": [],
     "meta_description": "Here are five charitable things to consider before the end of the calendar year, to advance Dana-Farber's cancer research and patient care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4489,6 +4688,7 @@
     "cancer_types": [],
     "meta_description": "Jimmy Fund Vice President Suzanne Fountain retired in August after nearly 37 years overseeing grassroots fundraising for Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4517,6 +4717,7 @@
     "cancer_types": [],
     "meta_description": "Thanks to the tenacity and generosity of our entire community over the last seven years of The Dana-Farber Campaign, we are defying cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4546,6 +4747,7 @@
     "cancer_types": [],
     "meta_description": "On Sept. 30, Dana-Farber announced the completion of one of the largest-ever fundraising campaigns focused solely on cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4574,6 +4776,7 @@
     "cancer_types": [],
     "meta_description": "The Dana-Farber Campaign has enabled tremendous progress in cancer research and care, inspiring nearly 900,000 donors to defy cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4600,6 +4803,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber Marathon Challenge runners raised $8.8 million for basic cancer research in 2024, advancing promising, early stage ideas.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4631,6 +4835,7 @@
     ],
     "meta_description": "LLS awarded more than $7.3 million to Dana-Farber researchers in its quest to find cures for blood cancers.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4658,6 +4863,7 @@
     "cancer_types": [],
     "meta_description": "Susan G. Komen Komen continued a longstanding partnership with Dana-Farber by awarding $2.3 million in new grants for breast cancer research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4687,6 +4893,7 @@
     ],
     "meta_description": "On the cusp of Chad Palumbo\u2019s senior year of high school in 2022, he found himself in an unexpected place: Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4715,6 +4922,7 @@
     "cancer_types": [],
     "meta_description": "The G. Harold and Leila Y. Mathers Charitable Foundation is supporting transformative basic research at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4743,6 +4951,7 @@
     "cancer_types": [],
     "meta_description": "The Prostate Cancer Foundation has awarded $1.45 million to Dana-Farber Cancer Institute to research more powerful treatments.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4771,6 +4980,7 @@
     "cancer_types": [],
     "meta_description": "The Ambrose Monell Foundation is empowering Dana-Farber to develop a new generation of innovative cancer-fighting immunotherapies.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4799,6 +5009,7 @@
     ],
     "meta_description": "Stop & Shop will establish the Dana-Farber Cancer Institute Therapeutic Food Pantry, to reduce food insecurity for cancer patients.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4826,6 +5037,7 @@
     "cancer_types": [],
     "meta_description": "A gift from Peggy and Greg Strakosch will advance Dana-Farber's progress toward a blood test for risk of developing BRCA-related cancers.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4853,7 +5065,10 @@
     ],
     "cancer_types": [],
     "meta_description": "The DeGregorio Family Foundation aims to address drug resistance in gastric and esophageal cancers with recent grants to Dana-Farber.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -4880,6 +5095,7 @@
     "cancer_types": [],
     "meta_description": "On May 22, the Dana-Farber and Jimmy Fund community came together to support the final months of The Dana-Farber Campaign and defy cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4907,7 +5123,10 @@
     ],
     "cancer_types": [],
     "meta_description": "With funding from the Chan Zuckerberg Initiative, Dana-Farber is exploring immunometabolism as a novel source for cancer treatment.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -4933,6 +5152,7 @@
     "cancer_types": [],
     "meta_description": "Kicks for Cancer draws athletes and fans from 18 communities to raise funds for ovarian cancer research at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4961,6 +5181,7 @@
     "cancer_types": [],
     "meta_description": "The couple's renewed support for Dana-Farber aims to help stem the dramatic rise of colorectal cancer among people under 50.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -4986,6 +5207,7 @@
     "cancer_types": [],
     "meta_description": "To celebrate a phenomenal $1 billion in lifetime fundraising for Dana-Farber, the PMC created a film bringing its origin story to life.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5012,6 +5234,7 @@
     "cancer_types": [],
     "meta_description": "In the run-up to the 2024 Pan-Mass Challenge on Aug. 3-4, the PMC celebrated top fundraisers from the 2023 ride, known as \"Heavy Hitters.\"",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5041,6 +5264,7 @@
     ],
     "meta_description": "The new HomeGoods Young Adult Lounge at Dana-Farber provides a comfortable, age-appropriate space for patients to relax and access resources.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5066,6 +5290,7 @@
     "cancer_types": [],
     "meta_description": "On May 4, the Friends of Dana-Farber gathered for a special evening that raised more than $400,000 for cancer research and patient care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5092,6 +5317,7 @@
     "cancer_types": [],
     "meta_description": "Whole blood and platelet donors were honored in April at the annual Kraft Family Blood Donor Center Breakfast of Champions.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5119,6 +5345,7 @@
     "cancer_types": [],
     "meta_description": "The foundation established the program to help support and retain the brightest cancer researchers as they launch their careers.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5149,6 +5376,7 @@
     ],
     "meta_description": "In June, the Meghan McCarthy Research Fund surpassed $1 million in funding to support glioblastoma research at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5175,6 +5403,7 @@
     "cancer_types": [],
     "meta_description": "Nearly 150 members of Dana-Farber\u2019s President\u2019s Circle, who make generous annual gifts, were celebrated at this Fenway Park event.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5202,6 +5431,7 @@
     "cancer_types": [],
     "meta_description": "The Svanberg Family Chair at Dana-Farber was endowed to provide perpetual support for research into early detection and prevention of cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5229,6 +5459,7 @@
     "cancer_types": [],
     "meta_description": "Patient navigators at Dana-Farber help patients overcome barriers to accessing high-quality cancer care\u2014a service made possible by donors.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5254,6 +5485,7 @@
     "cancer_types": [],
     "meta_description": "We mourn the untimely passing of Scott Edwards, a science writer whose work graced the pages of Dana-Farber's Impact for more than 10 years.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5284,6 +5516,7 @@
     "cancer_types": [],
     "meta_description": "Our community is crucial to The Dana-Farber Campaign, our multibillion-dollar effort to change the future of cancer research and care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5311,6 +5544,7 @@
     "cancer_types": [],
     "meta_description": "September has arrived, and with it the end of summer and the close of another successful Jimmy Fund event season.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5338,6 +5572,7 @@
     "cancer_types": [],
     "meta_description": "An extraordinary gift led to the launch of the Centers for Early Detection and Interception at Dana-Farber Cancer Institute in December 2023.",
     "homepage_placement": "recent_highlights",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5365,6 +5600,7 @@
     "cancer_types": [],
     "meta_description": "The Damon Runyon Cancer Research Foundation has awarded more than $3.2 million in grants to nine early career investigators at Dana-Farber.",
     "homepage_placement": "recent_highlights",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5392,6 +5628,7 @@
     "cancer_types": [],
     "meta_description": "Conquer Cancer,\u00ae the ASCO Foundation, awarded $1.45 million to seven Dana-Farber researchers pursuing projects in a range of disease areas.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5418,6 +5655,7 @@
     "cancer_types": [],
     "meta_description": "Eileen Schaubert has pledged $1.5 million to establish the Schaubert Family Endowed Fellowship at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5444,6 +5682,7 @@
     "cancer_types": [],
     "meta_description": "The Gray Foundation made two grants totaling nearly $6 million for The Dana-Farber Campaign at Dana-Farber Cancer Institute.",
     "homepage_placement": "recent_highlights",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5470,6 +5709,7 @@
     "cancer_types": [],
     "meta_description": "Inspired by her doctors and care at Dana-Farber, Jill Altman decided to make a bequest to the Institute in memory of Larissa Lee, MD.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5498,6 +5738,7 @@
     ],
     "meta_description": "The Liver Tumor Center of Excellence, a joint initiative between Dana-Farber and Boston Children\u2019s Hospital was established in 2022.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5525,6 +5766,7 @@
     "cancer_types": [],
     "meta_description": "The International Waldenstrom\u2019s Macroglobulinemia Foundation gave Dana-Farber Cancer Institute grants totaling more than $1.2 million.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5551,6 +5793,7 @@
     "cancer_types": [],
     "meta_description": "Through the Lustgarten Advancing Breakthrough Science program, the Lustgarten Foundation awarded a grant of nearly $5 million to Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5578,6 +5821,7 @@
     "cancer_types": [],
     "meta_description": "With a generous donation of $1 million, Beth and Rich Kendall established the Kendall Family Fund for Innovative Pancreatic Cancer Therapies.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5604,6 +5848,7 @@
     "cancer_types": [],
     "meta_description": "The Clarks gave $1.14 million to endow Brian Wolpin\u2019s work in AI and machine learning targeting gastrointestinal cancers at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5630,6 +5875,7 @@
     "cancer_types": [],
     "meta_description": "Maura Shaughnessy has been a steadfast Pan-Mass Challenge (PMC) rider for nearly 31 years, raising more than $2.8 million.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5657,6 +5903,7 @@
     "cancer_types": [],
     "meta_description": "The 2024 Palm Beach Annual Appeal, led by Phyllis and Paul Fireman, came together to contribute more than $1 million to support Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5686,6 +5933,7 @@
     ],
     "meta_description": "The Cancer Research Institute (CRI) has awarded nearly $1.5 million in grants to Dana-Farber in support of immunotherapy research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5714,6 +5962,7 @@
     "cancer_types": [],
     "meta_description": "The Dana-Farber Campaign is a catalyst for giving at every level and has inspired unrestricted support from our generous community.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5739,6 +5988,7 @@
     "cancer_types": [],
     "meta_description": "The Dana-Farber and Jimmy Fund community mourn the passing of Larry Lucchino, longtime Institute Trustee and Chairman of the Jimmy Fund.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5767,6 +6017,7 @@
     "cancer_types": [],
     "meta_description": "Jeannie and Jonathan Lavine endowed three Dana-Farber Chairs in support of cancer prevention and early detection research at the Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5793,6 +6044,7 @@
     "cancer_types": [],
     "meta_description": "A ribbon-cutting ceremony was held in December 2023 to commemorate the Pan-Mass Challenge Dining Pavilion at Dana-Farber Chestnut Hill.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5819,6 +6071,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber Trustee Judie Schlager and her husband Larry recently endowed SoulMates with a $500,000 bequest commitment.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5846,6 +6099,7 @@
     "cancer_types": [],
     "meta_description": "Cheryl Kimmens Franke made a gift of $100,000 to establish the Arthur J. Franke Fund for Cholangiocarcinoma Early Detection at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5871,6 +6125,7 @@
     "cancer_types": [],
     "meta_description": "Arbella Insurance Group continued its support of Dana-Farber\u2019s mission throughout 2023, living out the company\u2019s motto of: \u201cHere. For Good.\u201d",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5896,6 +6151,7 @@
     "cancer_types": [],
     "meta_description": "The PMC Winter Cycle was held at Fenway Park on March 9, with hundreds of riders participating to support Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5922,6 +6178,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber\u2019s Palm Beach Annual Leadership Dinner was held in March, recognizing donors in the community to the Palm Beach Annual Appeal.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5947,6 +6204,7 @@
     "cancer_types": [],
     "meta_description": "DefinitiveCares Charity Golf Tournament reached an incredible $1 million in total fundraising since its inaugural tournament in 2016.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5972,6 +6230,7 @@
     "cancer_types": [],
     "meta_description": "Longtime program sponsor and tournament organizer Michael Aizenstadt received Jimmy Fund Golf\u2019s 2023 Ken Coleman Extra Mile Award.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -5997,6 +6256,7 @@
     "cancer_types": [],
     "meta_description": "The annual Awards and Milestones Reception recognized participants of the 2023 Boston Marathon\u00ae Jimmy Fund Walk who went above and beyond.",
     "homepage_placement": "recent_highlights",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6022,7 +6282,10 @@
     ],
     "cancer_types": [],
     "meta_description": "To honor Suzanne\u2019s memory, her family raised funds to establish a permanent endowment in TNBC research at Dana-Farber Cancer Institute.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6049,7 +6312,10 @@
       "Pediatrics"
     ],
     "meta_description": "Alex\u2019s Lemonade Stand Foundation (ALSF) awarded three Dana-Farber Cancer Institute faculty members $803,558 in grants in 2023.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6077,7 +6343,10 @@
       "Pediatrics"
     ],
     "meta_description": "A $600,000 ChadTough Defeat DIPG Game Changer Grant to Dana-Farber aims to expand treatment options for diffuse intrinsic pontine glioma.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6103,7 +6372,10 @@
     ],
     "cancer_types": [],
     "meta_description": "The American Society of Hematology gave over $550,000 in grants to Dana-Farber researchers seeking new treatments for bloodborne cancers.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6130,7 +6402,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Inspired by a previous Impact story, Bob Ripley pledged $500,000 to support the Caroline Fund at Dana-Farber Cancer Institute.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6157,7 +6432,10 @@
     ],
     "cancer_types": [],
     "meta_description": "The Ilene Beal Charitable Foundation continues Beal\u2019s legacy through its longstanding partnership with Dana-Farber with a gift of $525,000.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6183,7 +6461,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Francis Kittredge, MD, JD, and his wife, Adele made a gift of $500,000 to advance cancer vaccine research at Dana-Farber Cancer Institute.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6209,6 +6490,7 @@
     "cancer_types": [],
     "meta_description": "For the second season in a row, Boston Red Sox pitcher Garrett Whitlock is serving as Jimmy Fund Captain as an ambassador for the Jimmy Fund.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6234,6 +6516,7 @@
     "cancer_types": [],
     "meta_description": "The Dana-Farber Campaign has inspired more than 2.1 million gifts from more than 870,000 donors, with 1.4 million gifts below $100.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6261,6 +6544,7 @@
     "cancer_types": [],
     "meta_description": "The Dana-Farber Campaign has enabled incredible progress at the Institute, the effects of which ripple out to help patients around the world.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6286,6 +6570,7 @@
     "cancer_types": [],
     "meta_description": "More than 8,400 participants came together at the 2023 Jimmy Fund Walk to raise a record-breaking $9.4 million for The Dana-Farber Campaign.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6311,6 +6596,7 @@
     "cancer_types": [],
     "meta_description": "In November 2023, the Hale Family received Dana-Farber Cancer Institute's highest honor, the Sidney Farber Medical Research Award.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6336,6 +6622,7 @@
     "cancer_types": [],
     "meta_description": "Jimmy Fund Golf presented by Mohegan Sun marked another ace year in 2023, raising more than $6.8 million for The Dana-Farber Campaign.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6363,6 +6650,7 @@
     ],
     "meta_description": "With support from the Scarlet Feather Fund, Dana-Farber is leading bold approaches to reduce disparities in outcomes for cancer patients.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6390,6 +6678,7 @@
     "cancer_types": [],
     "meta_description": "The Mark Foundation for Cancer Research has awarded Dana-Farber a $3 million grant for T cell-directed cancer immunotherapy research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6417,6 +6706,7 @@
     "cancer_types": [],
     "meta_description": "The Massachusetts Life Sciences Center (MLSC) has granted Dana-Farber $2.78 million to build infrastructure for developing immunotherapies.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6442,6 +6732,7 @@
     "cancer_types": [],
     "meta_description": "The V Foundation is spurring Dana-Farber\u2019s efforts to eradicate difficult-to-treat cancers through recent grants totaling $1.6 million.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6468,6 +6759,7 @@
     "cancer_types": [],
     "meta_description": "The Paula and Rodger Riney Foundation has been a dedicated supporter of Dana-Farber, with their latest grant of more than $1.5 million.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6494,6 +6786,7 @@
     "cancer_types": [],
     "meta_description": "Chris and Emily Campbell made a $1.5 million gift to establish the Campbell Family Fund for Borderline and Low-Grade Ovarian Cancer Research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6520,6 +6813,7 @@
     "cancer_types": [],
     "meta_description": "The Edward P. Evans Foundation recently awarded grants totaling $1.35 million to three Dana-Farber scientists for investigations into MDS.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6547,6 +6841,7 @@
     ],
     "meta_description": "Over 4,800 supporters across the country donated more than $1.7 million to The Dana-Farber Campaign for GivingTuesday in 2023.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6573,6 +6868,7 @@
     "cancer_types": [],
     "meta_description": "For the 29th year, Expect Miracles Foundation reaffirmed their support of Dana-Farber Cancer Institute with a gift of $1 million in 2023.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6601,6 +6897,7 @@
     "cancer_types": [],
     "meta_description": "In support of cancer prevention efforts, the Hertogs gave $1 million to fund the prevention-focused INteRCEPT trial led by Glenn Hanna, MD.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6628,7 +6925,10 @@
       "Pediatrics"
     ],
     "meta_description": "In 2023, Hyundai Hope On Wheels made two grants totaling $650,000 to Rani George, MD, PhD, and Nina Weichert-Leahey, MD at Dana-Farber.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6653,7 +6953,10 @@
     ],
     "cancer_types": [],
     "meta_description": "In 2023, active recovery footwear brand OOFOS donated $626,000 to Dana-Farber Cancer Institute through their Project Pink initiative.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6680,7 +6983,10 @@
       "Pediatrics"
     ],
     "meta_description": "Rally Foundation for Childhood Cancer Research made grants totaling $850,000 in 2023 to help drive progress in pediatric oncology research.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6706,7 +7012,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Peter DeFeo established the Dara L. Frigoletto DeFeo Fund for Ovarian Cancer Research with a $500,000 gift to Dana-Farber.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6732,7 +7041,10 @@
     ],
     "cancer_types": [],
     "meta_description": "A $500,000 gift from Patricia Farah\u2019s estate created both a research fund and fellowship at Dana-Farber Cancer Institute.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6758,7 +7070,10 @@
     ],
     "cancer_types": [],
     "meta_description": "650 participants raised more than $767,000 to advance research and care for Dana-Farber patients at the 2023 B.A.A. Half Marathon.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6783,7 +7098,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Jim was inspired to establish a fund in his wife, Virginia's honor and gave $350,000 in support of this special program at Dana-Farber.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -6810,6 +7128,7 @@
     "cancer_types": [],
     "meta_description": "Real estate executive and PMC rider Mike Fallon made a gift to support epigenetics, one of The Dana-Farber Campaign\u2019s key priorities.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6836,6 +7155,7 @@
     "cancer_types": [],
     "meta_description": "Michael Eisenson, Institute Trustee and chair of The Dana-Farber Campaign, established a charitable gift annuity with a gift of $250,000.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6862,6 +7182,7 @@
     "cancer_types": [],
     "meta_description": "Theresa Kennedy included a gift of $200,000 to Dana-Farber in her estate plans through her IRA to support the Patient Assistance Fund.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6887,6 +7208,7 @@
     "cancer_types": [],
     "meta_description": "In 2023, Herb Chambers surpassed $1 million in cumulative giving after serving as presenting sponsor for CowParade New England.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6912,6 +7234,7 @@
     "cancer_types": [],
     "meta_description": "The National Breast Cancer Foundation (NBCF) gave $155,000 to support Dana-Farber\u2019s inclusion, diversity, and equity work.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6938,6 +7261,7 @@
     "cancer_types": [],
     "meta_description": "Kenneth Nirenstein made a gift of $100,000 to establish the Harriet Shapiro Nirenstein Fund for Multiple Myeloma Research at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6964,6 +7288,7 @@
     "cancer_types": [],
     "meta_description": "Coleman Lindsley, MD, PhD, was recognized as the Edward P. Evans Investigator in MDS research at Dana-Farber at an event in 2023.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -6989,6 +7314,7 @@
     "cancer_types": [],
     "meta_description": "PMC Unpaved is a gravel bike ride over the backroads of the Berkshires that raises funds for Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7016,6 +7342,7 @@
     "cancer_types": [],
     "meta_description": "\u201cSparking Discoveries Through the Power of Community\u201d was the 2023 theme for the annual Dana-Farber Cancer Institute Presidential Symposium.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7041,6 +7368,7 @@
     "cancer_types": [],
     "meta_description": "In December 2023, Dana-Farber launched the Centers for Early Detection and Interception as a key priority of The Dana-Farber Campaign.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7066,6 +7394,7 @@
     "cancer_types": [],
     "meta_description": "A powerful way donors can make a lasting difference is by endowing a faculty position in perpetuity through establishing a Dana-Farber Chair.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7091,6 +7420,7 @@
     "cancer_types": [],
     "meta_description": "Epigenetics is a key priority for The Dana-Farber Campaign and many scientists believe it is the next frontier in cancer medicine.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7116,6 +7446,7 @@
     "cancer_types": [],
     "meta_description": "Congratulations to Lori Dougherty, our long-time Impact editor, on her retirement from Dana-Farber Cancer Institute in January 2024.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7142,6 +7473,7 @@
     "cancer_types": [],
     "meta_description": "Our community is crucial to The Dana-Farber Campaign, our multibillion-dollar effort to change the future of cancer research and care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7168,6 +7500,7 @@
     "cancer_types": [],
     "meta_description": "When I first stepped into my role at Dana-Farber in 2019, I was immediately struck by the dedication of the people around me.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7194,6 +7527,7 @@
     "cancer_types": [],
     "meta_description": "One of the things that makes Dana-Farber such a special place is our emphasis on teamwork.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7222,6 +7556,7 @@
     "cancer_types": [],
     "meta_description": "The success of our mission hinges on unrestricted gifts, including those raised through the Defy Cancer Fund.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7253,6 +7588,7 @@
     "cancer_types": [],
     "meta_description": "The PMC\u2019s momentous fundraising milestones, surpassed year after year, enable equally ambitious advances in cancer research and care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7282,6 +7618,7 @@
     "cancer_types": [],
     "meta_description": "BTC has awarded $22.9 million in grants to Dana-Farber researchers to unlock the secrets of four difficult-to-treat cancers.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7309,6 +7646,7 @@
     "cancer_types": [],
     "meta_description": "An extraordinary gift of $10 million from Robert and Ren\u00e9e Belfer and family will support innovative immuno-oncology research at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7335,6 +7673,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber\u2019s Fellowship Program in Hematology/Oncology has attracted early career physicians, researchers, and nurse-scientists.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7360,6 +7699,7 @@
     "cancer_types": [],
     "meta_description": "The 21st annual WEEI/NESN Jimmy Fund Radio-Telethon presented by Arbella Insurance raised more than $4 million.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7386,6 +7726,7 @@
     "cancer_types": [],
     "meta_description": "Since its founding in 1993, the Breast Cancer Research Foundation (BCRF) has championed research as the key to one day curing breast cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7413,6 +7754,7 @@
     "cancer_types": [],
     "meta_description": "The Helen Gurley Brown Presidential Initiative is playing a critical role in harnessing the power and potential of women in science.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7440,6 +7782,7 @@
     "cancer_types": [],
     "meta_description": "The IWMF recently committed $2.5 million to support a new multi-institutional network for clinical and research programs dedicated to WM.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7469,6 +7812,7 @@
     "cancer_types": [],
     "meta_description": "The Prostate Cancer Foundation (PCF) has awarded grants totaling more than $2.3 million to Dana-Farber researchers.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7496,6 +7840,7 @@
     "cancer_types": [],
     "meta_description": "The American Cancer Society (ACS) recently awarded $1.12 million in grants to four Dana-Farber researchers seeking to answer key questions.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7522,6 +7867,7 @@
     "cancer_types": [],
     "meta_description": "On August 20, more than 325 participants laced up on behalf of Dana-Farber Cancer Institute to compete in the ASICS Falmouth Road Race.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7550,6 +7896,7 @@
     ],
     "meta_description": "Anna Yan Ji's parents established the AYJ Fund in her memory, continuing her wish to bring smiles to other children with cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7576,6 +7923,7 @@
     "cancer_types": [],
     "meta_description": "Linda and Jay Hooley of Hingham, Mass., want to change that. They made a $1 million gift to Dana-Farber\u2019s Lynch Syndrome Center.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7601,6 +7949,7 @@
     "cancer_types": [],
     "meta_description": "CowParade New England presented by Herb Chambers celebrated the Jimmy Fund\u2019s 75th anniversary with the Greater Boston community.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7628,7 +7977,10 @@
       "Pediatrics"
     ],
     "meta_description": "This spring, New England Stop & Shop customers donated over $760,000 to pediatric cancer research at Dana-Farber.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -7654,7 +8006,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Donor and patient advocate Michael Blitzer recently renewed his support of melanoma research at Dana-Farber with a $650,000 commitment.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -7684,6 +8039,7 @@
     ],
     "meta_description": "When Charlotte Dolecki passed away, she had a provision in her trust for charity. The trustee knew where to make a gift: Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7709,6 +8065,7 @@
     "cancer_types": [],
     "meta_description": "For more than 70 years, Showcase Cinemas has helped Dana-Farber and the Jimmy Fund defy cancer through the magic of the movies.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7734,6 +8091,7 @@
     "cancer_types": [],
     "meta_description": "Ice cream lovers of all ages celebrated the 40th annual Jimmy Fund Scooper Bowl\u00ae presented by Valvoline Instant Oil Change at Patriot Place.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7759,6 +8117,7 @@
     "cancer_types": [],
     "meta_description": "In 1953, Tom and Jean Yawkey helped establish the historic relationship between the Boston Red Sox, Sidney Farber, MD, and the Jimmy Fund.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7785,6 +8144,7 @@
     "cancer_types": [],
     "meta_description": "The 2023 Boston Red Sox Jimmy Fund Award was presented to Chairman of the Jimmy Fund Larry Lucchino at a special Fenway Park ceremony.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7810,6 +8170,7 @@
     "cancer_types": [],
     "meta_description": "The 19th Annual Bell & Hudson Putt-a-Thon for the Jimmy Fund celebrated surpassing $1 million raised since its inception.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7837,6 +8198,7 @@
     "cancer_types": [],
     "meta_description": "On June 29, colleagues, friends, and loved ones gathered in celebration of the Lunder Family Chair in Leukemia at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7863,6 +8225,7 @@
     "cancer_types": [],
     "meta_description": "Our generous donor community is relentless and powerful in your commitment to our mission to defy cancer at every turn.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7892,6 +8255,7 @@
     ],
     "meta_description": "Ten years ago, Dana-Farber leaders created the Faculty Research Fund, a unique financing mechanism to accelerate bold scientific discovery.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7919,6 +8283,7 @@
     "cancer_types": [],
     "meta_description": "When Dr. Sidney Farber achieved the first remissions in childhood leukemia in 1947, he changed everything.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7945,6 +8310,7 @@
     "cancer_types": [],
     "meta_description": "One way our supporters accelerate The Dana-Farber Campaign efforts is by including Dana-Farber Cancer Institute in their estate plans.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7973,6 +8339,7 @@
     "cancer_types": [],
     "meta_description": "When Joan Suzanne Tomsich was just 48 years old, she thought her life was over. Kenneth Anderson, MD, at Dana-Farber, gave her hope.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -7999,6 +8366,7 @@
     "cancer_types": [],
     "meta_description": "Around mile 20 of the 2023 Boston Marathon,\u00ae DFMC runner Leah Meehan was in pain from a knee injury and struggling to keep pace.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8025,6 +8393,7 @@
     "cancer_types": [],
     "meta_description": "The Leukemia & Lymphoma Society (LLS) has awarded six grants totaling $5.8 million to Dana-Farber investigators.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8052,6 +8421,7 @@
     ],
     "meta_description": "Each day, nearly 50 adolescent and young adult (AYA) patients\u2014those between the ages of 15 and 39\u2014come to Dana-Farber for treatment.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8077,6 +8447,7 @@
     "cancer_types": [],
     "meta_description": "On May 24, more than 200 guests gathered at the Four Seasons Hotel Boston for the annual Dana-Farber Society Dinner.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8103,6 +8474,7 @@
     "cancer_types": [],
     "meta_description": "This year, as part of a plan to give away 90% of his wealth during his lifetime, Deitch gave a total of $3 million to Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8130,6 +8502,7 @@
     ],
     "meta_description": "Sometimes only a few degrees of separation stand between strangers and a lifelong friendship\u2014and changing the world for the better.\u00a0",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8157,6 +8530,7 @@
     "cancer_types": [],
     "meta_description": "The Damon Runyon Cancer Research Foundation has awarded $1.22 million in grants to four early career investigators at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8182,6 +8556,7 @@
     "cancer_types": [],
     "meta_description": "Since the earliest days of the Jimmy Fund, committed individuals have devoted their time, talents, resources, and relationships.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8207,6 +8582,7 @@
     "cancer_types": [],
     "meta_description": "Over 220 business and community leaders attended the Women\u2019s Leadership Breakfast, to advance equity in breast and gynecologic cancer care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8232,6 +8608,7 @@
     "cancer_types": [],
     "meta_description": "Several Dana-Farber Trustees are embracing the opportunity to establish charitable gift annuities (CGAs), including Jim and Barbara Sadowsky.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8259,6 +8636,7 @@
     ],
     "meta_description": "When a drug developed at Dana-Farber saved a brave girl on the other side of the country, her parents wanted to help do the same for others.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8283,7 +8661,10 @@
     ],
     "cancer_types": [],
     "meta_description": "The Adenoid Cystic Carcinoma Research Foundation has awarded grants to Dana-Farber investigators totaling more than $700,000.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -8310,7 +8691,10 @@
     ],
     "cancer_types": [],
     "meta_description": "METAvivor awarded research grants totaling $700,000 to three Dana-Farber Cancer Institute faculty members.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -8338,7 +8722,10 @@
       "Pediatrics"
     ],
     "meta_description": "The ChadTough Defeat DIPG Foundation began as two organizations founded by Jason and Tammi Carr and Mark and Jenny Mosier.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -8364,6 +8751,7 @@
     "cancer_types": [],
     "meta_description": "Thirty years ago, 16 golfers in the first Rybacki Memorial Golf Tournament raised $1,200 for Dana-Farber. In 2022, 150 golfers raised over $145,000.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8389,6 +8777,7 @@
     "cancer_types": [],
     "meta_description": "On May 3, nearly 150 members of Dana-Farber\u2019s President\u2019s Circle gathered at Fenway Park to celebrate this special giving society.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8415,6 +8804,7 @@
     "cancer_types": [],
     "meta_description": "Donors from the Kraft Family Blood Donor Center were invited to the annual Kraft Family Blood Donor Center Breakfast of Champions.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8440,6 +8830,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber Cancer Institute and the Jimmy Fund held its fourth annual Giving Day, where supporters come together to raise critical funds.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8465,6 +8856,7 @@
     "cancer_types": [],
     "meta_description": "The Jimmy Fund launched its 75th anniversary year on May 22 with a day of events highlighting its rich history and lasting impact.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8495,6 +8887,7 @@
     ],
     "meta_description": "The Jimmy Fund\u2019s generous community of supporters has contributed an incredible total of more than $1.5 billion so far.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8521,6 +8914,7 @@
     "cancer_types": [],
     "meta_description": "Basic research is a strategic priority of The Dana-Farber Campaign because it fosters innovative studies that yield new clues about cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8547,6 +8941,7 @@
     "cancer_types": [],
     "meta_description": "It all started in 1948 with a 12-year-old boy with cancer dubbed \u201cJimmy,\u201d who inspired thousands to give money in support of cancer research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8574,6 +8969,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber has played a critical role in the development of more than half of all cancer drugs approved by the FDA in the past 5 years.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8600,6 +8996,7 @@
     "cancer_types": [],
     "meta_description": "The Linde Family Foundation has made a transformative $10 million gift to Dana-Farber to launch the Center for Therapeutic Discovery.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8627,6 +9024,7 @@
     "cancer_types": [],
     "meta_description": "On May 22, 1948, a young boy being treated for lymphoma by Dr. Sidney Farber and dubbed \u201cJimmy\u201d to protect his privacy, shared his story.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8654,6 +9052,7 @@
     "cancer_types": [],
     "meta_description": "For over three decades, the compassionate community in Palm Beach, Florida, has provided generous support for Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8681,6 +9080,7 @@
     "cancer_types": [],
     "meta_description": "With grants totaling $2.25 million, three Dana-Farber Cancer Institute scientists are pursuing novel basic research studies.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8707,6 +9107,7 @@
     "cancer_types": [],
     "meta_description": "For over 30 years, Baila Janock has combined her gifts of time, treasure, and talent to make a long-lasting impact on Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8736,6 +9137,7 @@
     ],
     "meta_description": "The V Foundation for Cancer Research, founded by basketball coach Jim Valvano, has granted $1.6 million to four Dana-Farber investigators.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8763,6 +9165,7 @@
     "cancer_types": [],
     "meta_description": "Each year, the Palm Beach community generously comes together to raise funds for Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8789,6 +9192,7 @@
     "cancer_types": [],
     "meta_description": "An anonymous donor first became acquainted with Dana-Farber in 2021 through their desire to support the fundraising of a friend.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8815,6 +9219,7 @@
     "cancer_types": [],
     "meta_description": "Diagnosed with stage IV pancreatic cancer in 2015, John is grateful for each and every day his Dana-Farber care team has given him.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8842,6 +9247,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber has launched a revolution in myeloma care, thanks to the power of precision medicine, genomics, immunotherapy, and philanthropy.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8867,7 +9273,10 @@
     ],
     "cancer_types": [],
     "meta_description": "The Kidney Cancer Association (KCA) has made $650,000 in grants to three Dana-Farber Cancer Institute researchers.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -8894,6 +9303,7 @@
     "cancer_types": [],
     "meta_description": "Boston Red Sox pitcher, Garrett Whitlock, has been named Jimmy Fund Captain for the 2023 baseball season.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8920,6 +9330,7 @@
     "cancer_types": [],
     "meta_description": "On Feb. 4, hundreds of riders assembled at Fenway Park\u2019s 521 Overlook venue for the PMC Winter Cycle to benefit Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8946,6 +9357,7 @@
     "cancer_types": [],
     "meta_description": "Institute Trustee Gary Prado and his wife, Darlene Prado, have established The Prado Family Impact Fund at Dana-Farber",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8972,6 +9384,7 @@
     "cancer_types": [],
     "meta_description": "When asked why he became involved with Dana-Farber Cancer Institute, Institute Trustee Sushil Tuli tells the story of his late wife, Rita.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -8998,6 +9411,7 @@
     "cancer_types": [],
     "meta_description": "Ronnie Levin and her family recently made a gift of $100,000 to Dana-Farber Cancer Institute through the Pan-Mass Challenge (PMC).",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9024,6 +9438,7 @@
     "cancer_types": [],
     "meta_description": "In 2010, Claire Muollo organized the first Promises for Purple Pancreatic Cancer Awareness 5K Walk, benefitting Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9050,6 +9465,7 @@
     "cancer_types": [],
     "meta_description": "In March, the Awards and Milestones Reception recognized participants in the Boston Marathon\u00ae Jimmy Fund Walk presented by Hyundai.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9086,6 +9502,7 @@
     ],
     "meta_description": "The Dana-Farber Campaign is an ambitious, multi-year fundraising effort to change the future of cancer research and care.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9112,6 +9529,7 @@
     "cancer_types": [],
     "meta_description": "A message from Senior Vice President and Chief Philanthropy Officer Melany Duval about the redesigned Impact Spring 2023 issue.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9138,6 +9556,7 @@
     "cancer_types": [],
     "meta_description": "Dana-Farber has partnered with the Parker Institute for Cancer Immunotherapy, the leading network of immuno-oncology expertise in the world.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9163,6 +9582,7 @@
     "cancer_types": [],
     "meta_description": "Jimmy Fund Golf raised more than $6.7 million through more than 140 golf events in 2022 to help Dana-Farber Cancer Institute defy cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9189,6 +9609,7 @@
     "cancer_types": [],
     "meta_description": "Palliative care physician Janet Abrahm endowed the Dana-Farber Cancer Institute Adult Palliative Care Program with a $1 million bequest.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9216,6 +9637,7 @@
     ],
     "meta_description": "Alex's Lemonade Stand Foundation recently awarded $3.32 million in grants to advance Dana-Farber's pediatric oncology research efforts.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9241,6 +9663,7 @@
     "cancer_types": [],
     "meta_description": "The Edward P. Evans Foundation awarded grants totaling $2.325 million to five Dana-Farber researchers who are pursuing MDS strategies.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9266,6 +9689,7 @@
     "cancer_types": [],
     "meta_description": "Family, friends, and colleagues contributed more than $3 million to endow the David M. Livingston, MD, Chair at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9291,6 +9715,7 @@
     "cancer_types": [],
     "meta_description": "The 20th annual Radio-Telethon generated over $3.5 million for adult and pediatric cancer research and care at Dana-Farber Cancer Institute.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9317,6 +9742,7 @@
     "cancer_types": [],
     "meta_description": "Tim and Ginny Bliss gave Dana-Farber Cancer Institute $2.2 million to establish an investigatorship researching rare blood cancers.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9343,6 +9769,7 @@
     "cancer_types": [],
     "meta_description": "Cancer Research Institute has given $1.6 million in grants to Philip Kranzusch, PhD, Jiaxin Liang, PhD, and Xiaohan Ning, PhD at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9368,6 +9795,7 @@
     "cancer_types": [],
     "meta_description": "The Lustgarten Foundation awarded $1.5M for a Dana-Farber clinical trial to test immunotherapy in patients with metastatic pancreatic cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9393,6 +9821,7 @@
     "cancer_types": [],
     "meta_description": "OOFOS donated more than $1.4 million in 2022 to Dana-Farber Cancer Institute, with cumulative total funding of more than $3 million.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9418,6 +9847,7 @@
     ],
     "meta_description": "Stop & Shop customers donated $1.4 million to pediatric cancer research at Dana-Farber during the annual Help Cure Childhood Cancer campaign.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9443,6 +9873,7 @@
     "cancer_types": [],
     "meta_description": "Wendy and Howard Cox committed $1 million to establish the Howard & Wendy Cox Colorectal Cancer Therapeutics Discovery Fund at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9469,6 +9900,7 @@
     "cancer_types": [],
     "meta_description": "Expect Miracles Foundation raised $1.25 million in support of the Robert and Ren\u00e9e Belfer Center for Applied Cancer Science at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9494,6 +9926,7 @@
     "cancer_types": [],
     "meta_description": "More than 6,500 people gave more than $1.7 million to the Institute during the 2022 GivingTuesday campaign, surpassing the $1 million goal.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9522,6 +9955,7 @@
     ],
     "meta_description": "The Run Any Race program raised $1.07 million in 2022 to support Dana-Farber\u2019s race toward the ultimate finish line: a world without cancer.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9546,7 +9980,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Dana-Farber\u2019s 2022 B.A.A. Half team raised nearly $520,000 to support Dana-Farber\u2019s groundbreaking research and quality patient care.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -9571,7 +10008,10 @@
       "Pediatrics"
     ],
     "meta_description": "Hyundai Hope on Wheels awarded two generous grants totaling $500,000 to Yana Pikman, MD, and Emily Heikamp, MD, PhD at Dana-Farber.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -9598,6 +10038,7 @@
     "cancer_types": [],
     "meta_description": "10% of net Talbots proceeds on purchases in October of 2022 provided $100,000 to help fund critical breast cancer research at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9623,6 +10064,7 @@
     "cancer_types": [],
     "meta_description": "The Pan-Mass Challenge (PMC), the annual bike-a-thon, raised a record $69 million for Dana-Farber Cancer Institute in 2022.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9650,6 +10092,7 @@
     "cancer_types": [],
     "meta_description": "The 2022 Sidney Farber Medical Research Award (the Institute\u2019s highest honor) was presented to the Richard and Susan Smith Family.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9677,6 +10120,7 @@
     "cancer_types": [],
     "meta_description": "Trustee Alison Poorvu Jaffe and her husband established the Poorvu Jaffe Chair in Psychosocial Oncology and Palliative Care at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9703,6 +10147,7 @@
     "cancer_types": [],
     "meta_description": "The Massachusetts Life Sciences Center awarded Dana-Farber Cancer Institute $2,811,397 to establish a Center for Emergent Drug Targets (CEDT).",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9728,6 +10173,7 @@
     "cancer_types": [],
     "meta_description": "The Simons Foundation Autism Research Initiative (SFARI) awarded $1,179,895 to a project led by Dana-Farber cancer biologist Marc Vidal, PhD.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9754,6 +10200,7 @@
     "cancer_types": [],
     "meta_description": "Langley Perer and her husband, Scott Rosenberg, gave $2 million to Nancy Lin, MD\u2014the largest gift ever to LBM research at Dana-Farber.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9780,6 +10227,7 @@
     "cancer_types": [],
     "meta_description": "The 2022 Dana-Farber Marathon Challenge team raised nearly $7 million for the Claudia Adams Barr Program in Innovative Basic Cancer Research.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9805,6 +10253,7 @@
     "cancer_types": [],
     "meta_description": "Over 7,500 participants in the 2022 Jimmy Fund Walk raised more than $8 million for Dana-Farber Cancer Institute from generous donors.",
     "homepage_placement": "none",
+    "channels": [],
     "content_type": "print",
     "is_digital_exclusive": false
   },
@@ -9830,7 +10279,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Anna and Neil Rasmussen made gifts totaling more than $500,000 to support Matthew Yurgelun, MD's research at Dana-Farber Cancer Institute.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -9857,7 +10309,10 @@
     ],
     "cancer_types": [],
     "meta_description": "The International Myeloma Society awarded 3 Dana-Farber scientists grants totaling $525,000 for research on the blood cancer multiple myeloma.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -9882,7 +10337,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Jean Kasmer and Charles Jacobs gave $500,000 to support Ursula Matulonis\u2019 ovarian cancer research at Dana-Farber Cancer Institute.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -9908,7 +10366,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Debbie Johnston gave $500,000 to support the Johnston Family Ovarian Cancer Research Fund at Dana-Farber Cancer Institute.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -9935,7 +10396,10 @@
       "Pediatrics"
     ],
     "meta_description": "Pediatric Brain Tumor Foundation awarded more than $600,000 to Dana-Farber\u2019s Mimi Bandopadhayay, MBBS, PhD, and Keith Ligon, MD, PhD.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -9961,7 +10425,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Chuck and Jan Feeny have pledged a gift of $500,000 to Atish Choudhury\u2019s efforts to develop novel therapeutic strategies for prostate cancer.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   },
@@ -9986,7 +10453,10 @@
     ],
     "cancer_types": [],
     "meta_description": "Members of Dana-Farber\u2019s ASICS Falmouth Road Race team raised $885,500 to support Dana-Farber Cancer Institute\u2019s research and care.",
-    "homepage_placement": "digital_exclusives",
+    "homepage_placement": "none",
+    "channels": [
+      "Digital Exclusives"
+    ],
     "content_type": "digital_exclusive",
     "is_digital_exclusive": true
   }

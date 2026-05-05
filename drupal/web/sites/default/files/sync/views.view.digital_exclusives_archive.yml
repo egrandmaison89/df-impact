@@ -5,7 +5,7 @@ dependencies:
   config:
     - field.storage.node.field_excerpt
     - field.storage.node.field_featured_image
-    - field.storage.node.field_issue
+    - field.storage.node.field_channels
     - field.storage.node.field_topics
     - node.type.article
   module:
@@ -14,7 +14,7 @@ dependencies:
 id: digital_exclusives_archive
 label: 'Digital exclusives archive'
 module: views
-description: 'Articles not tied to a quarterly issue (web-first / digital exclusives).'
+description: 'Articles in the Digital Exclusives channel archive (WordPress category parity). Filter applied by df_setup_views_query_alter().'
 tag: ''
 base_table: node_field_data
 base_field: nid
@@ -82,13 +82,6 @@ display:
           value:
             article: article
           group: 1
-        field_issue_target_id:
-          id: field_issue_target_id
-          table: node__field_issue
-          field: field_issue_target_id
-          plugin_id: numeric
-          operator: empty
-          group: 1
       style:
         type: default
       row:
@@ -104,7 +97,7 @@ display:
       tags:
         - 'config:field.storage.node.field_excerpt'
         - 'config:field.storage.node.field_featured_image'
-        - 'config:field.storage.node.field_issue'
+        - 'config:field.storage.node.field_channels'
         - 'config:field.storage.node.field_topics'
   page_1:
     id: page_1
@@ -124,5 +117,5 @@ display:
       tags:
         - 'config:field.storage.node.field_excerpt'
         - 'config:field.storage.node.field_featured_image'
-        - 'config:field.storage.node.field_issue'
+        - 'config:field.storage.node.field_channels'
         - 'config:field.storage.node.field_topics'

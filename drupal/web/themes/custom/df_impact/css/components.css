@@ -193,6 +193,39 @@
   color: var(--color-primary-light);
 }
 
+.issue-card__heading {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.issue-card__cover-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.issue-card__cover-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+.issue-card__cover .contextual {
+  display: none;
+}
+
+.issue-card__cover img,
+.issue-card__cover picture img {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  border-radius: var(--border-radius);
+}
+
 /* --- Pull Quote (Paragraph) --- */
 .paragraph--pull-quote {
   border-left: 3px solid var(--color-accent);

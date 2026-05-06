@@ -8,7 +8,7 @@
 {% if title %}
   <h3>{{ title }}</h3>
 {% endif %}
-<div class="grid grid--4">
+<div class="browse-issues__grid">
   {% for row in rows %}
     <div{{ row.attributes }}>
       {{ row.content }}

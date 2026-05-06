@@ -1,0 +1,55 @@
+{#
+/**
+ * @file
+ * Browse Issues page view — layout + “See Archives” (WordPress parity).
+ *
+ * @see https://danafarberimpact.org/browse-issues/
+ */
+#}
+{%
+  set classes = [
+    'browse-issues',
+    'view-browse-issues',
+    dom_id ? 'js-view-dom-id-' ~ dom_id,
+  ]
+%}
+<div{{ attributes.addClass(classes) }}>
+  <div class="browse-issues__inner">
+    {{ title_prefix }}
+    {{ title }}
+    {{ title_suffix }}
+
+    {% if header %}
+      <header class="browse-issues__header">
+        {{ header }}
+      </header>
+    {% endif %}
+
+    {{ exposed }}
+    {{ attachment_before }}
+
+    {% if rows %}
+      {{ rows }}
+    {% elseif empty %}
+      <div class="browse-issues__empty">
+        {{ empty }}
+      </div>
+    {% endif %}
+    {{ pager }}
+
+    {{ attachment_after }}
+    {{ more }}
+
+    {% if footer %}
+      <footer class="browse-issues__footer">
+        {{ footer }}
+      </footer>
+    {% endif %}
+
+    <p class="browse-issues__archives">
+      <a href="https://www.dana-farber.org/newsroom/publications?rows=12&amp;fq=sm_type%3A%22Impact+Magazine%22" class="browse-issues__archives-link" target="_blank" rel="noopener noreferrer">{{ 'See Archives'|t }}</a>
+    </p>
+
+    {{ feed_icons }}
+  </div>
+</div>

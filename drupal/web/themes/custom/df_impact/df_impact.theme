@@ -180,6 +180,27 @@ function df_impact_views_post_render(ViewExecutable $view, array &$output, $cach
 }
 
 /**
+ * Implements hook_preprocess_views_view_fields().
+ */
+function df_impact_preprocess_views_view_fields(&$variables): void {
+  $view = $variables['view'] ?? NULL;
+  if (!$view || $view->storage->id() !== 'browse_issues') {
+    return;
+  }
+  $row = $variables['row'] ?? NULL;
+  $nid = isset($row->nid) ? (int) $row->nid : 0;
+  if ($nid <= 0) {
+    return;
+  }
+  $node = \Drupal::entityTypeManager()->getStorage('node')->load($nid);
+  if (!$node instanceof NodeInterface || $node->bundle() !== 'issue') {
+    return;
+  }
+  $variables['issue_url'] = $node->toUrl()->toString();
+  $variables['issue_thumbnail'] = df_impact_build_issue_browse_thumbnail($node);
+}
+
+/**
  * Implements hook_preprocess_html().
  */
 function df_impact_preprocess_html(array &$variables): void {
@@ -474,6 +495,46 @@ function df_impact_is_about_impact_page(?NodeInterface $node = NULL): bool {
   }
 
   return $node->label() === 'About Impact';
+}
+
+/**
+ * Builds issue browse thumbnail: cover, then banner, then a story featured image.
+ */
+function df_impact_build_issue_browse_thumbnail(NodeInterface $issue): array {
+  $formatter = [
+    'type' => 'entity_reference_entity_view',
+    'label' => 'hidden',
+    'settings' => [
+      'view_mode' => 'default',
+      'link' => FALSE,
+    ],
+  ];
+  foreach (['field_cover_image', 'field_banner_image'] as $field_name) {
+    if ($issue->hasField($field_name) && !$issue->get($field_name)->isEmpty()) {
+      return $issue->get($field_name)->view($formatter);
+    }
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'article')
+    ->condition('status', 1)
+    ->condition('field_issue.target_id', $issue->id())
+    ->sort('sticky', 'DESC')
+    ->sort('created', 'DESC')
+    ->range(0, 1)
+    ->accessCheck()
+    ->execute();
+  if (!$nids) {
+    return [];
+  }
+  $article = $storage->load(reset($nids));
+  if (!$article instanceof NodeInterface) {
+    return [];
+  }
+  if (!$article->hasField('field_featured_image') || $article->get('field_featured_image')->isEmpty()) {
+    return [];
+  }
+  return $article->get('field_featured_image')->view($formatter);
 }
 
 /**

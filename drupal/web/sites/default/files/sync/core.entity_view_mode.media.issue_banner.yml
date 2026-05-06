@@ -1,0 +1,11 @@
+uuid: b2c3d4e5-f6a7-8901-bcde-f12345678901
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+id: media.issue_banner
+label: 'Issue page banner'
+description: 'Wide banner crop for issue landing hero.'
+targetEntityType: media
+cache: true

@@ -1,0 +1,11 @@
+uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+id: media.issue_story
+label: 'Issue story grid'
+description: 'Cropped image for In This Issue cards.'
+targetEntityType: media
+cache: true

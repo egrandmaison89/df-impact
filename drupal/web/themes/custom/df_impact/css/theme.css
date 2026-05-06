@@ -1182,6 +1182,37 @@
   margin: 0 auto;
 }
 
+/* Issue story grid — fill image region (wrapper is div; object-fit applies to img) */
+.issue-page__articles .card__image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--color-gray-light);
+}
+
+.issue-page__articles .card__image .contextual-region,
+.issue-page__articles .card__image > article,
+.issue-page__articles .card__image > .media {
+  height: 100%;
+  margin: 0;
+}
+
+.issue-page__articles .card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.issue-page__articles .card--issue-story.card--contain-image .card__image img {
+  object-fit: contain;
+  object-position: center;
+  padding: var(--space-sm);
+  background: var(--color-white);
+}
+
 .issue-page__articles .card {
   background: var(--color-white);
   border: 1px solid var(--color-gray-mid);
@@ -1230,73 +1261,92 @@
   color: var(--color-primary);
 }
 
-/* In Brief — CTA banner only (no child listing on issue page) */
+/* In Brief — WordPress Stackable row: accent rule + headline + filled CTA */
 .issue-page__in-brief-region {
-  padding: var(--space-2xl) var(--space-md);
+  padding: clamp(1.5rem, 4vw, 2.75rem) var(--space-md);
   background: var(--color-white);
   border-top: 1px solid var(--color-gray-mid);
 }
 
 .issue-page__in-brief-banner {
-  max-width: var(--container-max);
+  max-width: var(--container-wide, var(--container-max));
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-lg);
-  padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--color-gray-mid);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  padding: clamp(0.5rem, 2vw, 1rem) 0;
 }
 
 .issue-page__in-brief-header {
-  flex: 1 1 280px;
+  flex: 1 1 min(100%, 22rem);
   margin: 0;
   text-align: left;
+  padding-left: 1.5rem;
+  border-left: 3px solid #ffa300;
 }
 
 .issue-page__in-brief-title {
   font-family: var(--font-body);
-  font-size: var(--font-size-lg);
+  font-size: clamp(1.5rem, 3.5vw, 2.125rem);
   font-weight: 700;
-  color: var(--color-gray-dark);
-  margin: 0 0 var(--space-sm);
-  padding-left: var(--space-md);
-  border-left: 4px solid var(--color-accent);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  line-height: 1.2;
+  color: #0f0e17;
+  margin: 0 0 0.35rem;
+  padding: 0;
+  border: 0;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .issue-page__in-brief-dek {
   margin: 0;
-  margin-left: calc(var(--space-md) + 4px);
-  font-size: var(--font-size-base);
-  color: var(--color-gray-dark);
+  font-size: clamp(1rem, 2.2vw, 1.375rem);
   font-weight: 500;
+  line-height: 1.35;
+  color: #0f0e17;
 }
 
 .issue-page__in-brief-action {
   margin: 0;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  display: flex;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .issue-page__in-brief-action {
+    justify-content: flex-end;
+    flex: 0 0 auto;
+  }
 }
 
 .issue-page__view-all-briefs {
   display: inline-block;
+  font-family: var(--font-body);
   font-weight: 700;
-  font-size: var(--font-size-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-primary);
+  font-size: var(--font-size-base);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-white);
   text-decoration: none;
-  border: 2px solid var(--color-primary);
-  padding: var(--space-sm) var(--space-lg);
-  border-radius: var(--border-radius);
-  transition: background var(--transition-fast), color var(--transition-fast);
+  background: #00629b;
+  border: 2px solid #00629b;
+  padding: 0.65rem 1.35rem;
+  border-radius: 5px;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .issue-page__view-all-briefs:hover {
-  background: var(--color-primary);
+  background: #004f7a;
+  border-color: #004f7a;
   color: var(--color-white);
+}
+
+.issue-page__view-all-briefs:focus-visible {
+  outline: 3px solid #ffa300;
+  outline-offset: 2px;
 }
 
 @media (max-width: 767px) {

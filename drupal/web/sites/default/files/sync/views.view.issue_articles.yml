@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.media.issue_story
     - field.storage.node.field_excerpt
     - field.storage.node.field_featured_image
     - field.storage.node.field_topics
@@ -43,7 +44,7 @@ display:
           label: ''
           type: entity_reference_entity_view
           settings:
-            view_mode: default
+            view_mode: issue_story
             link: false
         field_excerpt:
           id: field_excerpt
@@ -146,7 +147,7 @@ display:
           label: ''
           type: entity_reference_entity_view
           settings:
-            view_mode: default
+            view_mode: issue_story
             link: false
       pager:
         type: full

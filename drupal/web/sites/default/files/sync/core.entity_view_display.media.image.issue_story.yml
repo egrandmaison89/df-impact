@@ -1,0 +1,33 @@
+uuid: c3d4e5f6-a7b8-9012-cdef-123456789012
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.issue_story
+    - field.field.media.image.field_media_image
+    - image.style.card_large
+    - media.type.image
+  module:
+    - image
+id: media.image.issue_story
+targetEntityType: media
+bundle: image
+mode: issue_story
+content:
+  field_media_image:
+    type: image
+    label: visually_hidden
+    settings:
+      image_link: ''
+      image_style: card_large
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  created: true
+  name: true
+  search_api_excerpt: true
+  thumbnail: true
+  uid: true

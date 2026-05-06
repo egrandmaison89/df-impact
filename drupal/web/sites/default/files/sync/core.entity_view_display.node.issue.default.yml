@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.media.image.issue_banner
     - field.field.node.issue.field_banner_image
     - field.field.node.issue.field_cover_image
     - field.field.node.issue.field_description
@@ -24,7 +25,7 @@ content:
     type: entity_reference_entity_view
     label: hidden
     settings:
-      view_mode: default
+      view_mode: issue_banner
       link: false
     third_party_settings: {  }
     weight: 0

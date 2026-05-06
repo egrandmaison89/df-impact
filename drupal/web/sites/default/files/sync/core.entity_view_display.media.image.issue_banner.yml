@@ -1,0 +1,33 @@
+uuid: d4e5f6a7-b8c9-0123-def0-234567890123
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.issue_banner
+    - field.field.media.image.field_media_image
+    - image.style.issue_banner
+    - media.type.image
+  module:
+    - image
+id: media.image.issue_banner
+targetEntityType: media
+bundle: image
+mode: issue_banner
+content:
+  field_media_image:
+    type: image
+    label: visually_hidden
+    settings:
+      image_link: ''
+      image_style: issue_banner
+      image_loading:
+        attribute: eager
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  created: true
+  name: true
+  search_api_excerpt: true
+  thumbnail: true
+  uid: true

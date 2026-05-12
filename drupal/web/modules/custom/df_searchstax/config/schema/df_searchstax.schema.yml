@@ -1,0 +1,95 @@
+df_searchstax.settings:
+  type: config_object
+  label: 'DF SearchStax settings'
+  mapping:
+    language:
+      type: string
+      label: 'Language'
+    search_url:
+      type: string
+      label: 'Search API URL'
+    suggester_url:
+      type: string
+      label: 'Suggester API URL'
+    search_auth:
+      type: string
+      label: 'Search auth token'
+    auth_type:
+      type: string
+      label: 'Search auth type'
+    analytics_base_url:
+      type: string
+      label: 'Analytics base URL'
+    track_api_key:
+      type: string
+      label: 'Analytics tracking key'
+    analytics_src:
+      type: string
+      label: 'Analytics script URL'
+    question_url:
+      type: string
+      label: 'Search AI answer URL'
+    related_searches_url:
+      type: string
+      label: 'Related searches URL'
+    related_searches_api_key:
+      type: string
+      label: 'Discovery API key'
+    popular_searches_url:
+      type: string
+      label: 'Popular searches URL'
+    geocoding_url:
+      type: string
+      label: 'Geocoding URL'
+    country_code:
+      type: string
+      label: 'Country code'
+    app_id:
+      type: string
+      label: 'App ID'
+    results_render_method:
+      type: string
+      label: 'Results render method'
+    facets_items_per_page_desktop:
+      type: integer
+      label: 'Desktop facets items per page'
+    facets_items_per_page_mobile:
+      type: integer
+      label: 'Mobile facets items per page'
+    faceting_type:
+      type: string
+      label: 'Faceting type'
+    features:
+      type: mapping
+      label: 'Feature flags'
+      mapping:
+        facets:
+          type: boolean
+          label: 'Facets enabled'
+        sorting:
+          type: boolean
+          label: 'Sorting enabled'
+        related_searches:
+          type: boolean
+          label: 'Related searches enabled'
+        popular_searches:
+          type: boolean
+          label: 'Popular searches enabled'
+        external_promotions:
+          type: boolean
+          label: 'External promotions enabled'
+        answer_widget:
+          type: boolean
+          label: 'Answer widget enabled'
+        search_feedback:
+          type: boolean
+          label: 'Search feedback enabled'
+        feedback_widget:
+          type: boolean
+          label: 'Feedback widget enabled'
+        location_search:
+          type: boolean
+          label: 'Location search enabled'
+        view_style_toggle:
+          type: boolean
+          label: 'View style toggle enabled'

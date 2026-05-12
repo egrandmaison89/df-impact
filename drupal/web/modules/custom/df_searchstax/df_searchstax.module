@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Theme hooks for the DF SearchStax module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function df_searchstax_theme(array $existing, string $type, string $theme, string $path): array {
+  return [
+    'df_searchstax_page' => [
+      'variables' => [],
+      'template' => 'df-searchstax-page',
+      'path' => $path . '/templates',
+    ],
+  ];
+}

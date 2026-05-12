@@ -1,0 +1,5 @@
+df_searchstax.settings:
+  title: 'DF SearchStax'
+  description: 'Configure SearchStax endpoints, UI behavior, and feature toggles.'
+  route_name: df_searchstax.settings
+  parent: system.admin_config_search

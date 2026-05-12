@@ -1,0 +1,5 @@
+services:
+  df_searchstax.commands:
+    class: Drupal\df_searchstax\Drush\Commands\DfSearchstaxCommands
+    tags:
+      - { name: drush.command }

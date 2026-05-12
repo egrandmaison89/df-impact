@@ -1,0 +1,30 @@
+language: en
+search_url: 'https://searchcloud-2-us-east-1.searchstax.com/29847/jimmyfunddev-2176/emselect'
+suggester_url: 'https://searchcloud-2-us-east-1.searchstax.com/29847/jimmyfunddev-2176_suggester/emsuggest'
+search_auth: ''
+auth_type: token
+analytics_base_url: 'https://analytics-us.searchstax.com'
+track_api_key: ''
+analytics_src: 'https://static.searchstax.com/studio-js/v4.1.55/js/studio-analytics.js'
+question_url: ''
+related_searches_url: 'https://app.searchstax.com/api/v1/2176/related-search/'
+related_searches_api_key: ''
+popular_searches_url: 'https://app.searchstax.com/api/v1/2176/popular-search/'
+geocoding_url: 'https://geocoding.searchstax.com'
+country_code: us
+app_id: '2176'
+results_render_method: pagination
+facets_items_per_page_desktop: 6
+facets_items_per_page_mobile: 99
+faceting_type: and
+features:
+  facets: true
+  sorting: true
+  related_searches: true
+  popular_searches: true
+  external_promotions: true
+  answer_widget: true
+  search_feedback: true
+  feedback_widget: true
+  location_search: false
+  view_style_toggle: true

@@ -1,0 +1,15 @@
+df_searchstax.page:
+  path: '/search'
+  defaults:
+    _controller: '\Drupal\df_searchstax\Controller\SearchPageController::content'
+    _title: 'Search'
+  requirements:
+    _permission: 'access content'
+
+df_searchstax.settings:
+  path: '/admin/config/search/df-searchstax'
+  defaults:
+    _form: '\Drupal\df_searchstax\Form\SearchstaxSettingsForm'
+    _title: 'DF SearchStax settings'
+  requirements:
+    _permission: 'administer site configuration'

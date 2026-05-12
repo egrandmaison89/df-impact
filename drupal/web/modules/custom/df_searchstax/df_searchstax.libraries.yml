@@ -1,0 +1,12 @@
+search_page:
+  version: 1.x
+  css:
+    theme:
+      https://static.searchstax.com/studio-js/v4.1.55/css/search-ux.css: { type: external, minified: true }
+      https://static.searchstax.com/studio-js/v4.1.55/css/feedbackWidget.css: { type: external, minified: true }
+      css/df_searchstax.css: {}
+  js:
+    js/df_searchstax.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings

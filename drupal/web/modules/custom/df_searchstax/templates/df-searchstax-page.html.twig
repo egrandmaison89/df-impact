@@ -1,0 +1,39 @@
+{#
+/**
+ * @file
+ * SearchStax-driven search page mount points.
+ */
+#}
+<div class="df-searchstax-page-layout-container">
+  <h1 class="df-searchstax-page-heading">{{ 'Search Site'|t }}</h1>
+
+  <div id="df-searchstax-input-container"></div>
+  <div id="df-searchstax-answer-container"></div>
+  <div id="df-searchstax-popular-searches-container"></div>
+
+  <div class="df-searchstax-search-details-container">
+    <div id="df-searchstax-feedback-container"></div>
+    <div class="df-searchstax-view-styles-container" id="df-searchstax-view-style-container" hidden>
+      <span class="df-searchstax-view-styles-text">{{ 'View Style'|t }}</span>
+      <button id="df-searchstax-toggle-view-style" type="button" class="df-searchstax-toggle-view-style" aria-label="{{ 'Toggle result view style'|t }}">
+        <span id="df-searchstax-icon-view-style" class="icon-list" aria-hidden="true"></span>
+      </button>
+    </div>
+    <div id="df-searchstax-sorting-container"></div>
+  </div>
+
+  <div class="df-searchstax-page-layout-facet-result-container">
+    <aside class="df-searchstax-page-layout-facet-container">
+      <div id="df-searchstax-facets-container"></div>
+    </aside>
+
+    <section class="df-searchstax-page-layout-result-container" aria-label="{{ 'Search results area'|t }}">
+      <div id="df-searchstax-related-searches-container"></div>
+      <div id="df-searchstax-external-promotions-layout-container"></div>
+      <div id="df-searchstax-results-container"></div>
+      <div id="df-searchstax-pagination-container"></div>
+    </section>
+  </div>
+
+  <div id="df-searchstax-feedback-widget-container"></div>
+</div>

@@ -233,6 +233,14 @@ function df_impact_preprocess_page(&$variables) {
   // Donate CTA — match legacy WordPress / Jimmy Fund campaign parameters.
   $variables['donate_url'] = 'https://danafarber.jimmyfund.org/site/Donation2?df_id=2101&mfc_pref=T&2101.donation=form1&utm_source=dfimpact&utm_medium=button&utm_campaign=AGDFI031323&s_src=AGDFI031323&s_subsrc=AGDFI031323';
 
+  $route_provider = \Drupal::service('router.route_provider');
+  if ($route_provider->getRoutesByNames(['df_searchstax.page'])) {
+    $variables['search_page_url'] = Url::fromRoute('df_searchstax.page')->toString();
+  }
+  else {
+    $variables['search_page_url'] = Url::fromRoute('view.df_impact_search.page_1')->toString();
+  }
+
   $variables['about_impact_url'] = Url::fromUri('internal:/about-impact')->toString();
 
   $topic_order = [

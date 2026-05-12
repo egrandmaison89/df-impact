@@ -1,0 +1,16 @@
+services:
+  logger.channel.df_searchstax:
+    parent: logger.channel_base
+    arguments: ['df_searchstax']
+
+  df_searchstax.document_builder:
+    class: Drupal\df_searchstax\Indexing\SearchStaxDocumentBuilder
+    arguments:
+      - '@file_url_generator'
+
+  df_searchstax.update_client:
+    class: Drupal\df_searchstax\Indexing\SearchStaxUpdateClient
+    arguments:
+      - '@config.factory'
+      - '@http_client'
+      - '@logger.channel.df_searchstax'

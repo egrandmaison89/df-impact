@@ -5,3 +5,7 @@
 - [Adding search with the hosted search experience](https://support.searchstax.com/hc/en-us/articles/38268294029581-Adding-Search-with-the-Hosted-Search-Experience)
 - Live demo (Jimmy Fund–style search site): [searchstax.github.io/solutions-scripts](https://searchstax.github.io/solutions-scripts/)
 - Widget / sample code: [github.com/searchstax/searchstudio-ux-samples](https://github.com/searchstax/searchstudio-ux-samples)
+
+### Implementation materials
+
+- https://support.searchstax.com/hc/en-us/categories/11675838621325-Get-Started-with-Site-Search

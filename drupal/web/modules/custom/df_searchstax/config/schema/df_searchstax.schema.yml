@@ -8,12 +8,21 @@ df_searchstax.settings:
     search_url:
       type: string
       label: 'Search API URL'
+    update_url:
+      type: string
+      label: 'SearchStax update (Ingest) API URL'
+    public_base_url:
+      type: string
+      label: 'Canonical public base URL for indexed links'
     suggester_url:
       type: string
       label: 'Suggester API URL'
     search_auth:
       type: string
       label: 'Search auth token'
+    index_auth:
+      type: string
+      label: 'Write token for Ingest API'
     auth_type:
       type: string
       label: 'Search auth type'

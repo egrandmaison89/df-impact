@@ -180,24 +180,66 @@ function df_impact_views_post_render(ViewExecutable $view, array &$output, $cach
 }
 
 /**
+ * Resolves the node entity for a Views result row (prefer _entity).
+ */
+function df_impact_views_result_row_node($row): ?NodeInterface {
+  if (!$row) {
+    return NULL;
+  }
+  if (isset($row->_entity) && $row->_entity instanceof NodeInterface) {
+    return $row->_entity;
+  }
+  foreach (['nid', 'node_field_data_nid'] as $prop) {
+    if (!empty($row->{$prop})) {
+      $nid = (int) $row->{$prop};
+      if ($nid > 0) {
+        $node = \Drupal::entityTypeManager()->getStorage('node')->load($nid);
+        if ($node instanceof NodeInterface) {
+          return $node;
+        }
+      }
+    }
+  }
+  return NULL;
+}
+
+/**
  * Implements hook_preprocess_views_view_fields().
  */
 function df_impact_preprocess_views_view_fields(&$variables): void {
   $view = $variables['view'] ?? NULL;
-  if (!$view || $view->storage->id() !== 'browse_issues') {
+  if (!$view) {
     return;
   }
-  $row = $variables['row'] ?? NULL;
-  $nid = isset($row->nid) ? (int) $row->nid : 0;
-  if ($nid <= 0) {
+  $view_id = $view->storage->id();
+  if ($view_id === 'browse_issues') {
+    $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
+    if (!$node instanceof NodeInterface || $node->bundle() !== 'issue') {
+      return;
+    }
+    $variables['issue_url'] = $node->toUrl()->toString();
+    $variables['issue_thumbnail'] = df_impact_build_issue_browse_thumbnail($node);
     return;
   }
-  $node = \Drupal::entityTypeManager()->getStorage('node')->load($nid);
-  if (!$node instanceof NodeInterface || $node->bundle() !== 'issue') {
+  if ($view_id === 'issue_articles' && ($view->current_display ?? '') === 'homepage_latest') {
+    $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
+    if ($node instanceof NodeInterface && $node->bundle() === 'article') {
+      $variables['article_card_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
+    }
     return;
   }
-  $variables['issue_url'] = $node->toUrl()->toString();
-  $variables['issue_thumbnail'] = df_impact_build_issue_browse_thumbnail($node);
+
+  $homepage_card_views = [
+    'homepage_featured',
+    'homepage_highlights',
+    'homepage_digital_exclusives',
+  ];
+  if (in_array($view_id, $homepage_card_views, TRUE) && ($view->current_display ?? '') === 'default') {
+    $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
+    if ($node instanceof NodeInterface && $node->bundle() === 'article') {
+      $variables['article_card_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
+    }
+  }
 }
 
 /**
@@ -232,7 +274,6 @@ function df_impact_preprocess_page(&$variables) {
 
   // Donate CTA — match legacy WordPress / Jimmy Fund campaign parameters.
   $variables['donate_url'] = 'https://danafarber.jimmyfund.org/site/Donation2?df_id=2101&mfc_pref=T&2101.donation=form1&utm_source=dfimpact&utm_medium=button&utm_campaign=AGDFI031323&s_src=AGDFI031323&s_subsrc=AGDFI031323';
-
   $route_provider = \Drupal::service('router.route_provider');
   if ($route_provider->getRoutesByNames(['df_searchstax.page'])) {
     $variables['search_page_url'] = Url::fromRoute('df_searchstax.page')->toString();
@@ -337,6 +378,11 @@ function df_impact_preprocess_node(&$variables) {
     $created = $node->getCreatedTime();
     $variables['article_published'] = $df->format($created, 'custom', 'F j, Y');
     $variables['article_published_iso'] = $df->format($created, 'custom', 'c');
+
+    $variables['article_lead_image_fallback'] = NULL;
+    if ($node->hasField('field_featured_image') && $node->get('field_featured_image')->isEmpty()) {
+      $variables['article_lead_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
+    }
 
     if ($node->hasField('field_related_articles') && $node->get('field_related_articles')->isEmpty()) {
       $topic_ids = [];
@@ -561,6 +607,246 @@ function df_impact_get_latest_issue_nid(): ?int {
     return NULL;
   }
   return (int) reset($nids);
+}
+
+/**
+ * Maps article node IDs to WordPress export rows (articles.json) for image fallbacks.
+ *
+ * @return array<int, array<string, mixed>>
+ */
+function df_impact_articles_export_rows_by_nid(): array {
+  static $by_nid = NULL;
+  if ($by_nid !== NULL) {
+    return $by_nid;
+  }
+  $by_nid = [];
+  $path = \Drupal::root() . '/modules/custom/df_migrate/data/articles.json';
+  if (!is_readable($path)) {
+    return $by_nid;
+  }
+  $rows = json_decode((string) file_get_contents($path), TRUE);
+  if (!is_array($rows)) {
+    return $by_nid;
+  }
+  $database = \Drupal::database();
+  $wp_to_nid = [];
+  if ($database->schema()->tableExists('migrate_map_df_articles')) {
+    $wp_to_nid = $database->select('migrate_map_df_articles', 'm')
+      ->fields('m', ['sourceid1', 'destid1'])
+      ->execute()
+      ->fetchAllKeyed();
+    $wp_to_nid = array_map('intval', $wp_to_nid);
+  }
+  foreach ($rows as $row) {
+    if (!is_array($row)) {
+      continue;
+    }
+    $resolved = df_impact_article_export_resolve_nid($row, $wp_to_nid);
+    if ($resolved !== NULL) {
+      $by_nid[$resolved] = $row;
+    }
+  }
+  return $by_nid;
+}
+
+/**
+ * Maps drupal_alias (normalized with leading slash) to export rows.
+ *
+ * @return array<string, array<string, mixed>>
+ */
+function df_impact_articles_export_rows_by_drupal_alias(): array {
+  static $by_alias = NULL;
+  if ($by_alias !== NULL) {
+    return $by_alias;
+  }
+  $by_alias = [];
+  $path = \Drupal::root() . '/modules/custom/df_migrate/data/articles.json';
+  if (!is_readable($path)) {
+    return $by_alias;
+  }
+  $rows = json_decode((string) file_get_contents($path), TRUE);
+  if (!is_array($rows)) {
+    return $by_alias;
+  }
+  foreach ($rows as $row) {
+    if (!is_array($row)) {
+      continue;
+    }
+    $alias = $row['drupal_alias'] ?? '';
+    if (!is_string($alias) || $alias === '') {
+      continue;
+    }
+    $norm = '/' . trim($alias, '/');
+    $by_alias[$norm] = $row;
+  }
+  return $by_alias;
+}
+
+/**
+ * Finds the WordPress export row for an article (nid + migrate map, then path alias).
+ *
+ * @return array<string, mixed>|null
+ */
+function df_impact_article_export_row_for_node(NodeInterface $node): ?array {
+  if ($node->bundle() !== 'article') {
+    return NULL;
+  }
+  $by_nid = df_impact_articles_export_rows_by_nid();
+  $nid = (int) $node->id();
+  if (isset($by_nid[$nid])) {
+    return $by_nid[$nid];
+  }
+  $internal = '/node/' . $nid;
+  $langcode = $node->language()->getId();
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath($internal, $langcode);
+  if (!is_string($alias) || $alias === '') {
+    return NULL;
+  }
+  $alias = '/' . trim($alias, '/');
+  if ($alias === $internal || strncmp($alias, '/node/', 6) === 0) {
+    return NULL;
+  }
+  $by_alias = df_impact_articles_export_rows_by_drupal_alias();
+  return $by_alias[$alias] ?? NULL;
+}
+
+/**
+ * @param array<string, mixed> $row
+ * @param array<int|string, int> $wp_to_nid
+ */
+function df_impact_article_export_resolve_nid(array $row, array $wp_to_nid): ?int {
+  $wp_id = (int) ($row['wp_id'] ?? 0);
+  if ($wp_id && isset($wp_to_nid[$wp_id])) {
+    return (int) $wp_to_nid[$wp_id];
+  }
+  $alias = $row['drupal_alias'] ?? '';
+  if (!is_string($alias) || $alias === '') {
+    return NULL;
+  }
+  $alias = '/' . ltrim($alias, '/');
+  $path_alias = \Drupal::service('path_alias.manager');
+  foreach ([NULL, 'en'] as $langcode) {
+    $internal = $langcode === NULL
+      ? $path_alias->getPathByAlias($alias)
+      : $path_alias->getPathByAlias($alias, $langcode);
+    if (preg_match('#^/node/(\d+)$#', $internal, $m)) {
+      return (int) $m[1];
+    }
+  }
+  return NULL;
+}
+
+/**
+ * @param array<string, mixed> $row
+ *
+ * @return list<string>
+ */
+function df_impact_article_export_try_image_urls(array $row): array {
+  $out = [];
+  $seen = [];
+  $push = function (string $url) use (&$out, &$seen): void {
+    $url = trim(html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    if ($url === '') {
+      return;
+    }
+    $key = strtolower($url);
+    if (isset($seen[$key])) {
+      return;
+    }
+    $seen[$key] = TRUE;
+    $out[] = $url;
+  };
+
+  $primary = (string) ($row['featured_image_url'] ?? '');
+  if ($primary !== '') {
+    $push($primary);
+  }
+  $body = isset($row['body']) && is_string($row['body']) ? $row['body'] : '';
+  if ($body !== '' && preg_match(
+    '#https?://(?:i\d*\.wp\.com/)?danafarberimpact\.org/wp-content/uploads/[^\s"\'<>]+#i',
+    $body,
+    $m
+  )) {
+    $push($m[0]);
+  }
+  return $out;
+}
+
+/**
+ * Resolves a WordPress uploads URL to a displayable image src (local public file preferred).
+ */
+function df_impact_article_fallback_image_src(string $url): ?string {
+  $url = trim(html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+  $clean = preg_replace('/\?.*$/', '', $url);
+  $file_system = \Drupal::service('file_system');
+  $gen = \Drupal::service('file_url_generator');
+  if (preg_match('#danafarberimpact\.org/wp-content/uploads/(.+\.(?:jpe?g|png|gif|webp))#i', $clean, $m)) {
+    $relative_upload = $m[1];
+    $basename = basename($relative_upload);
+    foreach (['public://wp-images/' . $basename, 'public://' . $relative_upload] as $uri) {
+      $path = $file_system->realpath($uri);
+      if ($path && is_file($path)) {
+        return $gen->generateString($uri);
+      }
+    }
+  }
+  if (preg_match('#^https?://#i', $clean)) {
+    return $clean;
+  }
+  return NULL;
+}
+
+/**
+ * @param array<string, mixed> $row
+ */
+function df_impact_article_export_lead_alt(array $row, NodeInterface $node): string {
+  $body = isset($row['body']) && is_string($row['body']) ? $row['body'] : '';
+  if ($body !== '' && preg_match('#<img[^>]+alt=["\']([^"\']+)#i', $body, $m)) {
+    return trim(html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+  }
+  return '';
+}
+
+/**
+ * Build a render array for the article lead / card when field_featured_image is empty.
+ */
+function df_impact_article_lead_image_fallback_build(NodeInterface $node): ?array {
+  if ($node->bundle() !== 'article') {
+    return NULL;
+  }
+  if (!$node->hasField('field_featured_image') || !$node->get('field_featured_image')->isEmpty()) {
+    return NULL;
+  }
+  $row = df_impact_article_export_row_for_node($node);
+  if (!is_array($row)) {
+    return NULL;
+  }
+  foreach (df_impact_article_export_try_image_urls($row) as $candidate) {
+    $src = df_impact_article_fallback_image_src($candidate);
+    if ($src === NULL || $src === '') {
+      continue;
+    }
+    $alt = df_impact_article_export_lead_alt($row, $node);
+    if ($alt === '') {
+      $alt = mb_substr($node->label(), 0, 512);
+    }
+    return [
+      '#type' => 'html_tag',
+      '#tag' => 'img',
+      '#attributes' => [
+        'src' => $src,
+        'alt' => $alt,
+        'loading' => 'lazy',
+        'decoding' => 'async',
+        'class' => ['article__lead-fallback-img'],
+      ],
+      '#cache' => [
+        'tags' => $node->getCacheTags(),
+        'contexts' => ['languages:language_interface'],
+      ],
+    ];
+  }
+  return NULL;
 }
 
 /**

@@ -4,8 +4,88 @@ declare(strict_types=1);
 
 /**
  * @file
- * Theme hooks for the DF SearchStax module.
+ * SearchStax integration: theme hooks, node queue indexing.
  */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Site\Settings;
+use Drupal\df_searchstax\Indexing\SearchStaxDocumentBuilder;
+use Drupal\node\NodeInterface;
+
+/**
+ * Public site origin for index URLs (matches Drush / queue worker).
+ */
+function df_searchstax_public_base(): string {
+  $config = \Drupal::config('df_searchstax.settings');
+  $url = trim((string) $config->get('public_base_url'));
+  $overrides = Settings::get('df_searchstax', []);
+  if (is_array($overrides) && !empty($overrides['public_base_url'])) {
+    $url = trim((string) $overrides['public_base_url']);
+  }
+  if ($url !== '') {
+    return rtrim($url, '/');
+  }
+  try {
+    return rtrim((string) \Drupal::request()->getSchemeAndHttpHost(), '/');
+  }
+  catch (\Throwable) {
+    return '';
+  }
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function df_searchstax_entity_insert(EntityInterface $entity): void {
+  df_searchstax_queue_node_change($entity);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function df_searchstax_entity_update(EntityInterface $entity): void {
+  df_searchstax_queue_node_change($entity);
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function df_searchstax_entity_delete(EntityInterface $entity): void {
+  if (!$entity instanceof NodeInterface) {
+    return;
+  }
+  if (!in_array($entity->bundle(), SearchStaxDocumentBuilder::INDEXED_BUNDLES, TRUE)) {
+    return;
+  }
+  $builder = \Drupal::service('df_searchstax.document_builder');
+  \Drupal::queue('df_searchstax_node_index')->createItem([
+    'nid' => (int) $entity->id(),
+    'langcode' => $entity->language()->getId(),
+    'bundle' => $entity->bundle(),
+    'op' => 'delete',
+    'searchstax_id' => $builder->indexDocumentId($entity, df_searchstax_public_base()),
+  ]);
+}
+
+/**
+ * Queues an index or delete for supported node bundles.
+ */
+function df_searchstax_queue_node_change(EntityInterface $entity): void {
+  if (!$entity instanceof NodeInterface) {
+    return;
+  }
+  if (!in_array($entity->bundle(), SearchStaxDocumentBuilder::INDEXED_BUNDLES, TRUE)) {
+    return;
+  }
+  $builder = \Drupal::service('df_searchstax.document_builder');
+  \Drupal::queue('df_searchstax_node_index')->createItem([
+    'nid' => (int) $entity->id(),
+    'langcode' => $entity->language()->getId(),
+    'bundle' => $entity->bundle(),
+    'op' => $entity->isPublished() ? 'index' : 'delete',
+    'searchstax_id' => $builder->indexDocumentId($entity, df_searchstax_public_base()),
+  ]);
+}
 
 /**
  * Implements hook_theme().

@@ -14,8 +14,12 @@ Produces:
 import json
 import re
 import os
+import sys
 import html as html_lib
+from pathlib import Path
 from urllib.parse import urlparse
+
+MIGRATION_DATA = Path(__file__).resolve().parent
 
 # ─── CATEGORY → TOPIC/CANCER TYPE MAPPING ────────────────────────────────────
 # Determine which WP categories map to Topics vs Cancer Types vocabularies
@@ -55,15 +59,16 @@ with open('categories.json') as f:
 with open('tags.json') as f:
     tags = json.load(f)
 
-# Load all post pages
+_posts_paths = sorted(MIGRATION_DATA.glob("posts_page_*_raw.json"))
 posts = []
-for page in range(1, 8):
-    fname = f'posts_page_{page}_raw.json'
-    if os.path.exists(fname):
-        with open(fname) as f:
-            posts.extend(json.load(f))
+for fname in _posts_paths:
+    with open(fname, encoding="utf-8") as f:
+        posts.extend(json.load(f))
 
-print(f"Loaded {len(posts)} posts")
+print(f"Loaded {len(posts)} posts from {len(_posts_paths)} files")
+if not _posts_paths:
+    print("ERROR: No posts_page_*_raw.json files found. Run fetch_wordpress_model.py first.", file=sys.stderr)
+    sys.exit(1)
 
 # Load pages
 with open('pages_raw.json') as f:
@@ -72,14 +77,13 @@ with open('pages_raw.json') as f:
 print(f"Loaded {len(wp_pages)} pages")
 
 # Load all media
+_media_paths = sorted(MIGRATION_DATA.glob("media_page_*_raw.json"))
 media_items = []
-for page in range(1, 10):
-    fname = f'media_page_{page}_raw.json'
-    if os.path.exists(fname):
-        with open(fname) as f:
-            media_items.extend(json.load(f))
+for fname in _media_paths:
+    with open(fname, encoding="utf-8") as f:
+        media_items.extend(json.load(f))
 
-print(f"Loaded {len(media_items)} media items")
+print(f"Loaded {len(media_items)} media items from {len(_media_paths)} files")
 
 # ─── BUILD TAG & CATEGORY LOOKUPS ────────────────────────────────────────────
 

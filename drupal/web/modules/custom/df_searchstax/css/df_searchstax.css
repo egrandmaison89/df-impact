@@ -1,3 +1,132 @@
+/* Autosuggest must stack above sticky header (theme uses z-index ~100). */
+.df-searchstax-page-layout-container .searchstax-search-input-container .searchstax-autosuggest-container {
+  z-index: 300;
+}
+
+.df-searchstax-result-author {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+/* Result cards (SearchStax list/grid) */
+.df-searchstax-page-layout-container .df-impact-search-card-link {
+  display: block;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+}
+
+.df-searchstax-page-layout-container .df-impact-search-card-link:focus-visible {
+  outline: 2px solid #0a2a66;
+  outline-offset: 3px;
+}
+
+.df-searchstax-page-layout-container .df-impact-search-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e2e4e8;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.df-searchstax-page-layout-container .df-impact-search-card-link:hover .df-impact-search-card,
+.df-searchstax-page-layout-container .df-impact-search-card-link:focus-visible .df-impact-search-card {
+  box-shadow: 0 4px 14px rgba(10, 42, 102, 0.1);
+  border-color: #c5cad3;
+}
+
+.df-impact-search-card__media {
+  flex: 0 0 160px;
+  width: 160px;
+  max-width: 160px;
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f4f5f7;
+}
+
+.df-impact-search-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.df-impact-search-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.df-impact-search-card__ribbon {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0a2a66;
+  margin-bottom: 0.35rem;
+  line-height: 1.3;
+}
+
+.df-searchstax-page-layout-container .df-impact-search-card-link:hover .df-impact-search-card__title,
+.df-searchstax-page-layout-container .df-impact-search-card-link:focus-visible .df-impact-search-card__title {
+  color: #0a2a66;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.df-impact-search-card__paths {
+  margin: 0 0 0.35rem;
+  font-size: 0.8125rem;
+  color: #5c5c5c;
+}
+
+.df-impact-search-card__description {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #3d3d3d;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.df-impact-search-card:not(.has-thumbnail) .df-impact-search-card__media {
+  display: none;
+}
+
+.searchstax-results-container-grid .df-impact-search-card {
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.searchstax-results-container-grid .df-impact-search-card__media {
+  width: 100%;
+  max-width: none;
+  flex: none;
+  aspect-ratio: 16 / 9;
+}
+
+@media (max-width: 640px) {
+  .df-searchstax-page-layout-container .df-impact-search-card {
+    flex-direction: column;
+  }
+
+  .df-impact-search-card__media {
+    width: 100%;
+    max-width: none;
+    flex: none;
+  }
+}
+
 .df-searchstax-page-layout-container {
   width: min(1120px, calc(100% - 2rem));
   margin: 1.5rem auto 3rem;

@@ -46,7 +46,7 @@ Deliver a **reader- and editor-friendly** Drupal site that matches the Impact Ma
 4. **Search** — Export Search API server + index into `files/sync` and add `views.view.df_impact_search`. *(Implemented.)*
 5. **Homepage layout** — Reorder sections to match WordPress; add “Explore the Latest Issue” (`browse_issues` block display); fix DE “View all” to `/digital-exclusives`. *(Implemented.)*
 6. **Digital exclusives archive** — View page at `/digital-exclusives` filtered by Digital Exclusives channel (taxonomy parity with WP category archive). *(Implemented.)*
-7. **Bulk sync script** — `df_migrate/scripts/df_sync_wordpress_paths.php` updates aliases, homepage placement and **Channels** from `articles.json`, and imports `redirects.json` plus dated `/YYYY/MM/slug` sources. *(Implemented.)*
+7. **Bulk sync** — `drush df-migrate:sync-wordpress-paths` updates aliases, homepage placement and **Channels** from `articles.json`, and imports `redirects.json` plus dated `/YYYY/MM/slug` sources. *(Implemented.)*
 8. **Default hero** — Front page uses Impact cover imagery when the Hero region has no block. *(Implemented.)*
 
 ### Phase B — Article & issue presentation
@@ -73,7 +73,7 @@ Deliver a **reader- and editor-friendly** Drupal site that matches the Impact Ma
 
 - **Config canonical path:** `drupal/web/sites/default/files/sync/` (see DRUPAL_REBUILD_PLAN Appendix A).
 - **After pulling these changes:** Run `ddev drush updatedb -y && ddev drush cim -y && ddev drush updatedb -y && ddev drush cr` (updates run twice around `cim`: first clears legacy homepage placement keys from the DB; second attaches **Channels** after `field_channels` exists).
-- Reindex search if needed (`ddev drush sapi-i`). Run `df_sync_wordpress_paths.php` when `articles.json` / `redirects.json` change; re-run `process_wp_data.py` before that when WP exports changed.
+- Reindex search if needed (`ddev drush sapi-i`). Run `ddev drush df-migrate:sync-wordpress-paths` when `articles.json` / `redirects.json` change; re-run `fetch_wordpress_model.py` / `process_wp_data.py` when WP exports change.
 - **Hero image:** The front page shows a **default** Impact cover image when the Hero region is empty; place a block in **Hero** to override.
 
 ---
@@ -93,7 +93,7 @@ Deliver a **reader- and editor-friendly** Drupal site that matches the Impact Ma
 | Related articles fallback | `df_impact.theme` + `node--article--full.html.twig` |
 | Core extensions | `core.extension.yml` — includes `df_setup`, `search_api_db`, migrate stack, `df_migrate`, `facets`, `seckit`, `google_tag` |
 | Front page + Home node | `df_setup` module, `system.site.yml` → `page.front: /home` |
-| Path / redirect sync | `df_migrate/scripts/df_sync_wordpress_paths.php` |
+| Path / redirect sync | `drush df-migrate:sync-wordpress-paths` |
 | Default hero | `page--front.html.twig` + `theme.css` (`.hero__default`) |
 | Drop cap (migrated HTML) | `base.css` (`.has-drop-cap`) |
 | Donate UTM (header) | `page.html.twig`, `page--front.html.twig`; menu skip uses substring match in `menu--main.html.twig` |

@@ -1,0 +1,5 @@
+services:
+  df_migrate.commands:
+    class: Drupal\df_migrate\Drush\Commands\DfMigrateCommands
+    tags:
+      - { name: drush.command }

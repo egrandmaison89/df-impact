@@ -1,5 +1,5 @@
 search_page:
-  version: 1.x
+  version: 1.2
   css:
     theme:
       https://static.searchstax.com/studio-js/v4.1.55/css/search-ux.css: { type: external, minified: true }

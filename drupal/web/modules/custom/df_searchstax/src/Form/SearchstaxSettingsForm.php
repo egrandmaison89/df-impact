@@ -48,6 +48,18 @@ final class SearchstaxSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('search_url'),
       '#required' => TRUE,
     ];
+    $form['endpoints']['update_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Update (Ingest) API URL'),
+      '#default_value' => $config->get('update_url'),
+      '#description' => $this->t('Used by Drupal to push documents. Must match your SearchStax app’s /update endpoint. Requires a read-write token via <code>index_auth</code> or DF_SEARCHSTAX_INDEX_AUTH.'),
+    ];
+    $form['endpoints']['public_base_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Public base URL for indexed links'),
+      '#default_value' => $config->get('public_base_url'),
+      '#description' => $this->t('Production or staging site origin (e.g. https://impact.dana-farber.org). Used when building absolute URLs for Drush and cron; avoids localhost in the search index.'),
+    ];
     $form['endpoints']['suggester_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Autosuggest API URL'),
@@ -103,8 +115,14 @@ final class SearchstaxSettingsForm extends ConfigFormBase {
     ];
     $form['auth']['search_auth'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Search auth token'),
+      '#title' => $this->t('Search auth token (read-only for Select/Suggest)'),
       '#default_value' => $config->get('search_auth'),
+    ];
+    $form['auth']['index_auth'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Ingest API token (read-write)'),
+      '#default_value' => $config->get('index_auth'),
+      '#description' => $this->t('Never expose in the browser. Server-side only (Drush, queue).'),
     ];
     $form['auth']['track_api_key'] = [
       '#type' => 'textfield',
@@ -228,6 +246,8 @@ final class SearchstaxSettingsForm extends ConfigFormBase {
 
     $this->configFactory()->getEditable('df_searchstax.settings')
       ->set('search_url', $form_state->getValue('search_url'))
+      ->set('update_url', $form_state->getValue('update_url'))
+      ->set('public_base_url', $form_state->getValue('public_base_url'))
       ->set('suggester_url', $form_state->getValue('suggester_url'))
       ->set('related_searches_url', $form_state->getValue('related_searches_url'))
       ->set('popular_searches_url', $form_state->getValue('popular_searches_url'))
@@ -237,6 +257,7 @@ final class SearchstaxSettingsForm extends ConfigFormBase {
       ->set('geocoding_url', $form_state->getValue('geocoding_url'))
       ->set('auth_type', $form_state->getValue('auth_type'))
       ->set('search_auth', $form_state->getValue('search_auth'))
+      ->set('index_auth', $form_state->getValue('index_auth'))
       ->set('track_api_key', $form_state->getValue('track_api_key'))
       ->set('related_searches_api_key', $form_state->getValue('related_searches_api_key'))
       ->set('language', $form_state->getValue('language'))

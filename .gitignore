@@ -1,5 +1,14 @@
 /.claude
 
+# DDEV local secrets (never commit)
+drupal/.ddev/.env
+
+# SearchStax Studio exports often include API tokens
+search_ui_demo/*.searchstaxApp.apis.txt
+
+# Migration tooling: sitemap crawl checkpoint (regenerated locally)
+drupal/web/modules/custom/df_migrate/data/wp_sitemap_state.json
+
 # Local QA screenshots and scratch (not shared via git)
 /testing/
 

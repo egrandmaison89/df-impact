@@ -873,6 +873,8 @@ if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev
 $settings['df_searchstax'] = array_filter([
   // Optional endpoint overrides.
   'search_url' => getenv('DF_SEARCHSTAX_SEARCH_URL') ?: NULL,
+  'update_url' => getenv('DF_SEARCHSTAX_UPDATE_URL') ?: NULL,
+  'public_base_url' => getenv('DF_SEARCHSTAX_PUBLIC_BASE_URL') ?: NULL,
   'suggester_url' => getenv('DF_SEARCHSTAX_SUGGESTER_URL') ?: NULL,
   'related_searches_url' => getenv('DF_SEARCHSTAX_RELATED_SEARCHES_URL') ?: NULL,
   'popular_searches_url' => getenv('DF_SEARCHSTAX_POPULAR_SEARCHES_URL') ?: NULL,
@@ -884,6 +886,7 @@ $settings['df_searchstax'] = array_filter([
   'app_id' => getenv('DF_SEARCHSTAX_APP_ID') ?: NULL,
   // Secret tokens/keys.
   'search_auth' => getenv('DF_SEARCHSTAX_SEARCH_AUTH') ?: NULL,
+  'index_auth' => getenv('DF_SEARCHSTAX_INDEX_AUTH') ?: NULL,
   'track_api_key' => getenv('DF_SEARCHSTAX_TRACK_API_KEY') ?: NULL,
   'related_searches_api_key' => getenv('DF_SEARCHSTAX_DISCOVERY_API_KEY') ?: NULL,
 ], static fn($value) => $value !== NULL && $value !== '');

@@ -2,6 +2,15 @@
 
 Use this checklist in the SearchStax admin console to complete production setup for the Drupal integration.
 
+## 0) Drupal → Ingest API (recommended primary index)
+
+- Copy the **Update** endpoint from Site Search → APIs (same deployment as Select).
+- Create a **read-write** token; store only server-side as `DF_SEARCHSTAX_INDEX_AUTH` / `index_auth` (never in browser config).
+- In Drupal, set **Public base URL** to the live site origin so indexed links are correct.
+- Bulk push: `drush df-searchstax:push-content`; ongoing updates use the `df_searchstax_node_index` queue (cron).
+- Optional: disable or narrow Studio **crawlers** once Drupal push is authoritative, to avoid duplicate/conflicting documents.
+- Documents from Drupal set `index_source_s=drupal` and id `impact-{bundle}-{nid}-{lang}` for deletes and multi-source separation.
+
 ## 1) Confirm API endpoints and app metadata
 
 In **Site Search > API Integrations**, confirm for app `2176`:

@@ -212,21 +212,56 @@
       questionURL: settings.question_url || undefined,
       analyticsSrc: settings.analytics_src,
       hooks: {
-        beforeSearch: (searchObj) => searchObj,
         afterSearch: (results) => {
           const viewContainer = document.getElementById('df-searchstax-view-style-container');
           if (viewContainer && features.view_style_toggle) {
             viewContainer.hidden = !results.length;
           }
           return results.map((result) => {
-            if ((!result.description || result.description.trim() === '') && Array.isArray(result.unmappedFields)) {
-              const fallbackDescription = result.unmappedFields.find((field) => field.key === 'description' && typeof field.value === 'string');
+            const unmapped = Array.isArray(result.unmappedFields) ? result.unmappedFields : [];
+            if (!result.url || String(result.url).trim() === '') {
+              const urlField = unmapped.find((field) => field.key === 'url_s' || field.key === 'url');
+              if (urlField && typeof urlField.value === 'string' && urlField.value.trim() !== '') {
+                result.url = urlField.value.trim();
+              }
+            }
+            if (!result.url || String(result.url).trim() === '') {
+              const uid = result.uniqueId != null ? String(result.uniqueId).trim() : '';
+              if (/^https?:\/\//i.test(uid)) {
+                result.url = uid;
+              }
+            }
+            if ((!result.title || String(result.title).trim() === '') && result.url) {
+              try {
+                const path = new URL(result.url).pathname.replace(/\/$/, '');
+                const seg = path.split('/').filter(Boolean).pop();
+                if (seg) {
+                  result.title = decodeURIComponent(seg).replace(/-/g, ' ');
+                }
+              } catch (e) {
+                /* ignore */
+              }
+            }
+            if ((!result.description || result.description.trim() === '') && unmapped.length) {
+              const fallbackDescription = unmapped.find((field) => field.key === 'description' && typeof field.value === 'string');
               if (fallbackDescription) {
                 result.description = fallbackDescription.value;
               }
             }
-            if (Array.isArray(result.unmappedFields)) {
-              result.unmappedFields = result.unmappedFields.filter((field) => field.key !== 'description');
+            if (typeof result.description === 'string' && result.description.length > 800) {
+              const stripped = result.description.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+              if (stripped.length > 400) {
+                const cut = stripped.slice(0, 400);
+                const lastSp = cut.lastIndexOf(' ');
+                result.description = (lastSp > 200 ? cut.slice(0, lastSp) : cut) + '…';
+              }
+            }
+            const authorField = unmapped.find((field) => field.key === 'author_t' && typeof field.value === 'string');
+            if (authorField && authorField.value && result.description && !result.description.includes(authorField.value)) {
+              result.description = `${result.description} <span class="df-searchstax-result-author">${authorField.value}</span>`;
+            }
+            if (unmapped.length) {
+              result.unmappedFields = unmapped.filter((field) => field.key !== 'description');
             }
             return result;
           });
@@ -359,27 +394,31 @@
         },
         searchResultTemplate: {
           template: `
-            <a href="{{url}}" data-searchstax-unique-result-id="{{uniqueId}}" class="searchstax-result-item-link searchstax-result-item-link-wrapping" tabindex="0">
-              <div class="searchstax-search-result searchstax-search-result-wrapping {{#thumbnail}}has-thumbnail{{/thumbnail}}">
+            <a href="{{url}}" data-searchstax-unique-result-id="{{uniqueId}}" class="searchstax-result-item-link searchstax-result-item-link-wrapping df-impact-search-card-link" tabindex="0">
+              <article class="searchstax-search-result searchstax-search-result-wrapping df-impact-search-card {{#thumbnail}}has-thumbnail{{/thumbnail}}">
                 {{#promoted}}
                   <div class="searchstax-search-result-promoted" data-test-id="searchstax-search-result-promoted"></div>
                 {{/promoted}}
-                {{#ribbon}}
-                  <div class="searchstax-search-result-ribbon">{{{ribbon}}}</div>
-                {{/ribbon}}
                 {{#thumbnail}}
-                  <img alt="" src="{{thumbnail}}" class="searchstax-thumbnail">
+                  <div class="df-impact-search-card__media">
+                    <img alt="" src="{{thumbnail}}" class="searchstax-thumbnail df-impact-search-card__img" loading="lazy" decoding="async" width="160" height="120">
+                  </div>
                 {{/thumbnail}}
-                <div class="searchstax-search-result-title-container">
-                  <h3 class="searchstax-search-result-title">{{{title}}}</h3>
+                <div class="df-impact-search-card__body">
+                  {{#ribbon}}
+                    <div class="searchstax-search-result-ribbon df-impact-search-card__ribbon">{{{ribbon}}}</div>
+                  {{/ribbon}}
+                  <div class="searchstax-search-result-title-container">
+                    <h3 class="searchstax-search-result-title df-impact-search-card__title">{{{title}}}</h3>
+                  </div>
+                  {{#paths}}
+                    <p class="searchstax-search-result-common df-impact-search-card__paths">{{{paths}}}</p>
+                  {{/paths}}
+                  {{#description}}
+                    <p class="searchstax-search-result-description searchstax-search-result-common df-impact-search-card__description">{{{description}}}</p>
+                  {{/description}}
                 </div>
-                {{#paths}}
-                  <p class="searchstax-search-result-common">{{{paths}}}</p>
-                {{/paths}}
-                {{#description}}
-                  <p class="searchstax-search-result-description searchstax-search-result-common">{{{description}}}</p>
-                {{/description}}
-              </div>
+              </article>
             </a>`,
           searchResultUniqueIdAttribute: 'data-searchstax-unique-result-id',
         },

@@ -9,6 +9,10 @@
     <div class="home-card__image">
       {{ fields.field_featured_image.content }}
     </div>
+  {% elseif article_card_image_fallback is defined and article_card_image_fallback %}
+    <div class="home-card__image">
+      {{ article_card_image_fallback }}
+    </div>
   {% endif %}
   <div class="home-card__body">
     {% if fields.field_topics is defined and fields.field_topics.content|render|trim %}

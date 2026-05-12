@@ -4,4 +4,7 @@ description: 'SearchStax-powered search route and UI for the Impact site.'
 core_version_requirement: ^10.3 || ^11
 package: 'Custom'
 dependencies:
+  - drupal:node
+  - drupal:media
+  - drupal:file
   - drupal:system

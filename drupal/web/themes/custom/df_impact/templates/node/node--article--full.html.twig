@@ -7,6 +7,8 @@
 {{ attach_library('df_impact/global') }}
 
 {% set has_lead_image = node.hasField('field_featured_image') and not node.field_featured_image.isEmpty %}
+{% set has_lead_fallback = article_lead_image_fallback is defined and article_lead_image_fallback %}
+{% set show_lead_media = has_lead_image or has_lead_fallback %}
 {% set has_photo_credit = node.hasField('field_photo_credit') and not node.field_photo_credit.isEmpty %}
 
 <article{{ attributes.addClass('article') }}>
@@ -38,7 +40,7 @@
         </span>
       {% endif %}
 
-      {% if has_photo_credit and not has_lead_image %}
+      {% if has_photo_credit and not show_lead_media %}
         <span class="article__meta-item article__meta-item--credit">
           {{ content.field_photo_credit }}
         </span>
@@ -46,10 +48,14 @@
     </div>
   </header>
 
-  {% if has_lead_image %}
+  {% if show_lead_media %}
     <div class="article__lead article__lead--has-media">
       <figure class="article__figure">
-        {{ content.field_featured_image }}
+        {% if has_lead_image %}
+          {{ content.field_featured_image }}
+        {% else %}
+          {{ article_lead_image_fallback }}
+        {% endif %}
         {% if has_photo_credit %}
           <figcaption class="article__figure-caption">{{ content.field_photo_credit }}</figcaption>
         {% endif %}

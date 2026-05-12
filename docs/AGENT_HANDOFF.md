@@ -46,7 +46,7 @@ If `drush status` shows no installation, either import a SQL dump (`ddev import-
 
    ```bash
    cd drupal
-   ddev drush php:script web/modules/custom/df_migrate/scripts/df_sync_wordpress_paths.php
+   ddev drush df-migrate:sync-wordpress-paths
    ```
 
 3. **Inline image / lazy-load repair** on existing nodes (optional re-run):

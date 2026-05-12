@@ -1,7 +1,10 @@
 language: en
 search_url: 'https://searchcloud-2-us-east-1.searchstax.com/29847/jimmyfunddev-2176/emselect'
+update_url: 'https://searchcloud-2-us-east-1.searchstax.com/29847/jimmyfunddev-2176/update'
+public_base_url: ''
 suggester_url: 'https://searchcloud-2-us-east-1.searchstax.com/29847/jimmyfunddev-2176_suggester/emsuggest'
 search_auth: ''
+index_auth: ''
 auth_type: token
 analytics_base_url: 'https://analytics-us.searchstax.com'
 track_api_key: ''

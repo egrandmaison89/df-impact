@@ -10,7 +10,7 @@ field_name: field_byline
 entity_type: node
 bundle: article
 label: Byline
-description: 'The author name, e.g., "By Amber Sinicrope".'
+description: 'The author name, e.g., "Amber Sinicrope". "By" is added automatically.'
 required: true
 translatable: true
 default_value: {  }

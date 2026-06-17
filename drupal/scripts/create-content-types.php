@@ -202,7 +202,7 @@ _create_field_storage('field_byline', 'node', 'string', [
 ]);
 _create_field_instance('field_byline', 'node', 'article', 'Byline', [
   'required' => TRUE,
-  'description' => 'The author name, e.g., "By Amber Sinicrope".',
+  'description' => 'The author name, e.g., "Amber Sinicrope". "By" is added automatically.',
 ]);
 
 // field_photo_credit
@@ -211,7 +211,7 @@ _create_field_storage('field_photo_credit', 'node', 'string', [
 ]);
 _create_field_instance('field_photo_credit', 'node', 'article', 'Photo Credit', [
   'required' => FALSE,
-  'description' => 'Photographer credit, e.g., "Photography by Bryce Vickmark".',
+  'description' => 'The photographer name, e.g., "Bryce Vickmark". "Photography by" is added automatically.',
 ]);
 
 // field_featured_image (entity reference to media)

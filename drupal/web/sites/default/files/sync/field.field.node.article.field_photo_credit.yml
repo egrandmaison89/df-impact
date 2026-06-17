@@ -10,7 +10,7 @@ field_name: field_photo_credit
 entity_type: node
 bundle: article
 label: 'Photo Credit'
-description: 'Photographer credit, e.g., "Photography by Bryce Vickmark".'
+description: 'The photographer name, e.g., "Bryce Vickmark". "Photography by" is added automatically.'
 required: false
 translatable: true
 default_value: {  }

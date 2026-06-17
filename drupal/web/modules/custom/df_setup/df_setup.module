@@ -16,6 +16,15 @@ use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Plugin\views\query\Sql;
 use Drupal\views\ViewExecutable;
 
+/** Prefix stored with field_byline (matches front-end and migrated content). */
+const DF_SETUP_BYLINE_PREFIX = 'By ';
+
+/** Prefix stored with field_photo_credit (matches front-end and migrated content). */
+const DF_SETUP_PHOTO_CREDIT_PREFIX = 'Photography by ';
+
+/** field_byline / field_photo_credit max_length in field storage. */
+const DF_SETUP_CREDIT_FIELD_MAX = 255;
+
 /**
  * Implements hook_form_FORM_ID_alter() for article add/edit forms.
  *
@@ -63,6 +72,77 @@ function df_setup_form_node_article_form_alter(array &$form, FormStateInterface 
     // Taxonomy admins can still assign arbitrary channel terms; others use the checkbox.
     $form['field_channels']['#access'] = \Drupal::currentUser()->hasPermission('administer taxonomy');
   }
+
+  _df_setup_alter_article_credit_fields($form);
+}
+
+/**
+ * Shows fixed byline / photo-credit prefixes; editors enter names only.
+ */
+function _df_setup_alter_article_credit_fields(array &$form): void {
+  if (isset($form['field_byline']['widget'][0]['value'])) {
+    $element = &$form['field_byline']['widget'][0]['value'];
+    $element['#field_prefix'] = DF_SETUP_BYLINE_PREFIX;
+    $element['#attributes']['maxlength'] = DF_SETUP_CREDIT_FIELD_MAX - strlen(DF_SETUP_BYLINE_PREFIX);
+    if (isset($element['#default_value']) && is_string($element['#default_value'])) {
+      $element['#default_value'] = _df_setup_strip_byline_prefix($element['#default_value']);
+    }
+    $form['field_byline']['#description'] = (string) t('The author name, e.g., "Amber Sinicrope". "By" is added automatically.');
+  }
+
+  if (isset($form['field_photo_credit']['widget'][0]['value'])) {
+    $element = &$form['field_photo_credit']['widget'][0]['value'];
+    $element['#field_prefix'] = DF_SETUP_PHOTO_CREDIT_PREFIX;
+    $element['#attributes']['maxlength'] = DF_SETUP_CREDIT_FIELD_MAX - strlen(DF_SETUP_PHOTO_CREDIT_PREFIX);
+    if (isset($element['#default_value']) && is_string($element['#default_value'])) {
+      $element['#default_value'] = _df_setup_strip_photo_credit_prefix($element['#default_value']);
+    }
+    $form['field_photo_credit']['#description'] = (string) t('The photographer name, e.g., "Bryce Vickmark". "Photography by" is added automatically.');
+  }
+}
+
+/**
+ * Strips a stored or typed byline down to the author name.
+ */
+function _df_setup_strip_byline_prefix(string $value): string {
+  $value = trim($value);
+  if ($value === '') {
+    return '';
+  }
+  return trim((string) preg_replace('/^By\s+/i', '', $value));
+}
+
+/**
+ * Strips a stored or typed photo credit down to the photographer name.
+ */
+function _df_setup_strip_photo_credit_prefix(string $value): string {
+  $value = trim($value);
+  if ($value === '') {
+    return '';
+  }
+  return trim((string) preg_replace('/^Photograph(?:y)?\s+by\s+/i', '', $value));
+}
+
+/**
+ * Formats an author name for storage/display as a byline.
+ */
+function _df_setup_format_byline(string $name): string {
+  $name = _df_setup_strip_byline_prefix($name);
+  if ($name === '') {
+    return '';
+  }
+  return DF_SETUP_BYLINE_PREFIX . $name;
+}
+
+/**
+ * Formats a photographer name for storage/display as a photo credit.
+ */
+function _df_setup_format_photo_credit(string $name): string {
+  $name = _df_setup_strip_photo_credit_prefix($name);
+  if ($name === '') {
+    return '';
+  }
+  return DF_SETUP_PHOTO_CREDIT_PREFIX . $name;
 }
 
 /**
@@ -193,6 +273,13 @@ function df_setup_entity_presave(EntityInterface $entity): void {
     $decoded = Html::decodeEntities($title);
     if ($decoded !== $title && $decoded !== '') {
       $entity->setTitle($decoded);
+    }
+
+    if ($entity->hasField('field_byline') && !$entity->get('field_byline')->isEmpty()) {
+      $entity->set('field_byline', _df_setup_format_byline((string) $entity->get('field_byline')->value));
+    }
+    if ($entity->hasField('field_photo_credit') && !$entity->get('field_photo_credit')->isEmpty()) {
+      $entity->set('field_photo_credit', _df_setup_format_photo_credit((string) $entity->get('field_photo_credit')->value));
     }
     return;
   }

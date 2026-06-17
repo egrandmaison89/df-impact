@@ -64,8 +64,8 @@ $articles = [
   [
     'title' => 'A Legacy of Leadership and Hope: The Saverin Foundation\'s Commitment to Patients with Metastatic Breast Cancer',
     'field_subtitle' => 'How one family\'s generosity is transforming treatment options for patients facing the most challenging diagnoses.',
-    'field_byline' => 'By Amber Sinicrope',
-    'field_photo_credit' => 'Photography by Bryce Vickmark',
+    'field_byline' => 'Amber Sinicrope',
+    'field_photo_credit' => 'Bryce Vickmark',
     'body' => '<p>When the Elaine and Eduardo Saverin Foundation made its landmark commitment to Dana-Farber Cancer Institute, it marked a pivotal moment in the fight against metastatic breast cancer. The gift, one of the largest ever directed toward this specific area of research, will fund a comprehensive program aimed at developing next-generation treatments.</p><p>"We believe deeply in the power of science to change lives," said Eduardo Saverin, co-founder of the foundation. "Dana-Farber represents the best of what\'s possible when brilliant minds are given the resources they need."</p><p>The funding will support the work of Sara Tolaney, MD, MPH, chief of the Division of Breast Oncology, and her team as they pursue innovative clinical trials and translational research projects. Dr. Tolaney\'s program has already achieved remarkable breakthroughs in understanding the biology of treatment-resistant breast cancers.</p><p>"This gift allows us to think bigger and move faster," Dr. Tolaney explained. "We can now pursue studies that were previously beyond our reach, combining novel drug combinations with cutting-edge diagnostic tools to give patients more options and more hope."</p>',
     'field_topics' => [$topic_ids['Immunotherapy'] ?? NULL, $topic_ids['Drug Development'] ?? NULL],
     'field_cancer_types' => [$cancer_ids['Breast Cancer'] ?? NULL],
@@ -76,8 +76,8 @@ $articles = [
   [
     'title' => 'Jimmy Fund Walk Steps Into Record-Breaking Year with Over $11.2 Million Raised',
     'field_subtitle' => 'Thousands of walkers unite for cancer research in the event\'s most successful year yet.',
-    'field_byline' => 'By Hannah White',
-    'field_photo_credit' => 'Photography by Sam Ogden',
+    'field_byline' => 'Hannah White',
+    'field_photo_credit' => 'Sam Ogden',
     'body' => '<p>The Jimmy Fund Walk celebrated a historic milestone this year, raising more than $11.2 million for Dana-Farber Cancer Institute — the most in the event\'s storied history. More than 8,000 walkers participated, traversing the iconic Boston Marathon route from Hopkinton to the Copley Square finish line.</p><p>"Simply said, the money raised offers a chance at life," shared Barbara Gubb, a 15-year walk veteran who walks in memory of her late husband. "Every step we take brings us closer to a world without cancer."</p><p>The event has now raised more than $170 million for Dana-Farber since its inception, making it one of the most successful peer-to-peer fundraising events in the country. Walkers of all ages and abilities participated, from seasoned marathoners to families pushing strollers.</p>',
     'field_topics' => [$topic_ids['Grassroots Support'] ?? NULL],
     'field_cancer_types' => [],
@@ -88,7 +88,7 @@ $articles = [
   [
     'title' => 'Pan-Mass Challenge Riders Cross $1 Billion Milestone',
     'field_subtitle' => '',
-    'field_byline' => 'By Tarice Gray',
+    'field_byline' => 'Tarice Gray',
     'field_photo_credit' => '',
     'body' => '<p>In a moment decades in the making, the Pan-Mass Challenge announced that its lifetime fundraising total has surpassed the extraordinary $1 billion mark. The announcement, made at a celebration event at Fenway Park, was met with thunderous applause from riders, volunteers, and supporters.</p><p>The PMC, which was founded in 1980 by Billy Starr, has grown from 36 riders raising $10,200 to more than 6,800 riders raising over $72 million in a single year. It is the single largest athletic fundraising event in the country.</p>',
     'field_topics' => [$topic_ids['Grassroots Support'] ?? NULL],
@@ -100,8 +100,8 @@ $articles = [
   [
     'title' => 'What Is Epigenetics? Understanding the Science Behind Gene Expression',
     'field_subtitle' => 'How researchers are learning to read — and rewrite — the instructions that control our genes.',
-    'field_byline' => 'By Amber Sinicrope',
-    'field_photo_credit' => 'Photography by Bryce Vickmark',
+    'field_byline' => 'Amber Sinicrope',
+    'field_photo_credit' => 'Bryce Vickmark',
     'body' => '<p>Every cell in your body contains the same DNA. Yet a heart cell looks and behaves nothing like a brain cell. The difference lies not in the genetic code itself, but in how that code is read — a field of study known as epigenetics.</p><p>At Dana-Farber, researchers are at the forefront of understanding how epigenetic changes contribute to cancer development and, more importantly, how those changes can be reversed to treat the disease.</p><p>"Cancer isn\'t just about mutated genes," explains Dr. Mark Dawson, a leading epigenetics researcher. "It\'s also about genes that are turned on or off at the wrong time. If we can learn to control that switch, we have a powerful new avenue for treatment."</p>',
     'field_topics' => [$topic_ids['Epigenetics'] ?? NULL, $topic_ids['Basic Science'] ?? NULL],
     'field_cancer_types' => [],
@@ -112,7 +112,7 @@ $articles = [
   [
     'title' => 'Your Generosity on GivingTuesday Is Fueling the Next Victory Over Cancer',
     'field_subtitle' => '',
-    'field_byline' => 'By Hannah White',
+    'field_byline' => 'Hannah White',
     'field_photo_credit' => '',
     'body' => '<p>On GivingTuesday, supporters from across the country came together to make a difference in the fight against cancer. The outpouring of generosity provided flexible, unrestricted funding that supports Dana-Farber\'s investment in transformational research.</p><p>Every gift, regardless of size, contributes to the institute\'s mission of providing expert, compassionate care to patients while advancing the understanding of cancer through basic and clinical research.</p>',
     'field_topics' => [$topic_ids['Essential Opportunities'] ?? NULL],
@@ -124,8 +124,8 @@ $articles = [
   [
     'title' => 'Pediatric Brain Tumor Foundation Accelerates Research at Dana-Farber',
     'field_subtitle' => 'New grant supports innovative approaches to treating the most common solid tumors in children.',
-    'field_byline' => 'By Tarice Gray',
-    'field_photo_credit' => 'Photography by Sam Ogden',
+    'field_byline' => 'Tarice Gray',
+    'field_photo_credit' => 'Sam Ogden',
     'body' => '<p>The Pediatric Brain Tumor Foundation has awarded a significant grant to researchers at Dana-Farber Cancer Institute, funding a new initiative aimed at developing targeted therapies for the most aggressive forms of pediatric brain tumors.</p><p>Pediatric brain tumors are the leading cause of cancer-related death in children, and current treatment options often come with devastating long-term side effects. The new funding will support research into precision medicine approaches that aim to be both more effective and less harmful.</p>',
     'field_topics' => [$topic_ids['Discovery Science'] ?? NULL],
     'field_cancer_types' => [$cancer_ids['Brain Tumors'] ?? NULL, $cancer_ids['Pediatric Cancers'] ?? NULL],

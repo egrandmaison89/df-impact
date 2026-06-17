@@ -162,13 +162,13 @@ final class ArticleBodyCleaner {
         $line = trim(html_entity_decode(strip_tags($m[3][0]), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
         $line = preg_replace('/^Written by\s+/i', '', $line);
         if ($line !== '' && $byline === '') {
-          $byline = preg_match('/^By\s+/i', $line) ? $line : 'By ' . $line;
+          $byline = ArticleCreditLabels::stripByline($line);
         }
       }
       if (!empty($m[4][0])) {
         $line = trim(html_entity_decode(strip_tags($m[4][0]), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
         if ($line !== '' && $photo_credit === '') {
-          $photo_credit = preg_match('/^Photograph/i', $line) ? $line : 'Photography by ' . $line;
+          $photo_credit = ArticleCreditLabels::stripPhotoCredit($line);
         }
       }
 
@@ -362,7 +362,7 @@ final class ArticleBodyCleaner {
    */
   private function normalizePhotoCreditText(string $text): string {
     $text = trim(preg_replace('/\s+/u', ' ', $text) ?? '');
-    return self::truncateUtf8($text, self::STRING_FIELD_MAX);
+    return self::truncateUtf8(ArticleCreditLabels::stripPhotoCredit($text), self::STRING_FIELD_MAX);
   }
 
   /**

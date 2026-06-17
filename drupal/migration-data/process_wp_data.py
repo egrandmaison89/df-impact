@@ -366,18 +366,32 @@ def extract_issue_deck_and_remove(content):
             line = html_lib.unescape(line)
             line = re.sub(r'^Written by\s+', '', line, flags=re.I)
             if line and not byline:
-                byline = line if re.match(r'^by\s+', line, re.I) else 'By ' + line
+                byline = _strip_byline_prefix(line)
         if m.group(4):
             line = _strip_tags_min(m.group(4)).strip()
             line = html_lib.unescape(line)
             if line and not photo_credit:
-                photo_credit = line if re.match(r'(?i)^photograph', line) else 'Photography by ' + line
+                photo_credit = _strip_photo_credit_prefix(line)
         content = deck_pattern.sub('', content, count=1)
     return content, byline, photo_credit
 
 
+def _strip_byline_prefix(value):
+    value = (value or '').strip()
+    if not value:
+        return ''
+    return re.sub(r'^By\s+', '', value, flags=re.I).strip()
+
+
+def _strip_photo_credit_prefix(value):
+    value = (value or '').strip()
+    if not value:
+        return ''
+    return re.sub(r'^Photograph(?:y)?\s+by\s+', '', value, flags=re.I).strip()
+
+
 def extract_byline(content):
-    """Extract 'By [Name]' from article body HTML."""
+    """Extract author name from article body HTML."""
     if not content:
         return ''
     # Common patterns:
@@ -390,11 +404,11 @@ def extract_byline(content):
     for pattern in patterns:
         m = re.search(pattern, content)
         if m:
-            return f"By {m.group(1).strip()}"
+            return m.group(1).strip()
     return ''
 
 def extract_photo_credit(content):
-    """Extract 'Photography by [Name]' or 'Photo by [Name]' from body."""
+    """Extract photographer name from body HTML."""
     if not content:
         return ''
     patterns = [
@@ -407,7 +421,7 @@ def extract_photo_credit(content):
     for pattern in patterns:
         m = re.search(pattern, content, re.IGNORECASE)
         if m:
-            return f"Photography by {m.group(1).strip()}"
+            return m.group(1).strip()
     return ''
 
 def normalize_wp_lazy_images(content):

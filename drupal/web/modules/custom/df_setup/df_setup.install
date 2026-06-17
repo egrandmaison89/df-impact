@@ -6,6 +6,7 @@
  */
 
 use Drupal\Component\Utility\Html;
+use Drupal\df_setup\ArticleCreditLabels;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
@@ -431,4 +432,46 @@ function df_setup_update_10008(): string {
     taxonomy_build_node_index($node);
   }
   return sprintf('Rebuilt taxonomy_index for %d published article(s).', count($nids));
+}
+
+/**
+ * Store author and photographer names only; prefixes are applied at display time.
+ */
+function df_setup_update_10009(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->execute();
+  if (!$nids) {
+    return 'No articles found for byline/photo credit normalization.';
+  }
+
+  $updated = 0;
+  foreach ($storage->loadMultiple($nids) as $node) {
+    if (!$node instanceof Node || $node->bundle() !== 'article') {
+      continue;
+    }
+    $changed = FALSE;
+    if ($node->hasField('field_byline') && !$node->get('field_byline')->isEmpty()) {
+      $stripped = ArticleCreditLabels::stripByline((string) $node->get('field_byline')->value);
+      if ($stripped !== (string) $node->get('field_byline')->value) {
+        $node->set('field_byline', $stripped);
+        $changed = TRUE;
+      }
+    }
+    if ($node->hasField('field_photo_credit') && !$node->get('field_photo_credit')->isEmpty()) {
+      $stripped = ArticleCreditLabels::stripPhotoCredit((string) $node->get('field_photo_credit')->value);
+      if ($stripped !== (string) $node->get('field_photo_credit')->value) {
+        $node->set('field_photo_credit', $stripped);
+        $changed = TRUE;
+      }
+    }
+    if ($changed) {
+      $node->save();
+      $updated++;
+    }
+  }
+
+  return sprintf('Normalized byline and photo credit to names-only storage on %d article(s).', $updated);
 }

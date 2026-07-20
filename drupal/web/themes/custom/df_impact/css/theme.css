@@ -1267,35 +1267,37 @@
   object-fit: cover;
 }
 
-/* Hero — centered translucent title panel (WordPress issue hero) */
+/* Hero — right-aligned translucent title panel (WordPress issue hero) */
 .issue-page__banner-overlay {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: var(--space-2xl);
-  background: linear-gradient(180deg, rgba(15, 14, 23, 0.2) 0%, rgba(15, 14, 23, 0.45) 100%);
+  justify-content: flex-end;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 5vw, 4.5rem);
+  background: transparent;
   pointer-events: none;
 }
 
 .issue-page__banner-panel {
   pointer-events: none;
-  background: rgba(0, 98, 155, 0.88);
-  padding: var(--space-xl) var(--space-3xl);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-  max-width: min(560px, 92vw);
+  background: rgba(0, 98, 155, 0.5);
+  padding: 0.65rem 1.25rem;
+  box-shadow: none;
+  max-width: min(515px, 92vw);
+  width: min(515px, 42vw);
 }
 
 .issue-page__banner-title {
   font-family: var(--font-body);
   font-weight: 700;
   color: var(--color-white);
-  font-size: clamp(1.75rem, 4vw, var(--font-size-3xl));
-  line-height: var(--line-height-tight);
+  font-size: clamp(2.25rem, 5vw, 65px);
+  line-height: 1.15;
   text-align: center;
   margin: 0;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
+  padding: 10px 0;
 }
 
 .issue-page__title-fallback {
@@ -1314,14 +1316,14 @@
   color: var(--color-gray-dark);
 }
 
-/* “In This Issue” band + light story grid */
+/* “In This Issue” band + story grid (WordPress: white bg, orange accent header) */
 .issue-page__stories-region {
-  background: var(--color-gray-light);
+  background: var(--color-white);
 }
 
 .issue-page__stories-heading {
   padding: var(--space-xl) 0 var(--space-md);
-  border-bottom: 1px solid var(--color-gray-mid);
+  border-bottom: none;
 }
 
 .issue-page__stories-heading .container {
@@ -1330,22 +1332,22 @@
 
 .issue-page__stories-title {
   font-family: var(--font-body);
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: var(--color-gray-dark);
+  font-size: 28px;
+  font-weight: 600;
+  color: #63666a;
   margin: 0;
-  padding-left: var(--space-md);
-  border-left: 4px solid var(--color-accent);
-  line-height: var(--line-height-tight);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  padding: 5px 0 5px 15px;
+  border-left: 5px solid #ffa300;
+  line-height: 1.25;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .issue-page__articles {
   max-width: none;
   margin: 0;
-  padding: var(--space-2xl) var(--space-md) var(--space-3xl);
-  background: var(--color-gray-light);
+  padding: var(--space-xl) var(--space-md) var(--space-2xl);
+  background: var(--color-white);
   color: var(--color-black);
 }
 
@@ -1360,7 +1362,7 @@
   width: 100%;
   aspect-ratio: 3 / 2;
   overflow: hidden;
-  background: var(--color-gray-light);
+  background: transparent;
 }
 
 .issue-page__articles .card__image .contextual-region,
@@ -1386,9 +1388,9 @@
 }
 
 .issue-page__articles .card {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-mid);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .issue-page__articles .card__title,
@@ -1412,25 +1414,30 @@
   border-color: var(--color-gray-mid);
 }
 
+.issue-page__articles .pager__item--first,
+.issue-page__articles .pager__item--last {
+  display: none;
+}
+
 .issue-page__story-grid {
-  gap: var(--gap-large);
+  gap: 40px;
 }
 
 .issue-page__articles .card__title--issue-story,
 .issue-page__articles .card__title--issue-story a {
   font-family: var(--font-heading);
-  font-size: clamp(1.15rem, 2.5vw, var(--font-size-xl));
-  font-weight: 700;
-  line-height: var(--line-height-tight);
-  color: var(--color-gray-dark);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  color: var(--color-primary);
 }
 
 .issue-page__articles .card__title--issue-story a {
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .issue-page__articles .card__title--issue-story a:hover {
-  color: var(--color-primary);
+  color: #004f7a;
 }
 
 /* In Brief — WordPress Stackable row: accent rule + headline + filled CTA */
@@ -1524,18 +1531,24 @@
 @media (max-width: 767px) {
   .issue-page__banner-overlay {
     align-items: flex-end;
+    justify-content: center;
     padding: var(--space-lg);
   }
 
   .issue-page__banner-panel {
     max-width: 100%;
-    padding: var(--space-lg) var(--space-md);
+    width: 100%;
+    padding: 0.5rem 1rem;
+  }
+
+  .issue-page__stories-title {
+    font-size: 22px;
   }
 }
 
-/* Featured promos — no section heading; flows under In Brief */
+/* Featured promos — WordPress list-style feature under In Brief */
 .issue-page__promos {
-  padding: var(--space-2xl) var(--space-md) var(--space-3xl);
+  padding: var(--space-xl) var(--space-md) var(--space-3xl);
   background: var(--color-white);
 }
 
@@ -1543,40 +1556,82 @@
   max-width: var(--container-max);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: var(--gap-large);
 }
 
-@media (max-width: 767px) {
-  .issue-page__promo-grid {
-    grid-template-columns: 1fr;
-  }
+.issue-page__promo .card--issue-promo {
+  height: auto;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
-.issue-page__promo .card--issue-promo {
-  height: 100%;
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-mid);
-  box-shadow: none;
+.issue-page__promo .card--issue-promo .card__image {
+  max-width: 300px;
+  width: 100%;
+  margin: 0 0 var(--space-md);
+  aspect-ratio: auto;
+}
+
+.issue-page__promo .card--issue-promo .card__image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.issue-page__promo .card--issue-promo .card__body {
+  padding: 0;
+  max-width: 56rem;
 }
 
 .issue-page__promo .card__title--issue-promo,
 .issue-page__promo .card__title--issue-promo a {
   font-family: var(--font-heading);
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--color-gray-dark);
+  font-size: 20px;
+  font-weight: 400;
+  color: #555;
   text-decoration: none;
-  line-height: var(--line-height-tight);
+  line-height: 26px;
 }
 
 .issue-page__promo .card__title--issue-promo a:hover {
   color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.issue-page__promo .card__excerpt--issue-promo {
+  margin: 0.5rem 0 0.75rem;
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.45;
+  color: #000;
+}
+
+.issue-page__promo .card__excerpt--issue-promo p {
+  margin: 0;
+}
+
+.issue-page__promo .card__readmore--issue-promo {
+  margin: 0;
+}
+
+.issue-page__promo .card__readmore--issue-promo a {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.issue-page__promo .card__readmore--issue-promo a:hover {
+  color: #004f7a;
 }
 
 /* Issue story cards — title only under image */
 .issue-page__articles .card--issue-story .card__body {
-  padding-top: var(--space-md);
+  padding: var(--space-md) 0 0;
 }
 
 /* --- Browse Issues Page --- */

@@ -1,7 +1,7 @@
 {#
 /**
  * @file
- * Issue landing featured link — image and title only.
+ * Issue landing featured article — image, title, excerpt, Continue Reading.
  */
 #}
 <div{{ attributes.addClass('card', 'card--issue-promo') }}>
@@ -16,5 +16,13 @@
       <a href="{{ url }}">{{ label }}</a>
     </h3>
     {{ title_suffix }}
+    {% if content.field_excerpt|render|trim %}
+      <div class="card__excerpt card__excerpt--issue-promo">
+        {{ content.field_excerpt }}
+      </div>
+    {% endif %}
+    <p class="card__readmore card__readmore--issue-promo">
+      <a href="{{ url }}">{{ 'Continue Reading'|t }}</a>
+    </p>
   </div>
 </div>

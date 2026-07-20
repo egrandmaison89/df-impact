@@ -474,6 +474,11 @@ function df_impact_preprocess_breadcrumb(array &$variables): void {
   if (\Drupal::routeMatch()->getRouteName() === 'view.topic_archive.page_1') {
     $variables['breadcrumb'] = [];
   }
+  // WordPress issue landings have no breadcrumb trail.
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof NodeInterface && $node->bundle() === 'issue') {
+    $variables['breadcrumb'] = [];
+  }
 }
 
 /**

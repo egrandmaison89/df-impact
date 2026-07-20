@@ -159,14 +159,14 @@ display:
           tags:
             next: Next
             previous: Previous
-            first: 'First'
-            last: Last
+            first: ''
+            last: ''
           expose:
             items_per_page: false
             items_per_page_label: 'Items per page'
             offset: false
             offset_label: Offset
-          quantity: 4
+          quantity: 3
           pagination_heading_level: h4
       display_extenders: {  }
       block_description: 'Issue: Articles'

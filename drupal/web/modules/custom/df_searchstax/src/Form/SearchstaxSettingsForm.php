@@ -206,7 +206,8 @@ final class SearchstaxSettingsForm extends ConfigFormBase {
       '#type' => 'checkboxes',
       '#title' => $this->t('Enabled widgets'),
       '#options' => [
-        'facets' => $this->t('Facets'),
+        'article_filters' => $this->t('Article filters (Issue and Category)'),
+        'facets' => $this->t('SearchStax native facets (requires Studio schema/facets)'),
         'sorting' => $this->t('Sorting'),
         'related_searches' => $this->t('Related searches'),
         'popular_searches' => $this->t('Popular searches'),
@@ -216,6 +217,7 @@ final class SearchstaxSettingsForm extends ConfigFormBase {
         'feedback_widget' => $this->t('Feedback modal widget'),
         'location_search' => $this->t('Location search'),
         'view_style_toggle' => $this->t('Grid/list style toggle'),
+        'client_ribbon_facets' => $this->t('Legacy client-only filters (current page only)'),
       ],
       '#default_value' => array_keys(array_filter($features)),
     ];
@@ -230,6 +232,7 @@ final class SearchstaxSettingsForm extends ConfigFormBase {
     $selected_features = array_values(array_filter($form_state->getValue('features')));
     $feature_flags = [];
     foreach ([
+      'article_filters',
       'facets',
       'sorting',
       'related_searches',
@@ -240,6 +243,7 @@ final class SearchstaxSettingsForm extends ConfigFormBase {
       'feedback_widget',
       'location_search',
       'view_style_toggle',
+      'client_ribbon_facets',
     ] as $feature) {
       $feature_flags[$feature] = in_array($feature, $selected_features, TRUE);
     }

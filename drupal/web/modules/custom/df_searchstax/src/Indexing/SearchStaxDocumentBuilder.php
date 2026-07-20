@@ -7,21 +7,21 @@ namespace Drupal\df_searchstax\Indexing;
 use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\node\NodeInterface;
+use Drupal\taxonomy\TermInterface;
 
 /**
  * Builds Solr-style JSON documents for SearchStax /update from Impact nodes.
  *
  * Field names align with the Site Search app's Select API (see fl / result_card
- * metadata): title, body, story image, teaser/ribbon. Solr document id is the
- * canonical public URL so result cards get a link (custom url_* fields may be
- * dropped by SearchStax ingest).
+ * metadata). Search is article-first; server-side facets use issue_title_s and
+ * article_category_s so filters apply to the full SearchStax result set.
  */
 final class SearchStaxDocumentBuilder {
 
   /**
-   * Bundles included in the external search index.
+   * Bundles included in the external article search index.
    */
-  public const INDEXED_BUNDLES = ['article', 'issue', 'page', 'in_brief'];
+  public const INDEXED_BUNDLES = ['article'];
 
   public function __construct(
     private readonly FileUrlGeneratorInterface $fileUrlGenerator,
@@ -54,12 +54,34 @@ final class SearchStaxDocumentBuilder {
     $bodyText = $this->collectBodyText($node);
     $ribbon = $this->buildRibbonMeta($node);
     $imageUrl = $this->resolveThumbnailUrl($node);
+    $typeLabel = $this->facetContentTypeLabel($node->bundle());
 
     $doc = [
       'id' => $url,
+      'index_source_s' => 'drupal',
+      'search_scope_s' => 'articles',
       'tcngramm_X3b_en_title' => $title,
       'tm_X3b_en_body' => $bodyText !== '' ? [$bodyText] : [$title],
+      'content_type_s' => $typeLabel,
     ];
+
+    $issue = $this->issueFacetValues($node, $publicBase);
+    if ($issue !== []) {
+      $doc += $issue;
+    }
+
+    $topics = $this->taxonomyTermLabels($node, 'field_topics');
+    if ($topics !== []) {
+      $doc['topic_ss'] = $topics;
+    }
+    $articleCategories = $this->taxonomyTermLabels($node, 'field_content_type');
+    if ($articleCategories !== []) {
+      $doc['article_category_s'] = $articleCategories[0];
+    }
+    $cancerTypes = $this->taxonomyTermLabels($node, 'field_cancer_types');
+    if ($cancerTypes !== []) {
+      $doc['cancer_type_ss'] = $cancerTypes;
+    }
 
     if ($ribbon !== '') {
       $doc['tcngramm_X3b_en_field_story_teaser'] = $ribbon;
@@ -80,6 +102,66 @@ final class SearchStaxDocumentBuilder {
     }
 
     return $doc;
+  }
+
+  /**
+   * Single-value facet for the indexed bundle.
+   */
+  private function facetContentTypeLabel(string $bundle): string {
+    return match ($bundle) {
+      'article' => 'Article',
+      default => $bundle,
+    };
+  }
+
+  /**
+   * @return array<string, string>
+   */
+  private function issueFacetValues(NodeInterface $node, string $publicBase): array {
+    if (!$node->hasField('field_issue') || $node->get('field_issue')->isEmpty()) {
+      return [];
+    }
+    $issue = $node->get('field_issue')->entity;
+    if (!$issue instanceof NodeInterface || !$issue->isPublished()) {
+      return [];
+    }
+    $title = trim($issue->label());
+    if ($title === '') {
+      return [];
+    }
+
+    $out = [
+      'issue_id_s' => (string) $issue->id(),
+      'issue_title_s' => $title,
+    ];
+    $url = $this->canonicalUrl($issue, $publicBase);
+    if ($url !== '') {
+      $out['issue_url_s'] = $url;
+      $slug = trim((string) parse_url($url, PHP_URL_PATH), '/');
+      if ($slug !== '') {
+        $out['issue_slug_s'] = basename($slug);
+      }
+    }
+    return $out;
+  }
+
+  /**
+   * @return list<string>
+   */
+  private function taxonomyTermLabels(NodeInterface $node, string $fieldName): array {
+    if (!$node->hasField($fieldName) || $node->get($fieldName)->isEmpty()) {
+      return [];
+    }
+    $labels = [];
+    foreach ($node->get($fieldName)->referencedEntities() as $entity) {
+      if ($entity instanceof TermInterface) {
+        $label = trim($entity->label());
+        if ($label !== '') {
+          $labels[] = $label;
+        }
+      }
+    }
+    return array_values(array_unique($labels));
   }
 
   private function canonicalUrl(NodeInterface $node, string $publicBase): string {
@@ -129,21 +211,50 @@ final class SearchStaxDocumentBuilder {
   }
 
   /**
-   * Ribbon / teaser line: type, date, author for result cards.
+   * Ribbon / teaser line: type, issue, date, author for result cards.
    */
   private function buildRibbonMeta(NodeInterface $node): string {
-    $labels = [
-             'article' => 'Story',
-             'issue' => 'Issue',
-             'page' => 'Page',
-             'in_brief' => 'In Brief',
-    ];
-    $typeLabel = $labels[$node->bundle()] ?? $node->bundle();
+    $typeLabel = $this->facetContentTypeLabel($node->bundle());
+    $issueTitle = $this->issueDisplayTitle($node);
+    $articleCategories = $this->taxonomyTermLabels($node, 'field_content_type');
+    $category = $articleCategories[0] ?? '';
     $created = $node->getCreatedTime();
     $dateStr = $created > 0 ? gmdate('F j, Y', (int) $created) : '';
     $by = $this->resolveAuthor($node);
-    $bits = array_filter([$typeLabel, $dateStr, $by]);
-    return implode(' · ', $bits);
+    $bits = array_filter([$typeLabel, $issueTitle, $category, $dateStr, $by]);
+    return implode(' · ', $bits) . $this->ribbonFacetComment($node);
+  }
+
+  private function issueDisplayTitle(NodeInterface $node): string {
+    if (!$node->hasField('field_issue') || $node->get('field_issue')->isEmpty()) {
+      return '';
+    }
+    $issue = $node->get('field_issue')->entity;
+    if (!$issue instanceof NodeInterface || !$issue->isPublished()) {
+      return '';
+    }
+    return trim($issue->label());
+  }
+
+  /**
+   * Hidden machine-readable facet payload (stripped client-side for display).
+   */
+  private function ribbonFacetComment(NodeInterface $node): string {
+    $parts = ['t:' . rawurlencode($this->facetContentTypeLabel($node->bundle()))];
+    $issueTitle = $this->issueDisplayTitle($node);
+    if ($issueTitle !== '') {
+      $parts[] = 'is:' . rawurlencode($issueTitle);
+    }
+    foreach ($this->taxonomyTermLabels($node, 'field_content_type') as $cat) {
+      $parts[] = 'cf:' . rawurlencode($cat);
+    }
+    foreach ($this->taxonomyTermLabels($node, 'field_topics') as $topic) {
+      $parts[] = 'tp:' . rawurlencode($topic);
+    }
+    foreach ($this->taxonomyTermLabels($node, 'field_cancer_types') as $cancerType) {
+      $parts[] = 'c:' . rawurlencode($cancerType);
+    }
+    return ' <!--df:' . implode('|', $parts) . '-->';
   }
 
   private function resolveAuthor(NodeInterface $node): string {

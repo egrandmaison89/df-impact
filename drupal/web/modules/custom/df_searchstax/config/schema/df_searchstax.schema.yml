@@ -72,9 +72,12 @@ df_searchstax.settings:
       type: mapping
       label: 'Feature flags'
       mapping:
+        article_filters:
+          type: boolean
+          label: 'Article Issue and Category filters enabled'
         facets:
           type: boolean
-          label: 'Facets enabled'
+          label: 'SearchStax native facets enabled'
         sorting:
           type: boolean
           label: 'Sorting enabled'
@@ -102,3 +105,6 @@ df_searchstax.settings:
         view_style_toggle:
           type: boolean
           label: 'View style toggle enabled'
+        client_ribbon_facets:
+          type: boolean
+          label: 'Legacy client-only filters for the current result page'

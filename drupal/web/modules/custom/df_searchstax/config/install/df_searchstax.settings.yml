@@ -21,7 +21,8 @@ facets_items_per_page_desktop: 6
 facets_items_per_page_mobile: 99
 faceting_type: and
 features:
-  facets: true
+  article_filters: true
+  facets: false
   sorting: true
   related_searches: true
   popular_searches: true
@@ -31,3 +32,4 @@ features:
   feedback_widget: true
   location_search: false
   view_style_toggle: true
+  client_ribbon_facets: false

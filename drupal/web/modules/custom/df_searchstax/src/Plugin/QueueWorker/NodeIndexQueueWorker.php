@@ -8,6 +8,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\Core\Site\Settings;
 use Drupal\df_searchstax\Indexing\SearchStaxDocumentBuilder;
 use Drupal\df_searchstax\Indexing\SearchStaxUpdateClient;
 use Drupal\node\NodeInterface;
@@ -110,6 +111,10 @@ final class NodeIndexQueueWorker extends QueueWorkerBase implements ContainerFac
   private function publicBaseUrl(): string {
     $url = (string) $this->configFactory->get('df_searchstax.settings')->get('public_base_url');
     $url = trim($url);
+    $overrides = Settings::get('df_searchstax', []);
+    if (is_array($overrides) && !empty($overrides['public_base_url'])) {
+      $url = trim((string) $overrides['public_base_url']);
+    }
     if ($url !== '') {
       return rtrim($url, '/');
     }

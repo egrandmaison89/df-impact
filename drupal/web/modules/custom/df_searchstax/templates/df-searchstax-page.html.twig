@@ -5,7 +5,8 @@
  */
 #}
 <div class="df-searchstax-page-layout-container">
-  <h1 class="df-searchstax-page-heading">{{ 'Search Site'|t }}</h1>
+  <h1 class="df-searchstax-page-heading">{{ 'Search Articles'|t }}</h1>
+  <p class="df-searchstax-page-intro">{{ 'Find Impact articles by keyword, then refine by Issue or Category.'|t }}</p>
 
   <div id="df-searchstax-input-container"></div>
   <div id="df-searchstax-answer-container"></div>
@@ -23,7 +24,9 @@
   </div>
 
   <div class="df-searchstax-page-layout-facet-result-container">
-    <aside class="df-searchstax-page-layout-facet-container">
+    <aside class="df-searchstax-page-layout-facet-container" aria-labelledby="df-searchstax-filters-heading">
+      <h2 id="df-searchstax-filters-heading" class="visually-hidden">{{ 'Filter results'|t }}</h2>
+      <div id="df-searchstax-client-facets" class="df-searchstax-client-facets"></div>
       <div id="df-searchstax-facets-container"></div>
     </aside>
 

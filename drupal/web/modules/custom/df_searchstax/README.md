@@ -5,7 +5,7 @@ Production SearchStax integration for the `/search` route.
 ## What it provides
 
 - Dedicated SearchStax page route: `/search`
-- SearchStax UI kit widgets (input, results, pagination, facets, sorting, related searches, promotions)
+- SearchStax UI kit widgets (input, article results, server-side Issue/Category filters, pagination, sorting, related searches, promotions)
 - Optional advanced widgets (smart answers, feedback modal, location search, popular searches)
 - Admin settings form: `/admin/config/search/df-searchstax`
 - **Drupal → SearchStax Ingest API** indexing (structured fields, queue on save, Drush bulk push)
@@ -37,7 +37,7 @@ Any keys present in `$settings['df_searchstax']` override stored config values.
 
 ## Drupal-first indexing (recommended)
 
-SearchStax can crawl HTML, but for Drupal the supported path is **pushing structured documents** from CMS:
+SearchStax can crawl HTML, but `/search` is designed as an **article search**. The supported path is pushing structured article documents from Drupal and keeping crawler/listing pages out of this SearchStax app:
 
 1. In Studio, copy the **Update** API URL (same app as Select). Set it in config as **Update (Ingest) API URL** or `DF_SEARCHSTAX_UPDATE_URL`.
 2. Create a **read-write** API token; set **`index_auth`** / `DF_SEARCHSTAX_INDEX_AUTH` (not the read-only Select token).
@@ -48,21 +48,31 @@ SearchStax can crawl HTML, but for Drupal the supported path is **pushing struct
    ddev drush df-searchstax:push-content
    ```
 
-5. Ongoing: saving or unpublishing supported node types queues `df_searchstax_node_index` (processed on cron).
+5. Ongoing: saving or unpublishing supported article nodes queues `df_searchstax_node_index` (processed on cron).
 
-Documents use stable Solr ids `impact-{bundle}-{nid}-{langcode}`, include `index_source_s=drupal` for separation from crawler/Future sources, and map into your app’s result card fields (`title`, body/snippet, `ss_field_story_image`, teaser/ribbon with type · date · author).
+Documents use the canonical article URL as the Solr `id`, include `index_source_s=drupal` and `search_scope_s=articles`, and map into result card fields (`title`, body/snippet, `ss_field_story_image`, teaser/ribbon with article · issue · date · author). Issue and Category filters are backed by:
 
-Clear only Drupal-sourced docs (optional):
+- `issue_id_s`, `issue_slug_s`, `issue_title_s`, `issue_url_s`
+- `article_category_s`
+- `content_type_s=Article`
+
+The `/search` UI sends SearchStax filter queries for the canonical `/stories/` URL scope and for selected Issue/Category labels in the indexed result ribbon. This keeps filters server-side even before SearchStax Studio accepts custom facet fields. If Studio schema/facets are later configured for `issue_title_s` and `article_category_s`, native SearchStax facets can be enabled from the admin form.
+
+Cleanup helpers:
 
 ```bash
-ddev drush df-searchstax:delete-drupal --yes
+ddev drush df-searchstax:delete-drupal
+ddev drush df-searchstax:delete-low-value
+ddev drush df-searchstax:delete-by-query "id:*category*"
 ```
 
-If Ingest returns HTTP errors, check SearchStax logs: optional fields (`author_t`, `created_dt`, `index_source_s`) require matching dynamic fields in Solr; adjust Studio schema or simplify the payload in `SearchStaxDocumentBuilder`.
+`df-searchstax:delete-drupal` removes only old `impact-*` legacy ids. Use `delete-low-value` or `delete-by-query` for crawler URLs such as home, category, and paginated listing pages.
+
+If Ingest returns HTTP errors, check SearchStax logs: optional fields (`author_t`, `created_dt`, `index_source_s`, `search_scope_s`, `issue_title_s`, `article_category_s`) require matching dynamic fields in Solr; adjust Studio schema or simplify the payload in `SearchStaxDocumentBuilder`.
 
 ## Optional: crawler / tunnel (legacy / supplemental)
 
-SearchStax crawls **public** URLs. For local DDEV, use a tunnel, for example:
+SearchStax crawls **public** URLs. The crawler should be disabled for this app unless it has strict include/exclude rules that keep listing pages out of article search. For local DDEV, use a tunnel only when you intentionally need to inspect crawler behavior, for example:
 
 ```bash
 ddev share --provider=cloudflared
@@ -72,10 +82,11 @@ ddev share --provider=cloudflared
 
 - Quick tunnels get a **random hostname each run** (e.g. `something.trycloudflare.com`). When you stop `ddev share` or restart it, the **old hostname stops working** (often HTTP 530). Your Drupal site at `https://df-impact.ddev.site` is unchanged; only the tunnel URL dies.
 - After every new tunnel URL, update the SearchStax crawler (seed URL and/or sitemap URL) to the **new** base host. Optional: cancel a stuck crawl that still targets a dead hostname.
-- Using **`https://<tunnel-host>/sitemap.xml`** as the crawl source is valid: the crawler reads the sitemap and follows listed URLs.
+- Do not use a broad sitemap crawl for the article search app unless it excludes `/`, `/category/*`, `?page=*`, issue landing pages, and generic pages. Drupal push is the authoritative source for `/search`.
 
 Check approximate index size:
 
 ```bash
 ddev drush df-searchstax:index-info
+ddev drush df-searchstax:index-info --show-facets
 ```

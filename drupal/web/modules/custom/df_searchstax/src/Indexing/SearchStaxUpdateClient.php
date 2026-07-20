@@ -80,7 +80,7 @@ final class SearchStaxUpdateClient {
       }
     }
 
-    return TRUE;
+    return $this->commit();
   }
 
   /**
@@ -110,7 +110,7 @@ final class SearchStaxUpdateClient {
     }
 
     $code = $response->getStatusCode();
-    return $code >= 200 && $code < 300;
+    return $code >= 200 && $code < 300 && $this->commit();
   }
 
   /**
@@ -140,7 +140,7 @@ final class SearchStaxUpdateClient {
     }
 
     $code = $response->getStatusCode();
-    return $code >= 200 && $code < 300;
+    return $code >= 200 && $code < 300 && $this->commit();
   }
 
   /**
@@ -171,6 +171,41 @@ final class SearchStaxUpdateClient {
    */
   private function withCommit(string $url): string {
     return $url . (str_contains($url, '?') ? '&' : '?') . 'commit=true';
+  }
+
+  /**
+   * Forces SearchStax to expose accepted update/delete requests to Select.
+   */
+  private function commit(): bool {
+    [$url, $token] = $this->indexEndpoint();
+    if ($url === '' || $token === '') {
+      return FALSE;
+    }
+    try {
+      $response = $this->httpClient->request('POST', $url, [
+        'headers' => [
+          'Authorization' => 'Token ' . $token,
+          'Content-Type' => 'application/json',
+          'Accept' => 'application/json',
+        ],
+        'body' => json_encode(['commit' => new \stdClass()], JSON_THROW_ON_ERROR),
+        'timeout' => 60,
+      ]);
+    }
+    catch (\Throwable $e) {
+      $this->logger->error('SearchStax commit failed: @msg', ['@msg' => $e->getMessage()]);
+      return FALSE;
+    }
+
+    $code = $response->getStatusCode();
+    if ($code < 200 || $code >= 300) {
+      $this->logger->error('SearchStax commit HTTP @code: @body', [
+        '@code' => (string) $code,
+        '@body' => (string) $response->getBody(),
+      ]);
+      return FALSE;
+    }
+    return TRUE;
   }
 
   /**

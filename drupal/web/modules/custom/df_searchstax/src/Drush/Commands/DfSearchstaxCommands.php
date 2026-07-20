@@ -26,8 +26,10 @@ final class DfSearchstaxCommands extends DrushCommands {
    */
   #[Command(name: 'df-searchstax:index-info')]
   #[Bootstrap(level: DrupalBootLevels::FULL)]
+  #[Option(name: 'show-facets', description: 'Print facet buckets for article SearchStax fields')]
   #[Usage(name: 'drush df-searchstax:index-info', description: 'Print Solr numFound via Select API.')]
-  public function indexInfo(): void {
+  #[Usage(name: 'drush df-searchstax:index-info --show-facets', description: 'Also print facet counts (after reindex with facet fields).')]
+  public function indexInfo(array $options = ['show-facets' => FALSE]): void {
     ['search_url' => $url, 'search_auth' => $auth] = $this->mergedAuthConfig();
     $url = trim($url);
     $auth = trim($auth);
@@ -37,15 +39,26 @@ final class DfSearchstaxCommands extends DrushCommands {
     }
 
     try {
-      $response = \Drupal::httpClient()->request('GET', $url, [
+      $params = [
+        'q' => '*',
+        'language' => 'en',
+        'rows' => 0,
+      ];
+      if (!empty($options['show-facets'])) {
+        $params['facet'] = 'true';
+        $params['facet.limit'] = 50;
+        $params['facet.mincount'] = 1;
+      }
+      $query = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+      if (!empty($options['show-facets'])) {
+        foreach ($this->articleFacetFields() as $field) {
+          $query .= '&facet.field=' . rawurlencode($field);
+        }
+      }
+      $response = \Drupal::httpClient()->request('GET', $url . '?' . $query, [
         'headers' => [
           'Authorization' => 'Token ' . $auth,
           'Accept' => 'application/json',
-        ],
-        'query' => [
-          'q' => '*',
-          'language' => 'en',
-          'rows' => 0,
         ],
         'timeout' => 20,
       ]);
@@ -72,6 +85,26 @@ final class DfSearchstaxCommands extends DrushCommands {
       '@n' => $num === NULL ? '(missing in response)' : (string) $num,
     ]));
 
+    if (!empty($options['show-facets'])) {
+      $facetFields = $data['facet_counts']['facet_fields'] ?? NULL;
+      if (!is_array($facetFields)) {
+        $this->io()->note('No facet_counts in response. Configure article fields in SearchStax Studio, then re-run drush df-searchstax:push-content.');
+      }
+      else {
+        foreach ($this->articleFacetFields() as $fname) {
+          $buckets = $facetFields[$fname] ?? NULL;
+          if (!is_array($buckets) || $buckets === []) {
+            $this->io()->writeln(dt('@f: (no values or field not in schema yet)', ['@f' => $fname]));
+            continue;
+          }
+          $this->io()->writeln($fname . ':');
+          for ($i = 0; $i + 1 < count($buckets); $i += 2) {
+            $this->io()->writeln('  ' . (string) $buckets[$i] . ' — ' . (string) $buckets[$i + 1]);
+          }
+        }
+      }
+    }
+
     if ($num === 0) {
       $this->io()->note('Index is empty. Use drush df-searchstax:push-content after configuring update_url and a read-write index token, or run a Studio crawler.');
     }
@@ -82,7 +115,7 @@ final class DfSearchstaxCommands extends DrushCommands {
    */
   #[Command(name: 'df-searchstax:push-content')]
   #[Bootstrap(level: DrupalBootLevels::FULL)]
-  #[Option(name: 'bundle', description: 'Optional bundle (article, issue, page, in_brief).')]
+  #[Option(name: 'bundle', description: 'Optional bundle. Article search currently supports article only.')]
   #[Option(name: 'limit', description: 'Max nodes to push.')]
   #[Usage(name: 'drush df-searchstax:push-content', description: 'Index all published nodes')]
   #[Usage(name: 'drush df-searchstax:push-content --bundle=article --limit=50', description: 'Index up to 50 articles')]
@@ -186,6 +219,70 @@ final class DfSearchstaxCommands extends DrushCommands {
   }
 
   /**
+   * Deletes documents matching a SearchStax/Solr query.
+   */
+  #[Command(name: 'df-searchstax:delete-by-query')]
+  #[Argument(name: 'query', description: 'Solr delete query, for example id:*category* or search_scope_s:articles.')]
+  #[Bootstrap(level: DrupalBootLevels::FULL)]
+  #[Usage(name: 'drush df-searchstax:delete-by-query "id:*category*"', description: 'Remove matching category/listing documents after confirmation.')]
+  public function deleteByQueryCommand(string $query): void {
+    $query = trim($query);
+    if ($query === '') {
+      $this->io()->error('No query provided.');
+      return;
+    }
+    if (!$this->io()->confirm(dt('Delete all SearchStax documents matching this query? @query', ['@query' => $query]))) {
+      $this->io()->writeln('Aborted.');
+      return;
+    }
+    /** @var \Drupal\df_searchstax\Indexing\SearchStaxUpdateClient $client */
+    $client = \Drupal::service('df_searchstax.update_client');
+    if ($client->deleteByQuery($query)) {
+      $this->io()->success(dt('Delete-by-query submitted: @query', ['@query' => $query]));
+    }
+    else {
+      $this->io()->error('Delete-by-query failed (check logs and Ingest token).');
+    }
+  }
+
+  /**
+   * Deletes common crawler/listing documents that should not appear in article search.
+   */
+  #[Command(name: 'df-searchstax:delete-low-value')]
+  #[Bootstrap(level: DrupalBootLevels::FULL)]
+  #[Usage(name: 'drush df-searchstax:delete-low-value', description: 'Remove known non-article crawler URL patterns after confirmation.')]
+  public function deleteLowValueDocuments(): void {
+    $queries = [
+      'id:*category*',
+      'id:*?page=*',
+      'id:*/about-impact',
+    ];
+    $this->io()->listing($queries);
+    if (!$this->io()->confirm('Submit these low-value SearchStax delete queries?')) {
+      $this->io()->writeln('Aborted.');
+      return;
+    }
+
+    /** @var \Drupal\df_searchstax\Indexing\SearchStaxUpdateClient $client */
+    $client = \Drupal::service('df_searchstax.update_client');
+    $ok = 0;
+    $fail = 0;
+    foreach ($queries as $query) {
+      if ($client->deleteByQuery($query)) {
+        $ok++;
+      }
+      else {
+        $fail++;
+        $this->io()->warning(dt('Delete failed for @query', ['@query' => $query]));
+      }
+    }
+    $this->io()->writeln(dt('Submitted @ok low-value delete queries; @fail failed.', [
+      '@ok' => (string) $ok,
+      '@fail' => (string) $fail,
+    ]));
+  }
+
+  /**
    * Deletes specific Solr documents by id (Ingest API).
    */
   #[Command(name: 'df-searchstax:delete-by-ids')]
@@ -237,6 +334,19 @@ final class DfSearchstaxCommands extends DrushCommands {
     catch (\Throwable) {
       return '';
     }
+  }
+
+  /**
+   * @return list<string>
+   */
+  private function articleFacetFields(): array {
+    return [
+      'index_source_s',
+      'search_scope_s',
+      'content_type_s',
+      'issue_title_s',
+      'article_category_s',
+    ];
   }
 
   /**

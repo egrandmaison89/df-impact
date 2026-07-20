@@ -7,4 +7,5 @@ dependencies:
   - drupal:node
   - drupal:media
   - drupal:file
+  - drupal:taxonomy
   - drupal:system

@@ -66,6 +66,7 @@ function df_setup_form_node_article_form_alter(array &$form, FormStateInterface 
   }
 
   _df_setup_alter_article_credit_fields($form);
+  _df_setup_alter_article_photo_caption_field($form);
 }
 
 /**
@@ -89,6 +90,22 @@ function _df_setup_alter_article_credit_fields(array &$form): void {
     }
     $form['field_photo_credit']['#description'] = (string) t('Enter the photographer name only (e.g., Bryce Vickmark). The site displays this as “Photography by [name]”.');
   }
+}
+
+/**
+ * Photo caption is only relevant when a featured image is selected.
+ */
+function _df_setup_alter_article_photo_caption_field(array &$form): void {
+  if (!isset($form['field_photo_caption'])) {
+    return;
+  }
+
+  $form['field_photo_caption']['#description'] = (string) t('Optional caption shown beneath the featured image (e.g., subject name and title).');
+  $form['field_photo_caption']['#states'] = [
+    'visible' => [
+      ':input[name="field_featured_image[0][target_id]"]' => ['filled' => TRUE],
+    ],
+  ];
 }
 
 /**

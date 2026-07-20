@@ -37,7 +37,8 @@ foreach (Node::loadMultiple($nids) as $node) {
   $htmlChanged = trim($result['html']) !== trim($original);
   $bylineFill = $result['byline'] !== '' && $node->hasField('field_byline') && $node->get('field_byline')->isEmpty();
   $creditFill = $result['photo_credit'] !== '' && $node->hasField('field_photo_credit') && $node->get('field_photo_credit')->isEmpty();
-  if (!$htmlChanged && !$bylineFill && !$creditFill) {
+  $captionFill = $result['photo_caption'] !== '' && $node->hasField('field_photo_caption') && $node->get('field_photo_caption')->isEmpty();
+  if (!$htmlChanged && !$bylineFill && !$creditFill && !$captionFill) {
     continue;
   }
 
@@ -49,6 +50,9 @@ foreach (Node::loadMultiple($nids) as $node) {
   }
   if ($creditFill) {
     $node->set('field_photo_credit', $result['photo_credit']);
+  }
+  if ($captionFill) {
+    $node->set('field_photo_caption', $result['photo_caption']);
   }
 
   $node->save();

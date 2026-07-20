@@ -9,7 +9,9 @@
 {% set has_lead_image = node.hasField('field_featured_image') and not node.field_featured_image.isEmpty %}
 {% set has_lead_fallback = article_lead_image_fallback is defined and article_lead_image_fallback %}
 {% set show_lead_media = has_lead_image or has_lead_fallback %}
-{% set has_photo_credit = node.hasField('field_photo_credit') and not node.field_photo_credit.isEmpty %}
+{% set has_photo_credit = article_photo_credit_display is defined and article_photo_credit_display|trim %}
+{% set has_photo_caption = article_photo_caption_display is defined and article_photo_caption_display|trim %}
+{% set has_byline = article_byline_display is defined and article_byline_display|trim %}
 
 <article{{ attributes.addClass('article') }}>
 
@@ -24,26 +26,21 @@
     {% endif %}
 
     <div class="article__meta">
-      {% if content.field_issue|render|trim %}
-        <span class="article__meta-item">
-          {{ content.field_issue }}
-        </span>
+      {% if issue_title is defined and issue_url is defined %}
+        <div class="article__meta-issue">
+          <a href="{{ issue_url }}" class="article__issue-link">{{ issue_title }}</a>
+        </div>
       {% endif %}
 
-      {% if article_published is defined and article_published %}
-        <time class="article__meta-item article__meta-item--date" datetime="{{ article_published_iso }}">{{ article_published }}</time>
-      {% endif %}
-
-      {% if content.field_byline|render|trim %}
-        <span class="article__meta-item">
-          {{ content.field_byline }}
-        </span>
-      {% endif %}
-
-      {% if has_photo_credit and not show_lead_media %}
-        <span class="article__meta-item article__meta-item--credit">
-          {{ content.field_photo_credit }}
-        </span>
+      {% if has_byline or has_photo_credit %}
+        <p class="article__meta-line">
+          {% if has_byline %}
+            <span class="article__meta-byline">{{ article_byline_display }}</span>
+          {% endif %}
+          {% if has_photo_credit %}
+            <span class="article__meta-credit">{{ article_photo_credit_display }}</span>
+          {% endif %}
+        </p>
       {% endif %}
     </div>
   </header>
@@ -56,8 +53,8 @@
         {% else %}
           {{ article_lead_image_fallback }}
         {% endif %}
-        {% if has_photo_credit %}
-          <figcaption class="article__figure-caption">{{ content.field_photo_credit }}</figcaption>
+        {% if has_photo_caption %}
+          <figcaption class="article__figure-caption">{{ article_photo_caption_display }}</figcaption>
         {% endif %}
       </figure>
       <div class="article__body">

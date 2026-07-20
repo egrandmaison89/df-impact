@@ -8,6 +8,7 @@
 use Drupal\Component\Utility\Html;
 use Drupal\df_setup\ArticleCreditLabels;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
 
@@ -474,4 +475,132 @@ function df_setup_update_10009(): string {
   }
 
   return sprintf('Normalized byline and photo credit to names-only storage on %d article(s).', $updated);
+}
+
+/**
+ * Adds photo caption field and moves mis-assigned caption text out of photo credit.
+ */
+function df_setup_update_10010(): string {
+  _df_setup_ensure_article_photo_caption_field();
+
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->execute();
+  if (!$nids) {
+    return 'Photo caption field ensured; no articles to update.';
+  }
+
+  $updated = 0;
+  foreach ($storage->loadMultiple($nids) as $node) {
+    if (!$node instanceof Node || $node->bundle() !== 'article') {
+      continue;
+    }
+    if (!$node->hasField('field_photo_caption') || !$node->hasField('field_photo_credit')) {
+      continue;
+    }
+
+    $changed = FALSE;
+    $credit = $node->get('field_photo_credit')->isEmpty()
+      ? ''
+      : trim((string) $node->get('field_photo_credit')->value);
+    $caption = $node->get('field_photo_caption')->isEmpty()
+      ? ''
+      : trim((string) $node->get('field_photo_caption')->value);
+
+    if ($caption === '' && $credit !== '' && _df_setup_photo_credit_looks_like_caption($credit)) {
+      $node->set('field_photo_caption', $credit);
+      $node->set('field_photo_credit', '');
+      $changed = TRUE;
+    }
+
+    if ($changed) {
+      $node->save();
+      $updated++;
+    }
+  }
+
+  return sprintf('Ensured photo caption field and moved mis-assigned caption text on %d article(s).', $updated);
+}
+
+/**
+ * Creates article photo caption field storage/instance if missing.
+ */
+function _df_setup_ensure_article_photo_caption_field(): void {
+  if (!FieldStorageConfig::loadByName('node', 'field_photo_caption')) {
+    FieldStorageConfig::create([
+      'field_name' => 'field_photo_caption',
+      'entity_type' => 'node',
+      'type' => 'string',
+      'settings' => [
+        'max_length' => 500,
+        'case_sensitive' => FALSE,
+        'is_ascii' => FALSE,
+      ],
+      'cardinality' => 1,
+      'translatable' => TRUE,
+    ])->save();
+  }
+
+  if (!FieldConfig::loadByName('node', 'article', 'field_photo_caption')) {
+    FieldConfig::create([
+      'field_storage' => FieldStorageConfig::loadByName('node', 'field_photo_caption'),
+      'bundle' => 'article',
+      'label' => 'Photo caption',
+      'description' => 'Optional caption for the featured image (e.g., subject name and title). Only shown when a featured image is present.',
+      'required' => FALSE,
+      'translatable' => TRUE,
+    ])->save();
+  }
+
+  $form_display = \Drupal\Core\Entity\Entity\EntityFormDisplay::load('node.article.default');
+  if ($form_display && !$form_display->getComponent('field_photo_caption')) {
+    $form_display->setComponent('field_photo_caption', [
+      'type' => 'string_textfield',
+      'weight' => 7,
+      'region' => 'content',
+      'settings' => [
+        'size' => 60,
+        'placeholder' => '',
+      ],
+    ])->save();
+  }
+
+  $view_display = \Drupal\Core\Entity\Entity\EntityViewDisplay::load('node.article.default');
+  if ($view_display && !$view_display->getComponent('field_photo_caption')) {
+    $view_display->setComponent('field_photo_caption', [
+      'type' => 'string',
+      'label' => 'hidden',
+      'weight' => -5,
+      'region' => 'content',
+      'settings' => [
+        'link_to_entity' => FALSE,
+      ],
+    ])->save();
+  }
+}
+
+/**
+ * Heuristic: legacy imports sometimes stored image captions in photo credit.
+ */
+function _df_setup_photo_credit_looks_like_caption(string $value): bool {
+  $value = trim($value);
+  if ($value === '') {
+    return FALSE;
+  }
+  return (bool) preg_match('/,\s*(?:MD|PhD|MPH|M\.D\.|Ph\.D\.|Dr\.|chief|division|director|professor)/i', $value);
+}
+
+/**
+ * Backfills photo captions from migration JSON for articles missing the field.
+ */
+function df_setup_update_10011(): string {
+  $script = __DIR__ . '/../df_migrate/scripts/df_backfill_photo_captions.php';
+  if (!is_readable($script)) {
+    return 'Photo caption backfill script not found.';
+  }
+  ob_start();
+  include $script;
+  return trim((string) ob_get_clean());
 }

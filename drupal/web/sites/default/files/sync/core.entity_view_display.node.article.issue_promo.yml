@@ -39,6 +39,7 @@ hidden:
   field_issue: true
   field_meta_description: true
   field_photo_credit: true
+  field_photo_caption: true
   field_related_articles: true
   field_subtitle: true
   field_tags: true

@@ -17,6 +17,7 @@ dependencies:
     - field.field.node.article.field_issue
     - field.field.node.article.field_meta_description
     - field.field.node.article.field_photo_credit
+    - field.field.node.article.field_photo_caption
     - field.field.node.article.field_related_articles
     - field.field.node.article.field_subtitle
     - field.field.node.article.field_tags
@@ -42,6 +43,7 @@ third_party_settings:
         - body
         - field_content_sections
         - field_featured_image
+        - field_photo_caption
       label: Content
       region: content
       parent_name: ''
@@ -198,6 +200,14 @@ content:
   field_photo_credit:
     type: string_textfield
     weight: 3
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_photo_caption:
+    type: string_textfield
+    weight: 7
     region: content
     settings:
       size: 60

@@ -214,6 +214,15 @@ _create_field_instance('field_photo_credit', 'node', 'article', 'Photo Credit', 
   'description' => 'Enter the photographer name only (e.g., Bryce Vickmark). The site displays this as “Photography by [name]”.',
 ]);
 
+// field_photo_caption
+_create_field_storage('field_photo_caption', 'node', 'string', [
+  'settings' => ['max_length' => 500],
+]);
+_create_field_instance('field_photo_caption', 'node', 'article', 'Photo caption', [
+  'required' => FALSE,
+  'description' => 'Optional caption for the featured image (e.g., subject name and title). Only shown when a featured image is present.',
+]);
+
 // field_featured_image (entity reference to media)
 _create_field_storage('field_featured_image', 'node', 'entity_reference', [
   'settings' => ['target_type' => 'media'],

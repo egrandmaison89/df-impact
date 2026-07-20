@@ -116,6 +116,7 @@ process:
 
   field_byline: byline
   field_photo_credit: photo_credit
+  field_photo_caption: photo_caption
   field_excerpt: excerpt
   field_meta_description: meta_description
 

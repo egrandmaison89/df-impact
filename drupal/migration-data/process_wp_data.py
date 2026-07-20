@@ -587,8 +587,7 @@ for post in posts:
     photo_credit = deck_photo or extract_photo_credit(content)
     clean_content = clean_body(content, byline, photo_credit)
     clean_content, fig_caption = strip_lead_figure_if_matches(clean_content, featured_image_url)
-    if fig_caption and not photo_credit:
-        photo_credit = fig_caption
+    photo_caption = fig_caption or ''
     excerpt = get_excerpt(post)
 
     # Get WP metadata
@@ -615,6 +614,7 @@ for post in posts:
         'changed': wp_modified,
         'byline': byline,
         'photo_credit': photo_credit,
+        'photo_caption': photo_caption,
         'body': clean_content,
         'excerpt': excerpt,
         'featured_image_url': featured_image_url,

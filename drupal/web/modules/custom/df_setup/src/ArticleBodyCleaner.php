@@ -26,6 +26,9 @@ final class ArticleBodyCleaner {
   /** @var int Matches string field max_length (byline, photo_credit). */
   private const STRING_FIELD_MAX = 255;
 
+  /** @var int Matches field_photo_caption max_length. */
+  private const CAPTION_FIELD_MAX = 500;
+
   public function __construct(
     protected EntityTypeManagerInterface $entityTypeManager,
     protected FileUrlGeneratorInterface $fileUrlGenerator,
@@ -38,11 +41,12 @@ final class ArticleBodyCleaner {
    *   Public URL for featured image file (WP URL during migrate; Drupal absolute
    *   URL during backfill) used to drop a duplicate lead figure from body.
    *
-   * @return array{html: string, byline: string, photo_credit: string}
+   * @return array{html: string, byline: string, photo_credit: string, photo_caption: string}
    */
   public function cleanArticleHtml(string $html, ?string $featuredImageUrl = NULL): array {
     $byline = '';
     $photo_credit = '';
+    $photo_caption = '';
 
     $html = $this->removeIssueDeckParagraphs($html, $byline, $photo_credit);
     $html = $this->removeStandaloneBylineParagraphs($html);
@@ -50,8 +54,8 @@ final class ArticleBodyCleaner {
     $stem = self::stemBasenameFromUrl($featuredImageUrl);
     if ($stem !== '') {
       [$html, $captionFromFigure] = $this->stripLeadFigureMatchingFeatured($html, $stem);
-      if ($captionFromFigure !== '' && $photo_credit === '') {
-        $photo_credit = $this->normalizePhotoCreditText($captionFromFigure);
+      if ($captionFromFigure !== '') {
+        $photo_caption = $this->normalizePhotoCaptionText($captionFromFigure);
       }
     }
 
@@ -64,6 +68,7 @@ final class ArticleBodyCleaner {
       'html' => $html,
       'byline' => self::truncateUtf8(trim($byline), self::STRING_FIELD_MAX),
       'photo_credit' => self::truncateUtf8(trim($photo_credit), self::STRING_FIELD_MAX),
+      'photo_caption' => self::truncateUtf8(trim($photo_caption), self::CAPTION_FIELD_MAX),
     ];
   }
 
@@ -358,7 +363,15 @@ final class ArticleBodyCleaner {
   }
 
   /**
-   * Normalizes figcaption / credit lines for field_photo_credit.
+   * Normalizes figcaption text for field_photo_caption.
+   */
+  private function normalizePhotoCaptionText(string $text): string {
+    $text = trim(preg_replace('/\s+/u', ' ', $text) ?? '');
+    return self::truncateUtf8($text, self::CAPTION_FIELD_MAX);
+  }
+
+  /**
+   * Normalizes photographer credit lines for field_photo_credit.
    */
   private function normalizePhotoCreditText(string $text): string {
     $text = trim(preg_replace('/\s+/u', ' ', $text) ?? '');

@@ -66,6 +66,7 @@ $articles = [
     'field_subtitle' => 'How one family\'s generosity is transforming treatment options for patients facing the most challenging diagnoses.',
     'field_byline' => 'Amber Sinicrope',
     'field_photo_credit' => 'Bryce Vickmark',
+    'field_photo_caption' => 'Sara Tolaney, MD, MPH, chief of the Division of Breast Oncology',
     'body' => '<p>When the Elaine and Eduardo Saverin Foundation made its landmark commitment to Dana-Farber Cancer Institute, it marked a pivotal moment in the fight against metastatic breast cancer. The gift, one of the largest ever directed toward this specific area of research, will fund a comprehensive program aimed at developing next-generation treatments.</p><p>"We believe deeply in the power of science to change lives," said Eduardo Saverin, co-founder of the foundation. "Dana-Farber represents the best of what\'s possible when brilliant minds are given the resources they need."</p><p>The funding will support the work of Sara Tolaney, MD, MPH, chief of the Division of Breast Oncology, and her team as they pursue innovative clinical trials and translational research projects. Dr. Tolaney\'s program has already achieved remarkable breakthroughs in understanding the biology of treatment-resistant breast cancers.</p><p>"This gift allows us to think bigger and move faster," Dr. Tolaney explained. "We can now pursue studies that were previously beyond our reach, combining novel drug combinations with cutting-edge diagnostic tools to give patients more options and more hope."</p>',
     'field_topics' => [$topic_ids['Immunotherapy'] ?? NULL, $topic_ids['Drug Development'] ?? NULL],
     'field_cancer_types' => [$cancer_ids['Breast Cancer'] ?? NULL],
@@ -150,6 +151,7 @@ foreach ($articles as $article_data) {
     'field_subtitle' => $article_data['field_subtitle'],
     'field_byline' => $article_data['field_byline'],
     'field_photo_credit' => $article_data['field_photo_credit'],
+    'field_photo_caption' => $article_data['field_photo_caption'] ?? '',
     'body' => [
       'value' => $article_data['body'],
       'format' => 'full_html',

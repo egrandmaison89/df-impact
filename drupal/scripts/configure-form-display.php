@@ -31,6 +31,7 @@ $field_configs = [
   'field_subtitle' => ['weight' => 1, 'type' => 'string_textfield'],
   'field_byline' => ['weight' => 2, 'type' => 'string_textfield'],
   'field_photo_credit' => ['weight' => 3, 'type' => 'string_textfield'],
+  'field_photo_caption' => ['weight' => 7, 'type' => 'string_textfield'],
   'body' => ['weight' => 4, 'type' => 'text_textarea_with_summary', 'settings' => ['rows' => 20, 'summary_rows' => 3]],
   'field_content_sections' => ['weight' => 5, 'type' => 'entity_reference_paragraphs', 'settings' => ['title' => 'Component', 'title_plural' => 'Components', 'edit_mode' => 'open', 'add_mode' => 'dropdown']],
   'field_featured_image' => ['weight' => 6, 'type' => 'media_library_widget', 'settings' => ['media_types' => ['image']]],
@@ -72,7 +73,7 @@ $form_display = EntityFormDisplay::load('node.article.default');
 $groups = [
   'group_content' => [
     'label' => 'Content',
-    'children' => ['title', 'field_subtitle', 'field_byline', 'field_photo_credit', 'body', 'field_content_sections', 'field_featured_image'],
+    'children' => ['title', 'field_subtitle', 'field_byline', 'field_photo_credit', 'body', 'field_content_sections', 'field_featured_image', 'field_photo_caption'],
     'weight' => 0,
     'format_type' => 'tab',
     'format_settings' => [

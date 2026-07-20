@@ -51,6 +51,15 @@ if ($article_display) {
     'region' => 'content',
   ]);
 
+  // Photo caption (featured image subject line)
+  $article_display->setComponent('field_photo_caption', [
+    'type' => 'string',
+    'label' => 'hidden',
+    'settings' => ['link_to_entity' => false],
+    'weight' => -5,
+    'region' => 'content',
+  ]);
+
   // Issue reference
   $article_display->setComponent('field_issue', [
     'type' => 'entity_reference_label',
@@ -166,6 +175,7 @@ $teaser_display->removeComponent('field_tags');
 $teaser_display->removeComponent('field_subtitle');
 $teaser_display->removeComponent('field_byline');
 $teaser_display->removeComponent('field_photo_credit');
+$teaser_display->removeComponent('field_photo_caption');
 $teaser_display->removeComponent('field_issue');
 $teaser_display->removeComponent('field_cancer_types');
 $teaser_display->removeComponent('field_content_sections');

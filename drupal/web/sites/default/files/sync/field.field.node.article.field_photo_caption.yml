@@ -1,0 +1,19 @@
+uuid: 9b4e3d2c-5f6a-7b8c-9d0e-1f2a3b4c5d6e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_photo_caption
+    - node.type.article
+id: node.article.field_photo_caption
+field_name: field_photo_caption
+entity_type: node
+bundle: article
+label: 'Photo caption'
+description: 'Optional caption for the featured image (e.g., subject name and title). Only shown when a featured image is present.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

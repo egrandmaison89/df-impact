@@ -57,13 +57,18 @@
 .header__logo-img {
   display: block;
   width: 100%;
-  max-width: 400px;
+  max-width: 250px;
   height: auto;
   transition: max-width var(--transition-normal);
 }
 
 .header--scrolled .header__logo-img {
-  max-width: 260px;
+  max-width: 200px;
+}
+
+.header__nav-item--issues .header__dropdown {
+  left: auto;
+  right: 0;
 }
 
 .header__drawer {

@@ -7,6 +7,7 @@
 
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
+use Drupal\df_setup\ArticleCreditLabels;
 use Drupal\node\NodeInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
@@ -229,6 +230,20 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     return;
   }
 
+  if ($view_id === 'topic_archive') {
+    $variables['article_url'] = NULL;
+    $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
+    if ($node instanceof NodeInterface) {
+      try {
+        $variables['article_url'] = $node->toUrl()->toString();
+      }
+      catch (\Exception) {
+        $variables['article_url'] = NULL;
+      }
+    }
+    return;
+  }
+
   $homepage_card_views = [
     'homepage_featured',
     'homepage_highlights',
@@ -252,12 +267,14 @@ function df_impact_preprocess_html(array &$variables): void {
     'df_site_snippets_footer' => NULL,
   ];
   $route = \Drupal::routeMatch()->getRouteName();
-  if (
-    $route === 'view.topic_archive.page_1'
-    && isset($variables['attributes'])
-    && $variables['attributes'] instanceof Attribute
-  ) {
-    $variables['attributes']->addClass('path-category-archive');
+  $variables['is_category_archive'] = ($route === 'view.topic_archive.page_1');
+
+  // Views argument title "%1" leaks into <title> for topic archives.
+  if ($variables['is_category_archive']) {
+    $topic_title = df_impact_topic_archive_term_label();
+    if ($topic_title !== NULL && !empty($variables['head_title']) && is_array($variables['head_title'])) {
+      $variables['head_title']['title'] = $topic_title;
+    }
   }
 }
 
@@ -283,6 +300,9 @@ function df_impact_preprocess_page(&$variables) {
   }
 
   $variables['about_impact_url'] = Url::fromUri('internal:/about-impact')->toString();
+
+  // Header Issues dropdown — recent published issues (WordPress chrome).
+  $variables['header_issue_links'] = df_impact_get_header_issue_links(4);
 
   $topic_order = [
     'Cancer Research',
@@ -374,10 +394,18 @@ function df_impact_preprocess_node(&$variables) {
 
   // Related articles by shared topics when editors did not pick manual related nodes.
   if ($node->bundle() === 'article' && $variables['view_mode'] === 'full') {
-    $df = \Drupal::service('date.formatter');
-    $created = $node->getCreatedTime();
-    $variables['article_published'] = $df->format($created, 'custom', 'F j, Y');
-    $variables['article_published_iso'] = $df->format($created, 'custom', 'c');
+    $variables['article_byline_display'] = '';
+    if ($node->hasField('field_byline') && !$node->get('field_byline')->isEmpty()) {
+      $variables['article_byline_display'] = ArticleCreditLabels::formatByline((string) $node->get('field_byline')->value);
+    }
+    $variables['article_photo_credit_display'] = '';
+    if ($node->hasField('field_photo_credit') && !$node->get('field_photo_credit')->isEmpty()) {
+      $variables['article_photo_credit_display'] = ArticleCreditLabels::formatPhotoCredit((string) $node->get('field_photo_credit')->value);
+    }
+    $variables['article_photo_caption_display'] = '';
+    if ($node->hasField('field_photo_caption') && !$node->get('field_photo_caption')->isEmpty()) {
+      $variables['article_photo_caption_display'] = trim((string) $node->get('field_photo_caption')->value);
+    }
 
     $variables['article_lead_image_fallback'] = NULL;
     if ($node->hasField('field_featured_image') && $node->get('field_featured_image')->isEmpty()) {
@@ -440,6 +468,10 @@ function df_impact_preprocess_block(&$variables) {
  */
 function df_impact_preprocess_breadcrumb(array &$variables): void {
   if (df_impact_is_about_impact_page()) {
+    $variables['breadcrumb'] = [];
+  }
+  // WordPress category archives have no breadcrumb trail.
+  if (\Drupal::routeMatch()->getRouteName() === 'view.topic_archive.page_1') {
     $variables['breadcrumb'] = [];
   }
 }
@@ -855,19 +887,66 @@ function df_impact_article_lead_image_fallback_build(NodeInterface $node): ?arra
  * Fixes Views page title callback returning literal %1 for topic archives.
  */
 function df_impact_preprocess_page_title(array &$variables): void {
-  $route_name = \Drupal::routeMatch()->getRouteName();
-  if ($route_name !== 'view.topic_archive.page_1') {
-    return;
+  $topic_title = df_impact_topic_archive_term_label();
+  if ($topic_title !== NULL) {
+    $variables['title'] = $topic_title;
+  }
+}
+
+/**
+ * Returns the topic term label for the current category archive route, if any.
+ */
+function df_impact_topic_archive_term_label(): ?string {
+  if (\Drupal::routeMatch()->getRouteName() !== 'view.topic_archive.page_1') {
+    return NULL;
   }
   $slug_raw = \Drupal::routeMatch()->getParameter('arg_0');
   $slug = is_scalar($slug_raw) ? mb_strtolower(trim((string) $slug_raw), 'UTF-8') : '';
   if ($slug === '' || !function_exists('df_setup_topic_term_load_by_category_slug')) {
-    return;
+    return NULL;
   }
   $term = df_setup_topic_term_load_by_category_slug($slug);
   if ($term && $term->isPublished()) {
-    $variables['title'] = $term->getName();
+    return $term->getName();
   }
+  return NULL;
+}
+
+/**
+ * Builds header dropdown links for the newest published issues.
+ *
+ * @return array<int, array{title: string, url: string}>
+ */
+function df_impact_get_header_issue_links(int $limit = 4): array {
+  $nids = \Drupal::entityQuery('node')
+    ->condition('type', 'issue')
+    ->condition('status', 1)
+    ->sort('field_year', 'DESC')
+    ->sort('field_season', 'DESC')
+    ->range(0, $limit)
+    ->accessCheck()
+    ->execute();
+  if (!$nids) {
+    return [];
+  }
+  $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadMultiple($nids);
+  $links = [];
+  foreach ($nodes as $node) {
+    if (!$node instanceof NodeInterface) {
+      continue;
+    }
+    $label = df_impact_format_issue_label($node) ?? $node->label();
+    try {
+      $links[] = [
+        'title' => $label,
+        'url' => $node->toUrl()->toString(),
+      ];
+    }
+    catch (\Exception) {
+      // Skip unroutable nodes.
+    }
+  }
+  return $links;
 }
 
 /**

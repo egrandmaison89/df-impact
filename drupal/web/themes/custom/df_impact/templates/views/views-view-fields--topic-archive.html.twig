@@ -1,7 +1,7 @@
 {#
 /**
  * @file
- * Single topic archive row — image + topic line + title + excerpt.
+ * Single topic archive row — WordPress category listing parity.
  */
 #}
 <article class="de-archive-card">
@@ -11,11 +11,6 @@
     </div>
   {% endif %}
   <div class="de-archive-card__body">
-    {% if fields.field_topics is defined and fields.field_topics.content|render|trim %}
-      <div class="de-archive-card__topics">
-        {{ fields.field_topics.content }}
-      </div>
-    {% endif %}
     {% if fields.title is defined %}
       <h2 class="de-archive-card__title">{{ fields.title.content }}</h2>
     {% endif %}
@@ -23,6 +18,11 @@
       <div class="de-archive-card__excerpt">
         {{ fields.field_excerpt.content }}
       </div>
+    {% endif %}
+    {% if article_url %}
+      <p class="de-archive-card__continue">
+        <a href="{{ article_url }}">{{ 'Continue Reading'|t }}</a>
+      </p>
     {% endif %}
   </div>
 </article>

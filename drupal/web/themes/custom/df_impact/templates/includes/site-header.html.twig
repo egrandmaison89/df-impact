@@ -27,15 +27,24 @@
       </div>
 
       <nav class="header__nav" id="main-nav" aria-label="{{ 'Main navigation'|t }}">
-        {% if is_front or is_about_impact %}
-          <ul class="header__nav-list">
-            <li class="header__nav-item">
-              <a href="{{ path('view.browse_issues.page_1') }}" class="header__nav-link">{{ 'Issues'|t }}</a>
-            </li>
-          </ul>
-        {% else %}
-          {{ page.nav_main }}
-        {% endif %}
+        {# WordPress chrome: Issues dropdown + Search + Donate on every page. #}
+        <ul class="header__nav-list">
+          <li class="header__nav-item header__nav-item--issues">
+            <a href="{{ path('view.browse_issues.page_1') }}" class="header__nav-link">{{ 'Issues'|t }}</a>
+            {% if header_issue_links is not empty %}
+              <ul class="header__dropdown">
+                {% for item in header_issue_links %}
+                  <li>
+                    <a href="{{ item.url }}" class="header__dropdown-link">{{ item.title }}</a>
+                  </li>
+                {% endfor %}
+                <li>
+                  <a href="{{ path('view.browse_issues.page_1') }}" class="header__dropdown-link">{{ 'See All Issues'|t }}</a>
+                </li>
+              </ul>
+            {% endif %}
+          </li>
+        </ul>
         <a href="{{ search_page_url }}" class="header__search-link" aria-label="{{ 'Search'|t }}">
           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>

@@ -12,6 +12,9 @@ drupal/web/modules/custom/df_migrate/data/wp_sitemap_state.json
 # Local QA screenshots and scratch (not shared via git)
 /testing/
 
+# WP↔Drupal parity loop artifacts (screenshots, gaps.md) — local only
+.parity/
+
 # Local standups / demo prep (not shared via git)
 standups/
 

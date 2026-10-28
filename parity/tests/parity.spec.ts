@@ -16,14 +16,21 @@ import {
   waitForFonts,
 } from '../lib/page-utils.mjs';
 import { metaMatches } from '../lib/thresholds.mjs';
+import {
+  BREAKPOINTS,
+  loadUrls,
+  publicPath,
+  repoRoot,
+} from '../lib/manifest-urls.mjs';
+import { copyBaselineScreenshot, loadBaselineCase } from '../lib/wp-baseline.mjs';
 
-const repoRoot = path.resolve(__dirname, '..', '..');
-const manifestPath = path.join(repoRoot, 'parity', 'manifest', 'site-manifest.json');
+const parityRoot = path.join(repoRoot, 'parity');
 const runId = process.env.PARITY_RUN_ID || new Date().toISOString().replace(/[:.]/g, '-');
-const outDir = path.join(repoRoot, 'parity', 'reports', 'runs', runId);
+const outDir = path.join(parityRoot, 'reports', 'runs', runId);
 
 const wpBase = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(/\/$/, '');
+const wpBaselineId = process.env.PARITY_WP_BASELINE || '';
 
 const STYLE_SELECTORS: Record<string, string> = {
   body: 'body',
@@ -38,76 +45,6 @@ type ManifestEntry = {
   template?: string;
   drupal_alias?: string;
 };
-
-/** HTML/content URLs in scope for visual + same-path parity (excludes media binaries). */
-function isContentParityUrl(entry: ManifestEntry): boolean {
-  const p = (entry.path || '').toLowerCase();
-  const tpl = entry.template || 'other';
-  if (tpl === 'media' || tpl === 'document') return false;
-  if (/wp-content\/uploads/.test(p)) return false;
-  if (p.endsWith('/feed') || p.endsWith('.pdf') || p.endsWith('.jpg') || p.endsWith('.png')) return false;
-  if (p.includes('danafarberimpact.org/')) return false;
-  return true;
-}
-
-function loadUrls(): ManifestEntry[] {
-  const raw = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  let urls: ManifestEntry[] = (raw.urls || []).filter(isContentParityUrl);
-  const sample = process.env.PARITY_SAMPLE !== '0';
-  const limit = parseInt(process.env.PARITY_LIMIT || '0', 10);
-
-  if (sample) {
-    const byTemplate: Record<string, ManifestEntry[]> = {};
-    for (const u of urls) {
-      const t = u.template || 'other';
-      (byTemplate[t] ||= []).push(u);
-    }
-    const picked: ManifestEntry[] = [];
-    const mustPaths = new Set(['/homepage/', '/home', '/issues', '/stories', '/in-brief']);
-    for (const u of urls) {
-      if (mustPaths.has(u.path) || mustPaths.has(u.path + '/')) picked.push(u);
-    }
-    for (const [tpl, list] of Object.entries(byTemplate)) {
-      const sorted =
-        tpl === 'article'
-          ? [...list].sort((a, b) => (b.drupal_alias ? 1 : 0) - (a.drupal_alias ? 1 : 0))
-          : list;
-      const n = tpl === 'article' ? 8 : tpl === 'in_brief' ? 5 : tpl === 'issue' ? 14 : 3;
-      picked.push(...sorted.slice(0, n));
-    }
-    const seen = new Set<string>();
-    urls = picked.filter((u) => {
-      if (seen.has(u.path)) return false;
-      seen.add(u.path);
-      return true;
-    });
-  }
-
-  urls = urls.filter(
-    (u) => u.drupal_alias || !/^\/\d{4}\//.test(u.path) || u.template === 'issue',
-  );
-
-  if (limit > 0) urls = urls.slice(0, limit);
-  return urls;
-}
-
-function normalizePath(p: string): string {
-  const x = p.startsWith('/') ? p : `/${p}`;
-  const trimmed = x.replace(/\/+$/, '');
-  return trimmed || '/';
-}
-
-/** Drupal must serve the same public path as WordPress (no /stories/ alias). */
-function publicPath(entry: ManifestEntry): string {
-  if (entry.url) {
-    try {
-      return normalizePath(new URL(entry.url).pathname);
-    } catch {
-      /* fall through */
-    }
-  }
-  return normalizePath(entry.path);
-}
 
 function wpUrl(entry: ManifestEntry): string {
   if (entry.url) return entry.url;
@@ -141,12 +78,6 @@ function diffPixels(a: Buffer, b: Buffer): { ratio: number; diff: Buffer; width:
   return { ratio: mismatched / (width * height), diff: PNG.sync.write(diff), width, height };
 }
 
-const BREAKPOINTS = [
-  { label: 'desktop', width: 1440, height: 900 },
-  { label: 'tablet', width: 768, height: 1024 },
-  { label: 'mobile', width: 375, height: 812 },
-];
-
 const urls = loadUrls();
 
 test.describe.configure({ mode: 'serial' });
@@ -156,12 +87,16 @@ for (const entry of urls) {
     test.skip(browserName !== 'chromium', 'Parity screenshots use Chromium only');
 
     for (const bp of BREAKPOINTS) {
-      const wpPage = await browser.newPage();
+      const useFrozenWp = Boolean(wpBaselineId);
       const drPage = await browser.newPage();
-      await preparePage(wpPage);
       await preparePage(drPage);
-      await wpPage.setViewportSize({ width: bp.width, height: bp.height });
       await drPage.setViewportSize({ width: bp.width, height: bp.height });
+      let wpPage = null;
+      if (!useFrozenWp) {
+        wpPage = await browser.newPage();
+        await preparePage(wpPage);
+        await wpPage.setViewportSize({ width: bp.width, height: bp.height });
+      }
 
       const slug = entry.path.replace(/^\//, '').replace(/[/?#]/g, '_') || 'root';
       const caseDir = path.join(outDir, slug, bp.label);
@@ -177,6 +112,7 @@ for (const entry of urls) {
         breakpoint: bp.label,
         wpUrl: wpTarget,
         drupalUrl: drupalTarget,
+        wpBaseline: useFrozenWp ? wpBaselineId : null,
         startedAt: new Date().toISOString(),
       };
 
@@ -185,22 +121,41 @@ for (const entry of urls) {
       let direct200 = false;
 
     try {
-      const wpResp = await wpPage.goto(wpTarget, { waitUntil: 'domcontentloaded' });
-      wpOk = !!wpResp && wpResp.status() < 400;
-      await dismissOverlays(wpPage);
-      await scrollForLazyLoad(wpPage);
-      await waitForFonts(wpPage);
-      await wpPage.waitForTimeout(300);
-      result.wp = {
-        status: wpResp?.status(),
-        meta: await extractMeta(wpPage),
-        content: await extractMainText(wpPage),
-        styles: await sampleComputedStyles(wpPage, STYLE_SELECTORS),
-      };
-      result.wpCaptcha =
-        wpResp?.status() === 202 ||
-        /checking the site connection|robot challenge/i.test(result.wp.meta?.title || '');
-      await wpPage.screenshot({ path: path.join(caseDir, 'wordpress.png'), fullPage: true });
+      if (useFrozenWp) {
+        const frozen = loadBaselineCase(parityRoot, wpBaselineId, pathNorm, bp.label);
+        if (!frozen) {
+          result.wpError = `Missing baseline for ${pathNorm} (${bp.label})`;
+        } else {
+          copyBaselineScreenshot(frozen.pngPath, path.join(caseDir, 'wordpress.png'));
+          result.wp = {
+            status: frozen.wp.status,
+            meta: frozen.wp.meta,
+            content: frozen.wp.content,
+            styles: frozen.wp.styles,
+          };
+          result.wpCaptcha = Boolean(frozen.wp.wpCaptcha);
+          wpOk = !frozen.wp.error && typeof frozen.wp.status === 'number' && frozen.wp.status < 400;
+        }
+      } else {
+        const wpResp = await wpPage!.goto(wpTarget, { waitUntil: 'domcontentloaded' });
+        wpOk = !!wpResp && wpResp.status() < 400;
+        await dismissOverlays(wpPage!);
+        await scrollForLazyLoad(wpPage!);
+        await waitForFonts(wpPage!);
+        await wpPage!.waitForTimeout(300);
+        result.wp = {
+          status: wpResp?.status(),
+          meta: await extractMeta(wpPage!),
+          content: await extractMainText(wpPage!),
+          styles: await sampleComputedStyles(wpPage!, STYLE_SELECTORS),
+        };
+        result.wpCaptcha =
+          wpResp?.status() === 202 ||
+          /checking the site connection|robot challenge/i.test(
+            (result.wp as { meta?: { title?: string } }).meta?.title || '',
+          );
+        await wpPage!.screenshot({ path: path.join(caseDir, 'wordpress.png'), fullPage: true });
+      }
     } catch (e) {
       result.wpError = String(e);
     }
@@ -270,7 +225,7 @@ for (const entry of urls) {
 
     result.finishedAt = new Date().toISOString();
     writeJson(path.join(caseDir, 'result.json'), result);
-      await wpPage.close();
+      if (wpPage) await wpPage.close();
       await drPage.close();
     }
   });
@@ -283,5 +238,6 @@ test.afterAll(async () => {
     drupalBase,
     urlCount: urls.length,
     sampleMode: process.env.PARITY_SAMPLE !== '0',
+    wpBaseline: wpBaselineId || null,
   });
 });

@@ -21,6 +21,9 @@ parity/reports/runs/
 parity/reports/latest-report.html
 parity/test-results/
 parity/playwright-report/
+parity/baselines/*
+!parity/baselines/README.md
+!parity/baselines/.gitkeep
 
 # Host-side DDEV DB override (copy from scripts/repro/settings.local.example.php)
 drupal/web/sites/default/settings.local.php

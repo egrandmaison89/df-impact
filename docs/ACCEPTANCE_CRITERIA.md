@@ -34,6 +34,8 @@ Owner-approved thresholds for release. Measured by `parity/` unless noted.
 | `npm run parity` | **Full manifest** (release gate) |
 | `npm run parity:smoke` | Quick smoke (~sample URLs) |
 
+**Frozen WordPress baseline:** When live WP is captcha-blocked, capture reference data on a residential network and compare with `PARITY_WP_BASELINE` (see [FROZEN_WP_BASELINE.md](./FROZEN_WP_BASELINE.md)). No cookies or credentials in the repo.
+
 Harness exits non-zero when thresholds fail (`parity/scripts/evaluate-thresholds.mjs`).
 
 ## Informational (non-blocking)

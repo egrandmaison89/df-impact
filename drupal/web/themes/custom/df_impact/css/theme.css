@@ -253,12 +253,49 @@
   font-size: clamp(1.75rem, 4vw, 2.75rem);
 }
 
+@media (max-width: 1023px) {
+  .hero__cover {
+    min-height: clamp(320px, 52vw, 490px);
+  }
+
+  .homepage-banner .hero__banner-title,
+  .hero__cover-inner .hero__banner-title {
+    font-size: clamp(1.35rem, 5vw, 2rem);
+  }
+}
+
+@media (max-width: 767px) {
+  .hero__cover {
+    min-height: 280px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero__cover-video {
     display: none;
   }
   .hero__cover-poster {
     z-index: 1;
+  }
+}
+
+/* PostX / Ultp scroll reveal (see js/scroll-reveal.js) */
+.df-reveal {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.df-reveal--visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .df-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 

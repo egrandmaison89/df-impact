@@ -304,6 +304,30 @@ function df_impact_preprocess_page(&$variables) {
   // Header Issues dropdown — recent published issues (WordPress chrome).
   $variables['header_issue_links'] = df_impact_get_header_issue_links(4);
 
+  // WXR wp_navigation "Main Nav" + dropdown-menu (Issues submenu items as top links).
+  $latest_issue_url = NULL;
+  $latest_nid = df_impact_get_latest_issue_nid();
+  if ($latest_nid !== NULL) {
+    $latest_issue = \Drupal::entityTypeManager()->getStorage('node')->load($latest_nid);
+    if ($latest_issue instanceof NodeInterface) {
+      $latest_issue_url = $latest_issue->toUrl()->toString();
+    }
+  }
+  $variables['header_primary_links'] = [
+    [
+      'title' => t('Current Issue'),
+      'url' => $latest_issue_url ?: Url::fromRoute('view.browse_issues.page_1')->toString(),
+    ],
+    [
+      'title' => t('Past Issues'),
+      'url' => Url::fromRoute('view.past_issues.page_1')->toString(),
+    ],
+    [
+      'title' => t('About'),
+      'url' => $variables['about_impact_url'],
+    ],
+  ];
+
   $topic_order = [
     'Cancer Research',
     'Total Patient Care',

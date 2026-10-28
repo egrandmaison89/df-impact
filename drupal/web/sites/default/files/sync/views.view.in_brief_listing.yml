@@ -9,6 +9,7 @@ dependencies:
     - node.type.in_brief
   module:
     - image
+    - metatag_views
     - node
     - text
 id: in_brief_listing
@@ -111,7 +112,14 @@ display:
       pager:
         type: none
         options: {  }
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender:
+          metatags:
+            title: 'In Brief | [site:name]'
+            description: 'Short updates from Dana-Farber Impact Magazine.'
+            og_title: 'In Brief'
+            og_type: website
+          tokenize: false
     cache_metadata:
       max-age: -1
       contexts:

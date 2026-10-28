@@ -5,6 +5,7 @@ dependencies:
   config:
     - node.type.issue
   module:
+    - metatag_views
     - node
     - options
 id: browse_issues
@@ -81,7 +82,14 @@ display:
     display_plugin: page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender:
+          metatags:
+            title: 'Browse Issues | [site:name]'
+            description: 'Browse quarterly issues of Dana-Farber Impact Magazine.'
+            og_title: 'Browse Issues'
+            og_type: website
+          tokenize: false
       path: browse-issues
     cache_metadata:
       max-age: -1

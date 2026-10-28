@@ -13,12 +13,13 @@
     attach: function (context) {
       once('df-header', '.header', context).forEach(function (header) {
         var scrollThreshold = 50;
+        var logo = header.querySelector('.header-logo');
 
         function onScroll() {
-          if (window.scrollY > scrollThreshold) {
-            header.classList.add('header--scrolled');
-          } else {
-            header.classList.remove('header--scrolled');
+          var scrolled = window.scrollY > scrollThreshold;
+          header.classList.toggle('header--scrolled', scrolled);
+          if (logo) {
+            logo.classList.toggle('scrolled', scrolled);
           }
         }
 
@@ -40,12 +41,14 @@
         toggle.addEventListener('click', function () {
           var isOpen = drawer.classList.toggle('header__drawer--open');
           toggle.setAttribute('aria-expanded', isOpen);
+          document.body.classList.toggle('header-drawer-open', isOpen);
         });
 
         // Close on escape key
         document.addEventListener('keydown', function (e) {
           if (e.key === 'Escape' && drawer.classList.contains('header__drawer--open')) {
             drawer.classList.remove('header__drawer--open');
+            document.body.classList.remove('header-drawer-open');
             toggle.setAttribute('aria-expanded', 'false');
             toggle.focus();
           }

@@ -5,6 +5,7 @@ dependencies:
   config:
     - node.type.issue
   module:
+    - metatag_views
     - node
     - user
 id: past_issues
@@ -78,7 +79,14 @@ display:
     display_plugin: page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender:
+          metatags:
+            title: 'Past Issues | [site:name]'
+            description: 'Recent issues of Dana-Farber Impact Magazine.'
+            og_title: 'Past Issues'
+            og_type: website
+          tokenize: false
       path: past-issues
     cache_metadata:
       max-age: -1

@@ -1,59 +1,68 @@
 {#
-/**
- * @file
- * Site header — aligned with danafarberimpact.org chrome.
- */
+  Site header — WXR template part header-no-dfjf / desktop-header structure.
 #}
-<header class="header" role="banner">
-  <div class="header__inner">
-    <div class="header__logo">
-      <a href="{{ path('<front>') }}" rel="home" aria-label="{{ 'Dana-Farber Impact Magazine Home'|t }}">
-        <img src="/{{ directory }}/images/ImpactDFJF_HeaderLogo_878.png" alt="{{ 'Dana-Farber Cancer Institute and The Jimmy Fund — Impact Magazine'|t }}" width="878" height="235" class="header__logo-img" decoding="async">
-      </a>
-    </div>
-
-    <button class="header__menu-toggle" type="button" aria-label="{{ 'Toggle navigation'|t }}" aria-expanded="false" aria-controls="header-drawer">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-
-    <div class="header__drawer" id="header-drawer">
-      <div class="header__supplement">
-        <div class="gtranslate_wrapper header__gtranslate" aria-label="{{ 'Translate this site'|t }}"></div>
-        {% if page.header_supplement %}
-          {{ page.header_supplement }}
-        {% endif %}
+<div class="desktop-header">
+  <header class="header impact-header" role="banner">
+    <div class="header__inner wp-block-group alignfull">
+      <div class="header__left left-side-header">
+        <div class="header__logo header-logo">
+          <a href="{{ path('<front>') }}" rel="home" aria-label="{{ 'Dana-Farber Impact Magazine Home'|t }}">
+            <img src="/{{ directory }}/images/ImpactDFJF_HeaderLogo_878.png" alt="{{ 'Dana-Farber Cancer Institute and The Jimmy Fund — Impact Magazine'|t }}" width="400" height="107" class="header__logo-img wp-image-4427" decoding="async">
+          </a>
+        </div>
       </div>
 
-      <nav class="header__nav" id="main-nav" aria-label="{{ 'Main navigation'|t }}">
-        {# WordPress chrome: Issues dropdown + Search + Donate on every page. #}
-        <ul class="header__nav-list">
-          <li class="header__nav-item header__nav-item--issues">
-            <a href="{{ path('view.browse_issues.page_1') }}" class="header__nav-link">{{ 'Issues'|t }}</a>
-            {% if header_issue_links is not empty %}
-              <ul class="header__dropdown">
-                {% for item in header_issue_links %}
-                  <li>
-                    <a href="{{ item.url }}" class="header__dropdown-link">{{ item.title }}</a>
+      <button class="header__menu-toggle" type="button" aria-label="{{ 'Toggle navigation'|t }}" aria-expanded="false" aria-controls="header-drawer">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="header__drawer right-side-header" id="header-drawer">
+        <div class="header__supplement translation-section">
+          <div class="gtranslate_wrapper header__gtranslate" aria-label="{{ 'Translate this site'|t }}"></div>
+          <span class="header__disclaimer disclaimer-popup" tabindex="0">
+            <span class="header__disclaimer-icon" aria-hidden="true">ⓘ</span>
+            <span class="popup-text">{{ 'Please note that some translations using Google Translate may not be accurately represented. Dana-Farber and the Jimmy Fund assume no liability for inaccuracies that may result from using this third-party tool.'|t }}</span>
+          </span>
+          {% if page.header_supplement %}
+            {{ page.header_supplement }}
+          {% endif %}
+        </div>
+
+        <nav class="header__nav mega-menu-wrap" id="main-nav" aria-label="{{ 'Main navigation'|t }}">
+          <ul class="header__nav-list mega-menu max-mega-menu">
+            <li class="header__nav-item header__nav-item--issues mega-menu-item mega-menu-item-type-custom">
+              <a href="{{ path('view.browse_issues.page_1') }}" class="header__nav-link mega-menu-link">{{ 'Issues'|t }}</a>
+              {% if header_issue_links is not empty %}
+                <ul class="header__dropdown mega-sub-menu">
+                  {% for item in header_issue_links %}
+                    <li class="mega-menu-item">
+                      <a href="{{ item.url }}" class="header__dropdown-link mega-menu-link">{{ item.title }}</a>
+                    </li>
+                  {% endfor %}
+                  <li class="mega-menu-item">
+                    <a href="{{ path('view.browse_issues.page_1') }}" class="header__dropdown-link mega-menu-link">{{ 'See All Issues'|t }}</a>
                   </li>
-                {% endfor %}
-                <li>
-                  <a href="{{ path('view.browse_issues.page_1') }}" class="header__dropdown-link">{{ 'See All Issues'|t }}</a>
-                </li>
-              </ul>
-            {% endif %}
-          </li>
-        </ul>
-        <a href="{{ search_page_url }}" class="header__search-link" aria-label="{{ 'Search'|t }}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <span class="visually-hidden">{{ 'Search'|t }}</span>
-        </a>
-        <a href="{{ donate_url }}" class="header__donate" target="_blank" rel="noopener">{{ 'Donate'|t }}</a>
-      </nav>
+                </ul>
+              {% endif %}
+            </li>
+            {% for link in header_primary_links %}
+              <li class="header__nav-item mega-menu-item">
+                <a href="{{ link.url }}" class="header__nav-link mega-menu-link">{{ link.title }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+          <a href="{{ search_page_url }}" class="header__search-link" aria-label="{{ 'Search'|t }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span class="visually-hidden">{{ 'Search'|t }}</span>
+          </a>
+          <a href="{{ donate_url }}" class="header__donate homepage-banner-button" target="_blank" rel="noopener">{{ 'Donate'|t }}</a>
+        </nav>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
+</div>

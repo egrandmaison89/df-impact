@@ -51,7 +51,7 @@
     "season": "fall",
     "year": 2024,
     "path_alias": "/fall-2024-issue",
-    "article_count": 28
+    "article_count": 29
   },
   {
     "wp_tag_id": 67,
@@ -78,7 +78,7 @@
     "season": "winter",
     "year": 2024,
     "path_alias": "/winter-2024-issue",
-    "article_count": 23
+    "article_count": 25
   },
   {
     "wp_tag_id": 83,
@@ -105,7 +105,7 @@
     "season": "summer",
     "year": 2025,
     "path_alias": "/summer-2025-issue",
-    "article_count": 27
+    "article_count": 28
   },
   {
     "wp_tag_id": 85,
@@ -117,6 +117,15 @@
     "article_count": 25
   },
   {
+    "wp_tag_id": 96,
+    "name": "Fall 2026",
+    "slug": "fall-2026",
+    "season": "fall",
+    "year": 2026,
+    "path_alias": "/fall-2026-issue",
+    "article_count": 25
+  },
+  {
     "wp_tag_id": 88,
     "name": "Spring 2026",
     "slug": "spring-2026",
@@ -124,5 +133,14 @@
     "year": 2026,
     "path_alias": "/spring-2026-issue",
     "article_count": 24
+  },
+  {
+    "wp_tag_id": 93,
+    "name": "Summer 2026",
+    "slug": "summer-2026",
+    "season": "summer",
+    "year": 2026,
+    "path_alias": "/summer-2026-issue",
+    "article_count": 34
   }
 ]

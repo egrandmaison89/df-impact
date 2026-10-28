@@ -21,6 +21,34 @@ from urllib.parse import urlparse
 
 MIGRATION_DATA = Path(__file__).resolve().parent
 
+
+def wordpress_path_from_url(wp_url: str) -> str:
+    """Canonical public path from WordPress permalink (matches live site URLs)."""
+    if not wp_url or not isinstance(wp_url, str):
+        return ''
+    path = urlparse(wp_url).path or '/'
+    path = path.rstrip('/') or '/'
+    if not path.startswith('/'):
+        path = '/' + path
+    return path
+
+
+def drupal_alias_for_post(wp_url: str, wp_slug: str, *, is_in_brief: bool) -> str:
+    """Drupal path alias should mirror WordPress permalinks (not /stories/…)."""
+    from_wp = wordpress_path_from_url(wp_url)
+    if from_wp and from_wp != '/':
+        return from_wp
+    return f"/in-brief/{wp_slug}" if is_in_brief else f"/stories/{wp_slug}"
+
+
+def issue_path_alias(slug: str) -> str:
+    """WordPress issue landing URLs use /{season-year}-issue/."""
+    slug = (slug or '').strip().strip('/')
+    if slug.endswith('-issue'):
+        return f"/{slug}"
+    return f"/{slug}-issue"
+
+
 # ─── CATEGORY → TOPIC/CANCER TYPE MAPPING ────────────────────────────────────
 # Determine which WP categories map to Topics vs Cancer Types vocabularies
 
@@ -217,8 +245,7 @@ for tag_id, info in sorted(issue_tags.items(), key=lambda x: (x[1]['year'], x[1]
     season = info['season']
     year = info['year']
 
-    # Generate Drupal path alias
-    path_alias = f"/issues/{season}-{year}"
+    path_alias = issue_path_alias(info['slug'])
 
     issues_output.append({
         'wp_tag_id': tag_id,
@@ -600,8 +627,7 @@ for post in posts:
     # SEO
     meta_description = get_yoast_meta(post)
 
-    # Drupal path alias (canonical article URLs use /stories/ per Pathauto pattern)
-    drupal_alias = f"/stories/{wp_slug}" if not is_in_brief else f"/in-brief/{wp_slug}"
+    drupal_alias = drupal_alias_for_post(wp_url, wp_slug, is_in_brief=is_in_brief)
 
     base_data = {
         'wp_id': post['id'],
@@ -663,27 +689,9 @@ print(f"In Brief: {len(in_brief_output)}")
 
 # ─── REDIRECTS ───────────────────────────────────────────────────────────────
 
+# Only WordPress-native legacy redirects belong here. Canonical content paths are
+# mirrored in drupal_alias (same URL on Drupal, HTTP 200 — no /stories/ alias).
 redirects_output = []
-
-# WP uses /?p=ID or /slug/ URL structure -> Drupal uses /stories/slug or /in-brief/slug
-in_brief_slugs = {item['slug'] for item in in_brief_output}
-
-for post in posts:
-    wp_slug = post.get('slug', '')
-    wp_url_path = '/' + wp_slug + '/'
-    wp_url = post.get('link', '')
-
-    if wp_slug in in_brief_slugs:
-        drupal_path = f"/in-brief/{wp_slug}"
-    else:
-        drupal_path = f"/stories/{wp_slug}"
-
-    redirects_output.append({
-        'wp_id': post['id'],
-        'source': wp_url_path,
-        'redirect_to': drupal_path,
-        'status_code': 301,
-    })
 
 with open('redirects.json', 'w') as f:
     json.dump(redirects_output, f, indent=2)

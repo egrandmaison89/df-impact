@@ -7,6 +7,7 @@
  * Included after full Drupal bootstrap. See df-migrate:sync-wordpress-paths.
  */
 
+use Drupal\df_migrate\WordpressPathHelper;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
 use Drupal\redirect\Entity\Redirect;
@@ -17,6 +18,30 @@ use Drupal\redirect\Entity\Redirect;
  * @return bool
  *   TRUE if a new redirect was saved.
  */
+/**
+ * Removes stale /stories/ and /in-brief/ aliases when a WP permalink is canonical.
+ */
+function df_sync_purge_legacy_story_aliases(string $internal_path, string $canonical_alias): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $ids = $storage->getQuery()
+    ->condition('path', $internal_path)
+    ->accessCheck(FALSE)
+    ->execute();
+  if (!$ids) {
+    return;
+  }
+  $canonical = rtrim($canonical_alias, '/');
+  foreach ($storage->loadMultiple($ids) as $alias_entity) {
+    $alias = $alias_entity->get('alias')->value ?? '';
+    if ($alias === $canonical || $alias === $canonical . '/') {
+      continue;
+    }
+    if (preg_match('#^/(stories|in-brief)/#', $alias)) {
+      $alias_entity->delete();
+    }
+  }
+}
+
 function df_sync_create_redirect(string $source_path, string $target_path): bool {
   $source_path = mb_strtolower(rtrim(ltrim($source_path, '/'), '/'));
   $target_path = ltrim($target_path, '/');
@@ -138,22 +163,13 @@ function df_migrate_run_sync_wordpress_paths(): void {
       }
     }
 
-    $alias = $row['drupal_alias'] ?? '';
-    if (is_string($alias) && $alias !== '' && str_starts_with($alias, '/')) {
+    $alias = WordpressPathHelper::aliasFromRow($row);
+    if ($alias !== '') {
       $node->set('path', ['alias' => $alias, 'pathauto' => $pathauto_skip]);
+      df_sync_purge_legacy_story_aliases('/node/' . $node->id(), $alias);
     }
     $node->save();
     $article_updates++;
-
-    if (!empty($row['wp_url']) && !empty($alias)) {
-      $path = parse_url($row['wp_url'], PHP_URL_PATH);
-      if (is_string($path)) {
-        $path = trim($path, '/');
-        if (preg_match('#^\d{4}/\d{2}/[^/]+$#', $path)) {
-          df_sync_create_redirect($path, ltrim($alias, '/'));
-        }
-      }
-    }
   }
   echo "Articles updated: $article_updates\n";
 
@@ -168,20 +184,12 @@ function df_migrate_run_sync_wordpress_paths(): void {
     if (!$node instanceof Node || $node->bundle() !== 'in_brief') {
       continue;
     }
-    $alias = $row['drupal_alias'] ?? '';
-    if (is_string($alias) && $alias !== '' && str_starts_with($alias, '/')) {
+    $alias = WordpressPathHelper::aliasFromRow($row);
+    if ($alias !== '') {
       $node->set('path', ['alias' => $alias, 'pathauto' => $pathauto_skip]);
+      df_sync_purge_legacy_story_aliases('/node/' . $node->id(), $alias);
       $node->save();
       $brief_updates++;
-    }
-    if (!empty($row['wp_url']) && !empty($alias)) {
-      $path = parse_url($row['wp_url'], PHP_URL_PATH);
-      if (is_string($path)) {
-        $path = trim($path, '/');
-        if (preg_match('#^\d{4}/\d{2}/[^/]+$#', $path)) {
-          df_sync_create_redirect($path, ltrim($alias, '/'));
-        }
-      }
     }
   }
   echo "In Brief updated: $brief_updates\n";
@@ -196,14 +204,15 @@ function df_migrate_run_sync_wordpress_paths(): void {
     }
     $source = trim($source, '/');
     $target = ltrim($target, '/');
+    // Do not import redirects onto /stories or /in-brief — parity requires 200 at WP paths.
+    if (preg_match('#^(stories|in-brief)/#', $target)) {
+      continue;
+    }
     if (df_sync_create_redirect($source, $target)) {
       $redirect_count++;
     }
   }
   echo "Redirects created or already present (this run attempted): $redirect_count\n";
-
-  df_sync_create_redirect('node', 'home');
-  df_sync_create_redirect('homepage', 'home');
 
   echo "Done.\n";
 }

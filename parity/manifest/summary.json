@@ -1,20 +1,25 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-10-28T14:58:48Z",
+  "generated_at": "2026-10-28T15:38:29Z",
   "base_url": "https://danafarberimpact.org",
-  "total_urls": 1478,
+  "total_urls": 1358,
   "counts_by_template": {
-    "homepage": 1,
-    "issue": 15,
+    "homepage": 2,
+    "issue": 16,
     "article": 759,
     "in_brief": 0,
-    "landing_page": 1,
-    "archive": 49,
+    "landing_page": 2,
+    "archive": 51,
     "topic": 0,
-    "search": 0,
-    "media": 605,
+    "search": 1,
+    "media": 479,
     "document": 1,
     "other": 47
   },
-  "crawl_blocker_count": 642
+  "export_counts": {
+    "articles.json": 376,
+    "in_brief.json": 273,
+    "issues.json": 14,
+    "redirects.json": 0
+  }
 }

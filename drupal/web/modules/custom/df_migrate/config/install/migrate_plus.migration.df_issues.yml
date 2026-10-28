@@ -39,6 +39,9 @@ process:
   status:
     plugin: default_value
     default_value: 1
+  moderation_state:
+    plugin: default_value
+    default_value: published
   field_season: season
   field_year: year
   'path/alias': path_alias

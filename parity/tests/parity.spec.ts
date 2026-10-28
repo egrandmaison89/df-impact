@@ -15,6 +15,7 @@ import {
   textSimilarity,
   waitForFonts,
 } from '../lib/page-utils.mjs';
+import { metaMatches } from '../lib/thresholds.mjs';
 
 const repoRoot = path.resolve(__dirname, '..', '..');
 const manifestPath = path.join(repoRoot, 'parity', 'manifest', 'site-manifest.json');
@@ -38,9 +39,20 @@ type ManifestEntry = {
   drupal_alias?: string;
 };
 
+/** HTML/content URLs in scope for visual + same-path parity (excludes media binaries). */
+function isContentParityUrl(entry: ManifestEntry): boolean {
+  const p = (entry.path || '').toLowerCase();
+  const tpl = entry.template || 'other';
+  if (tpl === 'media' || tpl === 'document') return false;
+  if (/wp-content\/uploads/.test(p)) return false;
+  if (p.endsWith('/feed') || p.endsWith('.pdf') || p.endsWith('.jpg') || p.endsWith('.png')) return false;
+  if (p.includes('danafarberimpact.org/')) return false;
+  return true;
+}
+
 function loadUrls(): ManifestEntry[] {
   const raw = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  let urls: ManifestEntry[] = raw.urls || [];
+  let urls: ManifestEntry[] = (raw.urls || []).filter(isContentParityUrl);
   const sample = process.env.PARITY_SAMPLE !== '0';
   const limit = parseInt(process.env.PARITY_LIMIT || '0', 10);
 
@@ -79,9 +91,22 @@ function loadUrls(): ManifestEntry[] {
   return urls;
 }
 
-function drupalPath(entry: ManifestEntry): string {
-  const alias = entry.drupal_alias || entry.path;
-  return alias.startsWith('/') ? alias : `/${alias}`;
+function normalizePath(p: string): string {
+  const x = p.startsWith('/') ? p : `/${p}`;
+  const trimmed = x.replace(/\/+$/, '');
+  return trimmed || '/';
+}
+
+/** Drupal must serve the same public path as WordPress (no /stories/ alias). */
+function publicPath(entry: ManifestEntry): string {
+  if (entry.url) {
+    try {
+      return normalizePath(new URL(entry.url).pathname);
+    } catch {
+      /* fall through */
+    }
+  }
+  return normalizePath(entry.path);
 }
 
 function wpUrl(entry: ManifestEntry): string {
@@ -127,64 +152,72 @@ const urls = loadUrls();
 test.describe.configure({ mode: 'serial' });
 
 for (const entry of urls) {
-  test(`parity ${entry.path}`, async ({ page, browserName }) => {
+  test(`parity ${entry.path}`, async ({ browser, browserName, request }) => {
     test.skip(browserName !== 'chromium', 'Parity screenshots use Chromium only');
-    await preparePage(page);
 
     for (const bp of BREAKPOINTS) {
+      const wpPage = await browser.newPage();
+      const drPage = await browser.newPage();
+      await preparePage(wpPage);
+      await preparePage(drPage);
       await page.setViewportSize({ width: bp.width, height: bp.height });
 
       const slug = entry.path.replace(/^\//, '').replace(/[/?#]/g, '_') || 'root';
       const caseDir = path.join(outDir, slug, bp.label);
       ensureDir(caseDir);
 
-      const wpTarget = wpUrl(entry);
-      const drupalTarget = `${drupalBase}${drupalPath(entry)}`;
+      const pathNorm = publicPath(entry);
+      const wpTarget = wpUrl({ ...entry, path: pathNorm });
+      const drupalTarget = `${drupalBase}${pathNorm}`;
 
       const result: Record<string, unknown> = {
-      path: entry.path,
-      template: entry.template,
-      breakpoint: bp.label,
-      wpUrl: wpTarget,
-      drupalUrl: drupalTarget,
-      startedAt: new Date().toISOString(),
-    };
+        path: pathNorm,
+        template: entry.template,
+        breakpoint: bp.label,
+        wpUrl: wpTarget,
+        drupalUrl: drupalTarget,
+        startedAt: new Date().toISOString(),
+      };
 
-    let wpOk = false;
-    let drupalOk = false;
+      let wpOk = false;
+      let drupalOk = false;
+      let direct200 = false;
 
     try {
-      const wpResp = await page.goto(wpTarget, { waitUntil: 'domcontentloaded' });
+      const wpResp = await wpPage.goto(wpTarget, { waitUntil: 'domcontentloaded' });
       wpOk = !!wpResp && wpResp.status() < 400;
-      await dismissOverlays(page);
-      await scrollForLazyLoad(page);
-      await waitForFonts(page);
-      await page.waitForTimeout(300);
+      await dismissOverlays(wpPage);
+      await scrollForLazyLoad(wpPage);
+      await waitForFonts(wpPage);
+      await wpPage.waitForTimeout(300);
       result.wp = {
         status: wpResp?.status(),
-        meta: await extractMeta(page),
-        content: await extractMainText(page),
-        styles: await sampleComputedStyles(page, STYLE_SELECTORS),
+        meta: await extractMeta(wpPage),
+        content: await extractMainText(wpPage),
+        styles: await sampleComputedStyles(wpPage, STYLE_SELECTORS),
       };
-      await page.screenshot({ path: path.join(caseDir, 'wordpress.png'), fullPage: true });
+      result.wpCaptcha =
+        wpResp?.status() === 202 ||
+        /checking the site connection|robot challenge/i.test(result.wp.meta?.title || '');
+      await wpPage.screenshot({ path: path.join(caseDir, 'wordpress.png'), fullPage: true });
     } catch (e) {
       result.wpError = String(e);
     }
 
     try {
-      const dResp = await page.goto(drupalTarget, { waitUntil: 'domcontentloaded' });
+      const dResp = await drPage.goto(drupalTarget, { waitUntil: 'domcontentloaded' });
       drupalOk = !!dResp && dResp.status() < 400;
-      await dismissOverlays(page);
-      await scrollForLazyLoad(page);
-      await waitForFonts(page);
-      await page.waitForTimeout(300);
+      await dismissOverlays(drPage);
+      await scrollForLazyLoad(drPage);
+      await waitForFonts(drPage);
+      await drPage.waitForTimeout(300);
       result.drupal = {
         status: dResp?.status(),
-        meta: await extractMeta(page),
-        content: await extractMainText(page),
-        styles: await sampleComputedStyles(page, STYLE_SELECTORS),
+        meta: await extractMeta(drPage),
+        content: await extractMainText(drPage),
+        styles: await sampleComputedStyles(drPage, STYLE_SELECTORS),
       };
-      await page.screenshot({ path: path.join(caseDir, 'drupal.png'), fullPage: true });
+      await drPage.screenshot({ path: path.join(caseDir, 'drupal.png'), fullPage: true });
     } catch (e) {
       result.drupalError = String(e);
     }
@@ -205,15 +238,29 @@ for (const entry of urls) {
     const drTitle = (result.drupal as { meta?: { title?: string } })?.meta?.title || '';
     result.titleMatch = normalizeText(wpTitle) === normalizeText(drTitle);
 
-    result.urlParity = {
-      wpOk,
-      drupalOk,
-      samePath: entry.path === drupalPath(entry),
-    };
+      try {
+        const drDirect = await request.get(drupalTarget, { maxRedirects: 0, failOnStatusCode: false });
+        direct200 = drDirect.status() === 200;
+        const loc = drDirect.headers()['location'];
+        result.urlParity = {
+          wpOk,
+          drupalOk,
+          direct200,
+          samePath: direct200 && !loc,
+          drupalStatus: drDirect.status(),
+          redirectLocation: loc || null,
+        };
+      } catch (e) {
+        result.urlParity = { wpOk, drupalOk, direct200: false, error: String(e) };
+      }
+
+      const wpMeta = (result.wp as { meta?: Record<string, string> })?.meta;
+      const drMeta = (result.drupal as { meta?: Record<string, string> })?.meta;
+      result.metaMatch = wpMeta && drMeta ? metaMatches(wpMeta, drMeta) : false;
 
     if (process.env.PARITY_AXE === '1' && drupalOk) {
-      await page.goto(drupalTarget, { waitUntil: 'domcontentloaded' });
-      const axe = await new AxeBuilder({ page }).analyze();
+      await drPage.goto(drupalTarget, { waitUntil: 'domcontentloaded' });
+      const axe = await new AxeBuilder({ page: drPage }).analyze();
       result.axe = {
         violations: axe.violations.length,
         incomplete: axe.incomplete.length,
@@ -222,6 +269,8 @@ for (const entry of urls) {
 
     result.finishedAt = new Date().toISOString();
     writeJson(path.join(caseDir, 'result.json'), result);
+      await wpPage.close();
+      await drPage.close();
     }
   });
 }

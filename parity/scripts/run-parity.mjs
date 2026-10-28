@@ -44,9 +44,20 @@ const html = spawnSync('node', ['scripts/generate-html-report.mjs', runId], {
   stdio: 'inherit',
 });
 
-const gap = spawnSync('python3', ['scripts/generate_gap_report.py', '--run-id', runId], {
+const gapArgs = ['scripts/generate_gap_report.py', '--run-id', runId];
+if (process.env.PARITY_BASELINE_RUN_ID) {
+  gapArgs.push('--baseline-run-id', process.env.PARITY_BASELINE_RUN_ID);
+}
+const gap = spawnSync('python3', gapArgs, {
   cwd: parityRoot,
   stdio: 'inherit',
 });
 
-process.exit(pw.status || agg.status || html.status || gap.status || 0);
+const evalThresholds = spawnSync('node', ['scripts/evaluate-thresholds.mjs', runId], {
+  cwd: parityRoot,
+  stdio: 'inherit',
+});
+
+process.exit(
+  pw.status || agg.status || html.status || gap.status || evalThresholds.status || 0,
+);

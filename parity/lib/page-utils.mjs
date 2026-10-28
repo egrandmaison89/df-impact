@@ -1,5 +1,7 @@
 /** Shared page prep and content extraction for parity tests. */
 
+import { EXTRACT_MAIN_TEXT_FN } from './content-region.mjs';
+
 export const BREAKPOINTS = {
   'parity-desktop': { width: 1440, label: 'desktop' },
   'parity-tablet': { width: 768, label: 'tablet' },
@@ -71,31 +73,7 @@ export async function waitForFonts(page) {
 }
 
 export async function extractMainText(page) {
-  return page.evaluate(() => {
-    const selectors = [
-      'main',
-      '[role="main"]',
-      '#main-content',
-      '.layout-content',
-      'article',
-      '.node__content',
-    ];
-    let root = null;
-    for (const s of selectors) {
-      const el = document.querySelector(s);
-      if (el && (el.textContent || '').trim().length > 80) {
-        root = el;
-        break;
-      }
-    }
-    root = root || document.body;
-    const headings = [...root.querySelectorAll('h1,h2,h3,h4')].map((h) => ({
-      tag: h.tagName.toLowerCase(),
-      text: (h.textContent || '').replace(/\s+/g, ' ').trim(),
-    }));
-    const text = (root.innerText || '').replace(/\s+/g, ' ').trim();
-    return { text, headings, length: text.length };
-  });
+  return page.evaluate(EXTRACT_MAIN_TEXT_FN);
 }
 
 export async function extractMeta(page) {

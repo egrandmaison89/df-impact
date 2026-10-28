@@ -63,6 +63,23 @@ summary.headline = {
   wpReachableDesktop: summary.byBreakpoint.desktop?.wpReachable ?? 0,
 };
 
+const tplBpGroups = {};
+for (const r of results) {
+  const key = `${r.template || 'other'}::${r.breakpoint || 'unknown'}`;
+  (tplBpGroups[key] ||= []).push(r);
+}
+summary.byTemplateBreakpoint = {};
+for (const [key, list] of Object.entries(tplBpGroups)) {
+  const pixels = list.map((r) => r.pixelDiffRatio).filter((x) => typeof x === 'number');
+  const text = list.map((r) => r.textSimilarity).filter((x) => typeof x === 'number');
+  summary.byTemplateBreakpoint[key] = {
+    cases: list.length,
+    pixelDiffMedian: median(pixels),
+    pixelDiffP90: percentile(pixels, 0.9),
+    textSimilarityMedian: median(text),
+  };
+}
+
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
 fs.writeFileSync(outFile, JSON.stringify({ summary, results }, null, 2));
 console.log(`Wrote ${outFile}`);

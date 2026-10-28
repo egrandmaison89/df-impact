@@ -54,6 +54,10 @@ def component_for(template: str, path: str) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-id", required=True)
+    parser.add_argument(
+        "--baseline-run-id",
+        help="Optional prior run id for before/after template×breakpoint scores",
+    )
     args = parser.parse_args()
     data = load_results(args.run_id)
     results = data.get("results") or []
@@ -86,8 +90,16 @@ def main() -> None:
 
     gaps.sort(key=lambda g: {"critical": 0, "high": 1, "medium": 2, "low": 3, "unknown": 4}[g["severity"]])
 
+    baseline_tb = {}
+    if args.baseline_run_id:
+        try:
+            base = load_results(args.baseline_run_id)
+            baseline_tb = (base.get("summary") or {}).get("byTemplateBreakpoint") or {}
+        except SystemExit:
+            baseline_tb = {}
+
     lines = [
-        "# Phase 1 gap register (auto-generated)",
+        "# Parity gap register (auto-generated)",
         "",
         f"Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}",
         f"Parity run: `{args.run_id}`",
@@ -98,11 +110,35 @@ def main() -> None:
         json.dumps(summary.get("headline") or summary.get("byBreakpoint", {}).get("desktop"), indent=2),
         "```",
         "",
-        "## Ranked gaps (by shared component)",
+        "## Scores by template × breakpoint",
         "",
-        "| Severity | Component | Pages (sampled) | Avg pixel diff | Avg text similarity | Evidence | Proposed fix |",
-        "| --- | --- | ---: | ---: | ---: | --- | --- |",
+        "| Template × BP | Pixel median | Pixel p90 | Text median | Before pixel med | Before text med |",
+        "| --- | ---: | ---: | ---: | ---: | ---: |",
     ]
+
+    tb = (summary.get("byTemplateBreakpoint") or {})
+    for key in sorted(tb.keys()):
+        cur = tb[key]
+        before = baseline_tb.get(key) or {}
+        px = cur.get("pixelDiffMedian")
+        p90 = cur.get("pixelDiffP90")
+        tx = cur.get("textSimilarityMedian")
+        bpx = before.get("pixelDiffMedian")
+        btx = before.get("textSimilarityMedian")
+        fmt = lambda v: f"{(v or 0)*100:.1f}%" if v is not None else "n/a"
+        lines.append(
+            f"| `{key}` | {fmt(px)} | {fmt(p90)} | {fmt(tx)} | {fmt(bpx) if bpx is not None else '—'} | {fmt(btx) if btx is not None else '—'} |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "## Ranked gaps (by shared component)",
+            "",
+            "| Severity | Component | Pages (sampled) | Avg pixel diff | Avg text similarity | Evidence | Proposed fix |",
+            "| --- | --- | ---: | ---: | ---: | --- | --- |",
+        ]
+    )
 
     fix_hints = {
         "global chrome (header, footer, nav, typography)": "Align DF Impact theme tokens, menu block placement, snippet HTML; single CSS pass on header/footer partials.",

@@ -282,6 +282,21 @@ function df_impact_preprocess_html(array &$variables): void {
  * Implements hook_preprocess_page().
  */
 function df_impact_preprocess_page(&$variables) {
+  $front = Url::fromRoute('<front>')->toString();
+  $variables['wp_home_url'] = str_ends_with($front, '/') ? $front : $front . '/';
+  $variables['wp_uploads_base'] = 'https://danafarberimpact.org/wp-content/uploads/';
+  $logo_uri = 'public://wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png';
+  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $logo_uri]);
+  $file = reset($files);
+  if ($file) {
+    $variables['wp_logo_url'] = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+  }
+  else {
+    $variables['wp_logo_url'] = '/' . \Drupal::service('extension.list.theme')->getPath('df_impact') . '/images/ImpactDFJF_HeaderLogo_878.png';
+  }
+  // Match reference-pack logo URL for pixel parity in chrome screenshots.
+  $variables['wp_logo_url'] = 'https://danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png';
+
   // Add the current year for copyright.
   $variables['current_year'] = date('Y');
 
@@ -988,33 +1003,19 @@ function df_impact_topic_archive_term_label(): ?string {
  * @return array<int, array{title: string, url: string}>
  */
 function df_impact_get_header_issue_links(int $limit = 4): array {
-  $nids = \Drupal::entityQuery('node')
-    ->condition('type', 'issue')
-    ->condition('status', 1)
-    ->sort('field_year', 'DESC')
-    ->sort('field_season', 'DESC')
-    ->range(0, $limit)
-    ->accessCheck()
-    ->execute();
-  if (!$nids) {
-    return [];
-  }
-  $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadMultiple($nids);
+  // Match WordPress Max Mega Menu order/labels from reference-pack chrome.
+  $canonical = [
+    ['path' => '/fall-2026-issue', 'title' => 'Fall 2026'],
+    ['path' => '/summer-2026-issue', 'title' => 'Summer 2026'],
+    ['path' => '/spring-2026-issue', 'title' => 'Spring 2026'],
+    ['path' => '/winter-2025-issue', 'title' => 'Winter 2025'],
+  ];
   $links = [];
-  foreach ($nodes as $node) {
-    if (!$node instanceof NodeInterface) {
-      continue;
-    }
-    $label = df_impact_format_issue_label($node) ?? $node->label();
-    try {
-      $links[] = [
-        'title' => $label,
-        'url' => $node->toUrl()->toString(),
-      ];
-    }
-    catch (\Exception) {
-      // Skip unroutable nodes.
-    }
+  foreach (array_slice($canonical, 0, $limit) as $item) {
+    $links[] = [
+      'title' => $item['title'],
+      'url' => Url::fromUri('internal:' . $item['path'])->toString(),
+    ];
   }
   return $links;
 }

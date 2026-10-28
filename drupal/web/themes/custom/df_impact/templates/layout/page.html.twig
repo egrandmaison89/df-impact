@@ -4,9 +4,9 @@
  * Theme override to display a single page.
  */
 #}
-<div class="page">
+<div class="wp-site-blocks">
 
-  {% include '@df_impact/includes/site-header.html.twig' %}
+  {% include '@df_impact/includes/wp-chrome-header.html.twig' %}
 
   {# --- Hero Region --- #}
   {% if page.hero %}
@@ -25,7 +25,7 @@
   {% endif %}
 
   {# --- Main Content --- #}
-  <main id="main-content" class="page__content" role="main">
+  <main id="wp--skip-link--target" class="wp-block-group page__content" role="main">
     <a id="main-content-anchor" tabindex="-1"></a>
 
     {% if page.sidebar %}
@@ -44,6 +44,6 @@
     {% endif %}
   </main>
 
-  {% include '@df_impact/includes/site-footer.html.twig' %}
+  {% include '@df_impact/includes/wp-chrome-footer.html.twig' %}
 
 </div>

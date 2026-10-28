@@ -6,9 +6,9 @@
  * Section order aligns with the legacy WordPress homepage pattern.
  */
 #}
-<div class="page">
+<div class="wp-site-blocks">
 
-  {% include '@df_impact/includes/site-header.html.twig' %}
+  {% include '@df_impact/includes/wp-chrome-header.html.twig' %}
 
   {# --- Hero: region block overrides default banner --- #}
   <section class="hero hero--front" aria-label="{{ 'Magazine feature imagery'|t }}">
@@ -84,6 +84,6 @@
 
   </main>
 
-  {% include '@df_impact/includes/site-footer.html.twig' %}
+  {% include '@df_impact/includes/wp-chrome-footer.html.twig' %}
 
 </div>

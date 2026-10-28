@@ -21,8 +21,10 @@ global:
     js/scroll-reveal.js: {}
   dependencies:
     - df_impact/wp_port
+    - df_impact/wp_chrome
     - core/drupal
     - core/once
+
 wp_port:
   version: reference-pack
   css:
@@ -42,8 +44,20 @@ wp_port:
       wp-assets/c0.wp.com_c_7.1.3_wp-includes_blocks_cover_style.min.css: { weight: 12 }
       wp-assets/c0.wp.com_p_jetpack_16.2_modules_related-posts_related-posts.css: { weight: 13 }
       wp-assets/danafarberimpact.org_wp-content_plugins_socialsnap_assets_css_socialsnap.css: { weight: 14 }
+      wp-assets/extracted-wp-inline.css: { weight: 15 }
+      wp-assets/blockmagchild-header-footer.css: { weight: 16 }
   js:
     wp-assets/cdnjs.cloudflare.com_ajax_libs_jquery_3.3.1_jquery.min.js: {}
+    wp-assets/danafarberimpact.org_wp-content_plugins_megamenu_js_maxmegamenu.min.js: {}
   dependencies:
     - core/jquery
+
+wp_chrome:
+  version: 1.0
+  js:
+    js/wp-chrome-behaviors.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - df_impact/wp_port
 

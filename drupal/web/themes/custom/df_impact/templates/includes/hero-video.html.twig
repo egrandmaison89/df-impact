@@ -1,0 +1,21 @@
+{#
+  Homepage cover video (WordPress .homepage-banner parity).
+  Variables: video_url, poster_url, title
+#}
+<div class="hero__cover homepage-banner alignfull" style="min-height:490px">
+  {% if poster_url %}
+    <img class="hero__cover-poster" src="{{ poster_url }}" alt="" aria-hidden="true" loading="eager" decoding="async">
+  {% endif %}
+  {% if video_url %}
+    <video class="hero__cover-video wp-block-cover__video-background intrinsic-ignore"
+      autoplay muted loop playsinline
+      {% if poster_url %}poster="{{ poster_url }}"{% endif %}
+      src="{{ video_url }}"></video>
+  {% endif %}
+  <span class="hero__cover-overlay wp-block-cover__background" aria-hidden="true"></span>
+  <div class="hero__cover-inner wp-block-cover__inner-container">
+    <div class="homepage-header">
+      <h1 class="hero__banner-title">{{ title }}</h1>
+    </div>
+  </div>
+</div>

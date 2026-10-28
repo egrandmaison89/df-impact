@@ -18,8 +18,17 @@ export default defineConfig({
   },
   projects: [
     {
+      name: 'behavior',
+      testMatch: '**/behavior-parity.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
+        video: process.env.PARITY_BEHAVIOR_VIDEO === '1' ? 'on' : 'off',
+      },
+    },
+    {
       name: 'parity',
-      testIgnore: '**/capture-wp-baseline.spec.ts',
+      testIgnore: ['**/capture-wp-baseline.spec.ts', '**/behavior-parity.spec.ts'],
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1440, height: 900 },

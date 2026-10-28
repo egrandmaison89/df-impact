@@ -71,7 +71,7 @@ export DRUPAL_BASE_URL="http://127.0.0.1:8888"
 npm run parity:smoke    # or npm run parity for full manifest
 ```
 
-Live WordPress is **not** contacted when `PARITY_WP_BASELINE` is set.
+Live WordPress is **not** contacted when `PARITY_WP_BASELINE` is set (static parity). **Behavior tests** (`npm run parity:behavior`) may still use live WP for video playback checks — set `PARITY_BEHAVIOR_HIT_WP=1` on the owner Mac.
 
 ## Acceptance criteria
 

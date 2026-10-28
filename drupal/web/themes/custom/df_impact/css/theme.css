@@ -199,6 +199,69 @@
   padding-top: 0;
 }
 
+/* Homepage cover video (WordPress .homepage-banner) */
+.hero__cover {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 490px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.hero__cover-video,
+.hero__cover-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__cover-poster {
+  z-index: 0;
+}
+
+.hero__cover-video {
+  z-index: 1;
+}
+
+.hero__cover-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0);
+  pointer-events: none;
+}
+
+.hero__cover-inner {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+}
+
+.homepage-banner .hero__banner-title,
+.hero__cover-inner .hero__banner-title {
+  color: var(--color-white);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__cover-video {
+    display: none;
+  }
+  .hero__cover-poster {
+    z-index: 1;
+  }
+}
+
 .hero--front {
   background: var(--color-primary);
 }

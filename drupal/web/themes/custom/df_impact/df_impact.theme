@@ -337,6 +337,7 @@ function df_impact_preprocess_page(&$variables) {
   $variables['latest_issue_articles'] = NULL;
   $variables['latest_issue_url'] = NULL;
   $variables['latest_issue_label'] = NULL;
+  $variables['homepage_hero'] = NULL;
   if (!empty($variables['is_front'])) {
     $latest_nid = df_impact_get_latest_issue_nid();
     if ($latest_nid !== NULL) {
@@ -344,6 +345,7 @@ function df_impact_preprocess_page(&$variables) {
       if ($issue instanceof NodeInterface && $issue->bundle() === 'issue') {
         $variables['latest_issue_url'] = $issue->toUrl()->toString();
         $variables['latest_issue_label'] = df_impact_format_issue_label($issue);
+        $variables['homepage_hero'] = df_impact_build_homepage_hero($issue);
       }
       $view = Views::getView('issue_articles');
       if ($view) {
@@ -626,6 +628,45 @@ function df_impact_build_issue_browse_thumbnail(NodeInterface $issue): array {
     return [];
   }
   return $article->get('field_featured_image')->view($formatter);
+}
+
+/**
+ * Builds homepage hero video variables from the featured issue node.
+ *
+ * @return array{video_url: string, poster_url: string|null, title: \Drupal\Core\StringTranslation\TranslatableMarkup}|null
+ */
+function df_impact_build_homepage_hero(?NodeInterface $issue): ?array {
+  if (!$issue instanceof NodeInterface || $issue->bundle() !== 'issue') {
+    return NULL;
+  }
+  $video_url = df_impact_media_file_url($issue, 'field_hero_video', 'field_media_video_file');
+  if ($video_url === NULL) {
+    return NULL;
+  }
+  $poster_url = df_impact_media_file_url($issue, 'field_hero_poster', 'field_media_image');
+  return [
+    'video_url' => $video_url,
+    'poster_url' => $poster_url,
+    'title' => t('Stories From Our Community of Support'),
+  ];
+}
+
+/**
+ * Public file URL for an image/video field on a node (media reference).
+ */
+function df_impact_media_file_url(NodeInterface $node, string $field_name, string $media_file_field): ?string {
+  if (!$node->hasField($field_name) || $node->get($field_name)->isEmpty()) {
+    return NULL;
+  }
+  $media = $node->get($field_name)->entity;
+  if (!$media || !$media->hasField($media_file_field) || $media->get($media_file_field)->isEmpty()) {
+    return NULL;
+  }
+  $file = $media->get($media_file_field)->entity;
+  if (!$file) {
+    return NULL;
+  }
+  return \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
 }
 
 /**

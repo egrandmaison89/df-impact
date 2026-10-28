@@ -12,8 +12,18 @@ drupal/web/modules/custom/df_migrate/data/wp_sitemap_state.json
 # Local QA screenshots and scratch (not shared via git)
 /testing/
 
-# WP↔Drupal parity loop artifacts (screenshots, gaps.md) — local only
+# WP↔Drupal parity loop artifacts (legacy local path)
 .parity/
+
+# Parity harness generated output (keep manifest + scripts in git)
+parity/node_modules/
+parity/reports/runs/
+parity/reports/latest-report.html
+parity/test-results/
+parity/playwright-report/
+
+# Host-side DDEV DB override (copy from scripts/repro/settings.local.example.php)
+drupal/web/sites/default/settings.local.php
 
 # Local standups / demo prep (not shared via git)
 standups/
@@ -23,3 +33,4 @@ drupal/web/sites/default/files/css/
 drupal/web/sites/default/files/js/
 drupal/web/sites/default/files/php/
 drupal/web/sites/default/files/styles/
+drupal/web/sites/default/files/config_*/

@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-10-28T14:58:48Z",
+  "base_url": "https://danafarberimpact.org",
+  "total_urls": 1478,
+  "counts_by_template": {
+    "homepage": 1,
+    "issue": 15,
+    "article": 759,
+    "in_brief": 0,
+    "landing_page": 1,
+    "archive": 49,
+    "topic": 0,
+    "search": 0,
+    "media": 605,
+    "document": 1,
+    "other": 47
+  },
+  "crawl_blocker_count": 642
+}

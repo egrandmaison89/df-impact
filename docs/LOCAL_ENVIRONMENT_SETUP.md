@@ -149,7 +149,7 @@ Drupal does not ship a production database in Git. You need **one** of:
 | Approach                                          | When to use                                                                    |
 | ------------------------------------------------- | ------------------------------------------------------------------------------ |
 | **A. Import a SQL dump from the team**            | Fastest way to get a real site (recommended for most developers)               |
-| **B. Fresh `drush site:install` + config import** | Advanced; you still need a matching database state to match production content |
+| **B. Bootstrap from config + migration JSON** | No dump required; see **[REPRODUCIBLE_ENVIRONMENT.md](./REPRODUCIBLE_ENVIRONMENT.md)** and `scripts/repro/bootstrap-from-migrations.sh` |
 
 
 #### H1 — Import a database dump (typical)

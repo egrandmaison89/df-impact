@@ -74,6 +74,12 @@ Do **not** commit Drupal’s generated public files: **`files/css/`**, **`files/
 
 Exports live under **`drupal/web/sites/default/files/sync/`**. Import/export with `drush cim` / `drush cex` after confirming `$settings['config_sync_directory']` in `settings.php` / `settings.local.php`.
 
+## Parity harness (Phase 1)
+
+- **Manifest:** `parity/manifest/site-manifest.json` (live crawl + `df_migrate` JSON merge)
+- **Run:** `cd parity && npm ci && npm run parity:sample` with Drupal at `DRUPAL_BASE_URL`
+- **Docs:** [REPRODUCIBLE_ENVIRONMENT.md](REPRODUCIBLE_ENVIRONMENT.md), [PHASE1_ACCEPTANCE_CRITERIA.md](PHASE1_ACCEPTANCE_CRITERIA.md), [PHASE1_GAP_REGISTER.md](PHASE1_GAP_REGISTER.md)
+
 ## Migration artifacts
 
 - **Python pipeline:** `drupal/migration-data/process_wp_data.py` reads raw WP JSON exports in that directory and writes `articles.json`, `topics.json`, etc., under `drupal/web/modules/custom/df_migrate/data/` (paths relative to Drupal docroot for migrate YMLs).

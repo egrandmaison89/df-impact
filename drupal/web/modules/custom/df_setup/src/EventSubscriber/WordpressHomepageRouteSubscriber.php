@@ -9,10 +9,10 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Serves /homepage with HTTP 200 for WordPress URL parity.
+ * Serves /homepage and / with HTTP 200 for WordPress URL parity.
  *
  * Drupal's redirect module normalizes front-page aliases to the site root (/).
- * Live WordPress uses /homepage/ as the canonical home URL.
+ * Live WordPress serves the home landing at both / and /homepage/.
  */
 final class WordpressHomepageRouteSubscriber implements EventSubscriberInterface {
 
@@ -30,7 +30,7 @@ final class WordpressHomepageRouteSubscriber implements EventSubscriberInterface
       return;
     }
     $path = rtrim($event->getRequest()->getPathInfo(), '/') ?: '/';
-    if ($path === '/homepage') {
+    if ($path === '/homepage' || $path === '/') {
       $event->getRequest()->attributes->set('_disable_route_normalizer', TRUE);
     }
   }

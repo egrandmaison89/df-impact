@@ -33,9 +33,32 @@ npm run parity:capture-baseline:smoke
 PARITY_SAMPLE=0 npm run parity:capture-baseline
 ```
 
-Output: `parity/baselines/$PARITY_BASELINE_ID/`. Share that folder with the team (zip, cloud drive, optional git LFS). Do **not** add cookies or credentials.
+Output: `parity/baselines/$PARITY_BASELINE_ID/`. Do **not** add cookies or credentials.
 
 Verify `baseline-meta.json` and spot-check `wordpress.json` files for `"wpCaptcha": false`.
+
+### Sharing baselines (full captures are ~3.5 GB)
+
+Do **not** commit full baselines to plain git. Recommended options:
+
+| Approach | Best for |
+| --- | --- |
+| **Lite zip (JSON only)** | Cloud agents / CI text & meta gates (~tens of MB) |
+| **Full folder on owner Mac** | Pixel diff at full fidelity (2% / 5% gates) |
+| **Cloud drive / release asset** | Team handoff of full `baselines/<id>/` |
+| **Git LFS** | Optional if the org already uses LFS for large artifacts |
+
+**Lite bundle** (from `parity/`, after capture):
+
+```bash
+export PARITY_BASELINE_ID="df-impact-2026-10-28"
+node scripts/package-baseline-lite.mjs
+# → baselines/df-impact-2026-10-28-lite.zip (wordpress.json + baseline-meta + manifest-lite)
+```
+
+Parity with `PARITY_WP_BASELINE` uses `wordpress.json` for text/meta; **pixel diff needs `wordpress.png`** on the machine running Playwright. Cloud agents can consume the lite zip for content/meta thresholds; the owner runs pixel comparison locally until a downscaled-PNG bundle or shared storage is agreed.
+
+**Playwright note:** Baseline capture specs resolve paths via `lib/parity-root.mjs` (no `import.meta` in the spec), so capture works on owner Mac (Node 24, CJS `package.json`) and in ESM `.mjs` runners alike.
 
 ## Compare (CI, cloud agent, or local)
 

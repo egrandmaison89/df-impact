@@ -26,7 +26,7 @@
     "slug": "cancer-research",
     "parent_name": "Research",
     "is_parent": false,
-    "wp_count": 437
+    "wp_count": 0
   },
   {
     "wp_id": 14,
@@ -34,7 +34,7 @@
     "slug": "discovery-science",
     "parent_name": "Research",
     "is_parent": false,
-    "wp_count": 49
+    "wp_count": 0
   },
   {
     "wp_id": 13,
@@ -42,7 +42,7 @@
     "slug": "drug-development",
     "parent_name": "Research",
     "is_parent": false,
-    "wp_count": 37
+    "wp_count": 0
   },
   {
     "wp_id": 18,
@@ -50,7 +50,7 @@
     "slug": "immunotherapy",
     "parent_name": "Research",
     "is_parent": false,
-    "wp_count": 68
+    "wp_count": 0
   },
   {
     "wp_id": 62,
@@ -58,7 +58,7 @@
     "slug": "ai-and-machine-learning",
     "parent_name": "Research",
     "is_parent": false,
-    "wp_count": 14
+    "wp_count": 0
   },
   {
     "wp_id": 61,
@@ -66,7 +66,7 @@
     "slug": "epigenetics",
     "parent_name": "Research",
     "is_parent": false,
-    "wp_count": 12
+    "wp_count": 0
   },
   {
     "wp_id": 17,
@@ -74,7 +74,7 @@
     "slug": "prevention-and-early-detection",
     "parent_name": "Research",
     "is_parent": false,
-    "wp_count": 62
+    "wp_count": 0
   },
   {
     "wp_id": 69,
@@ -82,7 +82,7 @@
     "slug": "basic-science",
     "parent_name": "Research",
     "is_parent": false,
-    "wp_count": 46
+    "wp_count": 0
   },
   {
     "wp_id": 63,
@@ -90,7 +90,7 @@
     "slug": "rare-and-resistant-cancers",
     "parent_name": "Research",
     "is_parent": false,
-    "wp_count": 48
+    "wp_count": 0
   },
   {
     "wp_id": 11,
@@ -98,7 +98,7 @@
     "slug": "total-patient-care",
     "parent_name": "Patient Care",
     "is_parent": false,
-    "wp_count": 129
+    "wp_count": 0
   },
   {
     "wp_id": 15,
@@ -106,7 +106,7 @@
     "slug": "access-and-equity",
     "parent_name": "Patient Care",
     "is_parent": false,
-    "wp_count": 51
+    "wp_count": 0
   },
   {
     "wp_id": 60,
@@ -114,7 +114,7 @@
     "slug": "exceptional-expertise",
     "parent_name": "Patient Care",
     "is_parent": false,
-    "wp_count": 48
+    "wp_count": 0
   },
   {
     "wp_id": 59,
@@ -122,7 +122,7 @@
     "slug": "essential-opportunities",
     "parent_name": "Patient Care",
     "is_parent": false,
-    "wp_count": 25
+    "wp_count": 0
   },
   {
     "wp_id": 9,
@@ -130,7 +130,7 @@
     "slug": "grassroots-support",
     "parent_name": "Philanthropy",
     "is_parent": false,
-    "wp_count": 140
+    "wp_count": 0
   },
   {
     "wp_id": 16,
@@ -138,7 +138,7 @@
     "slug": "planned-giving",
     "parent_name": "Philanthropy",
     "is_parent": false,
-    "wp_count": 33
+    "wp_count": 0
   },
   {
     "wp_id": 12,
@@ -146,7 +146,7 @@
     "slug": "recognition",
     "parent_name": "Philanthropy",
     "is_parent": false,
-    "wp_count": 44
+    "wp_count": 0
   },
   {
     "wp_id": 55,
@@ -154,7 +154,7 @@
     "slug": "the-dana-farber-campaign",
     "parent_name": "Philanthropy",
     "is_parent": false,
-    "wp_count": 30
+    "wp_count": 0
   },
   {
     "wp_id": 40,
@@ -162,6 +162,6 @@
     "slug": "from-melany-duval",
     "parent_name": null,
     "is_parent": false,
-    "wp_count": 9
+    "wp_count": 0
   }
 ]

@@ -18,9 +18,9 @@ drupal/migration-data/private/wp-uploads/2026/03/example.jpg
 
 ```bash
 cd drupal/migration-data
-python3 parse_wxr_export.py
-# copies media.json → ../web/modules/custom/df_migrate/data/media.json
-python3 reconcile_wxr_drupal.py   # after Drupal is up
+python3 process_wxr_data.py      # full articles / in_brief / issues / taxonomies → df_migrate/data
+python3 parse_wxr_export.py      # media + chrome reference (optional if only refreshing attachments)
+python3 reconcile_wxr_drupal.py  # after Drupal is up
 ```
 
 Outputs (gitignored private dir except `.gitkeep`; `media.json` is committed when refreshed):

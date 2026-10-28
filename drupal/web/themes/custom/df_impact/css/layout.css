@@ -45,7 +45,7 @@
   justify-content: space-between;
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 1.25rem var(--space-md);
+  padding: 20px var(--space-md); /* WXR impact-header template */
   gap: var(--space-md);
 }
 

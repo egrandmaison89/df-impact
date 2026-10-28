@@ -20,6 +20,18 @@ def drush_sql(query: str) -> str:
     return subprocess.check_output(cmd, cwd=MIGRATION_DATA.parent, text=True, env=os.environ)
 
 
+# Drupal Views page paths that satisfy WXR landing pages (no path_alias row).
+VIEW_ROUTES = {
+    "/issues",
+    "/in-brief",
+    "/browse-issues",
+    "/past-issues",
+    "/",
+    "/homepage",
+    "/digital-exclusives",
+}
+
+
 def load_drupal_aliases() -> dict[str, str]:
     raw = drush_sql(
         "SELECT alias, path FROM path_alias WHERE alias NOT LIKE '/admin%' ORDER BY alias"
@@ -44,7 +56,7 @@ def main() -> None:
     matched = 0
     for row in published:
         path = row.get("path", "/").rstrip("/") or "/"
-        if path in aliases or (path + "/") in aliases:
+        if path in VIEW_ROUTES or path in aliases or (path + "/") in aliases:
             matched += 1
             continue
         missing.append({"path": path, "title": row.get("title"), "wp_id": row.get("wp_id"), "type": row.get("post_type")})

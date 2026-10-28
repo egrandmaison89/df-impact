@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-10-28T16:46:11Z",
+  "wxr_path": "wp-export.xml",
+  "attachment_count": 934,
+  "published_posts": 759,
+  "published_pages": 24,
+  "chrome_counts": {
+    "wp_global_styles": 3,
+    "custom_css": 2,
+    "wp_template_part": 9,
+    "wp_template": 21,
+    "wp_navigation": 7,
+    "nav_menu_item": 8,
+    "ultp_templates": 1,
+    "ultp_builder": 1,
+    "wp_block": 4
+  }
+}

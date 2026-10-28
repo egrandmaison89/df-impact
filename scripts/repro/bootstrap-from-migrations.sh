@@ -42,6 +42,15 @@ echo "==> Align site UUID + import config export"
 "${DRUSH[@]}" pm:uninstall df_migrate -y || true
 "${DRUSH[@]}" pm:enable df_migrate -y
 
+echo "==> WordPress uploads path (same URLs as live WP)"
+mkdir -p web/sites/default/files/wp-content/uploads web/wp-content
+ln -sfn ../sites/default/files/wp-content/uploads web/wp-content/uploads
+
+if [[ -f "$ROOT/drupal/migration-data/private/wp-export.xml" ]]; then
+  echo "==> Regenerate media.json from WXR export"
+  python3 "$ROOT/drupal/migration-data/parse_wxr_export.py"
+fi
+
 echo "==> Migrate WordPress JSON (committed under df_migrate/data)"
 for m in df_taxonomy_topics df_taxonomy_cancer_types df_taxonomy_channels df_media_images df_issues df_articles df_in_brief; do
   echo "--- $m"

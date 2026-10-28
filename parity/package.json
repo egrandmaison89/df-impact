@@ -6,8 +6,10 @@
   "scripts": {
     "manifest": "python3 scripts/build_site_manifest.py && python3 scripts/merge_manifest_from_exports.py",
     "manifest:exports": "python3 scripts/merge_manifest_from_exports.py",
-    "parity": "node scripts/run-parity.mjs",
-    "parity:sample": "PARITY_SAMPLE=1 PARITY_LIMIT=25 node scripts/run-parity.mjs",
+    "parity": "PARITY_SAMPLE=0 node scripts/run-parity.mjs",
+    "parity:smoke": "PARITY_SAMPLE=1 PARITY_LIMIT=25 node scripts/run-parity.mjs",
+    "parity:capture-baseline": "node scripts/capture-wp-baseline.mjs",
+    "parity:capture-baseline:smoke": "PARITY_SAMPLE=1 node scripts/capture-wp-baseline.mjs",
     "parity:full": "PARITY_SAMPLE=0 node scripts/run-parity.mjs",
     "report": "node scripts/generate-html-report.mjs",
     "test": "playwright test"

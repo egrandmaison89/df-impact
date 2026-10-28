@@ -1,0 +1,27 @@
+{
+  "source": "Parsed from owner WXR (wp_global_styles, custom_css, template parts). Regenerate via parse_wxr_export.py.",
+  "colors": {
+    "primary": "#00629b",
+    "primaryLight": "#68a0c1",
+    "accent": "#ffa300",
+    "footerNavy": "#003354",
+    "headerBorder": "#f4f4f4",
+    "grayLight": "#f6f6f6",
+    "grayMid": "#d5d5da",
+    "text": "#000000"
+  },
+  "typography": {
+    "heading": "Libre Baskerville",
+    "body": "Montserrat",
+    "bodySize": "18px",
+    "h1Size": "40px",
+    "h1Weight": "600"
+  },
+  "layout": {
+    "contentMaxWidth": "1490px"
+  },
+  "links": {
+    "color": "#00629b",
+    "textDecoration": "underline"
+  }
+}

@@ -1,5 +1,7 @@
 # Phase 1 acceptance criteria & phased fix plan
 
+> **Phase 2+ thresholds:** Owner-approved release gates live in [ACCEPTANCE_CRITERIA.md](./ACCEPTANCE_CRITERIA.md) (pixel median ≤2% / p90 ≤5% at all breakpoints, text ≥98%, URL parity 100% same-path HTTP 200). This file retains the Phase 1 baseline and fix plan history.
+
 ## Proposed thresholds (“done” for visual rebuild)
 
 These apply **per template family** after fixes, measured by `parity/` harness on **desktop 1440** unless noted.

@@ -7,7 +7,7 @@ dependencies:
 id: in_brief_pattern
 label: 'In Brief URL Pattern'
 type: 'canonical_entities:node'
-pattern: '/in-brief/[node:title]'
+pattern: '/[node:created:custom:Y]/[node:created:custom:m]/[node:title]'
 selection_criteria:
   0491b575-434f-4e82-8998-9cbc9cadc96d:
     id: 'entity_bundle:node'

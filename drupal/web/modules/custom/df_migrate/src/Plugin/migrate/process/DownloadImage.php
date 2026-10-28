@@ -123,7 +123,7 @@ class DownloadImage extends ProcessPluginBase {
   /**
    * Convert a public URL to a Drupal URI (for checking existing files).
    */
-  protected static function urlToUri(string $url): string {
+  public static function urlToUri(string $url): string {
     $filename = basename(parse_url($url, PHP_URL_PATH) ?? '');
     $filename = rawurldecode($filename);
     return 'public://wp-images/' . $filename;

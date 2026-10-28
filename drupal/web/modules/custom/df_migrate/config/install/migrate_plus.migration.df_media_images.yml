@@ -15,6 +15,9 @@ source:
     - name: source_url
       label: 'Source URL'
       selector: source_url
+    - name: wp_upload_path
+      label: 'WP uploads relative path'
+      selector: wp_upload_path
     - name: title
       label: Title
       selector: title
@@ -24,27 +27,25 @@ source:
     - name: filename
       label: Filename
       selector: filename
+    - name: mime_type
+      label: 'MIME type'
+      selector: mime_type
   ids:
     wp_id:
       type: integer
 
 process:
-  # Download file from WP and save to Drupal files
-  'file_download/source_url': source_url
-  'file_download/destination': filename
-
-  # Create file entity
   uri:
-    plugin: file_copy
-    source:
-      - source_url
-      - '@filename'
-    file_exists: use existing
-
+    plugin: df_wp_upload_file
+    source: source_url
+  filemime: mime_type
   filename: filename
-  filemime:
+  status:
     plugin: default_value
-    default_value: 'image/jpeg'
+    default_value: 1
+  uid:
+    plugin: default_value
+    default_value: 1
 
 destination:
   plugin: 'entity:file'

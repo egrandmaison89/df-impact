@@ -266,6 +266,28 @@ function df_setup_views_pre_build(ViewExecutable $view): void {
  * Clears stray HTML entities in titles/alts migrated from WordPress so escaper
  * does not produce literals like "&amp;" for visitors.
  */
+/**
+ * Implements hook_pathauto_alias_alter().
+ *
+ * Issue URLs on WordPress use /{season}-{year}-issue/ (not /issues/…).
+ */
+function df_setup_pathauto_alias_alter(&$alias, array $context): void {
+  if (($context['module'] ?? '') !== 'node' || ($context['bundle'] ?? '') !== 'issue') {
+    return;
+  }
+  $node = $context['data'] ?? NULL;
+  if (!$node instanceof NodeInterface) {
+    return;
+  }
+  $season = (string) ($node->get('field_season')->value ?? '');
+  $year = (string) ($node->get('field_year')->value ?? '');
+  $slug = preg_replace('/[^a-z0-9]+/', '-', mb_strtolower($season, 'UTF-8'));
+  $slug = trim(preg_replace('/-+/', '-', (string) $slug), '-');
+  if ($slug !== '' && $year !== '') {
+    $alias = '/' . $slug . '-' . $year . '-issue';
+  }
+}
+
 function df_setup_entity_presave(EntityInterface $entity): void {
   if ($entity instanceof NodeInterface && $entity->bundle() === 'article') {
     $title = $entity->getTitle();

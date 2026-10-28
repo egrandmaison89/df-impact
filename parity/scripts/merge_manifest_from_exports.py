@@ -97,32 +97,40 @@ def main() -> None:
     issues = json.loads((DF_DATA / "issues.json").read_text(encoding="utf-8"))
     redirects = json.loads((DF_DATA / "redirects.json").read_text(encoding="utf-8"))
 
+    def path_from_wp_url(wp_url: str) -> str:
+        if not wp_url:
+            return ""
+        p = urlparse(wp_url).path or "/"
+        p = p.rstrip("/") or "/"
+        return p if p.startswith("/") else "/" + p
+
     for row in articles:
-        alias = row.get("drupal_alias") or f"/stories/{row.get('slug', '')}"
+        path = path_from_wp_url(row.get("wp_url") or "") or row.get("drupal_alias") or f"/stories/{row.get('slug', '')}"
         add_entry(
             by_path,
-            path=alias,
+            path=path,
             template="article",
             title=row.get("title") or "",
             source="articles.json",
             wp_url=row.get("wp_url"),
-            drupal_alias=alias,
+            drupal_alias=path,
         )
 
     for row in in_brief:
-        alias = row.get("drupal_alias") or f"/in-brief/{row.get('slug', '')}"
+        path = path_from_wp_url(row.get("wp_url") or "") or row.get("drupal_alias") or f"/in-brief/{row.get('slug', '')}"
         add_entry(
             by_path,
-            path=alias,
+            path=path,
             template="in_brief",
             title=row.get("title") or "",
             source="in_brief.json",
             wp_url=row.get("wp_url"),
-            drupal_alias=alias,
+            drupal_alias=path,
         )
 
     for row in issues:
-        alias = row.get("path_alias") or f"/issues/{row.get('slug', '')}"
+        slug = row.get("slug") or ""
+        alias = row.get("path_alias") or (f"/{slug}-issue" if slug else "")
         alias = alias.replace(" ", "-").lower()
         if not alias.startswith("/"):
             alias = "/" + alias

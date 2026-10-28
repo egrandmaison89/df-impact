@@ -26,6 +26,11 @@ services:
     tags:
       - { name: event_subscriber }
 
+  df_setup.wordpress_homepage_route:
+    class: Drupal\df_setup\EventSubscriber\WordpressHomepageRouteSubscriber
+    tags:
+      - { name: event_subscriber }
+
   df_setup.path_processor.topic_archive:
     class: Drupal\df_setup\PathProcessor\TopicTermArchivePathProcessor
     arguments: ['@entity_type.manager']

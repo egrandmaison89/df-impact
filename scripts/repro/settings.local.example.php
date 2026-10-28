@@ -16,6 +16,9 @@ $databases['default']['default'] = [
   'collation' => 'utf8mb4_general_ci',
 ];
 
+// Copy from settings.ddev.php after `ddev start`, or from `drush php:eval "echo \Drupal::service('private_key')->get();"`.
+$settings['hash_salt'] = getenv('DRUPAL_HASH_SALT') ?: 'local-dev-only-change-me';
+
 $settings['config_sync_directory'] = 'sites/default/files/sync';
 $settings['trusted_host_patterns'] = ['.*'];
 

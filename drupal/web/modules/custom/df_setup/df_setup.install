@@ -48,13 +48,13 @@ function _df_setup_ensure_home_landing(): void {
         'format' => 'basic_html',
       ],
     ]);
-    $node->set('path', ['alias' => '/home', 'pathauto' => $pathauto_skip]);
+    $node->set('path', ['alias' => '/homepage', 'pathauto' => $pathauto_skip]);
     $node->save();
   }
   else {
     $node = $storage->load(reset($nids));
     if ($node instanceof Node) {
-      $node->set('path', ['alias' => '/home', 'pathauto' => $pathauto_skip]);
+      $node->set('path', ['alias' => '/homepage', 'pathauto' => $pathauto_skip]);
       $node->save();
     }
   }
@@ -603,4 +603,55 @@ function df_setup_update_10011(): string {
   ob_start();
   include $script;
   return trim((string) ob_get_clean());
+}
+
+/**
+ * Home page public URL should match WordPress (/homepage/).
+ */
+function df_setup_update_10012(): string {
+  _df_setup_ensure_home_landing();
+  return 'Home landing alias set to /homepage (WordPress parity).';
+}
+
+/**
+ * Drop legacy /home alias so /homepage is the public home path (WordPress parity).
+ */
+function df_setup_update_10013(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $ids = $storage->getQuery()
+    ->condition('alias', '/home')
+    ->accessCheck(FALSE)
+    ->execute();
+  if ($ids) {
+    $storage->delete($storage->loadMultiple($ids));
+  }
+  return sprintf('Removed %d legacy /home path alias(es).', count($ids));
+}
+
+/**
+ * Issue nodes must be published for same-path HTTP 200 on /{season}-{year}-issue URLs.
+ */
+function df_setup_update_10014(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'issue')
+    ->accessCheck(FALSE)
+    ->execute();
+  $updated = 0;
+  foreach ($storage->loadMultiple($nids) as $node) {
+    $changed = FALSE;
+    if ($node->hasField('moderation_state') && $node->get('moderation_state')->value !== 'published') {
+      $node->set('moderation_state', 'published');
+      $changed = TRUE;
+    }
+    if (!$node->isPublished()) {
+      $node->setPublished();
+      $changed = TRUE;
+    }
+    if ($changed) {
+      $node->save();
+      $updated++;
+    }
+  }
+  return sprintf('Published %d issue node(s).', $updated);
 }

@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
-# Symlink reference-pack assets into the theme (required after clone).
+# Deprecated: symlinks break under DDEV (only drupal/ is mounted). Use vendor-wp-assets.sh.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-THEME="$ROOT/drupal/web/themes/custom/df_impact"
-PACK="$ROOT/parity/reference-pack/assets"
-ln -sfn "$PACK" "$THEME/wp-assets"
-echo "Linked $THEME/wp-assets -> $PACK"
+exec bash "$ROOT/scripts/repro/vendor-wp-assets.sh"

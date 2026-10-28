@@ -6,5 +6,6 @@ dependencies:
     - node
 id: node.in_brief_listing
 label: 'In Brief listing'
+description: null
 targetEntityType: node
 cache: true

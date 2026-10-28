@@ -5,7 +5,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 DRUPAL="$ROOT/drupal"
-bash "$ROOT/scripts/repro/link-wp-assets.sh"
+bash "$ROOT/scripts/repro/vendor-wp-assets.sh"
 SITE_UUID="58f71e08-0da1-46f5-8ea4-6568da8ebf2a"
 
 cd "$DRUPAL"
@@ -69,6 +69,10 @@ if ! "${DRUSH[@]}" php:eval "echo function_exists('_df_setup_backfill_latest_iss
 fi
 "${DRUSH[@]}" php:eval "echo _df_setup_backfill_latest_issue_hero_media();"
 "${DRUSH[@]}" cr
+
+echo "==> wp_port theme assets (must be HTTP 200 under DDEV)"
+export DRUPAL_BASE_URL="${DRUPAL_BASE_URL:-http://df-impact.ddev.site}"
+bash "$ROOT/scripts/repro/verify-wp-port-assets.sh"
 
 echo "Done. Use: ddev launch OR ./vendor/bin/drush -r web serve 127.0.0.1:8888"
 echo "Admin: drush uli (with DDEV_DB_PORT set if using host drush)"

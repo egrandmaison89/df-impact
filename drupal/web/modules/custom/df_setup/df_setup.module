@@ -385,3 +385,48 @@ function df_setup_topic_term_load_by_category_slug(string $slug): ?TermInterface
   $term = $storage->load($tids[0]);
   return $term instanceof TermInterface ? $term : NULL;
 }
+
+/**
+ * Magazine season order within a calendar year (Fall issue is “latest” for a year).
+ */
+function df_setup_issue_season_weight(string $season): int {
+  return match (mb_strtolower(trim($season), 'UTF-8')) {
+    'fall', 'autumn' => 4,
+    'summer' => 3,
+    'spring' => 2,
+    'winter' => 1,
+    default => 0,
+  };
+}
+
+/**
+ * Returns the newest published issue node ID (year desc, season weight desc).
+ */
+function df_setup_get_latest_issue_nid(): ?int {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'issue')
+    ->condition('status', 1)
+    ->accessCheck(FALSE)
+    ->execute();
+  if (!$nids) {
+    return NULL;
+  }
+  $nodes = $storage->loadMultiple($nids);
+  $best = NULL;
+  $bestYear = -1;
+  $bestSeason = -1;
+  foreach ($nodes as $node) {
+    if (!$node instanceof NodeInterface) {
+      continue;
+    }
+    $year = (int) ($node->get('field_year')->value ?? 0);
+    $season = df_setup_issue_season_weight((string) ($node->get('field_season')->value ?? ''));
+    if ($year > $bestYear || ($year === $bestYear && $season > $bestSeason)) {
+      $bestYear = $year;
+      $bestSeason = $season;
+      $best = $node;
+    }
+  }
+  return $best instanceof NodeInterface ? (int) $best->id() : NULL;
+}

@@ -28,8 +28,12 @@ display:
       pager:
         type: full
         options:
-          items_per_page: 12
           offset: 0
+          items_per_page: 12
+      access:
+        type: perm
+        options:
+          perm: 'access content'
       sorts:
         created:
           id: created
@@ -57,10 +61,6 @@ display:
         type: 'entity:node'
         options:
           view_mode: teaser
-      access:
-        type: perm
-        options:
-          perm: 'access content'
       display_extenders: {  }
     cache_metadata:
       max-age: -1

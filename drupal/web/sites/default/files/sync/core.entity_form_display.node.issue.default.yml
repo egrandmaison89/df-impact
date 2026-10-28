@@ -46,13 +46,13 @@ content:
       media_types:
         - image
     third_party_settings: {  }
-  field_hero_video:
-    type: media_library_widget
-    weight: 3
+  field_description:
+    type: text_textarea
+    weight: 5
     region: content
     settings:
-      media_types:
-        - video
+      rows: 5
+      placeholder: ''
     third_party_settings: {  }
   field_hero_poster:
     type: media_library_widget
@@ -62,17 +62,17 @@ content:
       media_types:
         - image
     third_party_settings: {  }
-  field_description:
-    type: text_textarea
-    weight: 5
+  field_hero_video:
+    type: media_library_widget
+    weight: 3
     region: content
     settings:
-      rows: 5
-      placeholder: ''
+      media_types:
+        - video
     third_party_settings: {  }
-  field_leadership_message:
+  field_issue_promo_2:
     type: entity_reference_autocomplete
-    weight: 6
+    weight: 7
     region: content
     settings:
       match_operator: CONTAINS
@@ -80,9 +80,9 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_issue_promo_2:
+  field_leadership_message:
     type: entity_reference_autocomplete
-    weight: 7
+    weight: 6
     region: content
     settings:
       match_operator: CONTAINS

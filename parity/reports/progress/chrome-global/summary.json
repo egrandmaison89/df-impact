@@ -1,108 +1,108 @@
 {
   "component": "chrome-global",
-  "drupalBase": "http://127.0.0.1:8888",
+  "drupalBase": "http://df-impact.ddev.site",
   "pages": 13,
   "medians": {
-    "chrome_median_desktop": 0.1883547364612772,
-    "chrome_median_tablet": 0.26098576790067574,
-    "chrome_median_mobile": 0.23113223097980634
+    "chrome_median_desktop": 0.11369012821339029,
+    "chrome_median_tablet": 0.08164564626070074,
+    "chrome_median_mobile": 0.19953718165157855
   },
   "summary": [
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "desktop",
-      "pixelDiffRatio": 0.39477854938271606,
-      "headerPixelDiffRatio": 0.16842881944444443,
-      "footerPixelDiffRatio": 0.20994006891764588,
-      "chromePixelDiffRatio": 0.18918444418104516
+      "pixelDiffRatio": 0.420141975308642,
+      "headerPixelDiffRatio": 0.016289149888143176,
+      "footerPixelDiffRatio": 0.2101932822740436,
+      "chromePixelDiffRatio": 0.11324121608109339
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "tablet",
-      "pixelDiffRatio": 0.6017259837962963,
-      "headerPixelDiffRatio": 0.22084287739965097,
-      "footerPixelDiffRatio": 0.3014147903782713,
-      "chromePixelDiffRatio": 0.26112883388896113
+      "pixelDiffRatio": 0.4767013888888889,
+      "headerPixelDiffRatio": 0.02227176047120419,
+      "footerPixelDiffRatio": 0.1409810570158459,
+      "chromePixelDiffRatio": 0.08162640874352504
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "mobile",
-      "pixelDiffRatio": 0.34037333333333336,
-      "headerPixelDiffRatio": 0.21551656920077972,
-      "footerPixelDiffRatio": 0.2794859044065729,
-      "chromePixelDiffRatio": 0.2475012368036763
+      "pixelDiffRatio": 0.29737185185185183,
+      "headerPixelDiffRatio": 0.16330555555555556,
+      "footerPixelDiffRatio": 0.23432704863671378,
+      "chromePixelDiffRatio": 0.19881630209613466
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "desktop",
-      "pixelDiffRatio": 0.16340586419753086,
-      "headerPixelDiffRatio": 0.16842881944444443,
-      "footerPixelDiffRatio": 0.20991217958252764,
-      "chromePixelDiffRatio": 0.18917049951348602
+      "pixelDiffRatio": 0.20291126543209875,
+      "headerPixelDiffRatio": 0.016289149888143176,
+      "footerPixelDiffRatio": 0.21112444749276024,
+      "chromePixelDiffRatio": 0.11370679869045171
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "tablet",
-      "pixelDiffRatio": 0.2558912037037037,
-      "headerPixelDiffRatio": 0.22084287739965097,
-      "footerPixelDiffRatio": 0.3012056014542237,
-      "chromePixelDiffRatio": 0.2610242394269373
+      "pixelDiffRatio": 0.1347728587962963,
+      "headerPixelDiffRatio": 0.02227176047120419,
+      "footerPixelDiffRatio": 0.1410195320501973,
+      "chromePixelDiffRatio": 0.08164564626070074
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "mobile",
-      "pixelDiffRatio": 0.2435437037037037,
-      "headerPixelDiffRatio": 0.19792592592592592,
-      "footerPixelDiffRatio": 0.25383882037150496,
-      "chromePixelDiffRatio": 0.22588237314871545
+      "pixelDiffRatio": 0.19925333333333334,
+      "headerPixelDiffRatio": 0.16330555555555556,
+      "footerPixelDiffRatio": 0.23576880774760153,
+      "chromePixelDiffRatio": 0.19953718165157855
     },
     {
       "path": "/about-impact",
       "bp": "desktop",
-      "pixelDiffRatio": 0.2817384259259259,
-      "headerPixelDiffRatio": 0.025904175988068604,
-      "footerPixelDiffRatio": 0.20404079764467206,
-      "chromePixelDiffRatio": 0.11497248681637033
+      "pixelDiffRatio": 0.3371327160493827,
+      "headerPixelDiffRatio": 0.016289149888143176,
+      "footerPixelDiffRatio": 0.21143404206675812,
+      "chromePixelDiffRatio": 0.11386159597745064
     },
     {
       "path": "/about-impact",
       "bp": "tablet",
-      "pixelDiffRatio": 0.47520399305555555,
-      "headerPixelDiffRatio": 0.22084287739965097,
-      "footerPixelDiffRatio": 0.3011623209871794,
-      "chromePixelDiffRatio": 0.2610025991934152
+      "pixelDiffRatio": 0.3654542824074074,
+      "headerPixelDiffRatio": 0.02227176047120419,
+      "footerPixelDiffRatio": 0.13962788460682063,
+      "chromePixelDiffRatio": 0.08094982253901241
     },
     {
       "path": "/about-impact",
       "bp": "mobile",
-      "pixelDiffRatio": 0.38493037037037037,
-      "headerPixelDiffRatio": 0.19792592592592592,
-      "footerPixelDiffRatio": 0.26412787550930134,
-      "chromePixelDiffRatio": 0.23102690071761361
+      "pixelDiffRatio": 0.3519585185185185,
+      "headerPixelDiffRatio": 0.16330555555555556,
+      "footerPixelDiffRatio": 0.2334548418502502,
+      "chromePixelDiffRatio": 0.19838019870290288
     },
     {
       "path": "/browse-issues",
       "bp": "desktop",
-      "pixelDiffRatio": 0.23572608024691358,
-      "headerPixelDiffRatio": 0.16842881944444443,
-      "footerPixelDiffRatio": 0.20778329366850118,
-      "chromePixelDiffRatio": 0.1881060565564728
+      "pixelDiffRatio": 0.2793101851851852,
+      "headerPixelDiffRatio": 0.016289149888143176,
+      "footerPixelDiffRatio": 0.2110911065386374,
+      "chromePixelDiffRatio": 0.11369012821339029
     },
     {
       "path": "/browse-issues",
       "bp": "tablet",
-      "pixelDiffRatio": 0.3503862847222222,
-      "headerPixelDiffRatio": 0.22084287739965097,
-      "footerPixelDiffRatio": 0.3018063583815029,
-      "chromePixelDiffRatio": 0.2613246178905769
+      "pixelDiffRatio": 0.2301099537037037,
+      "headerPixelDiffRatio": 0.02227176047120419,
+      "footerPixelDiffRatio": 0.140968319424281,
+      "chromePixelDiffRatio": 0.0816200399477426
     },
     {
       "path": "/browse-issues",
       "bp": "mobile",
-      "pixelDiffRatio": 0.329202962962963,
-      "headerPixelDiffRatio": 0.19792592592592592,
-      "footerPixelDiffRatio": 0.26542355104061094,
-      "chromePixelDiffRatio": 0.23167473848326842
+      "pixelDiffRatio": 0.2642637037037037,
+      "headerPixelDiffRatio": 0.16330555555555556,
+      "footerPixelDiffRatio": 0.23608535372974887,
+      "chromePixelDiffRatio": 0.1996954546426522
     },
     {
       "path": "/category/cancer-research",
@@ -122,194 +122,194 @@
     {
       "path": "/fall-2026-issue",
       "bp": "desktop",
-      "pixelDiffRatio": 0.5869552469135803,
-      "headerPixelDiffRatio": 0.17022135416666667,
-      "footerPixelDiffRatio": 0.2169774778124845,
-      "chromePixelDiffRatio": 0.19359941598957559
+      "pixelDiffRatio": 0.5968641975308642,
+      "headerPixelDiffRatio": 0.015450223713646533,
+      "footerPixelDiffRatio": 0.16249666590458772,
+      "chromePixelDiffRatio": 0.08897344480911713
     },
     {
       "path": "/fall-2026-issue",
       "bp": "tablet",
-      "pixelDiffRatio": 0.5550766782407407,
-      "headerPixelDiffRatio": 0.11404477530541013,
-      "footerPixelDiffRatio": 0.3060073288257528,
-      "chromePixelDiffRatio": 0.21002605206558148
+      "pixelDiffRatio": 0.41539496527777775,
+      "headerPixelDiffRatio": 0.014084315008726004,
+      "footerPixelDiffRatio": 0.0559912398288949,
+      "chromePixelDiffRatio": 0.03503777741881045
     },
     {
       "path": "/fall-2026-issue",
       "bp": "mobile",
-      "pixelDiffRatio": 0.3834666666666667,
-      "headerPixelDiffRatio": 0.1887719298245614,
-      "footerPixelDiffRatio": 0.2744127060812851,
-      "chromePixelDiffRatio": 0.23159231795292323
+      "pixelDiffRatio": 0.3433688888888889,
+      "headerPixelDiffRatio": 0.021058295964125562,
+      "footerPixelDiffRatio": 0.128099173553719,
+      "chromePixelDiffRatio": 0.07457873475892228
     },
     {
       "path": "/homepage",
       "bp": "desktop",
-      "pixelDiffRatio": 0.5880455246913581,
-      "headerPixelDiffRatio": 0.16842881944444443,
-      "footerPixelDiffRatio": 0.2053336804006148,
-      "chromePixelDiffRatio": 0.18688124992252964
+      "pixelDiffRatio": 0.6021805555555556,
+      "headerPixelDiffRatio": 0.02300055928411633,
+      "footerPixelDiffRatio": 0.21228066415180613,
+      "chromePixelDiffRatio": 0.11764061171796122
     },
     {
       "path": "/homepage",
       "bp": "tablet",
-      "pixelDiffRatio": 0.5664207175925926,
-      "headerPixelDiffRatio": 0.22084287739965097,
-      "footerPixelDiffRatio": 0.30121281486539775,
-      "chromePixelDiffRatio": 0.2610278461325244
+      "pixelDiffRatio": 0.45220920138888887,
+      "headerPixelDiffRatio": 0.02227176047120419,
+      "footerPixelDiffRatio": 0.16796602099436206,
+      "chromePixelDiffRatio": 0.09511889073278312
     },
     {
       "path": "/homepage",
       "bp": "mobile",
-      "pixelDiffRatio": 0.47483555555555557,
-      "headerPixelDiffRatio": 0.19792592592592592,
-      "footerPixelDiffRatio": 0.253822420106616,
-      "chromePixelDiffRatio": 0.22587417301627094
+      "pixelDiffRatio": 0.44123555555555555,
+      "headerPixelDiffRatio": 0.16705555555555557,
+      "footerPixelDiffRatio": 0.2720377410530692,
+      "chromePixelDiffRatio": 0.2195466483043124
     },
     {
       "path": "/in-brief",
       "bp": "desktop",
-      "pixelDiffRatio": 0.1767793209876543,
-      "headerPixelDiffRatio": 0.17022135416666667,
-      "footerPixelDiffRatio": 0.21292422777529874,
-      "chromePixelDiffRatio": 0.1915727909709827
+      "pixelDiffRatio": 0.21950925925925927,
+      "headerPixelDiffRatio": 0.00976882923191648,
+      "footerPixelDiffRatio": 0.17030916590458772,
+      "chromePixelDiffRatio": 0.09003899756825211
     },
     {
       "path": "/in-brief",
       "bp": "tablet",
-      "pixelDiffRatio": 0.21477141203703703,
-      "headerPixelDiffRatio": 0.2199225567190227,
-      "footerPixelDiffRatio": 0.2655810791648942,
-      "chromePixelDiffRatio": 0.24275181794195844
+      "pixelDiffRatio": 0.09574363425925926,
+      "headerPixelDiffRatio": 0.014084315008726004,
+      "footerPixelDiffRatio": 0.28305035940532813,
+      "chromePixelDiffRatio": 0.14856733720702706
     },
     {
       "path": "/in-brief",
       "bp": "mobile",
-      "pixelDiffRatio": 0.21375407407407407,
-      "headerPixelDiffRatio": 0.1962729044834308,
-      "footerPixelDiffRatio": 0.2545855316252079,
-      "chromePixelDiffRatio": 0.22542921805431937
+      "pixelDiffRatio": 0.16549037037037037,
+      "headerPixelDiffRatio": 0.017733931240657697,
+      "footerPixelDiffRatio": 0.12468525162302807,
+      "chromePixelDiffRatio": 0.07120959143184288
     },
     {
       "path": "/issues",
       "bp": "desktop",
-      "pixelDiffRatio": 0.4117746913580247,
-      "headerPixelDiffRatio": 0.16842881944444443,
-      "footerPixelDiffRatio": 0.20804359412960485,
-      "chromePixelDiffRatio": 0.18823620678702463
+      "pixelDiffRatio": 0.4562847222222222,
+      "headerPixelDiffRatio": 0.016289149888143176,
+      "footerPixelDiffRatio": 0.20973960714830056,
+      "chromePixelDiffRatio": 0.11301437851822187
     },
     {
       "path": "/issues",
       "bp": "tablet",
-      "pixelDiffRatio": 0.6607262731481481,
-      "headerPixelDiffRatio": 0.22084287739965097,
-      "footerPixelDiffRatio": 0.30112865840170044,
-      "chromePixelDiffRatio": 0.26098576790067574
+      "pixelDiffRatio": 0.5634129050925926,
+      "headerPixelDiffRatio": 0.02227176047120419,
+      "footerPixelDiffRatio": 0.13977737432529247,
+      "chromePixelDiffRatio": 0.08102456739824833
     },
     {
       "path": "/issues",
       "bp": "mobile",
-      "pixelDiffRatio": 0.4530725925925926,
-      "headerPixelDiffRatio": 0.19792592592592592,
-      "footerPixelDiffRatio": 0.26519669078652747,
-      "chromePixelDiffRatio": 0.23156130835622668
+      "pixelDiffRatio": 0.40032,
+      "headerPixelDiffRatio": 0.16330555555555556,
+      "footerPixelDiffRatio": 0.2360812371227387,
+      "chromePixelDiffRatio": 0.19969339633914712
     },
     {
       "path": "/past-issues",
       "bp": "desktop",
-      "pixelDiffRatio": 0.6947847222222222,
-      "headerPixelDiffRatio": 0.031907158836689035,
-      "footerPixelDiffRatio": 0.20431262085378551,
-      "chromePixelDiffRatio": 0.11810988984523728
+      "pixelDiffRatio": 0.734704475308642,
+      "headerPixelDiffRatio": 0.022292132736763608,
+      "footerPixelDiffRatio": 0.21116255144032922,
+      "chromePixelDiffRatio": 0.11672734208854642
     },
     {
       "path": "/past-issues",
       "bp": "tablet",
-      "pixelDiffRatio": 0.616830150462963,
-      "headerPixelDiffRatio": 0.10555737347294938,
-      "footerPixelDiffRatio": 0.2768447826522771,
-      "chromePixelDiffRatio": 0.19120107806261322
+      "pixelDiffRatio": 0.5176721643518518,
+      "headerPixelDiffRatio": 0.02227176047120419,
+      "footerPixelDiffRatio": 0.15115228699711206,
+      "chromePixelDiffRatio": 0.08671202373415812
     },
     {
       "path": "/past-issues",
       "bp": "mobile",
-      "pixelDiffRatio": 0.4551614814814815,
-      "headerPixelDiffRatio": 0.19792592592592592,
-      "footerPixelDiffRatio": 0.26433853603368673,
-      "chromePixelDiffRatio": 0.23113223097980634
+      "pixelDiffRatio": 0.4283525925925926,
+      "headerPixelDiffRatio": 0.16634722222222223,
+      "footerPixelDiffRatio": 0.23261093741316533,
+      "chromePixelDiffRatio": 0.19947907981769378
     },
     {
       "path": "/",
       "bp": "desktop",
-      "pixelDiffRatio": 0.5915393518518518,
-      "headerPixelDiffRatio": 0.16842881944444443,
-      "footerPixelDiffRatio": 0.20802345183201942,
-      "chromePixelDiffRatio": 0.18822613563823193
+      "pixelDiffRatio": 0.6028487654320988,
+      "headerPixelDiffRatio": 0.02300055928411633,
+      "footerPixelDiffRatio": 0.21228066415180613,
+      "chromePixelDiffRatio": 0.11764061171796122
     },
     {
       "path": "/",
       "bp": "tablet",
-      "pixelDiffRatio": 0.5662528935185185,
-      "headerPixelDiffRatio": 0.10555737347294938,
-      "footerPixelDiffRatio": 0.3030979196522174,
-      "chromePixelDiffRatio": 0.2043276465625834
+      "pixelDiffRatio": 0.4519560185185185,
+      "headerPixelDiffRatio": 0.02227176047120419,
+      "footerPixelDiffRatio": 0.16796602099436206,
+      "chromePixelDiffRatio": 0.09511889073278312
     },
     {
       "path": "/",
       "bp": "mobile",
-      "pixelDiffRatio": 0.4747437037037037,
-      "headerPixelDiffRatio": 0.19792592592592592,
-      "footerPixelDiffRatio": 0.253822420106616,
-      "chromePixelDiffRatio": 0.22587417301627094
+      "pixelDiffRatio": 0.44119703703703705,
+      "headerPixelDiffRatio": 0.16702777777777778,
+      "footerPixelDiffRatio": 0.2720377410530692,
+      "chromePixelDiffRatio": 0.2195327594154235
     },
     {
       "path": "/search",
       "bp": "desktop",
-      "pixelDiffRatio": 0.1322523148148148,
-      "headerPixelDiffRatio": 0.16842881944444443,
-      "footerPixelDiffRatio": 0.20828065347810998,
-      "chromePixelDiffRatio": 0.1883547364612772
+      "pixelDiffRatio": 0.1813317901234568,
+      "headerPixelDiffRatio": 0.016289149888143176,
+      "footerPixelDiffRatio": 0.2103587962962963,
+      "chromePixelDiffRatio": 0.11332397309221974
     },
     {
       "path": "/search",
       "bp": "tablet",
-      "pixelDiffRatio": 0.20803674768518518,
-      "headerPixelDiffRatio": 0.10555737347294938,
-      "footerPixelDiffRatio": 0.31484616198436133,
-      "chromePixelDiffRatio": 0.21020176772865534
+      "pixelDiffRatio": 0.08603153935185186,
+      "headerPixelDiffRatio": 0.02227176047120419,
+      "footerPixelDiffRatio": 0.1558535467478318,
+      "chromePixelDiffRatio": 0.089062653609518
     },
     {
       "path": "/search",
       "bp": "mobile",
-      "pixelDiffRatio": 0.23296,
-      "headerPixelDiffRatio": 0.19792592592592592,
-      "footerPixelDiffRatio": 0.29956030280421236,
-      "chromePixelDiffRatio": 0.24874311436506913
+      "pixelDiffRatio": 0.1665837037037037,
+      "headerPixelDiffRatio": 0.16330555555555556,
+      "footerPixelDiffRatio": 0.25071367075988943,
+      "chromePixelDiffRatio": 0.20700961315772248
     },
     {
       "path": "/summer-2025-issue",
       "bp": "desktop",
-      "pixelDiffRatio": 0.6653996913580247,
-      "headerPixelDiffRatio": 0.17022135416666667,
-      "footerPixelDiffRatio": 0.21322791164658633,
-      "chromePixelDiffRatio": 0.1917246329066265
+      "pixelDiffRatio": 0.7054845679012346,
+      "headerPixelDiffRatio": 0.016480238627889634,
+      "footerPixelDiffRatio": 0.15002119532083524,
+      "chromePixelDiffRatio": 0.08325071697436244
     },
     {
       "path": "/summer-2025-issue",
       "bp": "tablet",
-      "pixelDiffRatio": 0.6793561921296296,
-      "headerPixelDiffRatio": 0.22058382417102967,
-      "footerPixelDiffRatio": 0.26520573196873776,
-      "chromePixelDiffRatio": 0.24289477806988372
+      "pixelDiffRatio": 0.5757682291666667,
+      "headerPixelDiffRatio": 0.014084315008726004,
+      "footerPixelDiffRatio": 0.06366386045201117,
+      "chromePixelDiffRatio": 0.03887408773036859
     },
     {
       "path": "/summer-2025-issue",
       "bp": "mobile",
-      "pixelDiffRatio": 0.5290992592592593,
-      "headerPixelDiffRatio": 0.19667836257309942,
-      "footerPixelDiffRatio": 0.2556521117976587,
-      "chromePixelDiffRatio": 0.22616523718537906
+      "pixelDiffRatio": 0.49924444444444444,
+      "headerPixelDiffRatio": 0.022218236173393125,
+      "footerPixelDiffRatio": 0.07689321600443202,
+      "chromePixelDiffRatio": 0.04955572608891257
     }
   ]
 }

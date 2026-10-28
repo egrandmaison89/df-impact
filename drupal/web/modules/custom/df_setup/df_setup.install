@@ -666,6 +666,13 @@ function df_setup_update_10021(): string {
 /**
  * Adds /about path alias (WordPress legacy) for the About Impact page.
  */
+function df_setup_update_10023(): string {
+  return _df_setup_backfill_latest_issue_hero_media(TRUE);
+}
+
+/**
+ * Adds /about path alias (WordPress legacy) for the About Impact page.
+ */
 function df_setup_update_10022(): string {
   _df_setup_ensure_about_impact_page();
   $storage = \Drupal::entityTypeManager()->getStorage('node');
@@ -698,21 +705,14 @@ function df_setup_update_10022(): string {
 /**
  * Copies WP uploads, creates media entities, sets issue hero fields when empty.
  */
-function _df_setup_backfill_latest_issue_hero_media(): string {
-  $storage = \Drupal::entityTypeManager()->getStorage('node');
-  $nids = $storage->getQuery()
-    ->condition('type', 'issue')
-    ->condition('status', 1)
-    ->sort('field_year', 'DESC')
-    ->sort('field_season', 'DESC')
-    ->range(0, 1)
-    ->accessCheck(FALSE)
-    ->execute();
-  if (!$nids) {
+function _df_setup_backfill_latest_issue_hero_media(bool $force = FALSE): string {
+  $latest_nid = df_setup_get_latest_issue_nid();
+  if ($latest_nid === NULL) {
     return 'No published issue node for hero backfill.';
   }
-  /** @var \Drupal\node\NodeInterface $issue */
-  $issue = $storage->load(reset($nids));
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  /** @var \Drupal\node\NodeInterface|null $issue */
+  $issue = $storage->load($latest_nid);
   if (!$issue) {
     return 'Could not load latest issue.';
   }
@@ -724,14 +724,14 @@ function _df_setup_backfill_latest_issue_hero_media(): string {
   }
 
   $changed = FALSE;
-  if ($issue->hasField('field_hero_video') && $issue->get('field_hero_video')->isEmpty()) {
+  if ($issue->hasField('field_hero_video') && ($force || $issue->get('field_hero_video')->isEmpty())) {
     $video_mid = _df_setup_get_or_create_video_media($video_uri);
     if ($video_mid !== NULL) {
       $issue->set('field_hero_video', ['target_id' => $video_mid]);
       $changed = TRUE;
     }
   }
-  if ($poster_uri !== NULL && $issue->hasField('field_hero_poster') && $issue->get('field_hero_poster')->isEmpty()) {
+  if ($poster_uri !== NULL && $issue->hasField('field_hero_poster') && ($force || $issue->get('field_hero_poster')->isEmpty())) {
     $poster_mid = _df_setup_get_or_create_image_media($poster_uri, 'Cover of the Fall 2026 issue of Impact');
     if ($poster_mid !== NULL) {
       $issue->set('field_hero_poster', ['target_id' => $poster_mid]);

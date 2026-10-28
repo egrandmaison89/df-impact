@@ -712,18 +712,10 @@ function df_impact_media_file_url(NodeInterface $node, string $field_name, strin
  * Returns the newest published issue node ID (year desc, season desc).
  */
 function df_impact_get_latest_issue_nid(): ?int {
-  $nids = \Drupal::entityQuery('node')
-    ->condition('type', 'issue')
-    ->condition('status', 1)
-    ->sort('field_year', 'DESC')
-    ->sort('field_season', 'DESC')
-    ->range(0, 1)
-    ->accessCheck()
-    ->execute();
-  if (!$nids) {
-    return NULL;
+  if (function_exists('df_setup_get_latest_issue_nid')) {
+    return df_setup_get_latest_issue_nid();
   }
-  return (int) reset($nids);
+  return NULL;
 }
 
 /**

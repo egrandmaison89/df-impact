@@ -28,6 +28,10 @@ display:
         type: full
         options:
           items_per_page: 12
+      access:
+        type: perm
+        options:
+          perm: 'access content'
       sorts:
         field_year_value:
           id: field_year_value
@@ -61,10 +65,6 @@ display:
         type: 'entity:node'
         options:
           view_mode: teaser
-      access:
-        type: perm
-        options:
-          perm: 'access content'
       display_extenders: {  }
     cache_metadata:
       max-age: -1

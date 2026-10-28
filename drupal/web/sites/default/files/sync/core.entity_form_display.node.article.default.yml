@@ -129,6 +129,16 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_channels:
+    type: entity_reference_autocomplete
+    weight: 11
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_content_sections:
     type: entity_reference_paragraphs
     weight: 5
@@ -140,16 +150,6 @@ content:
       add_mode: dropdown
       form_display_mode: default
       default_paragraph_type: ''
-    third_party_settings: {  }
-  field_channels:
-    type: entity_reference_autocomplete
-    weight: 11
-    region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
     third_party_settings: {  }
   field_content_type:
     type: options_select
@@ -197,17 +197,17 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_photo_credit:
+  field_photo_caption:
     type: string_textfield
-    weight: 3
+    weight: 7
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_photo_caption:
+  field_photo_credit:
     type: string_textfield
-    weight: 7
+    weight: 3
     region: content
     settings:
       size: 60

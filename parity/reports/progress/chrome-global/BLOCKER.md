@@ -2,15 +2,17 @@
 
 **Run:** `parity/reports/progress/chrome-global/summary.json` (13 pack URLs × 3 widths, Drupal `http://127.0.0.1:8888`).
 
-## Current medians (after WP chrome port + compare fixes)
+## Current medians (after vendored wp_port assets under DDEV)
 
-| Breakpoint | Chrome median |
-|------------|---------------|
-| desktop    | ~18.8%        |
-| tablet     | ~26.1%        |
-| mobile     | ~23.1%        |
+| Breakpoint | Chrome median | Header (typ.) | Footer (typ.) |
+|------------|---------------|-----------------|---------------|
+| desktop    | **11.4%**     | ~1.6%           | ~21%          |
+| tablet     | **8.2%**      | ~2.2%           | ~14–17%       |
+| mobile     | **20.0%**     | ~16%            | ~23–27%       |
 
-Best single page/chrome/bp: ~11.2% (article desktop). **No page meets ≤5% at all three widths.**
+**Regression fix:** Symlinked `wp-assets` → `parity/reference-pack/assets` 404’d inside DDEV (only `drupal/` is mounted). Vendored copy + derived inline CSS restored WP styles; desktop header now near gate.
+
+Best chrome row: `/summer-2025-issue` tablet **3.9%**. **No global median ≤5% yet** (footer + mobile header).
 
 ## Fixes landed in this iteration
 

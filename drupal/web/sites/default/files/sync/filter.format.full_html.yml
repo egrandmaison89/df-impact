@@ -9,11 +9,6 @@ _core:
 name: 'Full HTML'
 format: full_html
 weight: -10
-roles:
-  - administrator
-  - editor
-  - issue_manager
-  - content_editor
 filters:
   editor_file_reference:
     id: editor_file_reference

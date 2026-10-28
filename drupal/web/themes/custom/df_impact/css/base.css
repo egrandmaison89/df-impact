@@ -5,9 +5,10 @@
 /* --- Design Tokens (CSS Custom Properties) --- */
 :root {
   /* Colors */
-  --color-primary: #00629b;
+  --color-primary: #00629b; /* WXR global styles / custom_css */
   --color-primary-light: #68a0c1;
   --color-accent: #ffa300;
+  --color-link: #00629b;
   --color-dark: #0f0e17;
   --color-footer-navy: #003354;
   --color-header-border: #f4f4f4;

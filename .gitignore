@@ -9,6 +9,11 @@ search_ui_demo/*.searchstaxApp.apis.txt
 # Migration tooling: sitemap crawl checkpoint (regenerated locally)
 drupal/web/modules/custom/df_migrate/data/wp_sitemap_state.json
 
+# WordPress WXR export (staff emails) — copy to migration-data/private/wp-export.xml locally
+drupal/migration-data/private/
+!drupal/migration-data/private/.gitkeep
+drupal/migration-data/wp_chrome_reference.json
+
 # Local QA screenshots and scratch (not shared via git)
 /testing/
 
@@ -36,4 +41,5 @@ drupal/web/sites/default/files/css/
 drupal/web/sites/default/files/js/
 drupal/web/sites/default/files/php/
 drupal/web/sites/default/files/styles/
-drupal/web/sites/default/files/config_*/
+drupal/web/sites/default/files/wp-content/
+drupal/web/sites/default/files/config_*/drupal/web/wp-content/

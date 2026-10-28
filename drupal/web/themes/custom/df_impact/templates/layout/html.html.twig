@@ -34,9 +34,7 @@
     {% endif %}
   </head>
   <body{{ attributes.addClass(body_classes) }}>
-    <a href="#main-content" class="visually-hidden focusable">
-      {{ 'Skip to main content'|t }}
-    </a>
+    <a class="skip-link screen-reader-text" id="wp-skip-link" href="#wp--skip-link--target">{{ 'Skip to content'|t }}</a>
     {{ page_top }}
     {{ page }}
     {{ page_bottom }}

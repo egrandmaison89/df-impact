@@ -122,7 +122,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: digital-exclusives
+      path: category/digital-exclusives
     cache_metadata:
       max-age: -1
       contexts:

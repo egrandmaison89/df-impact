@@ -284,12 +284,18 @@ function df_impact_preprocess_html(array &$variables): void {
 function df_impact_preprocess_page(&$variables) {
   $front = Url::fromRoute('<front>')->toString();
   $variables['wp_home_url'] = str_ends_with($front, '/') ? $front : $front . '/';
-  $variables['wp_uploads_base'] = 'https://danafarberimpact.org/wp-content/uploads/';
-  $logo_uri = 'public://wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png';
-  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $logo_uri]);
-  $file = reset($files);
+  $request = \Drupal::request();
+  $origin = $request->getSchemeAndHttpHost() . $request->getBasePath();
+  $variables['wp_uploads_base'] = rtrim($origin, '/') . '/wp-content/uploads/';
   $theme_path = \Drupal::service('extension.list.theme')->getPath('df_impact');
   $variables['wp_logo_url'] = '/' . $theme_path . '/wp-assets/ImpactDFJF_HeaderLogo_878.png';
+  $logo_abs = rtrim($origin, '/') . $variables['wp_logo_url'];
+  $variables['wp_logo_srcset'] = implode(', ', [
+    $logo_abs . ' 878w',
+    $logo_abs . ' 300w',
+    $logo_abs . ' 150w',
+    $logo_abs . ' 768w',
+  ]);
 
   // Add the current year for copyright.
   $variables['current_year'] = date('Y');
@@ -308,7 +314,7 @@ function df_impact_preprocess_page(&$variables) {
     $variables['search_page_url'] = Url::fromRoute('view.df_impact_search.page_1')->toString();
   }
 
-  $variables['about_impact_url'] = Url::fromUri('internal:/about-impact')->toString();
+  $variables['about_impact_url'] = Url::fromUri('internal:/about')->toString();
 
   // Header Issues dropdown — recent published issues (WordPress chrome).
   $variables['header_issue_links'] = df_impact_get_header_issue_links(4);
@@ -612,7 +618,7 @@ function df_impact_is_about_impact_page(?NodeInterface $node = NULL): bool {
   }
 
   try {
-    if ($node->toUrl()->toString() === '/about-impact') {
+    if (in_array($node->toUrl()->toString(), ['/about', '/about-impact'], TRUE)) {
       return TRUE;
     }
   }

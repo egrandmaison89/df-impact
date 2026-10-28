@@ -30,7 +30,7 @@ final class WordpressHomepageRouteSubscriber implements EventSubscriberInterface
       return;
     }
     $path = rtrim($event->getRequest()->getPathInfo(), '/') ?: '/';
-    if ($path === '/homepage' || $path === '/') {
+    if ($path === '/' || $path === '/homepage' || $path === '/home') {
       $event->getRequest()->attributes->set('_disable_route_normalizer', TRUE);
     }
   }

@@ -7,9 +7,13 @@
   display: none !important;
 }
 
-/* Match reference-pack header logo sizing (inline height:107px overridden). */
-.header-logo img {
-  height: auto !important;
+body {
+  margin: 0;
+}
+
+.wp-site-blocks {
+  width: 100%;
+  max-width: none;
 }
 
 .visually-hidden {

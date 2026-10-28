@@ -162,7 +162,7 @@ HTML;
     }
   }
 
-  $node->set('path', ['alias' => '/about-impact', 'pathauto' => $pathauto_skip]);
+  $node->set('path', ['alias' => '/about', 'pathauto' => $pathauto_skip]);
   if ($node->hasField('moderation_state')) {
     $node->set('moderation_state', 'published');
   }
@@ -671,6 +671,13 @@ function df_setup_update_10023(): string {
 }
 
 /**
+ * Same-path URL parity: /about, /home, /category/digital-exclusives (no 301 redirects).
+ */
+function df_setup_update_10024(): string {
+  return _df_setup_apply_wordpress_manifest_paths();
+}
+
+/**
  * Adds /about path alias (WordPress legacy) for the About Impact page.
  */
 function df_setup_update_10022(): string {
@@ -869,4 +876,55 @@ function _df_setup_get_or_create_image_media(string $file_uri, string $alt = '')
   ]);
   $media->save();
   return (int) $media->id();
+}
+
+/**
+ * Applies WordPress manifest paths (200 at same URL, no redirects).
+ */
+function _df_setup_apply_wordpress_manifest_paths(): string {
+  _df_setup_ensure_about_impact_page();
+  $alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+
+  $about_nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if ($about_nids) {
+    $about = $storage->load(reset($about_nids));
+    if ($about instanceof Node) {
+      $about->set('path', ['alias' => '/about', 'pathauto' => PathautoState::SKIP]);
+      $about->save();
+    }
+  }
+
+  $home_nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'Home')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  $home_alias_added = FALSE;
+  if ($home_nids) {
+    $home_nid = (int) reset($home_nids);
+    $system_path = '/node/' . $home_nid;
+    foreach (['/home', '/homepage'] as $alias) {
+      $existing = $alias_storage->loadByProperties(['alias' => $alias]);
+      if (!$existing) {
+        $alias_storage->create([
+          'path' => $system_path,
+          'alias' => $alias,
+          'langcode' => 'en',
+        ])->save();
+        $home_alias_added = TRUE;
+      }
+    }
+  }
+
+  return sprintf(
+    'Manifest paths: About -> /about; home aliases ensured=%s',
+    $home_alias_added ? 'yes' : 'already present'
+  );
 }

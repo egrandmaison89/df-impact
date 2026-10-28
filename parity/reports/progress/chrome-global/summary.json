@@ -1,315 +1,3130 @@
 {
   "component": "chrome-global",
   "drupalBase": "http://df-impact.ddev.site",
+  "refServer": "linux-local-rendered-html",
   "pages": 13,
+  "rectTolerancePx": 2,
+  "structuralPackPassAll": false,
+  "structuralRefDrupalPassAll": false,
   "medians": {
-    "chrome_median_desktop": 0.11369012821339029,
-    "chrome_median_tablet": 0.08164564626070074,
-    "chrome_median_mobile": 0.19953718165157855
+    "chrome_median_linux_desktop": 0.13129388527522984,
+    "chrome_median_linux_tablet": 0.16203670804565,
+    "chrome_median_linux_mobile": 0.21738166064297887
   },
   "summary": [
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "desktop",
-      "pixelDiffRatio": 0.420141975308642,
-      "headerPixelDiffRatio": 0.016289149888143176,
-      "footerPixelDiffRatio": 0.2101932822740436,
-      "chromePixelDiffRatio": 0.11324121608109339
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.10412058470507544,
+      "chromePixelDiffRatioLinux": 0.11671586655089716,
+      "viewportPixelDiffRatioLinux": 0.3393742283950617,
+      "viewportPixelDiffRatioMac": 0.4244405864197531,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2501.21875,
+          "actual": 2735.15625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "tablet",
-      "pixelDiffRatio": 0.4767013888888889,
-      "headerPixelDiffRatio": 0.02227176047120419,
-      "footerPixelDiffRatio": 0.1409810570158459,
-      "chromePixelDiffRatio": 0.08162640874352504
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.13086737551203276,
+      "chromePixelDiffRatioLinux": 0.15952454726736018,
+      "viewportPixelDiffRatioLinux": 0.13344328703703703,
+      "viewportPixelDiffRatioMac": 0.5151432291666667,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3412.1875,
+          "actual": 3303.140625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3185.109375,
+          "actual": 3303.140625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "mobile",
-      "pixelDiffRatio": 0.29737185185185183,
-      "headerPixelDiffRatio": 0.16330555555555556,
-      "footerPixelDiffRatio": 0.23432704863671378,
-      "chromePixelDiffRatio": 0.19881630209613466
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.2662172839506173,
+      "chromePixelDiffRatioLinux": 0.21750654773447092,
+      "viewportPixelDiffRatioLinux": 0.20937777777777777,
+      "viewportPixelDiffRatioMac": 0.33009185185185186,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 5243.46875,
+          "actual": 4884.84375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 4513.390625,
+          "actual": 4884.84375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "desktop",
-      "pixelDiffRatio": 0.20291126543209875,
-      "headerPixelDiffRatio": 0.016289149888143176,
-      "footerPixelDiffRatio": 0.21112444749276024,
-      "chromePixelDiffRatio": 0.11370679869045171
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.09921446330589849,
+      "chromePixelDiffRatioLinux": 0.11426280585130869,
+      "viewportPixelDiffRatioLinux": 0.3448742283950617,
+      "viewportPixelDiffRatioMac": 0.2066689814814815,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 1265.28125,
+          "actual": 1900.578125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "tablet",
-      "pixelDiffRatio": 0.1347728587962963,
-      "headerPixelDiffRatio": 0.02227176047120419,
-      "footerPixelDiffRatio": 0.1410195320501973,
-      "chromePixelDiffRatio": 0.08164564626070074
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.13112568751598874,
+      "chromePixelDiffRatioLinux": 0.15965370326933817,
+      "viewportPixelDiffRatioLinux": 0.13344184027777778,
+      "viewportPixelDiffRatioMac": 0.17239149305555557,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 1279.109375,
+          "actual": 1941.09375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 1243.484375,
+          "actual": 1941.09375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "mobile",
-      "pixelDiffRatio": 0.19925333333333334,
-      "headerPixelDiffRatio": 0.16330555555555556,
-      "footerPixelDiffRatio": 0.23576880774760153,
-      "chromePixelDiffRatio": 0.19953718165157855
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.26579423868312757,
+      "chromePixelDiffRatioLinux": 0.21729502510072607,
+      "viewportPixelDiffRatioLinux": 0.20922666666666667,
+      "viewportPixelDiffRatioMac": 0.23131555555555555,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2260.71875,
+          "actual": 2122.734375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 1619.609375,
+          "actual": 2122.734375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/about-impact",
       "bp": "desktop",
-      "pixelDiffRatio": 0.3371327160493827,
-      "headerPixelDiffRatio": 0.016289149888143176,
-      "footerPixelDiffRatio": 0.21143404206675812,
-      "chromePixelDiffRatio": 0.11386159597745064
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.1332766221537408,
+      "chromePixelDiffRatioLinux": 0.13129388527522984,
+      "viewportPixelDiffRatioLinux": 0.2436280864197531,
+      "viewportPixelDiffRatioMac": 0.34510030864197533,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 1816.640625,
+          "actual": 2525.875
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/about-impact",
       "bp": "tablet",
-      "pixelDiffRatio": 0.3654542824074074,
-      "headerPixelDiffRatio": 0.02227176047120419,
-      "footerPixelDiffRatio": 0.13962788460682063,
-      "chromePixelDiffRatio": 0.08094982253901241
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.13229386511895624,
+      "chromePixelDiffRatioLinux": 0.16023779207082192,
+      "viewportPixelDiffRatioLinux": 0.13343605324074073,
+      "viewportPixelDiffRatioMac": 0.4040827546296296,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2618.96875,
+          "actual": 2683.796875
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2166.734375,
+          "actual": 2683.796875
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/about-impact",
       "bp": "mobile",
-      "pixelDiffRatio": 0.3519585185185185,
-      "headerPixelDiffRatio": 0.16330555555555556,
-      "footerPixelDiffRatio": 0.2334548418502502,
-      "chromePixelDiffRatio": 0.19838019870290288
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.26596750976763317,
+      "chromePixelDiffRatioLinux": 0.21738166064297887,
+      "viewportPixelDiffRatioLinux": 0.20945777777777777,
+      "viewportPixelDiffRatioMac": 0.3871585185185185,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3193.953125,
+          "actual": 3274.9375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2637.734375,
+          "actual": 3274.9375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/browse-issues",
       "bp": "desktop",
-      "pixelDiffRatio": 0.2793101851851852,
-      "headerPixelDiffRatio": 0.016289149888143176,
-      "footerPixelDiffRatio": 0.2110911065386374,
-      "chromePixelDiffRatio": 0.11369012821339029
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 51,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.13276641803840877,
+      "chromePixelDiffRatioLinux": 0.13103878321756382,
+      "viewportPixelDiffRatioLinux": 0.24396836419753087,
+      "viewportPixelDiffRatioMac": 0.2825825617283951,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2394.1875,
+          "actual": 1542.6875
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/browse-issues",
       "bp": "tablet",
-      "pixelDiffRatio": 0.2301099537037037,
-      "headerPixelDiffRatio": 0.02227176047120419,
-      "footerPixelDiffRatio": 0.140968319424281,
-      "chromePixelDiffRatio": 0.0816200399477426
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.13184118380660015,
+      "chromePixelDiffRatioLinux": 0.16001145141464387,
+      "viewportPixelDiffRatioLinux": 0.1334519675925926,
+      "viewportPixelDiffRatioMac": 0.27033998842592594,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3319.0625,
+          "actual": 1530.25
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2479.5,
+          "actual": 1530.25
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/browse-issues",
       "bp": "mobile",
-      "pixelDiffRatio": 0.2642637037037037,
-      "headerPixelDiffRatio": 0.16330555555555556,
-      "footerPixelDiffRatio": 0.23608535372974887,
-      "chromePixelDiffRatio": 0.1996954546426522
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.2657991769547325,
+      "chromePixelDiffRatioLinux": 0.21729749423652855,
+      "viewportPixelDiffRatioLinux": 0.20932148148148147,
+      "viewportPixelDiffRatioMac": 0.30018962962962964,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 5432.421875,
+          "actual": 1508.640625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 4875,
+          "actual": 1508.640625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/category/cancer-research",
       "bp": "desktop",
-      "error": "missing reference viewport"
+      "structuralPackPass": true,
+      "structuralPackFailures": 0,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 12,
+      "headerPixelDiffRatioLinux": 0.10663217747949291,
+      "footerPixelDiffRatioLinux": null,
+      "chromePixelDiffRatioLinux": 0.10663217747949291,
+      "viewportPixelDiffRatioLinux": 0.08172993827160493,
+      "viewportPixelDiffRatioMac": null,
+      "structuralPackSample": [],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": ".header-logo",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": ".header-logo img",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": "#mega-menu-wrap-max_mega_menu_1",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        }
+      ]
     },
     {
       "path": "/category/cancer-research",
       "bp": "tablet",
-      "error": "missing reference viewport"
+      "structuralPackPass": true,
+      "structuralPackFailures": 0,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 6,
+      "headerPixelDiffRatioLinux": 0.19388020833333333,
+      "footerPixelDiffRatioLinux": null,
+      "chromePixelDiffRatioLinux": 0.19388020833333333,
+      "viewportPixelDiffRatioLinux": 0.12731481481481483,
+      "viewportPixelDiffRatioMac": null,
+      "structuralPackSample": [],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": ".mobile-header",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": "footer",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": ".footer-dark",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        }
+      ]
     },
     {
       "path": "/category/cancer-research",
       "bp": "mobile",
-      "error": "missing reference viewport"
+      "structuralPackPass": true,
+      "structuralPackFailures": 0,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 6,
+      "headerPixelDiffRatioLinux": 0.1572,
+      "footerPixelDiffRatioLinux": null,
+      "chromePixelDiffRatioLinux": 0.1572,
+      "viewportPixelDiffRatioLinux": 0.15510518518518518,
+      "viewportPixelDiffRatioMac": null,
+      "structuralPackSample": [],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": ".mobile-header",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": "footer",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": ".footer-dark",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "kind": "presence_mismatch",
+          "ref": false,
+          "drupal": true
+        }
+      ]
     },
     {
       "path": "/fall-2026-issue",
       "bp": "desktop",
-      "pixelDiffRatio": 0.5968641975308642,
-      "headerPixelDiffRatio": 0.015450223713646533,
-      "footerPixelDiffRatio": 0.16249666590458772,
-      "chromePixelDiffRatio": 0.08897344480911713
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.13576067386831275,
+      "chromePixelDiffRatioLinux": 0.1325359111325158,
+      "viewportPixelDiffRatioLinux": 0.2394753086419753,
+      "viewportPixelDiffRatioMac": 0.6006844135802469,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2429.984375,
+          "actual": 1186.484375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/fall-2026-issue",
       "bp": "tablet",
-      "pixelDiffRatio": 0.41539496527777775,
-      "headerPixelDiffRatio": 0.014084315008726004,
-      "footerPixelDiffRatio": 0.0559912398288949,
-      "chromePixelDiffRatio": 0.03503777741881045
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.14165906618023555,
+      "chromePixelDiffRatioLinux": 0.16492039260146157,
+      "viewportPixelDiffRatioLinux": 0.13345775462962964,
+      "viewportPixelDiffRatioMac": 0.45121961805555555,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3738.1875,
+          "actual": 1238.609375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3355,
+          "actual": 1238.609375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/fall-2026-issue",
       "bp": "mobile",
-      "pixelDiffRatio": 0.3433688888888889,
-      "headerPixelDiffRatio": 0.021058295964125562,
-      "footerPixelDiffRatio": 0.128099173553719,
-      "chromePixelDiffRatio": 0.07457873475892228
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.26726913580246914,
+      "chromePixelDiffRatioLinux": 0.21803247366039685,
+      "viewportPixelDiffRatioLinux": 0.2094874074074074,
+      "viewportPixelDiffRatioMac": 0.37448296296296296,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3240.015625,
+          "actual": 1515.046875
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3319.59375,
+          "actual": 1515.046875
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/homepage",
       "bp": "desktop",
-      "pixelDiffRatio": 0.6021805555555556,
-      "headerPixelDiffRatio": 0.02300055928411633,
-      "footerPixelDiffRatio": 0.21228066415180613,
-      "chromePixelDiffRatio": 0.11764061171796122
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.13366983882030178,
+      "chromePixelDiffRatioLinux": 0.13149049360851034,
+      "viewportPixelDiffRatioLinux": 0.24299691358024691,
+      "viewportPixelDiffRatioMac": 0.6100717592592593,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2663,
+          "actual": 5618.25
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/homepage",
       "bp": "tablet",
-      "pixelDiffRatio": 0.45220920138888887,
-      "headerPixelDiffRatio": 0.02227176047120419,
-      "footerPixelDiffRatio": 0.16796602099436206,
-      "chromePixelDiffRatio": 0.09511889073278312
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.15194972478238608,
+      "chromePixelDiffRatioLinux": 0.17006572190253683,
+      "viewportPixelDiffRatioLinux": 0.13342881944444446,
+      "viewportPixelDiffRatioMac": 0.48984519675925925,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3039.78125,
+          "actual": 5913.109375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3196.21875,
+          "actual": 5913.109375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/homepage",
       "bp": "mobile",
-      "pixelDiffRatio": 0.44123555555555555,
-      "headerPixelDiffRatio": 0.16705555555555557,
-      "footerPixelDiffRatio": 0.2720377410530692,
-      "chromePixelDiffRatio": 0.2195466483043124
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.2699835390946502,
+      "chromePixelDiffRatioLinux": 0.2193896753064874,
+      "viewportPixelDiffRatioLinux": 0.20932444444444445,
+      "viewportPixelDiffRatioMac": 0.47343703703703705,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3657.671875,
+          "actual": 6639.609375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3419.40625,
+          "actual": 6639.609375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/in-brief",
       "bp": "desktop",
-      "pixelDiffRatio": 0.21950925925925927,
-      "headerPixelDiffRatio": 0.00976882923191648,
-      "footerPixelDiffRatio": 0.17030916590458772,
-      "chromePixelDiffRatio": 0.09003899756825211
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.13285643861454047,
+      "chromePixelDiffRatioLinux": 0.13108379350562965,
+      "viewportPixelDiffRatioLinux": 0.2438773148148148,
+      "viewportPixelDiffRatioMac": 0.22229166666666667,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 16240.890625,
+          "actual": 488868.3125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/in-brief",
       "bp": "tablet",
-      "pixelDiffRatio": 0.09574363425925926,
-      "headerPixelDiffRatio": 0.014084315008726004,
-      "footerPixelDiffRatio": 0.28305035940532813,
-      "chromePixelDiffRatio": 0.14856733720702706
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.13160442268305172,
+      "chromePixelDiffRatioLinux": 0.15989307085286966,
+      "viewportPixelDiffRatioLinux": 0.13343605324074073,
+      "viewportPixelDiffRatioMac": 0.13217158564814815,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 24081.46875,
+          "actual": 509970.03125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.28125
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 35615.03125,
+          "actual": 509970.03125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.28125
+        }
+      ]
     },
     {
       "path": "/in-brief",
       "bp": "mobile",
-      "pixelDiffRatio": 0.16549037037037037,
-      "headerPixelDiffRatio": 0.017733931240657697,
-      "footerPixelDiffRatio": 0.12468525162302807,
-      "chromePixelDiffRatio": 0.07120959143184288
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.26567407407407406,
+      "chromePixelDiffRatioLinux": 0.21723494279619932,
+      "viewportPixelDiffRatioLinux": 0.2096948148148148,
+      "viewportPixelDiffRatioMac": 0.19626962962962963,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 38327.234375,
+          "actual": 570515.375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 39148.03125,
+          "actual": 570515.375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/issues",
       "bp": "desktop",
-      "pixelDiffRatio": 0.4562847222222222,
-      "headerPixelDiffRatio": 0.016289149888143176,
-      "footerPixelDiffRatio": 0.20973960714830056,
-      "chromePixelDiffRatio": 0.11301437851822187
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.13345871913580246,
+      "chromePixelDiffRatioLinux": 0.13138493376626065,
+      "viewportPixelDiffRatioLinux": 0.24311574074074074,
+      "viewportPixelDiffRatioMac": 0.4611813271604938,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 6451.484375,
+          "actual": 3874.15625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/issues",
       "bp": "tablet",
-      "pixelDiffRatio": 0.5634129050925926,
-      "headerPixelDiffRatio": 0.02227176047120419,
-      "footerPixelDiffRatio": 0.13977737432529247,
-      "chromePixelDiffRatio": 0.08102456739824833
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.1325346955743157,
+      "chromePixelDiffRatioLinux": 0.16035820729850164,
+      "viewportPixelDiffRatioLinux": 0.13344328703703703,
+      "viewportPixelDiffRatioMac": 0.6030888310185185,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 8891.421875,
+          "actual": 4378.4375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3669.875,
+          "actual": 4378.4375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/issues",
       "bp": "mobile",
-      "pixelDiffRatio": 0.40032,
-      "headerPixelDiffRatio": 0.16330555555555556,
-      "footerPixelDiffRatio": 0.2360812371227387,
-      "chromePixelDiffRatio": 0.19969339633914712
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.265758024691358,
+      "chromePixelDiffRatioLinux": 0.2172769181048413,
+      "viewportPixelDiffRatioLinux": 0.20917925925925926,
+      "viewportPixelDiffRatioMac": 0.4352977777777778,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 7772.828125,
+          "actual": 5879.578125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 4899.5,
+          "actual": 5879.578125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/past-issues",
       "bp": "desktop",
-      "pixelDiffRatio": 0.734704475308642,
-      "headerPixelDiffRatio": 0.022292132736763608,
-      "footerPixelDiffRatio": 0.21116255144032922,
-      "chromePixelDiffRatio": 0.11672734208854642
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.1327889231824417,
+      "chromePixelDiffRatioLinux": 0.1310500357895803,
+      "viewportPixelDiffRatioLinux": 0.24377854938271604,
+      "viewportPixelDiffRatioMac": 0.7407430555555555,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 914,
+          "actual": 1003.71875
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/past-issues",
       "bp": "tablet",
-      "pixelDiffRatio": 0.5176721643518518,
-      "headerPixelDiffRatio": 0.02227176047120419,
-      "footerPixelDiffRatio": 0.15115228699711206,
-      "chromePixelDiffRatio": 0.08671202373415812
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.1358916970686124,
+      "chromePixelDiffRatioLinux": 0.16203670804565,
+      "viewportPixelDiffRatioLinux": 0.12682291666666667,
+      "viewportPixelDiffRatioMac": 0.5580526620370371,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 778.9375,
+          "actual": 926.453125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 738.1875,
+          "actual": 926.453125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/past-issues",
       "bp": "mobile",
-      "pixelDiffRatio": 0.4283525925925926,
-      "headerPixelDiffRatio": 0.16634722222222223,
-      "footerPixelDiffRatio": 0.23261093741316533,
-      "chromePixelDiffRatio": 0.19947907981769378
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.2657349794238683,
+      "chromePixelDiffRatioLinux": 0.21726539547109647,
+      "viewportPixelDiffRatioLinux": 0.20937185185185186,
+      "viewportPixelDiffRatioMac": 0.4639022222222222,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 1095.09375,
+          "actual": 904.84375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 927.1875,
+          "actual": 904.84375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/",
       "bp": "desktop",
-      "pixelDiffRatio": 0.6028487654320988,
-      "headerPixelDiffRatio": 0.02300055928411633,
-      "footerPixelDiffRatio": 0.21228066415180613,
-      "chromePixelDiffRatio": 0.11764061171796122
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.13366983882030178,
+      "chromePixelDiffRatioLinux": 0.13149049360851034,
+      "viewportPixelDiffRatioLinux": 0.24299691358024691,
+      "viewportPixelDiffRatioMac": 0.6107175925925926,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2663,
+          "actual": 5618.25
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/",
       "bp": "tablet",
-      "pixelDiffRatio": 0.4519560185185185,
-      "headerPixelDiffRatio": 0.02227176047120419,
-      "footerPixelDiffRatio": 0.16796602099436206,
-      "chromePixelDiffRatio": 0.09511889073278312
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.15194972478238608,
+      "chromePixelDiffRatioLinux": 0.17006572190253683,
+      "viewportPixelDiffRatioLinux": 0.13342881944444446,
+      "viewportPixelDiffRatioMac": 0.4894039351851852,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3039.78125,
+          "actual": 5913.109375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3196.21875,
+          "actual": 5913.109375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/",
       "bp": "mobile",
-      "pixelDiffRatio": 0.44119703703703705,
-      "headerPixelDiffRatio": 0.16702777777777778,
-      "footerPixelDiffRatio": 0.2720377410530692,
-      "chromePixelDiffRatio": 0.2195327594154235
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.2699835390946502,
+      "chromePixelDiffRatioLinux": 0.2193896753064874,
+      "viewportPixelDiffRatioLinux": 0.20932444444444445,
+      "viewportPixelDiffRatioMac": 0.4734992592592593,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3657.671875,
+          "actual": 6639.609375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3419.40625,
+          "actual": 6639.609375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/search",
       "bp": "desktop",
-      "pixelDiffRatio": 0.1813317901234568,
-      "headerPixelDiffRatio": 0.016289149888143176,
-      "footerPixelDiffRatio": 0.2103587962962963,
-      "chromePixelDiffRatio": 0.11332397309221974
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.1356974451303155,
+      "chromePixelDiffRatioLinux": 0.1325042967635172,
+      "viewportPixelDiffRatioLinux": 0.2442098765432099,
+      "viewportPixelDiffRatioMac": 0.18454783950617284,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 486.25,
+          "actual": 2754.359375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/search",
       "bp": "tablet",
-      "pixelDiffRatio": 0.08603153935185186,
-      "headerPixelDiffRatio": 0.02227176047120419,
-      "footerPixelDiffRatio": 0.1558535467478318,
-      "chromePixelDiffRatio": 0.089062653609518
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.13669676547710413,
+      "chromePixelDiffRatioLinux": 0.16243924224989587,
+      "viewportPixelDiffRatioLinux": 0.12688802083333334,
+      "viewportPixelDiffRatioMac": 0.12164641203703704,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 474.765625,
+          "actual": 3551.484375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 459.625,
+          "actual": 3551.484375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/search",
       "bp": "mobile",
-      "pixelDiffRatio": 0.1665837037037037,
-      "headerPixelDiffRatio": 0.16330555555555556,
-      "footerPixelDiffRatio": 0.25071367075988943,
-      "chromePixelDiffRatio": 0.20700961315772248
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.2704329218106996,
+      "chromePixelDiffRatioLinux": 0.21961436666451212,
+      "viewportPixelDiffRatioLinux": 0.2025274074074074,
+      "viewportPixelDiffRatioMac": 0.19826962962962963,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 516.125,
+          "actual": 4657.03125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 459.625,
+          "actual": 4657.03125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     },
     {
       "path": "/summer-2025-issue",
       "bp": "desktop",
-      "pixelDiffRatio": 0.7054845679012346,
-      "headerPixelDiffRatio": 0.016480238627889634,
-      "footerPixelDiffRatio": 0.15002119532083524,
-      "chromePixelDiffRatio": 0.08325071697436244
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 54,
+      "headerPixelDiffRatioLinux": 0.12931114839671887,
+      "footerPixelDiffRatioLinux": 0.13368484224965707,
+      "chromePixelDiffRatioLinux": 0.13149799532318796,
+      "viewportPixelDiffRatioLinux": 0.23947916666666666,
+      "viewportPixelDiffRatioMac": 0.7103935185185185,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2403.984375,
+          "actual": 1186.484375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
     },
     {
       "path": "/summer-2025-issue",
       "bp": "tablet",
-      "pixelDiffRatio": 0.5757682291666667,
-      "headerPixelDiffRatio": 0.014084315008726004,
-      "footerPixelDiffRatio": 0.06366386045201117,
-      "chromePixelDiffRatio": 0.03887408773036859
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 19,
+      "headerPixelDiffRatioLinux": 0.1881817190226876,
+      "footerPixelDiffRatioLinux": 0.1426625655538501,
+      "chromePixelDiffRatioLinux": 0.16542214228826885,
+      "viewportPixelDiffRatioLinux": 0.1333029513888889,
+      "viewportPixelDiffRatioMac": 0.6112572337962963,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3563.1875,
+          "actual": 1276.6875
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1322.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3167.8125,
+          "actual": 1276.6875
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1322.265625
+        }
+      ]
     },
     {
       "path": "/summer-2025-issue",
       "bp": "mobile",
-      "pixelDiffRatio": 0.49924444444444444,
-      "headerPixelDiffRatio": 0.022218236173393125,
-      "footerPixelDiffRatio": 0.07689321600443202,
-      "chromePixelDiffRatio": 0.04955572608891257
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 21,
+      "headerPixelDiffRatioLinux": 0.1687958115183246,
+      "footerPixelDiffRatioLinux": 0.2686238683127572,
+      "chromePixelDiffRatioLinux": 0.21870983991554088,
+      "viewportPixelDiffRatioLinux": 0.20961777777777776,
+      "viewportPixelDiffRatioMac": 0.5320177777777778,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3240.875,
+          "actual": 1591.203125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3045.40625,
+          "actual": 1591.203125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1619.125
+        }
+      ]
     }
   ]
 }

@@ -10,9 +10,10 @@ export const manifestPath = path.join(process.cwd(), 'manifest', 'site-manifest.
 export function isContentParityUrl(entry) {
   const p = (entry.path || '').toLowerCase();
   const tpl = entry.template || 'other';
-  if (tpl === 'media' || tpl === 'document') return false;
+  if (tpl === 'media' || tpl === 'document' || tpl === 'other') return false;
   if (/wp-content\/uploads/.test(p)) return false;
-  if (p.endsWith('/feed') || p.endsWith('.pdf') || p.endsWith('.jpg') || p.endsWith('.png')) return false;
+  if (p.includes('/wp-json') || /\/feed\/?$/.test(p) || p.endsWith('/feed')) return false;
+  if (p.endsWith('.pdf') || p.endsWith('.jpg') || p.endsWith('.png')) return false;
   if (p.includes('danafarberimpact.org/')) return false;
   return true;
 }

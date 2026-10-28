@@ -31,6 +31,11 @@ services:
     tags:
       - { name: event_subscriber }
 
+  df_setup.wordpress_legacy_paths:
+    class: Drupal\df_setup\EventSubscriber\WordpressLegacyPathSubscriber
+    tags:
+      - { name: event_subscriber }
+
   df_setup.path_processor.topic_archive:
     class: Drupal\df_setup\PathProcessor\TopicTermArchivePathProcessor
     arguments: ['@entity_type.manager']

@@ -664,6 +664,38 @@ function df_setup_update_10021(): string {
 }
 
 /**
+ * Adds /about path alias (WordPress legacy) for the About Impact page.
+ */
+function df_setup_update_10022(): string {
+  _df_setup_ensure_about_impact_page();
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if (!$nids) {
+    return 'About Impact page missing.';
+  }
+  $node = $storage->load(reset($nids));
+  if (!$node instanceof Node) {
+    return 'Could not load About Impact page.';
+  }
+  $alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $existing = $alias_storage->loadByProperties(['alias' => '/about']);
+  if ($existing) {
+    return 'Path alias /about already exists.';
+  }
+  $alias_storage->create([
+    'path' => '/node/' . $node->id(),
+    'alias' => '/about',
+    'langcode' => 'en',
+  ])->save();
+  return 'Created /about alias for About Impact page.';
+}
+
+/**
  * Copies WP uploads, creates media entities, sets issue hero fields when empty.
  */
 function _df_setup_backfill_latest_issue_hero_media(): string {

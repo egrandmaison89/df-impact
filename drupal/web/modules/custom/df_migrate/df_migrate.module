@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @file
+ * Migrate hooks for DF Impact.
+ */
+
+/**
+ * Implements hook_migrate_import_finished().
+ */
+function df_migrate_migrate_import_finished(string $migration_id, array $options): void {
+  if ($migration_id !== 'df_issues') {
+    return;
+  }
+  if (!function_exists('df_setup_update_10021')) {
+    \Drupal::moduleHandler()->loadInclude('df_setup', 'install');
+  }
+  if (function_exists('_df_setup_backfill_latest_issue_hero_media')) {
+    _df_setup_backfill_latest_issue_hero_media();
+  }
+}

@@ -141,9 +141,15 @@ def classify_path(
         return TEMPLATE_ISSUE
     if HOMEPAGE_SEGMENT_RE.search(path_key):
         return TEMPLATE_LANDING
+    if FEED_RE.search(path_key) or "/wp-json/" in lower:
+        return TEMPLATE_OTHER
+    if re.match(r"^/category/[^/]+/?$", lower):
+        if "digital-exclusives" in lower:
+            return TEMPLATE_LANDING
+        return TEMPLATE_TOPIC
     if TOPIC_RE.search(path_key):
         return TEMPLATE_TOPIC
-    if ARCHIVE_RE.search(path_key) or FEED_RE.search(path_key):
+    if ARCHIVE_RE.search(path_key):
         return TEMPLATE_ARCHIVE
     if DATE_POST_RE.match(path_key):
         return TEMPLATE_ARTICLE

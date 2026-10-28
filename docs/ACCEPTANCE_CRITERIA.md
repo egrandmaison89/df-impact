@@ -38,6 +38,40 @@ Owner-approved thresholds for release. Measured by `parity/` unless noted.
 
 Harness exits non-zero when thresholds fail (`parity/scripts/evaluate-thresholds.mjs`).
 
+## Dynamic behavior
+
+Static full-page screenshots miss hover, scroll, and autoplay video. See [DYNAMIC_BEHAVIOR_INVENTORY.md](./DYNAMIC_BEHAVIOR_INVENTORY.md).
+
+| Check | Threshold |
+| --- | --- |
+| Hero `<video>` | `autoplay`, `muted`, `loop`, `playsinline`; `object-fit: cover`; **`currentTime` advances** within 600ms (when `prefers-reduced-motion: no-preference`) |
+| Hero reduced motion | Video hidden; poster visible |
+| Nav / CTA hover | **Computed `color`, `background-color`, `transition-property`** match WP reference within harness tolerance (exact string match on key properties) |
+| Sticky header @ scroll | Header `position: sticky`; scrolled state changes `box-shadow` or logo width vs scrollY=0 |
+| Mobile drawer | Toggle sets `aria-expanded`; open panel visible; Escape closes |
+| State screenshots | Optional pixel diff on hover/scroll captures ≤ **5%** per key selector (informational until baseline set) |
+
+### Commands (owner Mac)
+
+```bash
+cd parity
+npm ci && npx playwright install chromium
+export PARITY_BEHAVIOR_HIT_WP=1
+npm run parity:behavior:smoke
+# Full behavior pass (home + paths list):
+PARITY_BEHAVIOR_PATHS=/homepage,/browse-issues PARITY_BEHAVIOR_HIT_WP=1 npm run parity:behavior
+# Optional human review clips:
+PARITY_BEHAVIOR_VIDEO=1 npm run parity:behavior:smoke
+```
+
+With frozen baseline (Drupal-only WP reference for static parity; behavior still prefers live WP for video):
+
+```bash
+PARITY_WP_BASELINE=df-impact-2026-10-28 PARITY_BEHAVIOR_HIT_WP=1 npm run parity:behavior:smoke
+```
+
+Artifacts: `parity/reports/behavior/<runId>/compare/*/behavior.json` (+ PNGs).
+
 ## Informational (non-blocking)
 
 - axe critical violations (track trend)

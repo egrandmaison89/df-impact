@@ -1,0 +1,24 @@
+uuid: a1b2c3d4-e5f6-7890-abcd-ef3333333333
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_hero_video
+    - media.type.video
+    - node.type.issue
+id: node.issue.field_hero_video
+field_name: field_hero_video
+entity_type: node
+bundle: issue
+label: 'Homepage hero video'
+description: 'Ambient MP4 for the site homepage when this issue is featured (autoplay, muted, loop). WordPress parity: Impact_Ambient-style cover video.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      video: video
+field_type: entity_reference

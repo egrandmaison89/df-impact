@@ -12,7 +12,9 @@
 
   {# --- Hero: region block overrides default banner --- #}
   <section class="hero hero--front" aria-label="{{ 'Magazine feature imagery'|t }}">
-    {% if page.hero %}
+    {% if homepage_hero %}
+      {% include '@df_impact/includes/hero-video.html.twig' with homepage_hero only %}
+    {% elseif page.hero %}
       {{ page.hero }}
     {% else %}
       <div class="hero__banner" role="group" aria-label="{{ 'Magazine feature imagery'|t }}">

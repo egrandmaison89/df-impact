@@ -5,6 +5,8 @@ dependencies:
   config:
     - field.field.node.issue.field_banner_image
     - field.field.node.issue.field_cover_image
+    - field.field.node.issue.field_hero_poster
+    - field.field.node.issue.field_hero_video
     - field.field.node.issue.field_description
     - field.field.node.issue.field_issue_promo_2
     - field.field.node.issue.field_leadership_message
@@ -37,6 +39,22 @@ content:
         - image
     third_party_settings: {  }
   field_cover_image:
+    type: media_library_widget
+    weight: 3
+    region: content
+    settings:
+      media_types:
+        - image
+    third_party_settings: {  }
+  field_hero_video:
+    type: media_library_widget
+    weight: 3
+    region: content
+    settings:
+      media_types:
+        - video
+    third_party_settings: {  }
+  field_hero_poster:
     type: media_library_widget
     weight: 3
     region: content

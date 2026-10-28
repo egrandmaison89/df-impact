@@ -288,14 +288,8 @@ function df_impact_preprocess_page(&$variables) {
   $logo_uri = 'public://wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png';
   $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $logo_uri]);
   $file = reset($files);
-  if ($file) {
-    $variables['wp_logo_url'] = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
-  }
-  else {
-    $variables['wp_logo_url'] = '/' . \Drupal::service('extension.list.theme')->getPath('df_impact') . '/images/ImpactDFJF_HeaderLogo_878.png';
-  }
-  // Match reference-pack logo URL for pixel parity in chrome screenshots.
-  $variables['wp_logo_url'] = 'https://danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png';
+  $theme_path = \Drupal::service('extension.list.theme')->getPath('df_impact');
+  $variables['wp_logo_url'] = '/' . $theme_path . '/wp-assets/ImpactDFJF_HeaderLogo_878.png';
 
   // Add the current year for copyright.
   $variables['current_year'] = date('Y');

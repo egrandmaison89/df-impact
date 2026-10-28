@@ -7,6 +7,11 @@
   display: none !important;
 }
 
+/* Match reference-pack header logo sizing (inline height:107px overridden). */
+.header-logo img {
+  height: auto !important;
+}
+
 .visually-hidden {
   position: absolute !important;
   overflow: hidden;

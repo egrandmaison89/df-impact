@@ -1,0 +1,18 @@
+{
+  "selectors": [
+    "header",
+    ".desktop-header",
+    ".mobile-header",
+    ".wp-block-main-header",
+    ".header-logo",
+    ".header-logo img",
+    "#mega-menu-wrap-max_mega_menu_1",
+    "#mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link",
+    ".header-button-section .wp-block-button__link",
+    "footer",
+    ".footer-dark",
+    ".wp-block-footer-widget-area-columns",
+    ".copyright",
+    ".gtranslate_wrapper select.gt_selector"
+  ]
+}

@@ -25,7 +25,7 @@ const pw = spawnSync(
   {
     cwd: parityRoot,
     stdio: 'inherit',
-    env: { ...process.env },
+    env: { ...process.env, PARITY_ROOT: parityRoot },
   },
 );
 

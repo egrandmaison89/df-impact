@@ -13,7 +13,7 @@ baselines/<PARITY_BASELINE_ID>/
       wordpress.json
 ```
 
-Baseline directories are gitignored by default (large binaries). Teams may commit a baseline tarball or store it in shared storage; keep **no cookies or credentials** in the repo.
+Baseline directories are gitignored by default (large binaries). A full manifest capture is on the order of **~3.5 GB** — use **`node scripts/package-baseline-lite.mjs`** for a small JSON zip for agents, or keep the full tree on the owner Mac for pixel runs. See [docs/FROZEN_WP_BASELINE.md](../../docs/FROZEN_WP_BASELINE.md).
 
 ## Capture (owner Mac / residential IP)
 

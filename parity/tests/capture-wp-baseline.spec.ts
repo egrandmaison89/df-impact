@@ -6,7 +6,6 @@
 import { test } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import {
   dismissOverlays,
   extractMainText,
@@ -18,9 +17,9 @@ import {
 } from '../lib/page-utils.mjs';
 import { BREAKPOINTS, loadUrls, publicPath } from '../lib/manifest-urls.mjs';
 import { baselineCaseDir, baselineMetaPath } from '../lib/wp-baseline.mjs';
+import { resolveParityRoot } from '../lib/parity-root.mjs';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const parityRoot = path.resolve(__dirname, '..');
+const parityRoot = resolveParityRoot();
 
 const baselineId = process.env.PARITY_BASELINE_ID;
 if (!baselineId) {

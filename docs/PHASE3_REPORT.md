@@ -57,6 +57,6 @@ Report chrome before/after from smoke JSON under `parity/results/` once baseline
 
 ## Owner follow-ups
 
-1. **Frozen WP baseline** on Mac → commit under `parity/baselines/<id>/` per [FROZEN_WP_BASELINE.md](./FROZEN_WP_BASELINE.md).
+1. **Frozen WP baseline** — owner capture `df-impact-2026-10-28` (~3.5 GB full). Share **lite zip** (`npm run parity:package-baseline-lite`) for agent text/meta; run pixel gates on Mac or via cloud drive full PNGs. See [FROZEN_WP_BASELINE.md](./FROZEN_WP_BASELINE.md).
 2. Optional: drop QA pages into Drupal only if parity manifest should include them.
-3. Re-run full `npm run parity` after baseline for release gating.
+3. Re-run full `npm run parity` with `PARITY_WP_BASELINE=df-impact-2026-10-28` after lite/full baseline is available.

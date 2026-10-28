@@ -47,7 +47,8 @@ mkdir -p web/sites/default/files/wp-content/uploads web/wp-content
 ln -sfn ../sites/default/files/wp-content/uploads web/wp-content/uploads
 
 if [[ -f "$ROOT/drupal/migration-data/private/wp-export.xml" ]]; then
-  echo "==> Regenerate media.json from WXR export"
+  echo "==> Regenerate migration JSON from WXR export"
+  python3 "$ROOT/drupal/migration-data/process_wxr_data.py"
   python3 "$ROOT/drupal/migration-data/parse_wxr_export.py"
 fi
 

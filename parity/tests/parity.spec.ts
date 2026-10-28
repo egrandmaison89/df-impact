@@ -160,7 +160,8 @@ for (const entry of urls) {
       const drPage = await browser.newPage();
       await preparePage(wpPage);
       await preparePage(drPage);
-      await page.setViewportSize({ width: bp.width, height: bp.height });
+      await wpPage.setViewportSize({ width: bp.width, height: bp.height });
+      await drPage.setViewportSize({ width: bp.width, height: bp.height });
 
       const slug = entry.path.replace(/^\//, '').replace(/[/?#]/g, '_') || 'root';
       const caseDir = path.join(outDir, slug, bp.label);

@@ -1,0 +1,89 @@
+uuid: 5b2c3d4e-6f70-8901-bcde-f12345678901
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.issue
+  module:
+    - node
+    - user
+id: past_issues
+label: 'Past issues'
+module: views
+description: 'Recent magazine issues (WordPress /past-issues parity).'
+tag: ''
+base_table: node_field_data
+base_field: nid
+display:
+  default:
+    id: default
+    display_title: Default
+    display_plugin: default
+    position: 0
+    display_options:
+      title: 'Recent Issues'
+      fields: {  }
+      pager:
+        type: full
+        options:
+          items_per_page: 12
+      sorts:
+        field_year_value:
+          id: field_year_value
+          table: node__field_year
+          field: field_year_value
+          plugin_id: standard
+          order: DESC
+        field_season_value:
+          id: field_season_value
+          table: node__field_season
+          field: field_season_value
+          plugin_id: standard
+          order: DESC
+      filters:
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          plugin_id: boolean
+          value: '1'
+        type:
+          id: type
+          table: node_field_data
+          field: type
+          plugin_id: bundle
+          value:
+            issue: issue
+      style:
+        type: default
+      row:
+        type: 'entity:node'
+        options:
+          view_mode: teaser
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      display_extenders: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url.query_args
+        - 'user.node_grants:view'
+      tags: {  }
+  page_1:
+    id: page_1
+    display_title: Page
+    display_plugin: page
+    position: 1
+    display_options:
+      display_extenders: {  }
+      path: past-issues
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url.query_args
+        - 'user.node_grants:view'
+      tags: {  }

@@ -19,6 +19,8 @@ import {
 } from '../lib/content-sweep-extract.mjs';
 import { httpGet } from '../lib/http-get.mjs';
 import { wpArchiveExportHtmlForPath, wpExportHtmlForPath } from '../lib/wp-export-baseline.mjs';
+import { loadIssueWpHtml } from '../lib/issue-wp-baseline.mjs';
+import { textSimilarity } from '../lib/page-utils.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
@@ -47,9 +49,17 @@ function withTimeout(promise, ms, label) {
   ]);
 }
 const limit = Number(process.env.CONTENT_SWEEP_LIMIT || 0);
+const pathFilter = (process.env.CONTENT_SWEEP_PATHS || '')
+  .split(',')
+  .map((p) => normalizePath(p.trim()))
+  .filter(Boolean);
 
 const urls = (manifest.urls || []).filter(isContentParityUrl);
-const entries = (limit > 0 ? urls.slice(0, limit) : urls).map((entry) => ({
+let selected = urls;
+if (pathFilter.length) {
+  selected = urls.filter((entry) => pathFilter.includes(normalizePath(publicPath(entry))));
+}
+const entries = (limit > 0 ? selected.slice(0, limit) : selected).map((entry) => ({
   entry,
   path: publicPath(entry),
 }));
@@ -135,14 +145,20 @@ async function processOne({ entry, path: p }) {
 
   let wpHtml = null;
   const frozen = frozenWpHtmlPath(packRoot, p);
-  const exportHtml = wpExportHtmlForPath(p);
+  const isIssue = row.template === 'issue';
+  const exportHtml = isIssue ? null : wpExportHtmlForPath(p);
   const archiveExportHtml = !exportHtml ? wpArchiveExportHtmlForPath(p) : null;
+  const issueCacheHtml = isIssue ? loadIssueWpHtml(p) : null;
   if (frozen) {
     wpHtml = fs.readFileSync(frozen, 'utf8');
     row.wpSource = 'frozen';
     if (baselinePathForFrozen(p) !== normalizePath(p)) {
       row.wpSource = 'frozen-paginated';
     }
+    row.wpStatus = 200;
+  } else if (issueCacheHtml) {
+    wpHtml = issueCacheHtml;
+    row.wpSource = 'issue-cache';
     row.wpStatus = 200;
   } else if (exportHtml) {
     wpHtml = exportHtml;
@@ -192,7 +208,10 @@ async function processOne({ entry, path: p }) {
 
   const wpM = extractContentMetrics(wpHtml);
   const drM = extractContentMetrics(drHtml);
-  row.textSimilarity = wordJaccardSimilarity(wpM.text, drM.text);
+  row.textSimilarity =
+    isIssue
+      ? textSimilarity(wpM.text, drM.text)
+      : wordJaccardSimilarity(wpM.text, drM.text);
   row.h1Match = !wpM.h1 || wpM.h1 === drM.h1 || drM.h1.includes(wpM.h1) || wpM.h1.includes(drM.h1);
   row.titleMatch =
     !wpM.title ||

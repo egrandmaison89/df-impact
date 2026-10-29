@@ -34,11 +34,6 @@ final class WordpressLegacyPathSubscriber implements EventSubscriberInterface {
       return;
     }
 
-    if ($path === '/stories') {
-      $this->rebuildRequest($request, '/issues', []);
-      return;
-    }
-
     if (preg_match('#^/category/([a-z0-9-]+)/page/(\d+)$#i', $path, $matches)) {
       $slug = $matches[1];
       $page = max(0, (int) $matches[2] - 1);

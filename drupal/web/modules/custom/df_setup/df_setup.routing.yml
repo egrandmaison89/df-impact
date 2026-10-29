@@ -6,6 +6,14 @@ df_setup.topics_index:
   requirements:
     _access: 'TRUE'
 
+df_setup.stories_archive:
+  path: '/stories'
+  defaults:
+    _controller: '\Drupal\df_setup\Controller\StoriesArchiveController::build'
+    _title: 'Stories Archive'
+  requirements:
+    _access: 'TRUE'
+
 df_setup.wp_tag_archive:
   path: '/tag/{slug}'
   defaults:

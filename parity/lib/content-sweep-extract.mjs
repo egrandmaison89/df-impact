@@ -63,6 +63,12 @@ export function isChallengeHtml(html, url = '') {
 }
 
 function pickRoot($) {
+  if ($('.issue-page, .issue-banner, article.node--type-issue').length) {
+    const main = $('main#main-content, main[role="main"], main').first();
+    if (main.length && (main.text() || '').replace(/\s+/g, ' ').trim().length > 80) {
+      return main;
+    }
+  }
   const query = $('main .wp-block-query, .wp-block-query').first();
   if (query.length && query.find('.wp-block-post, li.wp-block-post').length >= 2) {
     return query;

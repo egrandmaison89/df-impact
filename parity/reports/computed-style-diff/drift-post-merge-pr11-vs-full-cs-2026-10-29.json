@@ -1,0 +1,288 @@
+{
+  "generatedAt": "2026-10-29T07:18:35.834Z",
+  "baselineRun": "post-merge-pr11",
+  "currentRun": "full-cs-2026-10-29",
+  "selectorFingerprint": {
+    "total": 38,
+    "chrome": 15,
+    "content": 23
+  },
+  "samplePaths": {
+    "baselineDesktopJobs": 18,
+    "currentDesktopJobs": 20,
+    "overlap": 17,
+    "baselineOnlyPaths": [
+      "article|/2024/06/the-charlie-landers-foundation"
+    ],
+    "currentOnlyPaths": [
+      "article|/2024/09/wheeling-in-the-years-the-pan-mass-challenge-produces-origin-story-video",
+      "article|/2026/09/american-association-for-cancer-research-2",
+      "landing_page|/past-issues"
+    ]
+  },
+  "desktopMismatchSum": {
+    "baseline_all": {
+      "archive": 188,
+      "article": 69,
+      "homepage": 74,
+      "in_brief": 98,
+      "issue": 120,
+      "landing_page": 133
+    },
+    "current_all": {
+      "archive": 295,
+      "article": 124,
+      "homepage": 100,
+      "in_brief": 108,
+      "issue": 167,
+      "landing_page": 155
+    },
+    "baseline_comparableOnly": {
+      "in_brief": 39,
+      "landing_page": 133
+    },
+    "current_comparableOnly": {
+      "archive": 236,
+      "article": 124,
+      "homepage": 100,
+      "in_brief": 88,
+      "issue": 167,
+      "landing_page": 136
+    },
+    "overlap_baseline_all": 635,
+    "overlap_current_all": 846,
+    "overlap_baseline_comparable": 172,
+    "overlap_current_comparable": 767
+  },
+  "perPathDelta": [
+    {
+      "key": "archive|/issues",
+      "baseline": {
+        "m": 20,
+        "wp": 0,
+        "comparable": false
+      },
+      "current": {
+        "m": 58,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 38
+    },
+    {
+      "key": "archive|/category/cancer-research",
+      "baseline": {
+        "m": 24,
+        "wp": 0,
+        "comparable": false
+      },
+      "current": {
+        "m": 61,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 37
+    },
+    {
+      "key": "issue|/summer-2025-issue",
+      "baseline": {
+        "m": 21,
+        "wp": 0,
+        "comparable": false
+      },
+      "current": {
+        "m": 55,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 34
+    },
+    {
+      "key": "homepage|/homepage",
+      "baseline": {
+        "m": 24,
+        "wp": 0,
+        "comparable": false
+      },
+      "current": {
+        "m": 50,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 26
+    },
+    {
+      "key": "archive|/category/access-and-equity",
+      "baseline": {
+        "m": 36,
+        "wp": 202,
+        "comparable": false
+      },
+      "current": {
+        "m": 59,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 23
+    },
+    {
+      "key": "archive|/digital-exclusives",
+      "baseline": {
+        "m": 41,
+        "wp": 202,
+        "comparable": false
+      },
+      "current": {
+        "m": 59,
+        "wp": 404,
+        "comparable": false
+      },
+      "delta": 18
+    },
+    {
+      "key": "article|/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "baseline": {
+        "m": 22,
+        "wp": 0,
+        "comparable": false
+      },
+      "current": {
+        "m": 40,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 18
+    },
+    {
+      "key": "issue|/spring-2026-issue",
+      "baseline": {
+        "m": 44,
+        "wp": 202,
+        "comparable": false
+      },
+      "current": {
+        "m": 57,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 13
+    },
+    {
+      "key": "archive|/category/digital-exclusives",
+      "baseline": {
+        "m": 67,
+        "wp": 202,
+        "comparable": false
+      },
+      "current": {
+        "m": 58,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": -9
+    },
+    {
+      "key": "landing_page|/browse-issues",
+      "baseline": {
+        "m": 27,
+        "wp": 200,
+        "comparable": true
+      },
+      "current": {
+        "m": 36,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 9
+    },
+    {
+      "key": "in_brief|/2023/09/american-association-for-cancer-research",
+      "baseline": {
+        "m": 39,
+        "wp": 200,
+        "comparable": true
+      },
+      "current": {
+        "m": 44,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 5
+    },
+    {
+      "key": "in_brief|/2026/09/american-association-for-cancer-research-2",
+      "baseline": {
+        "m": 39,
+        "wp": 202,
+        "comparable": false
+      },
+      "current": {
+        "m": 44,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 5
+    },
+    {
+      "key": "landing_page|/about-impact",
+      "baseline": {
+        "m": 53,
+        "wp": 200,
+        "comparable": true
+      },
+      "current": {
+        "m": 50,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": -3
+    },
+    {
+      "key": "landing_page|/about",
+      "baseline": {
+        "m": 53,
+        "wp": 200,
+        "comparable": true
+      },
+      "current": {
+        "m": 50,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": -3
+    },
+    {
+      "key": "homepage|/",
+      "baseline": {
+        "m": 50,
+        "wp": 202,
+        "comparable": false
+      },
+      "current": {
+        "m": 50,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 0
+    },
+    {
+      "key": "issue|/fall-2026-issue",
+      "baseline": {
+        "m": 55,
+        "wp": 202,
+        "comparable": false
+      },
+      "current": {
+        "m": 55,
+        "wp": 200,
+        "comparable": true
+      },
+      "delta": 0
+    }
+  ],
+  "interpretation": [
+    "Selector set unchanged if fingerprint.total matches prior docs (41 selectors).",
+    "Baseline post-merge-pr11 often used wpStatus 0/202 → artificially low mismatch counts (missing WP DOM).",
+    "Compare overlap_*_comparable and per-path wp status before calling regressions."
+  ]
+}

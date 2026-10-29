@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-10-29T08:33:31.697Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 1,
+  "byTemplate": {
+    "archive": {
+      "runs": 1,
+      "mismatchesAll": 82,
+      "comparableRuns": 0,
+      "mismatchesComparable": 0,
+      "medianMismatchComparable": null
+    }
+  },
+  "results": [
+    {
+      "template": "archive",
+      "path": "/digital-exclusives",
+      "bp": "mobile",
+      "mismatchCount": 82,
+      "wpStatus": 404,
+      "drStatus": 200,
+      "wpComparable": false,
+      "wpShellReason": null,
+      "wpAttempts": 4,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 8543.21875,
+          "wp": 2121.84375,
+          "drupal": 10665.0625
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 8,
+          "wp": 28,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 111.421875,
+          "wp": 300.921875,
+          "drupal": 189.5
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 16,
+          "wp": 319,
+          "drupal": 335
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 8710.59375,
+          "wp": 215.203125,
+          "drupal": 8925.796875
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 28,
+          "wp": 28,
+          "drupal": 0
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 8599.171875,
+          "wp": 516.125,
+          "drupal": 9115.296875
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 56,
+          "wp": 319,
+          "drupal": 375
+        },
+        {
+          "selector": "footer",
+          "dim": "h",
+          "delta": 55.953125,
+          "wp": 1605.71875,
+          "drupal": 1549.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 8599.171875,
+          "wp": 516.125,
+          "drupal": 9115.296875
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "h",
+          "delta": 27.953125,
+          "wp": 1171.21875,
+          "drupal": 1143.265625
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "x",
+          "delta": 28,
+          "wp": 28,
+          "drupal": 0
+        }
+      ]
+    }
+  ]
+}

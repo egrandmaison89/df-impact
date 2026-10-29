@@ -1,0 +1,96 @@
+{
+  "generatedAt": "2026-10-29T04:16:57.504Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 2,
+  "byTemplate": {
+    "homepage": {
+      "runs": 2,
+      "mismatches": 49
+    }
+  },
+  "results": [
+    {
+      "template": "homepage",
+      "path": "/",
+      "bp": "desktop",
+      "mismatchCount": 31,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 2032.15625,
+          "wp": 3501.921875,
+          "drupal": 1469.765625
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 2032.15625,
+          "wp": 2706.5625,
+          "drupal": 674.40625
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 2032.15625,
+          "wp": 2854.609375,
+          "drupal": 822.453125
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 2032.15625,
+          "wp": 2854.609375,
+          "drupal": 822.453125
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "y",
+          "delta": 2032.15625,
+          "wp": 2904.609375,
+          "drupal": 872.453125
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "y",
+          "delta": 2032.15625,
+          "wp": 2904.609375,
+          "drupal": 872.453125
+        },
+        {
+          "selector": "h2",
+          "dim": "y",
+          "delta": 490,
+          "wp": 678.046875,
+          "drupal": 188.046875
+        },
+        {
+          "selector": ".copyright",
+          "dim": "y",
+          "delta": 2032.15625,
+          "wp": 3440.921875,
+          "drupal": 1408.765625
+        },
+        {
+          "selector": ".gtranslate_wrapper select.gt_selector",
+          "dim": "x",
+          "delta": 118.5625,
+          "wp": 1243,
+          "drupal": 1124.4375
+        }
+      ]
+    },
+    {
+      "template": "homepage",
+      "path": "/homepage",
+      "bp": "desktop",
+      "mismatchCount": 18,
+      "wpStatus": 0,
+      "drStatus": 200,
+      "topBoxDeltas": []
+    }
+  ]
+}

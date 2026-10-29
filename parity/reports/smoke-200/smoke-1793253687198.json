@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-10-29T06:01:27.198Z",
+  "drupalBase": "http://127.0.0.1:8888",
+  "pathCount": 40,
+  "httpFailCount": 0,
+  "status5xxCount": 0,
+  "watchdogPhpNew": 7,
+  "fails": [],
+  "watchdog": [
+    "4866\t4\t%type: @message in %function (line %line of %file) @backtrace_string.",
+    "4865\t4\t%type: @message in %function (line %line of %file) @backtrace_string.",
+    "4864\t4\t%type: @message in %function (line %line of %file) @backtrace_string.",
+    "4863\t4\t%type: @message in %function (line %line of %file) @backtrace_string.",
+    "4862\t4\t%type: @message in %function (line %line of %file) @backtrace_string.",
+    "4861\t4\t%type: @message in %function (line %line of %file) @backtrace_string.",
+    "4860\t4\t%type: @message in %function (line %line of %file) @backtrace_string."
+  ]
+}

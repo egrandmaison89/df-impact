@@ -1,0 +1,168 @@
+{
+  "template": "in_brief",
+  "path": "/2023/09/american-association-for-cancer-research",
+  "wpUrl": "https://danafarberimpact.org/2023/09/american-association-for-cancer-research",
+  "drUrl": "http://127.0.0.1:8888/2023/09/american-association-for-cancer-research",
+  "wpStatus": 200,
+  "drStatus": 200,
+  "mismatchCount": 2,
+  "targets": [
+    {
+      "target": "navLink",
+      "label": "Nav link",
+      "ok": false,
+      "diffs": [
+        {
+          "field": "hover.changed",
+          "wp": false,
+          "dr": true
+        },
+        {
+          "field": "color",
+          "wp": "rgb(0, 98, 155)",
+          "dr": "rgb(104, 160, 193)"
+        }
+      ],
+      "wp": {
+        "default": {
+          "color": "rgb(0, 98, 155)",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "transitionProperty": "none",
+          "transitionDuration": "0s",
+          "transitionTimingFunction": "ease",
+          "transform": "none",
+          "position": "relative",
+          "boxShadow": "none"
+        },
+        "hover": {
+          "color": "rgb(0, 98, 155)",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "transitionProperty": "none",
+          "transitionDuration": "0s",
+          "transitionTimingFunction": "ease",
+          "transform": "none",
+          "position": "relative",
+          "boxShadow": "none"
+        }
+      },
+      "drupal": {
+        "default": {
+          "color": "rgb(0, 98, 155)",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "transitionProperty": "none",
+          "transitionDuration": "0s",
+          "transitionTimingFunction": "ease",
+          "transform": "none",
+          "position": "relative",
+          "boxShadow": "none"
+        },
+        "hover": {
+          "color": "rgb(104, 160, 193)",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "transitionProperty": "none",
+          "transitionDuration": "0s",
+          "transitionTimingFunction": "ease",
+          "transform": "none",
+          "position": "relative",
+          "boxShadow": "none"
+        }
+      }
+    },
+    {
+      "target": "card",
+      "label": "Card",
+      "ok": true,
+      "diffs": [],
+      "wp": {
+        "default": null,
+        "hover": null
+      },
+      "drupal": {
+        "default": {
+          "color": "rgb(85, 85, 85)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "transitionProperty": "all",
+          "transitionDuration": "0s",
+          "transitionTimingFunction": "ease",
+          "transform": "none",
+          "position": "static",
+          "boxShadow": "none"
+        },
+        "hover": {
+          "color": "rgb(85, 85, 85)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "transitionProperty": "all",
+          "transitionDuration": "0s",
+          "transitionTimingFunction": "ease",
+          "transform": "none",
+          "position": "static",
+          "boxShadow": "none"
+        }
+      }
+    },
+    {
+      "target": "button",
+      "label": "Button",
+      "ok": true,
+      "diffs": [],
+      "wp": {
+        "default": null,
+        "hover": null
+      },
+      "drupal": {
+        "default": null,
+        "hover": null
+      }
+    },
+    {
+      "target": "footerLink",
+      "label": "Footer link",
+      "ok": true,
+      "diffs": [],
+      "wp": {
+        "default": {
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "transitionProperty": "all",
+          "transitionDuration": "0.5s",
+          "transitionTimingFunction": "ease",
+          "transform": "none",
+          "position": "static",
+          "boxShadow": "none"
+        },
+        "hover": {
+          "color": "rgb(213, 213, 218)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "transitionProperty": "all",
+          "transitionDuration": "0.5s",
+          "transitionTimingFunction": "ease",
+          "transform": "none",
+          "position": "static",
+          "boxShadow": "none"
+        }
+      },
+      "drupal": {
+        "default": {
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "transitionProperty": "all",
+          "transitionDuration": "0.5s",
+          "transitionTimingFunction": "ease",
+          "transform": "none",
+          "position": "static",
+          "boxShadow": "none"
+        },
+        "hover": {
+          "color": "rgb(213, 213, 218)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "transitionProperty": "all",
+          "transitionDuration": "0.5s",
+          "transitionTimingFunction": "ease",
+          "transform": "none",
+          "position": "static",
+          "boxShadow": "none"
+        }
+      }
+    }
+  ]
+}

@@ -10,6 +10,7 @@ declare(strict_types=1);
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\df_setup\ArchivePageWpOrder;
 use Drupal\df_setup\ArticleCreditLabels;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
@@ -216,6 +217,26 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
   $view_id = $view->storage->id();
   $display = $view->current_display ?? '';
 
+  if (
+    in_array($view_id, ['topic_archive', 'digital_exclusives_archive'], TRUE)
+    && $display === 'page_1'
+  ) {
+    $path = \Drupal::request()->getPathInfo();
+    $nids = df_setup_archive_nids_for_request_path($path);
+    if ($nids !== []) {
+      $base_table = $view->storage->get('base_table');
+      $base_field = $view->storage->get('base_field');
+      $base_alias = $query->ensureTable($base_table) ?: $base_table;
+      $query->addWhere(0, "{$base_alias}.{$base_field}", $nids, 'IN');
+      $query->setLimit(count($nids));
+      $query->setOffset(0);
+      $query->pager = NULL;
+      $field_order = implode(', ', array_map('intval', $nids));
+      $query->addOrderBy(NULL, "FIELD({$base_alias}.{$base_field}, {$field_order})", 'ASC', 'archive_wp_order');
+      return;
+    }
+  }
+
   if ($view_id === 'issue_articles' && $display === 'homepage_latest') {
     $alias = $query->ensureTable('node__field_homepage_sort_weight');
     if ($alias) {
@@ -303,6 +324,41 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
  * @return list<string>
  *   Alias paths with leading slash (e.g. /2026/03/foo).
  */
+/**
+ * Node IDs for the current archive page in frozen WordPress order.
+ *
+ * @return int[]
+ */
+function df_setup_archive_nids_for_request_path(string $path): array {
+  $request = \Drupal::request();
+  $path = $request->getPathInfo();
+  $page_num = (int) $request->query->get('page', 0) + 1;
+  if ($page_num > 1) {
+    $path = rtrim($path, '/') . '/page/' . $page_num;
+  }
+  $order_paths = ArchivePageWpOrder::pathsForArchive($path);
+  if ($order_paths === [] && preg_match('#^/tag/([^/]+)(?:/page/\d+)?$#', $path, $m)) {
+    $order_paths = ArchivePageWpOrder::pathsForArchive(
+      preg_replace('#^/tag/#', '/category/', $path),
+    );
+    if ($order_paths === []) {
+      $order_paths = ArchivePageWpOrder::pathsForArchive('/category/' . $m[1]);
+    }
+  }
+  if ($order_paths === []) {
+    return [];
+  }
+  $alias_manager = \Drupal::service('path_alias.manager');
+  $nids = [];
+  foreach ($order_paths as $article_path) {
+    $internal = $alias_manager->getPathByAlias($article_path);
+    if (preg_match('/^\/node\/(\d+)$/', $internal, $m)) {
+      $nids[] = (int) $m[1];
+    }
+  }
+  return $nids;
+}
+
 function df_setup_digital_exclusive_archive_slugs(): array {
   static $cache = NULL;
   if (is_array($cache)) {
@@ -467,17 +523,19 @@ function df_setup_topic_term_tids_for_category_slug(string $slug): array {
   }
   /** @var \Drupal\taxonomy\TermStorageInterface $storage */
   $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-  $tree = $storage->loadTree('topics', 0, NULL, TRUE);
   $tids = [];
-  foreach ($tree as $item) {
-    if (!$item instanceof TermInterface) {
-      continue;
-    }
-    if (!$item->isPublished()) {
-      continue;
-    }
-    if (df_setup_topic_category_slug($item->getName()) === $slug) {
-      $tids[] = (int) $item->id();
+  foreach (['topics', 'cancer_types'] as $vid) {
+    $tree = $storage->loadTree($vid, 0, NULL, TRUE);
+    foreach ($tree as $item) {
+      if (!$item instanceof TermInterface) {
+        continue;
+      }
+      if (!$item->isPublished()) {
+        continue;
+      }
+      if (df_setup_topic_category_slug($item->getName()) === $slug) {
+        $tids[] = (int) $item->id();
+      }
     }
   }
   sort($tids);

@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-10-29T07:21:01.889Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 1,
+  "byTemplate": {
+    "archive": {
+      "runs": 1,
+      "mismatchesAll": 37,
+      "comparableRuns": 1,
+      "mismatchesComparable": 37,
+      "medianMismatchComparable": 37
+    }
+  },
+  "results": [
+    {
+      "template": "archive",
+      "path": "/category/cancer-research",
+      "bp": "desktop",
+      "mismatchCount": 37,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 1,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 18.03125,
+          "wp": 5234.390625,
+          "drupal": 5252.421875
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 91.671875,
+          "wp": 279.71875,
+          "drupal": 188.046875
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 109.703125,
+          "wp": 4307.359375,
+          "drupal": 4417.0625
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 18.03125,
+          "wp": 4587.078125,
+          "drupal": 4605.109375
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 18.03125,
+          "wp": 4587.078125,
+          "drupal": 4605.109375
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "y",
+          "delta": 18.03125,
+          "wp": 4637.078125,
+          "drupal": 4655.109375
+        },
+        {
+          "selector": ".wp-block-post-template .wp-block-post",
+          "dim": "y",
+          "delta": 46.078125,
+          "wp": 279.71875,
+          "drupal": 233.640625
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "y",
+          "delta": 46.078125,
+          "wp": 279.71875,
+          "drupal": 233.640625
+        },
+        {
+          "selector": ".wp-block-post-featured-image img",
+          "dim": "y",
+          "delta": 46.078125,
+          "wp": 279.71875,
+          "drupal": 233.640625
+        },
+        {
+          "selector": ".wp-block-post-template .wp-block-post img",
+          "dim": "y",
+          "delta": 46.078125,
+          "wp": 279.71875,
+          "drupal": 233.640625
+        },
+        {
+          "selector": "h1",
+          "dim": "w",
+          "delta": 536,
+          "wp": 760,
+          "drupal": 1296
+        },
+        {
+          "selector": "h1",
+          "dim": "h",
+          "delta": 6.078125,
+          "wp": 51.671875,
+          "drupal": 45.59375
+        }
+      ]
+    }
+  ]
+}

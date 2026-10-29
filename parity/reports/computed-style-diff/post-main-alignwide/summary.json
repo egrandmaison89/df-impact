@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-10-29T05:33:16.761Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 1,
+  "byTemplate": {
+    "article": {
+      "runs": 1,
+      "mismatchesAll": 40,
+      "comparableRuns": 1,
+      "mismatchesComparable": 40,
+      "medianMismatchComparable": 40
+    }
+  },
+  "results": [
+    {
+      "template": "article",
+      "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "bp": "desktop",
+      "mismatchCount": 40,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 4,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 318.6875,
+          "wp": 3149.53125,
+          "drupal": 2830.84375
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 6.4375,
+          "wp": 349.921875,
+          "drupal": 343.484375
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 312.25,
+          "wp": 2152.296875,
+          "drupal": 1840.046875
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 318.6875,
+          "wp": 2502.21875,
+          "drupal": 2183.53125
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 318.6875,
+          "wp": 2502.21875,
+          "drupal": 2183.53125
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "y",
+          "delta": 318.6875,
+          "wp": 2552.21875,
+          "drupal": 2233.53125
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "y",
+          "delta": 318.6875,
+          "wp": 2552.21875,
+          "drupal": 2233.53125
+        },
+        {
+          "selector": ".desktop-header",
+          "dim": "x",
+          "delta": 72,
+          "wp": 0,
+          "drupal": 72
+        },
+        {
+          "selector": ".desktop-header",
+          "dim": "w",
+          "delta": 144,
+          "wp": 1440,
+          "drupal": 1296
+        },
+        {
+          "selector": "h1",
+          "dim": "h",
+          "delta": 52.4375,
+          "wp": 104.875,
+          "drupal": 52.4375
+        },
+        {
+          "selector": "h3",
+          "dim": "y",
+          "delta": 301.9375,
+          "wp": 2050.921875,
+          "drupal": 1748.984375
+        },
+        {
+          "selector": ".header-logo",
+          "dim": "x",
+          "delta": 216,
+          "wp": 15,
+          "drupal": 231
+        }
+      ]
+    }
+  ]
+}

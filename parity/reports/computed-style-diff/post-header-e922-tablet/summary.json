@@ -1,0 +1,223 @@
+{
+  "generatedAt": "2026-10-29T06:07:32.630Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 3,
+  "byTemplate": {
+    "article": {
+      "runs": 3,
+      "mismatchesAll": 135,
+      "comparableRuns": 2,
+      "mismatchesComparable": 115,
+      "medianMismatchComparable": 57.5
+    }
+  },
+  "results": [
+    {
+      "template": "article",
+      "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "bp": "tablet",
+      "mismatchCount": 20,
+      "wpStatus": 0,
+      "drStatus": 200,
+      "wpComparable": false,
+      "wpShellReason": "missing_header_nav",
+      "wpAttempts": 4,
+      "topBoxDeltas": []
+    },
+    {
+      "template": "article",
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "tablet",
+      "mismatchCount": 59,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 4,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 743.921875,
+          "wp": 2665.375,
+          "drupal": 1921.453125
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 715.96875,
+          "wp": 1311.65625,
+          "drupal": 595.6875
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "footer",
+          "dim": "h",
+          "delta": 27.953125,
+          "wp": 1353.71875,
+          "drupal": 1325.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 0,
+          "drupal": -18.390625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 715.96875,
+          "wp": 1311.65625,
+          "drupal": 595.6875
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 768,
+          "drupal": 804.78125
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "y",
+          "delta": 715.96875,
+          "wp": 1356.65625,
+          "drupal": 640.6875
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        }
+      ]
+    },
+    {
+      "template": "article",
+      "path": "/2024/09/wheeling-in-the-years-the-pan-mass-challenge-produces-origin-story-video",
+      "bp": "tablet",
+      "mismatchCount": 56,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 2,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 79.4375,
+          "wp": 3981.5,
+          "drupal": 4060.9375
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 107.4375,
+          "wp": 2311.65625,
+          "drupal": 2419.09375
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 107.390625,
+          "wp": 2627.78125,
+          "drupal": 2735.171875
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "footer",
+          "dim": "h",
+          "delta": 27.953125,
+          "wp": 1353.71875,
+          "drupal": 1325.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 0,
+          "drupal": -18.390625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 107.390625,
+          "wp": 2627.78125,
+          "drupal": 2735.171875
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 768,
+          "drupal": 804.78125
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        }
+      ]
+    }
+  ]
+}

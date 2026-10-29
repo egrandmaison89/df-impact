@@ -124,6 +124,7 @@ display:
           validate_options:
             bundles:
               topics: topics
+              cancer_types: cancer_types
             access: true
             operation: view
             multiple: 1

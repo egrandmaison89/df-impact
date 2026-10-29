@@ -1,0 +1,107 @@
+{
+  "generatedAt": "2026-10-29T08:37:44.001Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 1,
+  "byTemplate": {
+    "landing_page": {
+      "runs": 1,
+      "mismatchesAll": 30,
+      "comparableRuns": 1,
+      "mismatchesComparable": 30,
+      "medianMismatchComparable": 30
+    }
+  },
+  "results": [
+    {
+      "template": "landing_page",
+      "path": "/about",
+      "bp": "desktop",
+      "mismatchCount": 30,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 3,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 224.875,
+          "wp": 2463.953125,
+          "drupal": 2239.078125
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 224.875,
+          "wp": 1668.59375,
+          "drupal": 1443.71875
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 224.875,
+          "wp": 1816.640625,
+          "drupal": 1591.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 224.875,
+          "wp": 1816.640625,
+          "drupal": 1591.765625
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "y",
+          "delta": 780.90625,
+          "wp": 928.953125,
+          "drupal": 148.046875
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "w",
+          "delta": 15,
+          "wp": 1281,
+          "drupal": 1296
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "h",
+          "delta": 63,
+          "wp": 387,
+          "drupal": 450
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "y",
+          "delta": 224.875,
+          "wp": 1866.640625,
+          "drupal": 1641.765625
+        },
+        {
+          "selector": "h2",
+          "dim": "y",
+          "delta": 252.59375,
+          "wp": 850.640625,
+          "drupal": 598.046875
+        },
+        {
+          "selector": ".copyright",
+          "dim": "y",
+          "delta": 224.875,
+          "wp": 2402.953125,
+          "drupal": 2178.078125
+        },
+        {
+          "selector": ".gtranslate_wrapper select.gt_selector",
+          "dim": "x",
+          "delta": 4.4375,
+          "wp": 1243,
+          "drupal": 1247.4375
+        }
+      ]
+    }
+  ]
+}

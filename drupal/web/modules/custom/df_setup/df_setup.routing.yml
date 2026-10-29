@@ -1,0 +1,7 @@
+df_setup.topics_index:
+  path: '/topics'
+  defaults:
+    _controller: '\Drupal\df_setup\Controller\TopicsIndexController::build'
+    _title: ''
+  requirements:
+    _access: 'TRUE'

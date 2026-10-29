@@ -1,0 +1,2469 @@
+{
+  "template": "homepage",
+  "path": "/homepage",
+  "bp": "desktop",
+  "wpUrl": "https://danafarberimpact.org/homepage",
+  "drUrl": "http://127.0.0.1:8888/homepage",
+  "wpStatus": 202,
+  "drStatus": 200,
+  "wpCaptcha": false,
+  "mismatchCount": 43,
+  "mismatches": [
+    {
+      "selector": ".wp-site-blocks",
+      "kind": "rect",
+      "dim": "h",
+      "wp": 3501.921875,
+      "drupal": 2361.6875,
+      "delta": 1140.234375,
+      "area": 5042767.5
+    },
+    {
+      "selector": ".wp-site-blocks",
+      "kind": "style",
+      "key": "height",
+      "wp": "3501.92px",
+      "drupal": "2361.69px",
+      "area": 5042767.5
+    },
+    {
+      "selector": "main",
+      "kind": "rect",
+      "dim": "h",
+      "wp": 2706.5625,
+      "drupal": 1566.328125,
+      "delta": 1140.234375,
+      "area": 3507705
+    },
+    {
+      "selector": "main",
+      "kind": "style",
+      "key": "height",
+      "wp": "2706.56px",
+      "drupal": "1566.33px",
+      "area": 3507705
+    },
+    {
+      "selector": "main",
+      "kind": "imgNatural",
+      "wp": {
+        "naturalWidth": 768,
+        "naturalHeight": 551,
+        "renderedW": 777.59375,
+        "renderedH": 650,
+        "aspectNatural": 1.3938294010889292,
+        "aspectRendered": 1.1962980769230769,
+        "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2026/08/LavineBekensteinFCH_1450.jpg?fit=768%2C551&ssl=1"
+      },
+      "drupal": {
+        "naturalWidth": 0,
+        "naturalHeight": 0,
+        "renderedW": 294,
+        "renderedH": 210.921875,
+        "aspectNatural": 0,
+        "aspectRendered": 1.3938810282243128,
+        "src": "https://danafarberimpact.org/damonrunyon_1450/"
+      },
+      "area": 3507705
+    },
+    {
+      "selector": "main",
+      "kind": "imgRendered",
+      "dim": "w",
+      "wp": 777.59375,
+      "drupal": 294,
+      "delta": 483.59375,
+      "area": 3507705
+    },
+    {
+      "selector": "footer",
+      "kind": "rect",
+      "dim": "y",
+      "wp": 2854.609375,
+      "drupal": 1714.375,
+      "delta": 1140.234375,
+      "area": 838917
+    },
+    {
+      "selector": "footer",
+      "kind": "imgNatural",
+      "wp": {
+        "naturalWidth": 468,
+        "naturalHeight": 115,
+        "renderedW": 142.421875,
+        "renderedH": 35,
+        "aspectNatural": 4.069565217391304,
+        "aspectRendered": 4.069196428571429,
+        "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/01/Dana-Farber-Logo.png?w=468&ssl=1"
+      },
+      "drupal": {
+        "naturalWidth": 0,
+        "naturalHeight": 0,
+        "renderedW": 353,
+        "renderedH": 35,
+        "aspectNatural": 0,
+        "aspectRendered": 10.085714285714285,
+        "src": "http://127.0.0.1:8888/sites/default/files/wp-images/Dana-Farber-Logo.png"
+      },
+      "area": 838917
+    },
+    {
+      "selector": "footer",
+      "kind": "imgRendered",
+      "dim": "w",
+      "wp": 142.421875,
+      "drupal": 353,
+      "delta": 210.578125,
+      "area": 838917
+    },
+    {
+      "selector": ".footer-dark",
+      "kind": "rect",
+      "dim": "y",
+      "wp": 2854.609375,
+      "drupal": 1714.375,
+      "delta": 1140.234375,
+      "area": 680130
+    },
+    {
+      "selector": ".footer-dark",
+      "kind": "imgNatural",
+      "wp": {
+        "naturalWidth": 468,
+        "naturalHeight": 115,
+        "renderedW": 142.421875,
+        "renderedH": 35,
+        "aspectNatural": 4.069565217391304,
+        "aspectRendered": 4.069196428571429,
+        "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/01/Dana-Farber-Logo.png?w=468&ssl=1"
+      },
+      "drupal": {
+        "naturalWidth": 0,
+        "naturalHeight": 0,
+        "renderedW": 353,
+        "renderedH": 35,
+        "aspectNatural": 0,
+        "aspectRendered": 10.085714285714285,
+        "src": "http://127.0.0.1:8888/sites/default/files/wp-images/Dana-Farber-Logo.png"
+      },
+      "area": 680130
+    },
+    {
+      "selector": ".footer-dark",
+      "kind": "imgRendered",
+      "dim": "w",
+      "wp": 142.421875,
+      "drupal": 353,
+      "delta": 210.578125,
+      "area": 680130
+    },
+    {
+      "selector": ".wp-block-footer-widget-area-columns",
+      "kind": "rect",
+      "dim": "y",
+      "wp": 2904.609375,
+      "drupal": 1764.375,
+      "delta": 1140.234375,
+      "area": 514917
+    },
+    {
+      "selector": ".wp-block-footer-widget-area-columns",
+      "kind": "imgNatural",
+      "wp": {
+        "naturalWidth": 468,
+        "naturalHeight": 115,
+        "renderedW": 142.421875,
+        "renderedH": 35,
+        "aspectNatural": 4.069565217391304,
+        "aspectRendered": 4.069196428571429,
+        "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/01/Dana-Farber-Logo.png?w=468&ssl=1"
+      },
+      "drupal": {
+        "naturalWidth": 0,
+        "naturalHeight": 0,
+        "renderedW": 353,
+        "renderedH": 35,
+        "aspectNatural": 0,
+        "aspectRendered": 10.085714285714285,
+        "src": "http://127.0.0.1:8888/sites/default/files/wp-images/Dana-Farber-Logo.png"
+      },
+      "area": 514917
+    },
+    {
+      "selector": ".wp-block-footer-widget-area-columns",
+      "kind": "imgRendered",
+      "dim": "w",
+      "wp": 142.421875,
+      "drupal": 353,
+      "delta": 210.578125,
+      "area": 514917
+    },
+    {
+      "selector": ".wp-block-columns",
+      "kind": "rect",
+      "dim": "y",
+      "wp": 2904.609375,
+      "drupal": 1764.375,
+      "delta": 1140.234375,
+      "area": 514917
+    },
+    {
+      "selector": ".wp-block-columns",
+      "kind": "imgNatural",
+      "wp": {
+        "naturalWidth": 468,
+        "naturalHeight": 115,
+        "renderedW": 142.421875,
+        "renderedH": 35,
+        "aspectNatural": 4.069565217391304,
+        "aspectRendered": 4.069196428571429,
+        "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/01/Dana-Farber-Logo.png?w=468&ssl=1"
+      },
+      "drupal": {
+        "naturalWidth": 0,
+        "naturalHeight": 0,
+        "renderedW": 353,
+        "renderedH": 35,
+        "aspectNatural": 0,
+        "aspectRendered": 10.085714285714285,
+        "src": "http://127.0.0.1:8888/sites/default/files/wp-images/Dana-Farber-Logo.png"
+      },
+      "area": 514917
+    },
+    {
+      "selector": ".wp-block-columns",
+      "kind": "imgRendered",
+      "dim": "w",
+      "wp": 142.421875,
+      "drupal": 353,
+      "delta": 210.578125,
+      "area": 514917
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item img",
+      "kind": "rect",
+      "dim": "y",
+      "wp": 752.078125,
+      "drupal": 1116.890625,
+      "delta": 364.8125,
+      "area": 505435.9375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item img",
+      "kind": "rect",
+      "dim": "w",
+      "wp": 777.59375,
+      "drupal": 294,
+      "delta": 483.59375,
+      "area": 505435.9375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item img",
+      "kind": "rect",
+      "dim": "h",
+      "wp": 650,
+      "drupal": 210.921875,
+      "delta": 439.078125,
+      "area": 505435.9375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item img",
+      "kind": "style",
+      "key": "width",
+      "wp": "777.594px",
+      "drupal": "294px",
+      "area": 505435.9375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item img",
+      "kind": "style",
+      "key": "height",
+      "wp": "650px",
+      "drupal": "210.922px",
+      "area": 505435.9375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item img",
+      "kind": "imgNatural",
+      "wp": {
+        "naturalWidth": 768,
+        "naturalHeight": 551,
+        "renderedW": 777.59375,
+        "renderedH": 650,
+        "aspectNatural": 1.3938294010889292,
+        "aspectRendered": 1.1962980769230769,
+        "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2026/08/LavineBekensteinFCH_1450.jpg?fit=768%2C551&ssl=1"
+      },
+      "drupal": {
+        "naturalWidth": 0,
+        "naturalHeight": 0,
+        "renderedW": 294,
+        "renderedH": 210.921875,
+        "aspectNatural": 0,
+        "aspectRendered": 1.3938810282243128,
+        "src": "https://danafarberimpact.org/damonrunyon_1450/"
+      },
+      "area": 505435.9375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item img",
+      "kind": "imgRendered",
+      "dim": "w",
+      "wp": 777.59375,
+      "drupal": 294,
+      "delta": 483.59375,
+      "area": 505435.9375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item",
+      "kind": "rect",
+      "dim": "y",
+      "wp": 752.078125,
+      "drupal": 1116.890625,
+      "delta": 364.8125,
+      "area": 485996.09375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item",
+      "kind": "rect",
+      "dim": "w",
+      "wp": 777.59375,
+      "drupal": 294,
+      "delta": 483.59375,
+      "area": 485996.09375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item",
+      "kind": "rect",
+      "dim": "h",
+      "wp": 625,
+      "drupal": 377.921875,
+      "delta": 247.078125,
+      "area": 485996.09375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item",
+      "kind": "style",
+      "key": "width",
+      "wp": "777.594px",
+      "drupal": "294px",
+      "area": 485996.09375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item",
+      "kind": "style",
+      "key": "height",
+      "wp": "625px",
+      "drupal": "377.922px",
+      "area": 485996.09375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item",
+      "kind": "imgNatural",
+      "wp": {
+        "naturalWidth": 768,
+        "naturalHeight": 551,
+        "renderedW": 777.59375,
+        "renderedH": 650,
+        "aspectNatural": 1.3938294010889292,
+        "aspectRendered": 1.1962980769230769,
+        "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2026/08/LavineBekensteinFCH_1450.jpg?fit=768%2C551&ssl=1"
+      },
+      "drupal": {
+        "naturalWidth": 0,
+        "naturalHeight": 0,
+        "renderedW": 294,
+        "renderedH": 210.921875,
+        "aspectNatural": 0,
+        "aspectRendered": 1.3938810282243128,
+        "src": "https://danafarberimpact.org/damonrunyon_1450/"
+      },
+      "area": 485996.09375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item",
+      "kind": "imgRendered",
+      "dim": "w",
+      "wp": 777.59375,
+      "drupal": 294,
+      "delta": 483.59375,
+      "area": 485996.09375
+    },
+    {
+      "selector": ".desktop-header",
+      "kind": "style",
+      "key": "position",
+      "wp": "static",
+      "drupal": "sticky",
+      "area": 213187.5
+    },
+    {
+      "selector": "h3",
+      "kind": "rect",
+      "dim": "y",
+      "wp": 1889.03125,
+      "drupal": 1342.8125,
+      "delta": 546.21875,
+      "area": 45583.3125
+    },
+    {
+      "selector": "h3",
+      "kind": "rect",
+      "dim": "w",
+      "wp": 345.328125,
+      "drupal": 234,
+      "delta": 111.328125,
+      "area": 45583.3125
+    },
+    {
+      "selector": "h3",
+      "kind": "style",
+      "key": "width",
+      "wp": "345.328px",
+      "drupal": "234px",
+      "area": 45583.3125
+    },
+    {
+      "selector": ".copyright",
+      "kind": "rect",
+      "dim": "y",
+      "wp": 3440.921875,
+      "drupal": 2300.6875,
+      "delta": 1140.234375,
+      "area": 20384
+    },
+    {
+      "selector": ".copyright",
+      "kind": "style",
+      "key": "width",
+      "wp": "728px",
+      "drupal": "727px",
+      "area": 20384
+    },
+    {
+      "selector": "#mega-menu-wrap-max_mega_menu_1",
+      "kind": "style",
+      "key": "width",
+      "wp": "151px",
+      "drupal": "149px",
+      "area": 6851.625
+    },
+    {
+      "selector": "#mega-menu-wrap-max_mega_menu_1",
+      "kind": "style",
+      "key": "height",
+      "wp": "45.375px",
+      "drupal": "45.3281px",
+      "area": 6851.625
+    },
+    {
+      "selector": ".header-button-section .wp-block-button__link",
+      "kind": "style",
+      "key": "width",
+      "wp": "105px",
+      "drupal": "107px",
+      "area": 5564
+    },
+    {
+      "selector": "#mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link",
+      "kind": "style",
+      "key": "width",
+      "wp": "117px",
+      "drupal": "115px",
+      "area": 4680
+    },
+    {
+      "selector": ".gtranslate_wrapper select.gt_selector",
+      "kind": "rect",
+      "dim": "x",
+      "wp": 1243,
+      "drupal": 1124.4375,
+      "delta": 118.5625,
+      "area": 2698
+    }
+  ],
+  "topBoxDeltas": [
+    {
+      "selector": ".wp-site-blocks",
+      "dim": "h",
+      "delta": 1140.234375,
+      "wp": 3501.921875,
+      "drupal": 2361.6875
+    },
+    {
+      "selector": "main",
+      "dim": "h",
+      "delta": 1140.234375,
+      "wp": 2706.5625,
+      "drupal": 1566.328125
+    },
+    {
+      "selector": "footer",
+      "dim": "y",
+      "delta": 1140.234375,
+      "wp": 2854.609375,
+      "drupal": 1714.375
+    },
+    {
+      "selector": ".footer-dark",
+      "dim": "y",
+      "delta": 1140.234375,
+      "wp": 2854.609375,
+      "drupal": 1714.375
+    },
+    {
+      "selector": ".wp-block-footer-widget-area-columns",
+      "dim": "y",
+      "delta": 1140.234375,
+      "wp": 2904.609375,
+      "drupal": 1764.375
+    },
+    {
+      "selector": ".wp-block-columns",
+      "dim": "y",
+      "delta": 1140.234375,
+      "wp": 2904.609375,
+      "drupal": 1764.375
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item img",
+      "dim": "y",
+      "delta": 364.8125,
+      "wp": 752.078125,
+      "drupal": 1116.890625
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item img",
+      "dim": "w",
+      "delta": 483.59375,
+      "wp": 777.59375,
+      "drupal": 294
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item img",
+      "dim": "h",
+      "delta": 439.078125,
+      "wp": 650,
+      "drupal": 210.921875
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item",
+      "dim": "y",
+      "delta": 364.8125,
+      "wp": 752.078125,
+      "drupal": 1116.890625
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item",
+      "dim": "w",
+      "delta": 483.59375,
+      "wp": 777.59375,
+      "drupal": 294
+    },
+    {
+      "selector": ".ultp-block-items-wrap .ultp-block-item",
+      "dim": "h",
+      "delta": 247.078125,
+      "wp": 625,
+      "drupal": 377.921875
+    }
+  ],
+  "perSelector": {
+    "header": {
+      "wp": {
+        "rect": {
+          "x": 72,
+          "y": 0,
+          "w": 1296,
+          "h": 148.046875
+        },
+        "styles": {
+          "display": "block",
+          "position": "sticky",
+          "width": "1296px",
+          "height": "148.047px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgb(255, 255, 255)",
+          "gap": "normal",
+          "max-width": "1490px",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 400,
+          "renderedH": 107.046875,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 3.736680776528974,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "header",
+          "childElementCount": 2,
+          "className": "wp-block-template-part"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 72,
+          "y": 0,
+          "w": 1296,
+          "h": 148.046875
+        },
+        "styles": {
+          "display": "block",
+          "position": "sticky",
+          "width": "1296px",
+          "height": "148.047px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgb(255, 255, 255)",
+          "gap": "normal",
+          "max-width": "1490px",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 400,
+          "renderedH": 107.046875,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 3.736680776528974,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "header",
+          "childElementCount": 2,
+          "className": "wp-block-template-part"
+        }
+      }
+    },
+    ".wp-site-blocks": {
+      "wp": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 3501.921875
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "1296px",
+          "height": "3501.92px",
+          "margin": "0px",
+          "padding": "0px 72px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 400,
+          "renderedH": 107.046875,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 3.736680776528974,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 4,
+          "className": "wp-site-blocks"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 2361.6875
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "1296px",
+          "height": "2361.69px",
+          "margin": "0px",
+          "padding": "0px 72px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 400,
+          "renderedH": 107.046875,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 3.736680776528974,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 4,
+          "className": "wp-site-blocks"
+        }
+      }
+    },
+    ".desktop-header": {
+      "wp": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 148.046875
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "1440px",
+          "height": "148.047px",
+          "margin": "0px -72px",
+          "padding": "0px 72px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 400,
+          "renderedH": 107.046875,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 3.736680776528974,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 1,
+          "className": "wp-block-group alignfull desktop-header is-layout-flow wp-block-group-is-layout-flow"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 148.046875
+        },
+        "styles": {
+          "display": "block",
+          "position": "sticky",
+          "width": "1440px",
+          "height": "148.047px",
+          "margin": "0px -72px",
+          "padding": "0px 72px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 400,
+          "renderedH": 107.046875,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 3.736680776528974,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 1,
+          "className": "wp-block-group alignfull desktop-header is-layout-flow wp-block-group-is-layout-flow"
+        }
+      }
+    },
+    ".mobile-header": {
+      "wp": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "styles": {
+          "display": "none",
+          "position": "static",
+          "width": "auto",
+          "height": "auto",
+          "margin": "0px -72px",
+          "padding": "0px 72px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgb(255, 255, 255)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 0,
+          "renderedH": 0,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 0,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 1,
+          "className": "wp-block-group alignfull mobile-header is-layout-flow wp-block-group-is-layout-flow"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "styles": {
+          "display": "none",
+          "position": "static",
+          "width": "auto",
+          "height": "auto",
+          "margin": "0px -72px",
+          "padding": "0px 72px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgb(255, 255, 255)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 0,
+          "renderedH": 0,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 0,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 1,
+          "className": "wp-block-group alignfull mobile-header is-layout-flow wp-block-group-is-layout-flow"
+        }
+      }
+    },
+    ".wp-block-main-header": {
+      "wp": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 0
+        },
+        "styles": {
+          "display": "block",
+          "position": "relative",
+          "width": "1440px",
+          "height": "0px",
+          "margin": "0px -72px",
+          "padding": "0px 72px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 0,
+          "className": "wp-block-group alignfull wp-block-main-header wp-block-main-header-logo-center is-layout-constrained wp-block-group-is-l"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 0
+        },
+        "styles": {
+          "display": "block",
+          "position": "relative",
+          "width": "1440px",
+          "height": "0px",
+          "margin": "0px -72px",
+          "padding": "0px 72px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 0,
+          "className": "wp-block-group alignfull wp-block-main-header wp-block-main-header-logo-center is-layout-constrained wp-block-group-is-l"
+        }
+      }
+    },
+    ".header-logo": {
+      "wp": {
+        "rect": {
+          "x": 15,
+          "y": 20,
+          "w": 400,
+          "h": 107.046875
+        },
+        "styles": {
+          "display": "table",
+          "position": "static",
+          "width": "400px",
+          "height": "107.047px",
+          "margin": "0px 40px 0px 0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "400px",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 400,
+          "renderedH": 107.046875,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 3.736680776528974,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "figure",
+          "childElementCount": 1,
+          "className": "wp-block-image alignleft size-full is-resized header-logo"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 15,
+          "y": 20,
+          "w": 400,
+          "h": 107.046875
+        },
+        "styles": {
+          "display": "table",
+          "position": "static",
+          "width": "400px",
+          "height": "107.047px",
+          "margin": "0px 40px 0px 0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "400px",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 400,
+          "renderedH": 107.046875,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 3.736680776528974,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "figure",
+          "childElementCount": 1,
+          "className": "wp-block-image alignleft size-full is-resized header-logo"
+        }
+      }
+    },
+    ".header-logo img": {
+      "wp": {
+        "rect": {
+          "x": 15,
+          "y": 20,
+          "w": 400,
+          "h": 107.046875
+        },
+        "styles": {
+          "display": "inline",
+          "position": "static",
+          "width": "400px",
+          "height": "107.047px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 98, 155)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "100%",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 400,
+          "renderedH": 107.046875,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 3.736680776528974,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "img",
+          "childElementCount": 0,
+          "className": "wp-image-4427"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 15,
+          "y": 20,
+          "w": 400,
+          "h": 107.046875
+        },
+        "styles": {
+          "display": "inline",
+          "position": "static",
+          "width": "400px",
+          "height": "107.047px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 98, 155)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "100%",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 878,
+          "naturalHeight": 235,
+          "renderedW": 400,
+          "renderedH": 107.046875,
+          "aspectNatural": 3.7361702127659573,
+          "aspectRendered": 3.736680776528974,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+        },
+        "domSummary": {
+          "tag": "img",
+          "childElementCount": 0,
+          "className": "wp-image-4427"
+        }
+      }
+    },
+    "#mega-menu-wrap-max_mega_menu_1": {
+      "wp": {
+        "rect": {
+          "x": 1154,
+          "y": 75.828125,
+          "w": 151,
+          "h": 45.375
+        },
+        "styles": {
+          "display": "block",
+          "position": "relative",
+          "width": "151px",
+          "height": "45.375px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "14px",
+          "font-weight": "400",
+          "line-height": "23.8px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(255, 255, 255)",
+          "background-color": "rgb(255, 255, 255)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 2,
+          "className": "mega-menu-wrap"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 1154,
+          "y": 75.84375,
+          "w": 149,
+          "h": 45.328125
+        },
+        "styles": {
+          "display": "block",
+          "position": "relative",
+          "width": "149px",
+          "height": "45.3281px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "14px",
+          "font-weight": "400",
+          "line-height": "23.8px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(255, 255, 255)",
+          "background-color": "rgb(255, 255, 255)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 2,
+          "className": "mega-menu-wrap"
+        }
+      }
+    },
+    "#mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link": {
+      "wp": {
+        "rect": {
+          "x": 1156,
+          "y": 79.203125,
+          "w": 117,
+          "h": 40
+        },
+        "styles": {
+          "display": "block",
+          "position": "relative",
+          "width": "117px",
+          "height": "40px",
+          "margin": "0px",
+          "padding": "0px 10px",
+          "font-family": "Montserrat",
+          "font-size": "22px",
+          "font-weight": "600",
+          "line-height": "40px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 98, 155)",
+          "background-color": "rgb(255, 255, 255)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "a",
+          "childElementCount": 1,
+          "className": "mega-menu-link"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 1156,
+          "y": 79.171875,
+          "w": 115,
+          "h": 40
+        },
+        "styles": {
+          "display": "block",
+          "position": "relative",
+          "width": "115px",
+          "height": "40px",
+          "margin": "0px",
+          "padding": "0px 10px",
+          "font-family": "Montserrat",
+          "font-size": "22px",
+          "font-weight": "600",
+          "line-height": "40px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 98, 155)",
+          "background-color": "rgb(255, 255, 255)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "a",
+          "childElementCount": 1,
+          "className": "mega-menu-link"
+        }
+      }
+    },
+    ".header-button-section .wp-block-button__link": {
+      "wp": {
+        "rect": {
+          "x": 1320,
+          "y": 72.515625,
+          "w": 105,
+          "h": 52
+        },
+        "styles": {
+          "display": "inline-block",
+          "position": "static",
+          "width": "105px",
+          "height": "52px",
+          "margin": "0px",
+          "padding": "10px 20px",
+          "font-family": "Montserrat",
+          "font-size": "16px",
+          "font-weight": "700",
+          "line-height": "28px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(255, 255, 255)",
+          "background-color": "rgb(0, 98, 155)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "a",
+          "childElementCount": 0,
+          "className": "wp-block-button__link has-white-color has-text-color has-background has-medium-font-size has-custom-font-size wp-element"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 1318,
+          "y": 72.515625,
+          "w": 107,
+          "h": 52
+        },
+        "styles": {
+          "display": "inline-block",
+          "position": "static",
+          "width": "107px",
+          "height": "52px",
+          "margin": "0px",
+          "padding": "10px 20px",
+          "font-family": "Montserrat",
+          "font-size": "16px",
+          "font-weight": "700",
+          "line-height": "28px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(255, 255, 255)",
+          "background-color": "rgb(0, 98, 155)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "a",
+          "childElementCount": 0,
+          "className": "wp-block-button__link has-white-color has-text-color has-background has-medium-font-size has-custom-font-size wp-element"
+        }
+      }
+    },
+    "footer": {
+      "wp": {
+        "rect": {
+          "x": 72,
+          "y": 2854.609375,
+          "w": 1296,
+          "h": 647.3125
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "1296px",
+          "height": "647.312px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "1490px",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 468,
+          "naturalHeight": 115,
+          "renderedW": 142.421875,
+          "renderedH": 35,
+          "aspectNatural": 4.069565217391304,
+          "aspectRendered": 4.069196428571429,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/01/Dana-Farber-Logo.png?w=468&ssl=1"
+        },
+        "domSummary": {
+          "tag": "footer",
+          "childElementCount": 3,
+          "className": "wp-block-template-part"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 72,
+          "y": 1714.375,
+          "w": 1296,
+          "h": 647.3125
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "1296px",
+          "height": "647.312px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "1490px",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 0,
+          "naturalHeight": 0,
+          "renderedW": 353,
+          "renderedH": 35,
+          "aspectNatural": 0,
+          "aspectRendered": 10.085714285714285,
+          "src": "http://127.0.0.1:8888/sites/default/files/wp-images/Dana-Farber-Logo.png"
+        },
+        "domSummary": {
+          "tag": "footer",
+          "childElementCount": 3,
+          "className": "wp-block-template-part"
+        }
+      }
+    },
+    ".footer-dark": {
+      "wp": {
+        "rect": {
+          "x": 0,
+          "y": 2854.609375,
+          "w": 1440,
+          "h": 472.3125
+        },
+        "styles": {
+          "display": "block",
+          "position": "relative",
+          "width": "1440px",
+          "height": "472.312px",
+          "margin": "0px -72px",
+          "padding": "25px 72px 0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgb(246, 246, 246)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 468,
+          "naturalHeight": 115,
+          "renderedW": 142.421875,
+          "renderedH": 35,
+          "aspectNatural": 4.069565217391304,
+          "aspectRendered": 4.069196428571429,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/01/Dana-Farber-Logo.png?w=468&ssl=1"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 1,
+          "className": "wp-block-group alignfull footer-dark has-background is-layout-constrained wp-block-group-is-layout-constrained"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 0,
+          "y": 1714.375,
+          "w": 1440,
+          "h": 472.3125
+        },
+        "styles": {
+          "display": "block",
+          "position": "relative",
+          "width": "1440px",
+          "height": "472.312px",
+          "margin": "0px -72px",
+          "padding": "25px 72px 0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgb(246, 246, 246)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 0,
+          "naturalHeight": 0,
+          "renderedW": 353,
+          "renderedH": 35,
+          "aspectNatural": 0,
+          "aspectRendered": 10.085714285714285,
+          "src": "http://127.0.0.1:8888/sites/default/files/wp-images/Dana-Farber-Logo.png"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 1,
+          "className": "wp-block-group alignfull footer-dark has-background is-layout-constrained wp-block-group-is-layout-constrained"
+        }
+      }
+    },
+    ".wp-block-footer-widget-area-columns": {
+      "wp": {
+        "rect": {
+          "x": 72,
+          "y": 2904.609375,
+          "w": 1296,
+          "h": 397.3125
+        },
+        "styles": {
+          "display": "flex",
+          "position": "static",
+          "width": "1296px",
+          "height": "397.312px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "0px",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 468,
+          "naturalHeight": 115,
+          "renderedW": 142.421875,
+          "renderedH": 35,
+          "aspectNatural": 4.069565217391304,
+          "aspectRendered": 4.069196428571429,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/01/Dana-Farber-Logo.png?w=468&ssl=1"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 3,
+          "className": "wp-block-columns wp-block-footer-widget-area-columns is-layout-flex wp-container-core-columns-is-layout-f56f613f wp-bloc"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 72,
+          "y": 1764.375,
+          "w": 1296,
+          "h": 397.3125
+        },
+        "styles": {
+          "display": "flex",
+          "position": "static",
+          "width": "1296px",
+          "height": "397.312px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "0px",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 0,
+          "naturalHeight": 0,
+          "renderedW": 353,
+          "renderedH": 35,
+          "aspectNatural": 0,
+          "aspectRendered": 10.085714285714285,
+          "src": "http://127.0.0.1:8888/sites/default/files/wp-images/Dana-Farber-Logo.png"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 3,
+          "className": "wp-block-columns wp-block-footer-widget-area-columns is-layout-flex wp-container-core-columns-is-layout-f56f613f wp-bloc"
+        }
+      }
+    },
+    ".copyright": {
+      "wp": {
+        "rect": {
+          "x": 72,
+          "y": 3440.921875,
+          "w": 728,
+          "h": 28
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "728px",
+          "height": "28px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "16px",
+          "font-weight": "400",
+          "line-height": "28px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(255, 255, 255)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "p",
+          "childElementCount": 3,
+          "className": "copyright has-white-color has-text-color has-montserrat-font-family has-medium-font-size wp-block-paragraph"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 72,
+          "y": 2300.6875,
+          "w": 727,
+          "h": 28
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "727px",
+          "height": "28px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "16px",
+          "font-weight": "400",
+          "line-height": "28px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(255, 255, 255)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "p",
+          "childElementCount": 3,
+          "className": "copyright has-white-color has-text-color has-montserrat-font-family has-medium-font-size wp-block-paragraph"
+        }
+      }
+    },
+    ".gtranslate_wrapper select.gt_selector": {
+      "wp": {
+        "rect": {
+          "x": 1243,
+          "y": 32.515625,
+          "w": 142,
+          "h": 19
+        },
+        "styles": {
+          "display": "inline-block",
+          "position": "static",
+          "width": "142px",
+          "height": "19px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Arial",
+          "font-size": "13.3333px",
+          "font-weight": "400",
+          "line-height": "normal",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 0, 0)",
+          "background-color": "rgb(239, 239, 239)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "select",
+          "childElementCount": 21,
+          "className": "gt_selector notranslate"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 1124.4375,
+          "y": 32.515625,
+          "w": 142,
+          "h": 19
+        },
+        "styles": {
+          "display": "inline-block",
+          "position": "static",
+          "width": "142px",
+          "height": "19px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Arial",
+          "font-size": "13.3333px",
+          "font-weight": "400",
+          "line-height": "normal",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 0, 0)",
+          "background-color": "rgb(239, 239, 239)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "select",
+          "childElementCount": 21,
+          "className": "gt_selector notranslate"
+        }
+      }
+    },
+    "main": {
+      "wp": {
+        "rect": {
+          "x": 72,
+          "y": 148.046875,
+          "w": 1296,
+          "h": 2706.5625
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "1296px",
+          "height": "2706.56px",
+          "margin": "0px",
+          "padding": "0px 0px 79.2px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "1490px",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 768,
+          "naturalHeight": 551,
+          "renderedW": 777.59375,
+          "renderedH": 650,
+          "aspectNatural": 1.3938294010889292,
+          "aspectRendered": 1.1962980769230769,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2026/08/LavineBekensteinFCH_1450.jpg?fit=768%2C551&ssl=1"
+        },
+        "domSummary": {
+          "tag": "main",
+          "childElementCount": 2,
+          "className": "wp-block-group is-layout-flow wp-block-group-is-layout-flow"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 72,
+          "y": 148.046875,
+          "w": 1296,
+          "h": 1566.328125
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "1296px",
+          "height": "1566.33px",
+          "margin": "0px",
+          "padding": "0px 0px 79.2px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "1490px",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 0,
+          "naturalHeight": 0,
+          "renderedW": 294,
+          "renderedH": 210.921875,
+          "aspectNatural": 0,
+          "aspectRendered": 1.3938810282243128,
+          "src": "https://danafarberimpact.org/damonrunyon_1450/"
+        },
+        "domSummary": {
+          "tag": "main",
+          "childElementCount": 2,
+          "className": "wp-block-group is-layout-flow wp-block-group-is-layout-flow"
+        }
+      }
+    },
+    ".homepage-banner": {
+      "wp": {
+        "rect": {
+          "x": 0,
+          "y": 148.046875,
+          "w": 1440,
+          "h": 490
+        },
+        "styles": {
+          "display": "flex",
+          "position": "relative",
+          "width": "1440px",
+          "height": "490px",
+          "margin": "0px -72px",
+          "padding": "20px 72px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 0, 0)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 3,
+          "className": "wp-block-cover alignfull is-light homepage-banner"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 0,
+          "y": 148.046875,
+          "w": 1440,
+          "h": 490
+        },
+        "styles": {
+          "display": "flex",
+          "position": "relative",
+          "width": "1440px",
+          "height": "490px",
+          "margin": "0px -72px",
+          "padding": "20px 72px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 0, 0)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 3,
+          "className": "wp-block-cover alignfull is-light homepage-banner"
+        }
+      }
+    },
+    ".homepage-banner video": {
+      "wp": {
+        "rect": {
+          "x": 0,
+          "y": 148.046875,
+          "w": 1440,
+          "h": 490
+        },
+        "styles": {
+          "display": "block",
+          "position": "absolute",
+          "width": "1440px",
+          "height": "490px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 0, 0)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "video",
+          "childElementCount": 0,
+          "className": "wp-block-cover__video-background intrinsic-ignore"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 0,
+          "y": 148.046875,
+          "w": 1440,
+          "h": 490
+        },
+        "styles": {
+          "display": "block",
+          "position": "absolute",
+          "width": "1440px",
+          "height": "490px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 0, 0)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "video",
+          "childElementCount": 0,
+          "className": "wp-block-cover__video-background intrinsic-ignore"
+        }
+      }
+    },
+    ".homepage-banner img": {
+      "wp": null,
+      "drupal": null
+    },
+    "h1": {
+      "wp": {
+        "rect": {
+          "x": 72,
+          "y": 393.046875,
+          "w": 1296,
+          "h": 144
+        },
+        "styles": {
+          "display": "block",
+          "position": "absolute",
+          "width": "1276px",
+          "height": "124px",
+          "margin": "0px",
+          "padding": "10px",
+          "font-family": "Montserrat",
+          "font-size": "62px",
+          "font-weight": "600",
+          "line-height": "62px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(255, 255, 255)",
+          "background-color": "rgba(0, 98, 155, 0.5)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "h1",
+          "childElementCount": 0,
+          "className": "wp-block-heading has-text-align-left has-background-color has-text-color has-montserrat-font-family"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 72,
+          "y": 393.046875,
+          "w": 1296,
+          "h": 144
+        },
+        "styles": {
+          "display": "block",
+          "position": "absolute",
+          "width": "1276px",
+          "height": "124px",
+          "margin": "0px",
+          "padding": "10px",
+          "font-family": "Montserrat",
+          "font-size": "62px",
+          "font-weight": "600",
+          "line-height": "62px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(255, 255, 255)",
+          "background-color": "rgba(0, 98, 155, 0.5)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "h1",
+          "childElementCount": 0,
+          "className": "wp-block-heading has-text-align-left has-background-color has-text-color has-montserrat-font-family"
+        }
+      }
+    },
+    "h2": {
+      "wp": {
+        "rect": {
+          "x": 72,
+          "y": 678.046875,
+          "w": 1296,
+          "h": 50.03125
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "1256px",
+          "height": "40.0312px",
+          "margin": "40px 0px 0px",
+          "padding": "5px 20px 5px 15px",
+          "font-family": "Montserrat",
+          "font-size": "28px",
+          "font-weight": "600",
+          "line-height": "40.04px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(99, 102, 106)",
+          "background-color": "rgba(221, 229, 240, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "h2",
+          "childElementCount": 0,
+          "className": "wp-block-heading alignwide orange-border-header has-text-color has-background has-montserrat-font-family"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 72,
+          "y": 678.046875,
+          "w": 1296,
+          "h": 50.03125
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "1256px",
+          "height": "40.0312px",
+          "margin": "40px 0px 0px",
+          "padding": "5px 20px 5px 15px",
+          "font-family": "Montserrat",
+          "font-size": "28px",
+          "font-weight": "600",
+          "line-height": "40.04px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(99, 102, 106)",
+          "background-color": "rgba(221, 229, 240, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "h2",
+          "childElementCount": 0,
+          "className": "wp-block-heading alignwide orange-border-header has-text-color has-background has-montserrat-font-family"
+        }
+      }
+    },
+    "h3": {
+      "wp": {
+        "rect": {
+          "x": 102,
+          "y": 1889.03125,
+          "w": 345.328125,
+          "h": 132
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "345.328px",
+          "height": "112px",
+          "margin": "0px",
+          "padding": "10px 0px",
+          "font-family": "Baskervville, serif",
+          "font-size": "20px",
+          "font-weight": "600",
+          "line-height": "28px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "h3",
+          "childElementCount": 1,
+          "className": "ultp-block-title "
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 102,
+          "y": 1342.8125,
+          "w": 234,
+          "h": 132
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "234px",
+          "height": "112px",
+          "margin": "0px",
+          "padding": "10px 0px",
+          "font-family": "Baskervville, serif",
+          "font-size": "20px",
+          "font-weight": "600",
+          "line-height": "28px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": null,
+        "domSummary": {
+          "tag": "h3",
+          "childElementCount": 1,
+          "className": "ultp-block-title"
+        }
+      }
+    },
+    "article .entry-content": {
+      "wp": null,
+      "drupal": null
+    },
+    "article .entry-content p": {
+      "wp": null,
+      "drupal": null
+    },
+    "article .entry-content img": {
+      "wp": null,
+      "drupal": null
+    },
+    ".wp-block-post-featured-image img": {
+      "wp": null,
+      "drupal": null
+    },
+    ".issue-banner": {
+      "wp": null,
+      "drupal": null
+    },
+    ".issue-banner img": {
+      "wp": null,
+      "drupal": null
+    },
+    ".ultp-block-items-wrap .ultp-block-item": {
+      "wp": {
+        "rect": {
+          "x": 72,
+          "y": 752.078125,
+          "w": 777.59375,
+          "h": 625
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "777.594px",
+          "height": "625px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 768,
+          "naturalHeight": 551,
+          "renderedW": 777.59375,
+          "renderedH": 650,
+          "aspectNatural": 1.3938294010889292,
+          "aspectRendered": 1.1962980769230769,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2026/08/LavineBekensteinFCH_1450.jpg?fit=768%2C551&ssl=1"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 1,
+          "className": "ultp-block-item post-id-9828"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 72,
+          "y": 1116.890625,
+          "w": 294,
+          "h": 377.921875
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "294px",
+          "height": "377.922px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "none",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 0,
+          "naturalHeight": 0,
+          "renderedW": 294,
+          "renderedH": 210.921875,
+          "aspectNatural": 0,
+          "aspectRendered": 1.3938810282243128,
+          "src": "https://danafarberimpact.org/damonrunyon_1450/"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 1,
+          "className": "ultp-block-item post-id-401"
+        }
+      }
+    },
+    ".ultp-block-items-wrap .ultp-block-item img": {
+      "wp": {
+        "rect": {
+          "x": 72,
+          "y": 752.078125,
+          "w": 777.59375,
+          "h": 650
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "777.594px",
+          "height": "650px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 98, 155)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "100%",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 768,
+          "naturalHeight": 551,
+          "renderedW": 777.59375,
+          "renderedH": 650,
+          "aspectNatural": 1.3938294010889292,
+          "aspectRendered": 1.1962980769230769,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2026/08/LavineBekensteinFCH_1450.jpg?fit=768%2C551&ssl=1"
+        },
+        "domSummary": {
+          "tag": "img",
+          "childElementCount": 0,
+          "className": "lazyloaded"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 72,
+          "y": 1116.890625,
+          "w": 294,
+          "h": 210.921875
+        },
+        "styles": {
+          "display": "block",
+          "position": "static",
+          "width": "294px",
+          "height": "210.922px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(0, 98, 155)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "normal",
+          "max-width": "100%",
+          "box-sizing": "content-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 0,
+          "naturalHeight": 0,
+          "renderedW": 294,
+          "renderedH": 210.921875,
+          "aspectNatural": 0,
+          "aspectRendered": 1.3938810282243128,
+          "src": "https://danafarberimpact.org/damonrunyon_1450/"
+        },
+        "domSummary": {
+          "tag": "img",
+          "childElementCount": 0,
+          "className": "ultp-block-image-content lazyloaded"
+        }
+      }
+    },
+    ".postx-post-grid .postx-grid-item": {
+      "wp": null,
+      "drupal": null
+    },
+    ".postx-post-grid .postx-grid-item img": {
+      "wp": null,
+      "drupal": null
+    },
+    ".wp-block-post-template .wp-block-post": {
+      "wp": null,
+      "drupal": null
+    },
+    ".wp-block-post-template .wp-block-post img": {
+      "wp": null,
+      "drupal": null
+    },
+    ".archive-row": {
+      "wp": null,
+      "drupal": null
+    },
+    ".archive-row img": {
+      "wp": null,
+      "drupal": null
+    },
+    ".wp-block-group.about-impact": {
+      "wp": null,
+      "drupal": null
+    },
+    ".wp-block-columns": {
+      "wp": {
+        "rect": {
+          "x": 72,
+          "y": 2904.609375,
+          "w": 1296,
+          "h": 397.3125
+        },
+        "styles": {
+          "display": "flex",
+          "position": "static",
+          "width": "1296px",
+          "height": "397.312px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "0px",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 468,
+          "naturalHeight": 115,
+          "renderedW": 142.421875,
+          "renderedH": 35,
+          "aspectNatural": 4.069565217391304,
+          "aspectRendered": 4.069196428571429,
+          "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/01/Dana-Farber-Logo.png?w=468&ssl=1"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 3,
+          "className": "wp-block-columns wp-block-footer-widget-area-columns is-layout-flex wp-container-core-columns-is-layout-f56f613f wp-bloc"
+        }
+      },
+      "drupal": {
+        "rect": {
+          "x": 72,
+          "y": 1764.375,
+          "w": 1296,
+          "h": 397.3125
+        },
+        "styles": {
+          "display": "flex",
+          "position": "static",
+          "width": "1296px",
+          "height": "397.312px",
+          "margin": "0px",
+          "padding": "0px",
+          "font-family": "Montserrat",
+          "font-size": "20px",
+          "font-weight": "400",
+          "line-height": "35px",
+          "letter-spacing": "normal",
+          "text-transform": "none",
+          "color": "rgb(85, 85, 85)",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "gap": "0px",
+          "max-width": "none",
+          "box-sizing": "border-box"
+        },
+        "imageMeta": {
+          "naturalWidth": 0,
+          "naturalHeight": 0,
+          "renderedW": 353,
+          "renderedH": 35,
+          "aspectNatural": 0,
+          "aspectRendered": 10.085714285714285,
+          "src": "http://127.0.0.1:8888/sites/default/files/wp-images/Dana-Farber-Logo.png"
+        },
+        "domSummary": {
+          "tag": "div",
+          "childElementCount": 3,
+          "className": "wp-block-columns wp-block-footer-widget-area-columns is-layout-flex wp-container-core-columns-is-layout-f56f613f wp-bloc"
+        }
+      }
+    }
+  }
+}

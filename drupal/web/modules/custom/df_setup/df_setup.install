@@ -1003,7 +1003,26 @@ function df_setup_update_10026(): string {
 }
 
 /**
- * About Impact: WordPress Gutenberg block body (after content-sweep 10028 staff + h1).
+ * Sync About Impact staff block with WordPress reference (PR #23 content sweep).
+ */
+function df_setup_update_10028(): string {
+  $node = _df_setup_load_about_impact_node();
+  if ($node === NULL) {
+    return 'About Impact page not found.';
+  }
+  $body = (string) $node->get('body')->value;
+  $synced = _df_setup_sync_about_impact_staff_body($body);
+  if ($synced === $body) {
+    return 'About Impact staff block already synced to WordPress reference.';
+  }
+  $node->set('body', ['value' => $synced, 'format' => 'full_html']);
+  $node->save();
+  drupal_flush_all_caches();
+  return 'About Impact staff block synced to WordPress reference.';
+}
+
+/**
+ * About Impact: WordPress Gutenberg block body (after df_setup_update_10028 + visible h1).
  */
 function df_setup_update_10029(): string {
   return _df_setup_apply_about_impact_gutenberg_body();

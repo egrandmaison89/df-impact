@@ -1,0 +1,502 @@
+{
+  "generatedAt": "2026-10-29T06:10:55.707Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 5,
+  "byTemplate": {
+    "archive": {
+      "runs": 5,
+      "mismatchesAll": 432,
+      "comparableRuns": 3,
+      "mismatchesComparable": 262,
+      "medianMismatchComparable": 95
+    }
+  },
+  "results": [
+    {
+      "template": "archive",
+      "path": "/category/cancer-research",
+      "bp": "tablet",
+      "mismatchCount": 97,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 1,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 2561.265625,
+          "wp": 9836.21875,
+          "drupal": 7274.953125
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 118.125,
+          "wp": 308.953125,
+          "drupal": 190.828125
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 2415.1875,
+          "wp": 8173.546875,
+          "drupal": 5758.359375
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 2533.3125,
+          "wp": 8482.5,
+          "drupal": 5949.1875
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "footer",
+          "dim": "h",
+          "delta": 27.953125,
+          "wp": 1353.71875,
+          "drupal": 1325.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 0,
+          "drupal": -18.390625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 2533.3125,
+          "wp": 8482.5,
+          "drupal": 5949.1875
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 768,
+          "drupal": 804.78125
+        }
+      ]
+    },
+    {
+      "template": "archive",
+      "path": "/category/digital-exclusives",
+      "bp": "tablet",
+      "mismatchCount": 93,
+      "wpStatus": 0,
+      "drStatus": 200,
+      "wpComparable": false,
+      "wpShellReason": "captcha_html",
+      "wpAttempts": 4,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 1578.5625,
+          "wp": 9989.546875,
+          "drupal": 8410.984375
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 118.125,
+          "wp": 308.953125,
+          "drupal": 190.828125
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 1432.484375,
+          "wp": 8326.875,
+          "drupal": 6894.390625
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 1550.609375,
+          "wp": 8635.828125,
+          "drupal": 7085.21875
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "footer",
+          "dim": "h",
+          "delta": 27.953125,
+          "wp": 1353.71875,
+          "drupal": 1325.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 0,
+          "drupal": -18.390625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 1550.609375,
+          "wp": 8635.828125,
+          "drupal": 7085.21875
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 768,
+          "drupal": 804.78125
+        }
+      ]
+    },
+    {
+      "template": "archive",
+      "path": "/category/access-and-equity",
+      "bp": "tablet",
+      "mismatchCount": 95,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 1,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 2717.15625,
+          "wp": 10202,
+          "drupal": 7484.84375
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 118.125,
+          "wp": 308.953125,
+          "drupal": 190.828125
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 2571.078125,
+          "wp": 8539.328125,
+          "drupal": 5968.25
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 2689.203125,
+          "wp": 8848.28125,
+          "drupal": 6159.078125
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "footer",
+          "dim": "h",
+          "delta": 27.953125,
+          "wp": 1353.71875,
+          "drupal": 1325.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 0,
+          "drupal": -18.390625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 2689.203125,
+          "wp": 8848.28125,
+          "drupal": 6159.078125
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 768,
+          "drupal": 804.78125
+        }
+      ]
+    },
+    {
+      "template": "archive",
+      "path": "/digital-exclusives",
+      "bp": "tablet",
+      "mismatchCount": 77,
+      "wpStatus": 404,
+      "drStatus": 200,
+      "wpComparable": false,
+      "wpShellReason": null,
+      "wpAttempts": 4,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 6582.453125,
+          "wp": 1828.53125,
+          "drupal": 8410.984375
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 78.671875,
+          "wp": 269.5,
+          "drupal": 190.828125
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 6689.078125,
+          "wp": 205.3125,
+          "drupal": 6894.390625
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 6610.40625,
+          "wp": 474.8125,
+          "drupal": 7085.21875
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "footer",
+          "dim": "h",
+          "delta": 27.953125,
+          "wp": 1353.71875,
+          "drupal": 1325.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 0,
+          "drupal": -18.390625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 6610.40625,
+          "wp": 474.8125,
+          "drupal": 7085.21875
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 768,
+          "drupal": 804.78125
+        }
+      ]
+    },
+    {
+      "template": "archive",
+      "path": "/issues",
+      "bp": "tablet",
+      "mismatchCount": 70,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 3,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 4669.65625,
+          "wp": 10245.1875,
+          "drupal": 5575.53125
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 24.046875,
+          "wp": 214.875,
+          "drupal": 190.828125
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 4617.65625,
+          "wp": 8676.59375,
+          "drupal": 4058.9375
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 4641.703125,
+          "wp": 8891.46875,
+          "drupal": 4249.765625
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "footer",
+          "dim": "h",
+          "delta": 27.953125,
+          "wp": 1353.71875,
+          "drupal": 1325.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 0,
+          "drupal": -18.390625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 4641.703125,
+          "wp": 8891.46875,
+          "drupal": 4249.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 768,
+          "drupal": 804.78125
+        }
+      ]
+    }
+  ]
+}

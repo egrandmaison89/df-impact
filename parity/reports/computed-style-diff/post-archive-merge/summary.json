@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-10-29T05:34:44.015Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 1,
+  "byTemplate": {
+    "archive": {
+      "runs": 1,
+      "mismatchesAll": 24,
+      "comparableRuns": 0,
+      "mismatchesComparable": 0,
+      "medianMismatchComparable": null
+    }
+  },
+  "results": [
+    {
+      "template": "archive",
+      "path": "/category/digital-exclusives",
+      "bp": "desktop",
+      "mismatchCount": 24,
+      "wpStatus": 0,
+      "drStatus": 200,
+      "wpComparable": false,
+      "wpShellReason": "missing_header_nav",
+      "wpAttempts": 4,
+      "topBoxDeltas": []
+    }
+  ]
+}

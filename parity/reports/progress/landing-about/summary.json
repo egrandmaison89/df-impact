@@ -1,0 +1,547 @@
+{
+  "component": "landing-about",
+  "drupalBase": "http://127.0.0.1:8888",
+  "refRenderer": "linux-local-rendered-html",
+  "pages": 2,
+  "rectTolerancePx": 2,
+  "structuralPackPassAll": false,
+  "structuralRefDrupalPassAll": false,
+  "medians": {
+    "chrome_median_linux_desktop": 0.1374931440065815,
+    "viewport_median_mac_desktop": 0.3480293209876543,
+    "chrome_median_linux_tablet": 0.17093077110581373,
+    "viewport_median_mac_tablet": 0.39272569444444444,
+    "chrome_median_linux_mobile": 0.21031781484162243,
+    "viewport_median_mac_mobile": 0.36958814814814817
+  },
+  "summary": [
+    {
+      "path": "/about",
+      "bp": "desktop",
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 21,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 57,
+      "textSimilarity": 0.9615384615384616,
+      "headerPixelDiffRatioLinux": 0.16005882840334743,
+      "footerPixelDiffRatioLinux": 0.11492745960981558,
+      "chromePixelDiffRatioLinux": 0.1374931440065815,
+      "viewportPixelDiffRatioLinux": 0.16677932098765433,
+      "viewportPixelDiffRatioMac": 0.3480293209876543,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "style",
+          "key": "max-width",
+          "expected": "1490px",
+          "actual": "100%"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1296
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "style",
+          "key": "margin",
+          "expected": "0px -72px",
+          "actual": "0px"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "style",
+          "key": "max-width",
+          "expected": "none",
+          "actual": "100%"
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1296
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": "header",
+          "kind": "ref_vs_drupal_style",
+          "key": "max-width",
+          "expected": "1490px",
+          "actual": "100%"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        }
+      ]
+    },
+    {
+      "path": "/about",
+      "bp": "tablet",
+      "structuralPackPass": false,
+      "structuralPackFailures": 7,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 25,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 26,
+      "textSimilarity": 0.9615384615384616,
+      "headerPixelDiffRatioLinux": 0.18309190538194445,
+      "footerPixelDiffRatioLinux": 0.158769636829683,
+      "chromePixelDiffRatioLinux": 0.17093077110581373,
+      "viewportPixelDiffRatioLinux": 0.1391623263888889,
+      "viewportPixelDiffRatioMac": 0.39272569444444444,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 38.390625,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 728
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 38.390625,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2618.96875,
+          "actual": 2551.71875
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 768,
+          "actual": 728
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 191.28125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2262.234375,
+          "actual": 2551.71875
+        }
+      ]
+    },
+    {
+      "path": "/about",
+      "bp": "mobile",
+      "structuralPackPass": false,
+      "structuralPackFailures": 8,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 26,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 26,
+      "textSimilarity": 0.9615384615384616,
+      "headerPixelDiffRatioLinux": 0.16068055555555555,
+      "footerPixelDiffRatioLinux": 0.2599550741276893,
+      "chromePixelDiffRatioLinux": 0.21031781484162243,
+      "viewportPixelDiffRatioLinux": 0.17638814814814816,
+      "viewportPixelDiffRatioMac": 0.36958814814814817,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 28,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 335
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 191.28125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 28,
+          "actual": 20
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 375,
+          "actual": 335
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 191.28125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2862.734375,
+          "actual": 2610.796875
+        }
+      ]
+    },
+    {
+      "path": "/about-impact",
+      "bp": "desktop",
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 21,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 57,
+      "textSimilarity": 0.9615384615384616,
+      "headerPixelDiffRatioLinux": 0.16005882840334743,
+      "footerPixelDiffRatioLinux": 0.11492745960981558,
+      "chromePixelDiffRatioLinux": 0.1374931440065815,
+      "viewportPixelDiffRatioLinux": 0.16677932098765433,
+      "viewportPixelDiffRatioMac": 0.3480293209876543,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "style",
+          "key": "max-width",
+          "expected": "1490px",
+          "actual": "100%"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1296
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "style",
+          "key": "margin",
+          "expected": "0px -72px",
+          "actual": "0px"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "style",
+          "key": "max-width",
+          "expected": "none",
+          "actual": "100%"
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1296
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": "header",
+          "kind": "ref_vs_drupal_style",
+          "key": "max-width",
+          "expected": "1490px",
+          "actual": "100%"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        }
+      ]
+    },
+    {
+      "path": "/about-impact",
+      "bp": "tablet",
+      "structuralPackPass": false,
+      "structuralPackFailures": 7,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 25,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 26,
+      "textSimilarity": 0.9615384615384616,
+      "headerPixelDiffRatioLinux": 0.18309190538194445,
+      "footerPixelDiffRatioLinux": 0.158769636829683,
+      "chromePixelDiffRatioLinux": 0.17093077110581373,
+      "viewportPixelDiffRatioLinux": 0.1391623263888889,
+      "viewportPixelDiffRatioMac": 0.39272569444444444,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 38.390625,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 728
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 38.390625,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2618.96875,
+          "actual": 2551.71875
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 768,
+          "actual": 728
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 191.28125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2262.234375,
+          "actual": 2551.71875
+        }
+      ]
+    },
+    {
+      "path": "/about-impact",
+      "bp": "mobile",
+      "structuralPackPass": false,
+      "structuralPackFailures": 8,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 26,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 26,
+      "textSimilarity": 0.9615384615384616,
+      "headerPixelDiffRatioLinux": 0.16068055555555555,
+      "footerPixelDiffRatioLinux": 0.2599550741276893,
+      "chromePixelDiffRatioLinux": 0.21031781484162243,
+      "viewportPixelDiffRatioLinux": 0.17638814814814816,
+      "viewportPixelDiffRatioMac": 0.36958814814814817,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 28,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 335
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 191.28125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 28,
+          "actual": 20
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 375,
+          "actual": 335
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 191.28125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2862.734375,
+          "actual": 2610.796875
+        }
+      ]
+    }
+  ]
+}

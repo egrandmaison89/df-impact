@@ -53,6 +53,23 @@ final class FooterSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('footer_disclaimer_html'),
       '#rows' => 4,
     ];
+    $form['legal'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Inclusion, equity, and legal bar'),
+      '#open' => FALSE,
+    ];
+    $form['legal']['footer_dei_html'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Inclusion & equity paragraph (HTML allowed)'),
+      '#default_value' => $config->get('footer_dei_html'),
+      '#rows' => 4,
+    ];
+    $form['legal']['footer_copyright_html'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Copyright and legal links (HTML allowed)'),
+      '#default_value' => $config->get('footer_copyright_html'),
+      '#rows' => 3,
+    ];
     $form['social'] = [
       '#type' => 'details',
       '#title' => $this->t('Social links'),
@@ -98,6 +115,8 @@ final class FooterSettingsForm extends ConfigFormBase {
     $editable
       ->set('footer_address_html', $form_state->getValue('footer_address_html'))
       ->set('footer_disclaimer_html', $form_state->getValue('footer_disclaimer_html'))
+      ->set('footer_dei_html', $form_state->getValue('footer_dei_html'))
+      ->set('footer_copyright_html', $form_state->getValue('footer_copyright_html'))
       ->set('social_facebook_url', $form_state->getValue('social_facebook_url'))
       ->set('social_twitter_url', $form_state->getValue('social_twitter_url'))
       ->set('social_instagram_url', $form_state->getValue('social_instagram_url'))

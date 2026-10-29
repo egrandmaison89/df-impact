@@ -32,6 +32,18 @@ final class SiteChrome {
     if ($donate !== '') {
       $variables['donate_url'] = $donate;
     }
+    $donate_label = trim((string) $config->get('donate_button_label'));
+    if ($donate_label !== '') {
+      $variables['donate_button_label'] = $donate_label;
+    }
+    $see_all = trim((string) $config->get('header_issues_see_all_title'));
+    if ($see_all !== '') {
+      $variables['header_issues_see_all_title'] = $see_all;
+    }
+    $disclaimer = trim((string) $config->get('gtranslate_disclaimer_text'));
+    if ($disclaimer !== '') {
+      $variables['gtranslate_disclaimer_text'] = $disclaimer;
+    }
 
     $logo = trim((string) $config->get('logo_url'));
     if ($logo !== '') {
@@ -116,6 +128,14 @@ final class SiteChrome {
     }
     if ($social !== []) {
       $out['footer_social'] = $social;
+    }
+    $dei = trim((string) $config->get('footer_dei_html'));
+    if ($dei !== '') {
+      $out['footer_dei_html'] = $dei;
+    }
+    $copyright = trim((string) $config->get('footer_copyright_html'));
+    if ($copyright !== '') {
+      $out['footer_copyright_html'] = $copyright;
     }
     return $out;
   }

@@ -11,12 +11,37 @@ This guide is for **web editors** publishing a new magazine issue and its storie
 
 ## What only site admins can change
 
-- **Impact site settings** (`/admin/config/df-impact/site-settings`)
-- **Footer settings** (`/admin/config/df-impact/footer-settings`)
-- **Homepage hero video and poster** (global chrome on the current issue — `/admin/config/df-impact/homepage-hero`)
-- Menus, blocks, and other structural configuration
+Web editors cannot open the admin routes below (HTTP 403). Site admins manage global chrome here:
 
-If you need a homepage video or poster updated, ask a site admin.
+| Area | Where to edit | Notes |
+|------|----------------|-------|
+| **Header logo** | [Impact site settings](/admin/config/df-impact/site-settings) | Logo URL and optional srcset |
+| **Donate button** | Site settings | Label and Jimmy Fund donation URL |
+| **Issues menu label** | Site settings | “See all issues” text in the Issues flyout; issue links follow publish order |
+| **Translate disclaimer** | Site settings | Info popup next to the language selector |
+| **Footer About links, address, disclaimer** | [Footer settings](/admin/config/df-impact/footer-settings) | Three About-column links, address HTML, patient-stories disclaimer |
+| **Footer DEI + legal bar** | Footer settings | Inclusion paragraph and copyright / Privacy / Terms / Accessibility HTML |
+| **Footer social** | Footer settings | Facebook, X, Instagram URLs |
+| **Footer categories** | Structure → Taxonomy → Topics | Category links in the footer follow published topic terms (fixed display order) |
+| **Homepage hero video & poster** | [Homepage hero](/admin/config/df-impact/homepage-hero) | Opens the **newest published issue**; video/poster fields are site-admin only |
+| **Menus & snippets** | Structure → Menus; DF site snippets | `header-primary` menu is reserved for future chrome; Issues flyout is issue-driven |
+
+If you need a homepage **video**, **poster**, logo, footer legal copy, or Donate URL updated, ask a site admin.
+
+## Admin quick reference (site admins)
+
+1. **Configuration → Impact → Site settings** — header logo, Donate, Issues “see all” label, translate disclaimer, shortcut to homepage hero.
+2. **Configuration → Impact → Footer settings** — footer links, address, disclaimers, DEI paragraph, legal bar, social URLs.
+3. **Configuration → Impact → Homepage hero** — redirects to the current issue to edit hero **video**, **poster**, and (shared with editors) **heading**.
+4. **Content → Issue dashboard** — publish workflow; publishing changes which issue drives the homepage hero and Issues menu order.
+
+Automated UI checks:
+
+```bash
+cd parity && npx playwright test --project=admin-e2e
+```
+
+Run three consecutive green passes before merge when changing chrome RBAC or forms.
 
 ## Recommended launch workflow
 

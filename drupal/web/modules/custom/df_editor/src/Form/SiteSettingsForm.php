@@ -34,6 +34,12 @@ final class SiteSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state): array {
     $config = $this->config('df_editor.settings');
+    $form['donate_button_label'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Donate button label'),
+      '#default_value' => $config->get('donate_button_label') ?: 'Donate',
+      '#required' => TRUE,
+    ];
     $form['donate_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Donate button URL'),
@@ -87,10 +93,24 @@ final class SiteSettingsForm extends ConfigFormBase {
       '#url' => Url::fromRoute('df_editor.homepage_hero'),
       '#attributes' => ['class' => ['button', 'button--primary']],
     ];
-    $form['translate_note'] = [
-      '#type' => 'item',
-      '#title' => $this->t('Translate widget'),
-      '#markup' => $this->t('The GTranslate dropdown matches WordPress markup and is fixed in the theme for visual parity. Contact engineering if languages or placement must change.'),
+    $form['header_issues'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Issues menu (header)'),
+      '#open' => FALSE,
+      '#description' => $this->t('Individual issue links are driven by published issues. You can edit the “see all issues” label below.'),
+    ];
+    $form['header_issues']['header_issues_see_all_title'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('“See all issues” link label'),
+      '#default_value' => $config->get('header_issues_see_all_title') ?: 'See All Issues',
+      '#required' => TRUE,
+    ];
+    $form['gtranslate_disclaimer_text'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Translate widget disclaimer'),
+      '#description' => $this->t('Info icon popup next to the language selector in the header (desktop and mobile).'),
+      '#default_value' => $config->get('gtranslate_disclaimer_text'),
+      '#rows' => 4,
     ];
     return parent::buildForm($form, $form_state);
   }
@@ -100,10 +120,13 @@ final class SiteSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     $this->config('df_editor.settings')
+      ->set('donate_button_label', trim((string) $form_state->getValue('donate_button_label')))
       ->set('donate_url', $form_state->getValue('donate_url'))
       ->set('logo_url', $form_state->getValue('logo_url'))
       ->set('logo_srcset', $form_state->getValue('logo_srcset'))
       ->set('header_primary_menu', trim((string) $form_state->getValue('header_primary_menu')))
+      ->set('header_issues_see_all_title', trim((string) $form_state->getValue('header_issues_see_all_title')))
+      ->set('gtranslate_disclaimer_text', $form_state->getValue('gtranslate_disclaimer_text'))
       ->save();
     parent::submitForm($form, $form_state);
   }

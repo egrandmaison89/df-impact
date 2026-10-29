@@ -33,6 +33,7 @@ final class AdminAccessSubscriber implements EventSubscriberInterface {
    */
   private const BLOCKED_ROUTE_PREFIXES = [
     'df_site_snippets.',
+    'entity.menu.',
     'block.admin_display',
     'block.admin_library',
     'entity.block_content_type.',

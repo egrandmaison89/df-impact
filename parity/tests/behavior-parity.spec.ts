@@ -216,6 +216,7 @@ for (const pathNorm of paths) {
         await gotoWithBoundedSettle(drPage, drupalUrl(pathNorm), {
           timeout: 90_000,
           settleMs: behaviorLite ? 600 : 1000,
+          waitUntil: 'domcontentloaded',
         });
         drSnap = await captureSiteBehavior(drPage, DRUPAL_PROFILE, bp);
         report.dr = drSnap;

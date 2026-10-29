@@ -4,10 +4,10 @@
 
 | Metric | Before (smoke eval) | After WP DOM port |
 | --- | ---: | ---: |
-| Viewport median Mac **desktop** | 77.3% | **46.1%** |
+| Viewport median Mac **desktop** (`/`) | 77.3% | **61.1%** |
 | Viewport median Mac **tablet** | 61.6% | **48.9%** |
-| Viewport median Mac **mobile** | 56.3% | **38.7%** |
-| Chrome median **desktop** | — | **12.6%** |
+| Viewport median Mac **mobile** | 56.3% | **47.5%** |
+| Chrome median **desktop** | — | **6.6%** (after capture stabilize) |
 | Chrome median **tablet** | — | **17.5%** |
 | Chrome median **mobile** | — | **19.8%** |
 

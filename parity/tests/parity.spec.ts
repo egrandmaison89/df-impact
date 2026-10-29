@@ -15,6 +15,7 @@ import {
   textSimilarity,
   waitForFonts,
 } from '../lib/page-utils.mjs';
+import { stabilizeParityViewport } from '../lib/capture-stabilize.mjs';
 import { metaMatches } from '../lib/thresholds.mjs';
 import {
   BREAKPOINTS,
@@ -139,10 +140,7 @@ for (const entry of urls) {
       } else {
         const wpResp = await wpPage!.goto(wpTarget, { waitUntil: 'domcontentloaded' });
         wpOk = !!wpResp && wpResp.status() < 400;
-        await dismissOverlays(wpPage!);
-        await scrollForLazyLoad(wpPage!);
-        await waitForFonts(wpPage!);
-        await wpPage!.waitForTimeout(300);
+        await stabilizeParityViewport(wpPage!);
         result.wp = {
           status: wpResp?.status(),
           meta: await extractMeta(wpPage!),
@@ -163,10 +161,7 @@ for (const entry of urls) {
     try {
       const dResp = await drPage.goto(drupalTarget, { waitUntil: 'domcontentloaded' });
       drupalOk = !!dResp && dResp.status() < 400;
-      await dismissOverlays(drPage);
-      await scrollForLazyLoad(drPage);
-      await waitForFonts(drPage);
-      await drPage.waitForTimeout(300);
+      await stabilizeParityViewport(drPage);
       result.drupal = {
         status: dResp?.status(),
         meta: await extractMeta(drPage),

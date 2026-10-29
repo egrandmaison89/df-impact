@@ -10,6 +10,8 @@ import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
 import { fileURLToPath } from 'node:url';
 import { startRefPackServer } from './lib/ref-pack-server.mjs';
+import { preparePage } from '../lib/page-utils.mjs';
+import { stabilizeParityViewport } from '../lib/capture-stabilize.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
@@ -262,16 +264,16 @@ async function runMacPackCompare() {
 
       const refHtml = path.join(packRoot, packSlug, bp, 'rendered.html');
       const refPage = await browser.newPage();
+      await preparePage(refPage);
       await refPage.setViewportSize({ width, height: 900 });
       await refPage.goto(`file://${refHtml}`, { waitUntil: 'domcontentloaded', timeout: 120000 });
-      await refPage.waitForTimeout(800);
-      await refPage.evaluate(() => document.fonts.ready);
+      await stabilizeParityViewport(refPage);
 
       const drPage = await browser.newPage();
+      await preparePage(drPage);
       await drPage.setViewportSize({ width, height: 900 });
       await drPage.goto(`${drupalBase}${drPath}`, { waitUntil: 'networkidle', timeout: 120000 }).catch(() => {});
-      await drPage.waitForTimeout(1200);
-      await drPage.evaluate(() => document.fonts.ready);
+      await stabilizeParityViewport(drPage);
 
       const refHeader = await screenshotHeaderRegion(refPage, bp, packSlug, width);
       const drHeader = await screenshotHeaderRegion(drPage, bp, packSlug, width);
@@ -333,16 +335,16 @@ try {
 
       const refUrl = `${refServer.baseUrl}/rendered/${packSlug}/${bp}`;
       const refPage = await browser.newPage();
+      await preparePage(refPage);
       await refPage.setViewportSize({ width, height: 900 });
       await refPage.goto(refUrl, { waitUntil: 'networkidle', timeout: 120000 });
-      await refPage.waitForTimeout(600);
-      await refPage.evaluate(() => document.fonts.ready);
+      await stabilizeParityViewport(refPage);
 
       const drPage = await browser.newPage();
+      await preparePage(drPage);
       await drPage.setViewportSize({ width, height: 900 });
       await drPage.goto(`${drupalBase}${drPath}`, { waitUntil: 'networkidle', timeout: 120000 }).catch(() => {});
-      await drPage.waitForTimeout(1200);
-      await drPage.evaluate(() => document.fonts.ready);
+      await stabilizeParityViewport(drPage);
 
       const structuralPack = await structuralGate(drPage, packSlug, bp);
       const structuralRef = await structuralGateRefVsDrupal(refPage, drPage, packSlug, bp);

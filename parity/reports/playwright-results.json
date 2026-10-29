@@ -1,0 +1,1474 @@
+{
+  "config": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/node_modules/.bin/playwright",
+      "test",
+      "--project=parity"
+    ],
+    "configFile": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/playwright.config.ts",
+    "rootDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "drupalBase": "http://df-impact.ddev.site",
+      "wpBase": "https://danafarberimpact.org",
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "drupalBase": "http://df-impact.ddev.site",
+          "wpBase": "https://danafarberimpact.org",
+          "actualWorkers": 1
+        },
+        "id": "behavior",
+        "name": "behavior",
+        "testDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/behavior-parity.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "drupalBase": "http://df-impact.ddev.site",
+          "wpBase": "https://danafarberimpact.org",
+          "actualWorkers": 1
+        },
+        "id": "parity",
+        "name": "parity",
+        "testDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests",
+        "testIgnore": [
+          "**/capture-wp-baseline.spec.ts",
+          "**/behavior-parity.spec.ts"
+        ],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "drupalBase": "http://df-impact.ddev.site",
+          "wpBase": "https://danafarberimpact.org",
+          "actualWorkers": 1
+        },
+        "id": "capture-baseline",
+        "name": "capture-baseline",
+        "testDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/capture-wp-baseline.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "drupalBase": "http://df-impact.ddev.site",
+          "wpBase": "https://danafarberimpact.org",
+          "actualWorkers": 1
+        },
+        "name": "parity",
+        "testDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests",
+        "snapshotDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests",
+        "testIgnore": [
+          "**/capture-wp-baseline.spec.ts",
+          "**/behavior-parity.spec.ts"
+        ],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 120000,
+        "use": {
+          "trace": "off",
+          "video": "off",
+          "actionTimeout": 20000,
+          "navigationTimeout": 60000,
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "parity"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "reports/playwright-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "parity.spec.ts",
+      "file": "parity.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "parity /home",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8883,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:29:12.654Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-f2a70296d965adf7d95c",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /homepage",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10704,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:29:21.778Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-62e84d6741f5ebea725d",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /stories",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4139,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:29:32.487Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-bffde131a56d91f73be0",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10857,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:29:36.630Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-3eb173ad8c8e5907e982",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6499,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:29:47.492Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-278b8529183cb6e87cf2",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7691,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:29:53.996Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-e67f974dc5a4f9fb3749",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5880,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:30:01.690Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-8830d960ef76069ad3a5",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /2022/11/dana-farber-marathon-challenge-raises-nearly-7-million-in-support-of-claudia-adams-barr-program-investigators",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8165,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:30:07.575Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-db1d3e6107061e344b8c",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /2022/11/dana-farber-team-defies-cancer-in-asics-falmouth-road-race",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6935,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:30:15.744Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-91ae56304c9515613b64",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /2022/11/feenys-invest-in-new-treatments-for-advanced-prostate-cancer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7347,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:30:22.683Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-8fffbf608f6d641c02e1",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /2022/11/gift-to-ovarian-cancer-inspired-by-story-of-research",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9080,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:30:30.035Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-0a7b166abb9b107962f9",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /2022/11/ims-grants-drive-innovative-multiple-myeloma-research",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5194,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:30:39.119Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-b54a130c5e395f00b40b",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /about",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5484,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:30:44.317Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-cf0770104dde6cf56439",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /category/access-and-equity",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10491,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:30:49.806Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-ba030dbcf5389e5cb1a0",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /category/cancer-research",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5977,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:00.301Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-f249ee13f60f5d7295df",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /category/digital-exclusives",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8229,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:06.282Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-ada9b367a0702cc770ca",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /fall-2023-issue",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6763,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:14.515Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-139510ed07274bd7019a",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /fall-2024-issue",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4704,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:21.282Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-89a649d10c484ca0c1d6",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /fall-2025-issue",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4692,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:25.989Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-24fef21af6a7a63b5d53",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /fall-2026-issue",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4689,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:30.685Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-00ae40c5210c2da03dab",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /late-fall-2022-issue",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4504,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:35.377Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-0751be4a3e03109b684c",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /spring-2023-issue",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4598,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:39.885Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-be6405325e72a5c167cd",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /spring-2024-issue",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4650,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:44.487Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-8e1d1ca9565057d7e1d4",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /spring-2025-issue",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4617,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:49.140Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-6e84525afaf9c837b935",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        },
+        {
+          "title": "parity /spring-2026-issue",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "parity",
+              "projectName": "parity",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4647,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-28T22:31:53.761Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/tests/parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ff3b57e4e431ee533ad9-1e16e8eb4890f371456a",
+          "file": "parity.spec.ts",
+          "line": 86,
+          "column": 7
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-28T22:29:12.360Z",
+    "duration": 166109.582,
+    "expected": 25,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

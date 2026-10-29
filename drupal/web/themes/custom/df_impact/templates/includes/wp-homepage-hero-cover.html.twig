@@ -3,8 +3,11 @@
   Variables: video_url, poster_url, title
 #}
 <div class="wp-block-cover alignfull is-light homepage-banner" style="min-height:490px;aspect-ratio:unset;">
+  {% if poster_url %}
+    <img decoding="async" src="{{ poster_url }}" class="wp-block-cover__image-background" alt="" aria-hidden="true" data-object-fit="cover" style="object-fit:cover">
+  {% endif %}
   {% if video_url %}
-    <video class="wp-block-cover__video-background intrinsic-ignore" autoplay muted loop playsinline src="{{ video_url }}" data-object-fit="cover"></video>
+    <video class="wp-block-cover__video-background intrinsic-ignore" autoplay muted loop playsinline{% if poster_url %} poster="{{ poster_url }}"{% endif %} src="{{ video_url }}" data-object-fit="cover"></video>
   {% endif %}
   <span aria-hidden="true" class="wp-block-cover__background has-background-dim-0 has-background-dim" style="background-color:#FFF"></span>
   <div class="wp-block-cover__inner-container is-layout-flow wp-block-cover-is-layout-flow">

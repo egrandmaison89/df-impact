@@ -16,11 +16,19 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     '.menu',
     '.breadcrumb',
     '.pager',
+    '.wp-block-query-pagination',
+    'nav.wp-block-query-pagination',
+    '.wp-block-post-excerpt__more-text',
+    '.wp-block-post-excerpt__more-link',
+    '.ultp-loadmore',
+    '.ultp-loadmore-action',
     '.tabs',
     '.related-posts',
     '.related-articles',
     '.share-links',
     '.social-share',
+    '.ss-inline-share-wrapper',
+    '.ss-social-share-label',
     'aside',
     '.sidebar',
     '.layout-with-sidebar__sidebar',
@@ -34,6 +42,10 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
   ];
 
   const CONTENT_SELECTORS = [
+    'main:has(.wp-block-query)',
+    'main .wp-block-query',
+    '.wp-block-query',
+    '.page-node__body.wp-block-post-content',
     '.about-impact-page__body',
     'article.in-brief-post .entry-content',
     'article.post .entry-content.alignwide',
@@ -96,8 +108,11 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
       tag: h.tagName.toLowerCase(),
       text: (h.textContent || '').replace(/\s+/g, ' ').trim(),
     }));
-  // Live innerText respects display:none; clone innerText does not.
-  const textSource = root.isConnected ? root : cleaned;
-  const text = (textSource.innerText || '').replace(/\s+/g, ' ').trim();
+  // In Brief load-more: live innerText respects display:none on collapsed rows.
+  const useLiveInnerText =
+    root.isConnected && root.querySelector('.ultp-block-item.is-collapsed');
+  const text = (useLiveInnerText ? root.innerText : cleaned.innerText || '')
+    .replace(/\s+/g, ' ')
+    .trim();
   return { text, headings, length: text.length, selector: root.className || root.id || root.tagName };
 };

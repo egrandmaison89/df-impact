@@ -1,0 +1,20 @@
+{#
+/**
+ * @file
+ * Stories archive (/issues/) — WordPress wp-block-query parity.
+ */
+#}
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+  <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+    <div class="wp-block-query is-layout-flow wp-block-query-is-layout-flow">
+      {% if rows %}
+        {{ rows }}
+      {% elseif empty %}
+        <div class="wp-block-paragraph">{{ empty }}</div>
+      {% endif %}
+      {% if pager %}
+        {{ pager }}
+      {% endif %}
+    </div>
+  </div>
+</div>

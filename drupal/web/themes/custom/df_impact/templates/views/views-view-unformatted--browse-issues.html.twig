@@ -6,11 +6,9 @@
 #}
 {% for flex_row in browse_issue_flex_rows|default([]) %}
   <div class="wp-block-group is-content-justification-left is-layout-flex wp-container-core-group-is-layout-7caa2bd2 wp-block-group-is-layout-flex" style="margin-top:40px">
-    {% for column in flex_row %}
+    {% for row in flex_row %}
       <div class="wp-block-group has-background-color has-text-color is-layout-constrained wp-container-core-group-is-layout-1ce60de8 wp-block-group-is-layout-constrained" style="padding-left:20px">
-        {% for row in column %}
-          {{ row.content }}
-        {% endfor %}
+        {{ row.content }}
       </div>
     {% endfor %}
   </div>

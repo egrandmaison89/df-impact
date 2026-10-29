@@ -83,6 +83,10 @@ function wpSnapshotReady(pathNorm: string, snap: Record<string, unknown> | null)
   const isHome = pathNorm === '/' || pathNorm === '/homepage';
   if (isHome && !(snap.hero as { found?: boolean } | undefined)?.found) return false;
   const layout600 = (snap.headerScrollDepths as { y600?: { found?: boolean } } | undefined)?.y600;
+  const chromePath = pathUsesChromeHeader(pathNorm);
+  if (chromePath && !layout600?.found) {
+    return false;
+  }
   const hasChrome =
     Boolean(layout600?.found) ||
     Boolean(snap.navDefault) ||
@@ -118,13 +122,8 @@ async function loadWpSnapshot(
   report: Record<string, unknown>,
 ): Promise<WpSnap> {
   const target = wpUrl(pathNorm);
-<<<<<<< HEAD
-  const maxAttempts = behaviorLite ? 2 : bp.label === 'desktop' ? 5 : 8;
-  const gotoTimeout = behaviorLite ? 75_000 : bp.label === 'desktop' ? 120_000 : 180_000;
-=======
-  const maxAttempts = bp.label === 'desktop' ? 5 : 4;
-  const gotoTimeout = bp.label === 'desktop' ? 120_000 : 150_000;
->>>>>>> aaf8c003 (Behavior templates: 3 breakpoint passes, longer mobile WP timeouts)
+  const maxAttempts = behaviorLite ? 2 : bp.label === 'desktop' ? 5 : 4;
+  const gotoTimeout = behaviorLite ? 75_000 : bp.label === 'desktop' ? 120_000 : 150_000;
   let lastErr: unknown;
   let snap: WpSnap = null;
 
@@ -176,13 +175,9 @@ for (const pathNorm of paths) {
     test(`behavior ${pathNorm} @ ${bp.label}`, async ({ browser, browserName }) => {
       test.skip(browserName !== 'chromium', 'Chromium only');
       if (crossSite) {
-<<<<<<< HEAD
         test.setTimeout(
-          behaviorLite ? 120_000 : bp.label === 'desktop' ? 300_000 : 420_000,
+          behaviorLite ? 120_000 : bp.label === 'desktop' ? 360_000 : 1_200_000,
         );
-=======
-        test.setTimeout(bp.label === 'desktop' ? 360_000 : 1_200_000);
->>>>>>> aaf8c003 (Behavior templates: 3 breakpoint passes, longer mobile WP timeouts)
       }
       globalStats.tests += 1;
 

@@ -244,11 +244,7 @@ export function buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap) {
     pathNorm.includes('-issue');
 
   sections.hero = isHome ? compareVideo(wpSnap.hero, drSnap.hero) : { ok: true, diffs: [] };
-  // Nav link background varies by WP block layout at 768/375; color must match.
-  sections.navDefault =
-    bp.label === 'desktop'
-      ? compareStyles(wpSnap.navDefault, drSnap.navDefault)
-      : compareStyles(wpSnap.navDefault, drSnap.navDefault, ['color', 'transform']);
+  sections.navDefault = compareStyles(wpSnap.navDefault, drSnap.navDefault);
   sections.navHover = compareHoverStyles(wpSnap.navDefault, wpSnap.navHover, drSnap.navDefault, drSnap.navHover);
   sections.donateDefault = optionalStyleCompare(wpSnap.donateDefault, drSnap.donateDefault);
   sections.donateHover = optionalHoverCompare(

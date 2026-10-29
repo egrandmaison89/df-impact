@@ -286,11 +286,6 @@ main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-image 
   opacity: 0.85;
 }
 
-/* Eric hover parity — match extracted WP chrome rules when theme order differs. */
-#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link:hover {
-  color: #68a0c1 !important;
-}
-
 footer .copyright a:hover,
 footer p.copyright a:hover {
   color: #d5d5da !important;
@@ -300,6 +295,14 @@ main a.wp-block-button__link.has-background:hover {
   background-color: transparent !important;
   color: #00629b !important;
   border: 2px solid #00629b !important;
+}
+
+/* Issue / homepage band CTAs — WP hover inverts to white fill (behavior parity). */
+main .in-brief-button a.wp-block-button__link.has-background:hover,
+main .homepage-banner-button a.wp-block-button__link.has-background:hover {
+  background-color: rgb(255, 255, 255) !important;
+  color: rgb(0, 98, 155) !important;
+  border: 2px solid transparent !important;
 }
 
 main .wp-block-post a:hover,

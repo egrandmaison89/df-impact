@@ -92,8 +92,13 @@ export async function captureSiteBehavior(page, profile, bp) {
   data.navDefault = await computedStyle(page, s.navLink);
   data.headerBeforeScroll = await headerScrollState(page, s.header);
   data.headerScrollDepths = {};
-  const headerPresent = await elementPresent(page, s.header);
-  if (!lite && headerPresent && (profile.site !== 'wp' || data.hero?.found)) {
+  const headerPresent =
+    Boolean(data.headerBeforeScroll?.found) || (await elementPresent(page, s.header));
+  if (
+    !lite &&
+    headerPresent &&
+    (profile.site !== 'wp' || data.hero?.found || data.navDefault || data.headerBeforeScroll?.found)
+  ) {
     for (const y of [600, 2000]) {
       await page.evaluate((scrollY) => window.scrollTo(0, scrollY), y);
       await page.waitForTimeout(lite ? 350 : 500);

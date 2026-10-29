@@ -92,6 +92,23 @@
 
 Issue viewport still dominated by **article roster / title drift** vs live WP (see `docs/PHASE1_GAP_REGISTER.md`); banner photon + alignfull breakout applied this run.
 
+### Bisect notes (PR #18 / #19 — Mac medians)
+
+**Hold:** PR **#20** VM visual round 2 — do **not** merge until VM agent explains computed-style sum regression (user clearance).
+
+**Rerun ~3:25 AM ET** post–PR **#19** (`d071765f`, issue CLS). Compare to **~3:15 AM ET** snapshot (post–PR **#18**, pre–#19):
+
+| Template | Δ viewport D | Δ viewport T | Δ viewport M | Worse after #18/#19? |
+|----------|--------------|--------------|--------------|----------------------|
+| homepage | 0.0 pp | 0.0 pp | 0.0 pp | **no** |
+| issue | **+0.01 pp** | 0.0 pp | 0.0 pp | **no** (noise; chrome D +0.09 pp) |
+| article | 0.0 pp | 0.0 pp | 0.0 pp | **no** |
+| in_brief | 0.0 pp | 0.0 pp | 0.0 pp | **no** |
+| landing_page | 0.0 pp | 0.0 pp | 0.0 pp | **no** |
+| archive | 0.0 pp | 0.0 pp | 0.0 pp | **no** |
+
+Vs integrator **~2:00 AM ET** desktop viewport baselines (homepage ~33%, issue ~67.8%, archive ~30.4%): all six templates **same or better**; no Mac pack regression attributable to #18/#19 in this harness.
+
 ### DDEV wp-images restore + full audit
 
 | Metric | Before restore | After restore / audit |

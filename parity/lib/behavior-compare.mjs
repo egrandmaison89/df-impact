@@ -70,8 +70,19 @@ export function compareHoverStyles(wpDefault, wpHover, drDefault, drHover) {
   if (wpChanged !== drChanged) {
     diffs.push({ field: 'hover.changed', wp: wpChanged, dr: drChanged });
   }
-  if (wpChanged && drChanged && wpHover && drHover && !colorsClose(wpHover.color, drHover.color, 22)) {
-    diffs.push({ field: 'color', wp: wpHover.color, dr: drHover.color });
+  if (!wpHover || !drHover) {
+    if (wpChanged || drChanged) {
+      diffs.push({ field: 'hover.style', wp: !!wpHover, dr: !!drHover });
+    }
+    return { ok: diffs.length === 0, diffs };
+  }
+  // When either side shows a hover transition, computed hover styles must match WP.
+  if (wpChanged || drChanged) {
+    for (const field of ['color', 'backgroundColor', 'transform']) {
+      if (!styleFieldMatch(wpHover[field], drHover[field], field)) {
+        diffs.push({ field, wp: wpHover[field], dr: drHover[field] });
+      }
+    }
   }
   return { ok: diffs.length === 0, diffs };
 }
@@ -211,7 +222,12 @@ export function buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap) {
     drSnap.footerLinkHover,
   );
   sections.bodyLinkHover = isContent
-    ? compareHoverStyles(wpSnap.cardDefault, wpSnap.bodyLinkHover, drSnap.cardDefault, drSnap.bodyLinkHover)
+    ? compareHoverStyles(
+        wpSnap.bodyLinkDefault,
+        wpSnap.bodyLinkHover,
+        drSnap.bodyLinkDefault,
+        drSnap.bodyLinkHover,
+      )
     : { ok: true, diffs: [] };
   sections.issuesDropdown =
     bp.label === 'desktop'

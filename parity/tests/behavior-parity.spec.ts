@@ -86,6 +86,9 @@ for (const pathNorm of paths) {
   for (const bp of BEHAVIOR_BREAKPOINTS) {
     test(`behavior ${pathNorm} @ ${bp.label}`, async ({ browser, browserName }) => {
       test.skip(browserName !== 'chromium', 'Chromium only');
+      if (crossSite) {
+        test.setTimeout(240_000);
+      }
       globalStats.tests += 1;
 
       const assertionLog: AssertionStat[] = [];
@@ -109,7 +112,7 @@ for (const pathNorm of paths) {
             if (attempt > 0) {
               await wpPage.waitForTimeout(2000 * attempt);
             }
-            await wpPage.goto(target, { waitUntil: 'load', timeout: 120000 });
+            await wpPage.goto(target, { waitUntil: 'domcontentloaded', timeout: 120000 });
             await dismissOverlays(wpPage);
             await waitForFonts(wpPage);
             if (pathNorm === '/homepage' || pathNorm === '/') {

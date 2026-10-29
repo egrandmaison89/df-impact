@@ -1,6 +1,7 @@
 import {
   computedStyle,
   computedStyleHover,
+  scrollSelectorIntoView,
   dropdownOpenOnHover,
   DRUPAL_HERO_VIDEO,
   elementPresent,
@@ -19,7 +20,7 @@ export const WP_PROFILE = {
     issuesTrigger: '#mega-menu-item-599 > a.mega-menu-link',
     issuesPanel: '#mega-menu-item-599 > ul.mega-sub-menu',
     donate: '.desktop-header .wp-block-button a[data-analytics-text="donate"]',
-    footerLink: 'footer .copyright a',
+    footerLink: 'footer .copyright a, p.copyright a',
     bodyLink: 'main .entry-content a, main .wp-block-post-content a, main a',
     search: '.header__search-link, .astm-search-menu a, .is-search-icon',
     menuToggle: '.mobile-header .mega-toggle-label, .mega-menu-toggle',
@@ -39,7 +40,7 @@ export const DRUPAL_PROFILE = {
     issuesTrigger: '#mega-menu-item-599 > a.mega-menu-link, .header__nav-item--issues > .header__nav-link',
     issuesPanel: '#mega-menu-item-599 > ul.mega-sub-menu, .header__nav-item--issues .header__dropdown',
     donate: '.desktop-header .wp-block-button a[data-analytics-text="donate"]',
-    footerLink: 'footer .copyright a',
+    footerLink: 'footer .copyright a, p.copyright a',
     bodyLink: 'main .entry-content a, main .wp-block-post-content a, main a.has-underline-text-decoration',
     search: '.header__search-link, .header-search a, .is-search-icon, .astm-search-menu a',
     menuToggle: '.mobile-header .mega-toggle-label, .header__menu-toggle, .mega-menu-toggle',
@@ -77,8 +78,13 @@ export async function captureSiteBehavior(page, profile, bp) {
   data.headerBeforeScroll = await headerScrollState(page, s.header);
   data.donateDefault = await computedStyle(page, s.donate);
   data.donateHover = await computedStyleHover(page, s.donate);
+  await scrollSelectorIntoView(page, s.footerLink);
   data.footerDefault = await computedStyle(page, s.footerLink);
   data.footerLinkHover = await computedStyleHover(page, s.footerLink);
+  if (s.bodyLink) {
+    await scrollSelectorIntoView(page, s.bodyLink);
+  }
+  data.bodyLinkDefault = await computedStyle(page, s.bodyLink);
   data.bodyLinkHover = await computedStyleHover(page, s.bodyLink);
   data.cardDefault = await computedStyle(page, s.card);
   data.cardHover = await computedStyleHover(page, s.card);

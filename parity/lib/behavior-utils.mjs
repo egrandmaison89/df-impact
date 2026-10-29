@@ -36,19 +36,25 @@ export async function computedStyle(page, selector) {
   }, selector);
 }
 
+export async function scrollSelectorIntoView(page, selector) {
+  const first = selector.split(',')[0].trim();
+  await page.evaluate((sel) => {
+    document.querySelector(sel)?.scrollIntoView({ block: 'center', inline: 'nearest' });
+  }, first);
+  await page.waitForTimeout(250);
+}
+
 export async function computedStyleHover(page, selector) {
   const loc = page.locator(selector).first();
-  if (!(await loc.count())) return null;
+  if ((await loc.count()) === 0) return null;
   try {
     await loc.scrollIntoViewIfNeeded();
     await loc.hover({ force: true, timeout: 8000 });
   } catch {
     return null;
   }
-  await page.waitForTimeout(350);
-  return page.evaluate((sel) => {
-    const el = document.querySelector(sel);
-    if (!el) return null;
+  await page.waitForTimeout(450);
+  return loc.evaluate((el) => {
     const cs = getComputedStyle(el);
     return {
       color: cs.color,
@@ -60,7 +66,7 @@ export async function computedStyleHover(page, selector) {
       position: cs.position,
       boxShadow: cs.boxShadow,
     };
-  }, selector.split(',')[0].trim());
+  });
 }
 
 export async function videoState(page, selector) {

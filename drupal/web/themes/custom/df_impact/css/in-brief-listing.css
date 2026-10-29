@@ -3,3 +3,17 @@
 .ultp-block-item.ultp-block-media.is-collapsed {
   display: none !important;
 }
+
+/* /in-brief issue sections — spacing vs WordPress PostX blocks. */
+.in-brief-page__issue-heading {
+  margin: 0 0 1rem;
+}
+
+.in-brief-page__issue-heading + .ultp-post-grid-block {
+  margin-top: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+
+main .in-brief-page__issue-heading + .ultp-post-grid-block .ultp-block-item:first-child {
+  margin-top: 0.75rem;
+}

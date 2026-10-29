@@ -1,13 +1,33 @@
 {#
-  Simplified Social Snap inline share (reference-pack article pages).
+  Social Snap inline share — WordPress reference-pack article parity (Share via: + icon row).
 #}
 {% if article_share_links is defined and article_share_links.networks %}
-  <div class="ss-inline-share-wrapper ss-left-inline-content ss-regular-icons ss-with-spacing ss-rounded-icons ss-without-labels social-share">
-    <p class="ss-social-share-label">{{ 'Share This Story'|t }}</p>
+  <div class="ss-inline-share-wrapper ss-left-inline-content ss-regular-icons ss-with-spacing ss-rounded-icons ss-without-labels">
+    <p class="ss-social-share-label"><span>{{ 'Share via:'|t }}</span></p>
     <div class="ss-inline-share-content">
-      {% for network in article_share_links.networks %}
-        <a href="{{ network.href }}" aria-label="{{ network.label }}" class="{{ network.class }}" rel="nofollow noopener" data-ss-ss-network-id="{{ network.id }}" data-ss-ss-post-id="{{ article_share_links.post_id }}" data-ss-ss-location="inline_content" data-ss-ss-permalink="{{ article_share_links.permalink }}" data-ss-ss-type="share">{{ network.label }}</a>
-      {% endfor %}
+      <ul class="ss-social-icons-container">
+        {% for network in article_share_links.networks %}
+          <li>
+            <a href="#" aria-label="{{ network.label }}" class="{{ network.class }}" rel="nofollow noopener" data-ss-ss-link="{{ network.href }}" data-ss-ss-network-id="{{ network.id }}" data-ss-ss-post-id="{{ article_share_links.post_id }}" data-ss-ss-location="inline_content" data-ss-ss-permalink="{{ article_share_links.permalink }}" data-ss-ss-type="share"{% if network.id == 'facebook' %} data-has-api="true"{% endif %}>
+              <span class="ss-share-network-content">
+                <i class="ss-network-icon">
+                  {% if network.id == 'facebook' %}
+                    <svg class="ss-svg-icon" aria-hidden="true" role="img" focusable="false" width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M32 16.098C32 7.208 24.837 0 16 0S0 7.207 0 16.098C0 24.133 5.851 30.792 13.5 32V20.751H9.437v-4.653H13.5V12.55c0-4.034 2.389-6.263 6.043-6.263 1.751 0 3.582.315 3.582.315v3.961h-2.018c-1.987 0-2.607 1.241-2.607 2.514v3.02h4.438l-.71 4.653H18.5V32C26.149 30.792 32 24.133 32 16.098z"></path></svg>
+                  {% elseif network.id == 'twitter' %}
+                    <svg class="ss-svg-icon" aria-hidden="true" role="img" focusable="false" width="32" height="32" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                  {% elseif network.id == 'linkedin' %}
+                    <svg class="ss-svg-icon" aria-hidden="true" role="img" focusable="false" width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M29.632 0C30.939 0 32 1.032 32 2.307v27.384C32 30.966 30.939 32 29.632 32H2.36C1.058 32 0 30.966 0 29.69V2.308C0 1.032 1.058 0 2.36 0h27.272zM9.149 11.638h-4.77V27h4.77V11.638zm12.133-.382c-2.318 0-3.874 1.273-4.509 2.48h-.066v-2.098H12.14V27h4.76v-7.599c0-2.004.378-3.946 2.858-3.946 2.447 0 2.475 2.29 2.475 4.072V27H27v-8.423c0-4.138-.893-7.32-5.718-7.32v-.001zM6.764 4A2.766 2.766 0 004 6.769a2.765 2.765 0 105.528 0A2.767 2.767 0 006.765 4h-.001z"></path></svg>
+                  {% elseif network.id == 'envelope' %}
+                    <svg class="ss-svg-icon" aria-hidden="true" role="img" focusable="false" width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M32 12.964v14.179c0 1.571-1.286 2.857-2.857 2.857h-26.286c-1.571 0-2.857-1.286-2.857-2.857v-14.179c0.536 0.589 1.143 1.107 1.804 1.554 2.964 2.018 5.964 4.036 8.875 6.161 1.5 1.107 3.357 2.464 5.304 2.464h0.036c1.946 0 3.804-1.357 5.304-2.464 2.911-2.107 5.911-4.143 8.893-6.161 0.643-0.446 1.25-0.964 1.786-1.554zM32 7.714c0 2-1.482 3.804-3.054 4.893-2.786 1.929-5.589 3.857-8.357 5.804-1.161 0.804-3.125 2.446-4.571 2.446h-0.036c-1.446 0-3.411-1.643-4.571-2.446-2.768-1.946-5.571-3.875-8.339-5.804-1.268-0.857-3.071-2.875-3.071-4.5 0-1.75 0.946-3.25 2.857-3.25h26.286c1.554 0 2.857 1.286 2.857 2.857z"></path></svg>
+                  {% elseif network.id == 'copy' %}
+                    <svg class="ss-svg-icon" aria-hidden="true" role="img" focusable="false" width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M25.313 28v-18.688h-14.625v18.688h14.625zM25.313 6.688c1.438 0 2.688 1.188 2.688 2.625v18.688c0 1.438-1.25 2.688-2.688 2.688h-14.625c-1.438 0-2.688-1.25-2.688-2.688v-18.688c0-1.438 1.25-2.625 2.688-2.625h14.625zM21.313 1.313v2.688h-16v18.688h-2.625v-18.688c0-1.438 1.188-2.688 2.625-2.688h16z"></path></svg>
+                  {% endif %}
+                </i>
+              </span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
     </div>
   </div>
 {% endif %}

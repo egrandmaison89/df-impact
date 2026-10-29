@@ -67,3 +67,53 @@ nav.pager ul {
 .wp-block-query-pagination.is-content-justification-space-between > .wp-block-query-pagination-next:last-of-type {
   margin-inline-start: auto;
 }
+
+/* PostX issue landing pager (ultp-pagination). */
+.ultp-pagination-wrap .ultp-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  list-style: none;
+  margin: 2.5rem 0 1rem;
+  padding: 0;
+}
+
+.ultp-pagination-wrap .ultp-pagination li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ultp-pagination-wrap .ultp-pagination li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-body, Montserrat, sans-serif);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-decoration: none !important;
+  color: #00629b;
+  border: 2px solid #00629b;
+  border-radius: 2px;
+  padding: 8px 14px;
+  background: transparent;
+}
+
+.ultp-pagination-wrap .ultp-pagination li.pagination-active a,
+.ultp-pagination-wrap .ultp-pagination li a[aria-current="page"] {
+  color: #fff;
+  background: #00629b;
+}
+
+.ultp-pagination-wrap .ultp-pagination li a:hover {
+  color: #fff;
+  background: #00629b;
+}
+
+.ultp-pagination-wrap .ultp-pagination li a svg {
+  width: 1rem;
+  height: 1rem;
+}

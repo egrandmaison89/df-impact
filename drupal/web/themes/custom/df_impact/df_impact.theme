@@ -255,6 +255,8 @@ function df_impact_preprocess_views_view(array &$variables): void {
     'past_issues',
     'in_brief_listing',
     'browse_issues',
+    'df_impact_search',
+    'issue_articles',
   ], TRUE)) {
     if ($view->id() === 'digital_exclusives_archive' && $view->current_display === 'page_1') {
       $variables['title'] = '';
@@ -828,27 +830,68 @@ function df_impact_theme_suggestions_views_view_alter(array &$suggestions, array
 function df_impact_theme_suggestions_pager_alter(array &$suggestions, array $variables): void {
   if (df_impact_route_uses_wp_query_pager()) {
     $suggestions[] = 'pager__wp_query';
+    return;
+  }
+  if (df_impact_issue_landing_postx_pager()) {
+    $suggestions[] = 'pager__issue_postx';
   }
 }
 
 /**
- * Whether the active route should render WordPress query-pagination markup.
+ * Issue node canonical routes embed the PostX-style article grid pager.
  */
-function df_impact_route_uses_wp_query_pager(): bool {
+function df_impact_issue_landing_postx_pager(): bool {
   $route = \Drupal::routeMatch()->getRouteName();
-  if (!$route || !str_starts_with($route, 'view.')) {
+  if ($route !== 'entity.node.canonical') {
     return FALSE;
   }
-  $parts = explode('.', $route);
-  $view_id = $parts[1] ?? '';
-  return in_array($view_id, [
+  $node = \Drupal::routeMatch()->getParameter('node');
+  return $node instanceof NodeInterface && $node->bundle() === 'issue';
+}
+
+/**
+ * View IDs that use WordPress wp-block-query-pagination markup.
+ *
+ * @return list<string>
+ */
+function df_impact_wp_query_pager_view_ids(): array {
+  return [
     'topic_archive',
     'digital_exclusives_archive',
     'stories_archive',
     'past_issues',
     'in_brief_listing',
     'browse_issues',
-  ], TRUE);
+    'df_impact_search',
+  ];
+}
+
+/**
+ * Resolves the listing view driving the current page (including embedded views).
+ */
+function df_impact_active_listing_view_id(): ?string {
+  $route = \Drupal::routeMatch()->getRouteName();
+  if (!$route) {
+    return NULL;
+  }
+  if (str_starts_with($route, 'view.')) {
+    $parts = explode('.', $route);
+    return $parts[1] ?? NULL;
+  }
+  $embedded = [
+    'df_setup.stories_archive' => 'stories_archive',
+    'df_setup.wp_tag_archive' => 'topic_archive',
+    'df_setup.wp_tag_archive_page' => 'topic_archive',
+  ];
+  return $embedded[$route] ?? NULL;
+}
+
+/**
+ * Whether the active route should render WordPress query-pagination markup.
+ */
+function df_impact_route_uses_wp_query_pager(): bool {
+  $view_id = df_impact_active_listing_view_id();
+  return $view_id !== NULL && in_array($view_id, df_impact_wp_query_pager_view_ids(), TRUE);
 }
 
 /**
@@ -856,8 +899,25 @@ function df_impact_route_uses_wp_query_pager(): bool {
  */
 function df_impact_preprocess_pager(array &$variables): void {
   $variables['use_wp_query_pager'] = df_impact_route_uses_wp_query_pager();
+  $variables['use_issue_postx_pager'] = !$variables['use_wp_query_pager'] && df_impact_issue_landing_postx_pager();
+  if ($variables['use_wp_query_pager'] || $variables['use_issue_postx_pager']) {
+    $variables['#attached']['library'][] = 'df_impact/archive_listings';
+  }
   if ($variables['use_wp_query_pager'] && !empty($variables['items']['next']['text'])) {
     $variables['items']['next']['text'] = t('Next Page');
+  }
+  if ($variables['use_issue_postx_pager'] && !empty($variables['items']['last']['href'])) {
+    $parts = parse_url($variables['items']['last']['href']);
+    $query = [];
+    if (!empty($parts['query'])) {
+      parse_str($parts['query'], $query);
+    }
+    if (isset($query['page'])) {
+      $variables['issue_postx_last_page'] = (int) $query['page'] + 1;
+    }
+    elseif (!empty($variables['items']['pages'])) {
+      $variables['issue_postx_last_page'] = max(array_keys($variables['items']['pages']));
+    }
   }
 }
 

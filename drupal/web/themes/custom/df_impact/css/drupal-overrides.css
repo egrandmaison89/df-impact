@@ -74,6 +74,7 @@ body {
  */
 .wp-site-blocks {
   box-sizing: content-box !important;
+  --wp--custom--spacing--outer: clamp(20px, 5vw, 72px);
   width: calc(100vw - 2 * var(--wp--custom--spacing--outer, 72px)) !important;
   max-width: none;
   margin-left: auto;
@@ -100,18 +101,20 @@ body {
   }
 }
 
-/* Social Snap inline share — WP block layout stacks icon rows (flex row was ~96px vs ~304px). */
+/* Social Snap inline share — horizontal icon row (WordPress Social Snap default). */
 .ss-inline-share-wrapper.ss-left-inline-content .ss-social-icons-container {
-  display: block !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .ss-inline-share-wrapper.ss-left-inline-content .ss-social-icons-container > li {
-  display: block;
-  margin: 0 0 16px;
-}
-
-.ss-inline-share-wrapper.ss-left-inline-content {
-  padding-bottom: 8px;
+  display: inline-block;
+  margin: 0;
 }
 
 /* Article/in-brief: floated lead images must expand <main> height (WP block layout). */
@@ -342,6 +345,39 @@ main .ultp-block-item a:hover {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Tablet / medium desktop — header + homepage hero (WP blockmag breakpoints). */
+@media (min-width: 769px) and (max-width: 1280px) {
+  .wp-site-blocks .desktop-header .header-logo img,
+  .wp-site-blocks .desktop-header .header-logo .wp-image-4427 {
+    width: min(400px, 42vw) !important;
+    height: auto !important;
+  }
+
+  .wp-site-blocks .desktop-header .right-side-header {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .wp-site-blocks .desktop-header .is-content-justification-space-between.is-nowrap {
+    flex-wrap: wrap !important;
+    gap: 0.5rem;
+  }
+
+  #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link {
+    font-size: clamp(0.875rem, 1.6vw, 1rem);
+    white-space: nowrap;
+  }
+
+  .homepage-banner .wp-block-cover__inner-container h1,
+  .homepage-banner .homepage-header h1 {
+    max-width: 100%;
+    box-sizing: border-box;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
   }
 }
 

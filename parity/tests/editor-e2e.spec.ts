@@ -120,15 +120,21 @@ async function addMediaFromLibrary(page: import('@playwright/test').Page, openBu
     await dialog.locator('.js-media-library-item').first().waitFor({ state: 'visible', timeout: 60_000 });
     const firstItem = dialog.locator('.js-media-library-item input[type="checkbox"]').first();
     await firstItem.check({ force: true });
-    await dialog.getByRole('button', { name: /Insert selected/i }).click();
+    const insert = dialog.getByRole('button', { name: /Insert selected/i });
+    await Promise.all([
+      page
+        .waitForResponse((r) => r.url().includes('media-library') && r.status() < 400, { timeout: 60_000 })
+        .catch(() => null),
+      insert.click(),
+    ]);
     await dialog.waitFor({ state: 'hidden', timeout: 60_000 });
     if (openButtonId.includes('featured-image')) {
-      if ((await featuredImageTargetId(page)).trim()) {
-        return;
-      }
-    } else {
+      await expect
+        .poll(async () => (await featuredImageTargetId(page)).trim(), { timeout: 90_000 })
+        .not.toBe('');
       return;
     }
+    return;
   }
   throw new Error(`Media library did not attach for #${openButtonId}`);
 }

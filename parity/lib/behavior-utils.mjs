@@ -8,6 +8,15 @@ export const BEHAVIOR_BREAKPOINTS = [
 
 export async function prepareBehaviorPage(page, { reducedMotion = false } = {}) {
   await page.emulateMedia({ reducedMotion: reducedMotion ? 'reduce' : 'no-preference' });
+  await page.addInitScript(() => {
+    const purgeConsent = () => {
+      document
+        .querySelectorAll('#onetrust-banner-sdk, #onetrust-pc-sdk, [id^="onetrust-"], .cookiebot, #CybotCookiebotDialog')
+        .forEach((el) => el.remove());
+    };
+    purgeConsent();
+    new MutationObserver(purgeConsent).observe(document.documentElement, { childList: true, subtree: true });
+  });
   await page.route('**/*', async (route) => {
     const url = route.request().url();
     if (/cookiebot|onetrust|osano|trustarc|quantcast|iubenda/i.test(url)) {

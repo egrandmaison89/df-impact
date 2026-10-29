@@ -75,12 +75,3 @@ body {
   height: 1px;
   word-wrap: normal;
 }
-
-/*
- * Live WP (Playwright cross-site): copyright footer links stay white on :hover
- * because block utility colors win over pack inline hover; match live, not pack-only hover.
- */
-p.copyright a:hover,
-footer .copyright a:hover {
-  color: #fff !important;
-}

@@ -10,6 +10,7 @@ import {
   videoState,
   WP_HERO_VIDEO,
 } from './behavior-utils.mjs';
+import { ensurePointerClearForSelector } from './page-utils.mjs';
 
 export const WP_PROFILE = {
   site: 'wp',
@@ -75,6 +76,7 @@ export async function captureSiteBehavior(page, profile, bp) {
   data.hero = await videoState(page, profile.heroVideo);
   data.navDefault = await computedStyle(page, s.navLink);
   data.headerBeforeScroll = await headerScrollState(page, s.header);
+  await ensurePointerClearForSelector(page, s.footerLink);
   await scrollSelectorIntoView(page, s.footerLink);
   data.footerDefault = await computedStyle(page, s.footerLink);
   data.footerLinkHover = await computedStyleHover(page, s.footerLink);

@@ -970,18 +970,27 @@ function df_setup_update_10025(): string {
 }
 
 /**
- * Ensures a published topics term for /category/pediatrics (WP parity).
+ * Ensures Pediatrics topic term exists for /category/pediatrics (WP footer category).
  */
 function df_setup_update_10026(): string {
-  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-  $existing = $storage->loadByProperties(['vid' => 'topics', 'name' => 'Pediatrics']);
-  if ($existing !== []) {
-    return 'Pediatrics topics term already present.';
+  if (df_setup_topic_term_load_by_category_slug('pediatrics') !== NULL) {
+    return 'Pediatrics topic term already present.';
   }
-  Term::create([
+  /** @var \Drupal\taxonomy\TermStorageInterface $storage */
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $parent_tid = NULL;
+  foreach ($storage->loadTree('topics', 0, 1, TRUE) as $parent) {
+    if ($parent instanceof TermInterface && $parent->label() === 'Patient Care') {
+      $parent_tid = (int) $parent->id();
+      break;
+    }
+  }
+  $term = Term::create([
     'vid' => 'topics',
     'name' => 'Pediatrics',
+    'parent' => $parent_tid ? [$parent_tid] : [],
     'status' => 1,
-  ])->save();
-  return 'Created topics term Pediatrics for category archive route.';
+  ]);
+  $term->save();
+  return 'Created Pediatrics topic term (tid ' . $term->id() . ').';
 }

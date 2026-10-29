@@ -11,6 +11,31 @@ body {
   margin: 0;
 }
 
+/* Live behavior parity: sticky header + mega flyout hover (Max Mega Menu). */
+@media (min-width: 769px) {
+  .desktop-header,
+  .impact-header,
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children:hover > ul.mega-sub-menu,
+  #mega-menu-max_mega_menu_1 li.mega-menu-flyout.mega-menu-item-has-children:hover > ul.mega-sub-menu {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+.desktop-header.scrolled,
+.desktop-header.header--scrolled,
+.impact-header.scrolled,
+.impact-header.header--scrolled {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
 /*
  * WP blockmag uses content-box on .wp-site-blocks (1296px + 72px padding = 1440).
  * Drupal/global border-box was stretching to 1440 content + bleed → 1584px chrome.

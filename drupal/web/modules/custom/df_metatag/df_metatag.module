@@ -109,6 +109,19 @@ function df_metatag_metatags_alter(array &$tags, array &$context): void {
     }
   }
 
+  if ($route_match->getRouteName() === 'view.digital_exclusives_archive.page_1') {
+    $title = 'Digital Exclusives Archives - Impact Magazine';
+    $description = 'An archive of Digital Exclusive donor stories for the Impact Magazine by Dana-Farber Cancer Institute and the Jimmy Fund.';
+    $tags['title'] = $title;
+    $tags['description'] = $description;
+    $tags['og_title'] = $title;
+    $tags['og_description'] = $description;
+    $tags['og_type'] = 'article';
+    $archive_url = rtrim($origin, '/') . $path . '/';
+    $tags['canonical_url'] = $archive_url;
+    $tags['og_url'] = $archive_url;
+  }
+
   if ($route_match->getRouteName() === '<front>' || df_metatag_is_homepage_path()) {
     $front_tags = \Drupal::config('metatag.metatag_defaults.front')->get('tags') ?: [];
     if (is_array($front_tags)) {
@@ -149,6 +162,9 @@ function df_metatag_preprocess_html(array &$variables): void {
     if ($term instanceof \Drupal\taxonomy\TermInterface) {
       $variables['head_title']['title'] = $term->label() . ' Archives - Impact Magazine';
     }
+  }
+  elseif (\Drupal::routeMatch()->getRouteName() === 'view.digital_exclusives_archive.page_1') {
+    $variables['head_title']['title'] = 'Digital Exclusives Archives - Impact Magazine';
   }
 }
 
@@ -200,6 +216,20 @@ function df_metatag_is_homepage_path(): bool {
 }
 
 /**
+ * Whether a URL is an off-site production canonical (e.g. defycancer.dana-farber.org).
+ */
+function df_metatag_is_external_production_url(string $url): bool {
+  if (!preg_match('#^https?://#i', $url)) {
+    return FALSE;
+  }
+  $host = strtolower(parse_url($url, PHP_URL_HOST) ?? '');
+  if ($host === '' || $host === '127.0.0.1' || $host === 'localhost' || str_contains($host, 'df-impact')) {
+    return FALSE;
+  }
+  return $host !== 'danafarberimpact.org' && !str_ends_with($host, '.danafarberimpact.org');
+}
+
+/**
  * Rewrites a local or alias URL to the production origin, keeping path/query.
  */
 function df_metatag_rewrite_to_production(string $url, string $origin): string {
@@ -207,6 +237,9 @@ function df_metatag_rewrite_to_production(string $url, string $origin): string {
     return $url;
   }
   $url = trim($url);
+  if (preg_match('#^https://danafarberimpact\.org/(https?://.+)$#i', $url, $m)) {
+    return df_metatag_rewrite_to_production($m[1], $origin);
+  }
   if (preg_match('#https?://[^/]+/https?://#i', $url)) {
     if (preg_match('#(https?://[^/]+(/.*))$#i', $url, $m)) {
       $url = $m[1];
@@ -222,7 +255,18 @@ function df_metatag_rewrite_to_production(string $url, string $origin): string {
     if ($parts === FALSE) {
       return $url;
     }
+    $host = strtolower($parts['host'] ?? '');
+    $is_local = $host === '127.0.0.1'
+      || $host === 'localhost'
+      || str_contains($host, 'df-impact');
+    $is_production = $host === 'danafarberimpact.org' || str_ends_with($host, '.danafarberimpact.org');
+    if (!$is_local && !$is_production) {
+      return $url;
+    }
     $path = $parts['path'] ?? '/';
+    if (preg_match('#^/(https?://.+)$#i', $path, $m)) {
+      return df_metatag_rewrite_to_production($m[1], $origin);
+    }
     $query = $parts['query'] ?? '';
   }
   else {
@@ -361,13 +405,17 @@ function df_metatag_rewrite_attached_head_urls(array &$attachments): void {
     $tag = $element['#tag'] ?? '';
     $attrs = &$element['#attributes'];
     if ($tag === 'link' && ($attrs['rel'] ?? '') === 'canonical' && !empty($attrs['href'])) {
-      $attrs['href'] = df_metatag_rewrite_to_production($attrs['href'], $origin);
+      if (!df_metatag_is_external_production_url($attrs['href'])) {
+        $attrs['href'] = df_metatag_rewrite_to_production($attrs['href'], $origin);
+      }
     }
     if ($tag === 'meta' && !empty($attrs['property'])) {
       if (in_array($attrs['property'], ['og:url', 'og:image', 'og:image:secure_url'], TRUE) && !empty($attrs['content'])) {
         $attrs['content'] = $attrs['property'] === 'og:image' || str_starts_with($attrs['property'], 'og:image')
           ? df_metatag_rewrite_upload_url($attrs['content'], $origin)
-          : df_metatag_rewrite_to_production($attrs['content'], $origin);
+          : (df_metatag_is_external_production_url($attrs['content'])
+            ? $attrs['content']
+            : df_metatag_rewrite_to_production($attrs['content'], $origin));
       }
     }
     if ($tag === 'meta' && !empty($attrs['name']) && $attrs['name'] === 'twitter:image' && !empty($attrs['content'])) {

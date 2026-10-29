@@ -8,6 +8,15 @@ export const BEHAVIOR_BREAKPOINTS = [
 
 export async function prepareBehaviorPage(page, { reducedMotion = false } = {}) {
   await page.emulateMedia({ reducedMotion: reducedMotion ? 'reduce' : 'no-preference' });
+  await page.addInitScript(() => {
+    const purgeConsent = () => {
+      document
+        .querySelectorAll('#onetrust-banner-sdk, #onetrust-pc-sdk, [id^="onetrust-"], .cookiebot, #CybotCookiebotDialog')
+        .forEach((el) => el.remove());
+    };
+    purgeConsent();
+    new MutationObserver(purgeConsent).observe(document.documentElement, { childList: true, subtree: true });
+  });
   await page.route('**/*', async (route) => {
     const url = route.request().url();
     if (/cookiebot|onetrust|osano|trustarc|quantcast|iubenda/i.test(url)) {
@@ -36,16 +45,62 @@ export async function computedStyle(page, selector) {
   }, selector);
 }
 
+export async function scrollSelectorIntoView(page, selector) {
+  const first = selector.split(',')[0].trim();
+  await page.evaluate((sel) => {
+    document.querySelector(sel)?.scrollIntoView({ block: 'center', inline: 'nearest' });
+  }, first);
+  await page.waitForTimeout(250);
+}
+
 export async function computedStyleHover(page, selector) {
   const loc = page.locator(selector).first();
-  if (!(await loc.count())) return null;
-  try {
-    await loc.hover({ force: true, timeout: 5000 });
-  } catch {
-    return null;
+  if ((await loc.count()) === 0) return null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      await page.mouse.move(8, 8);
+      await page.waitForTimeout(80);
+      await loc.scrollIntoViewIfNeeded();
+      const box = await loc.boundingBox();
+      if (box) {
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 10 });
+      }
+      await loc.hover({ timeout: 8000 });
+      await page.waitForTimeout(650);
+      let hovering = await loc.evaluate((el) => el.matches(':hover'));
+      if (!hovering && box) {
+        const cdp = await page.context().newCDPSession(page);
+        const x = box.x + box.width / 2;
+        const y = box.y + box.height / 2;
+        await cdp.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
+        await page.waitForTimeout(700);
+        hovering = await loc.evaluate((el) => el.matches(':hover'));
+      }
+      if (hovering) break;
+    } catch {
+      if (attempt === 2) {
+        try {
+          await loc.hover({ force: true, timeout: 5000 });
+          await page.waitForTimeout(650);
+        } catch {
+          return null;
+        }
+      }
+    }
   }
-  await page.waitForTimeout(150);
-  return computedStyle(page, selector);
+  return loc.evaluate((el) => {
+    const cs = getComputedStyle(el);
+    return {
+      color: cs.color,
+      backgroundColor: cs.backgroundColor,
+      transitionProperty: cs.transitionProperty,
+      transitionDuration: cs.transitionDuration,
+      transitionTimingFunction: cs.transitionTimingFunction,
+      transform: cs.transform,
+      position: cs.position,
+      boxShadow: cs.boxShadow,
+    };
+  });
 }
 
 export async function videoState(page, selector) {
@@ -82,10 +137,16 @@ export async function headerScrollState(page, selector = '.header, .desktop-head
     const el = document.querySelector(sel);
     if (!el) return { found: false };
     const cs = getComputedStyle(el);
+    const logo = document.querySelector('.header-logo');
+    const scrolledClass =
+      el.classList.contains('header--scrolled') ||
+      el.classList.contains('scrolled') ||
+      Boolean(el.querySelector('.scrolled')) ||
+      Boolean(logo?.classList.contains('scrolled'));
     return {
       found: true,
       className: el.className,
-      scrolled: el.classList.contains('header--scrolled') || el.classList.contains('scrolled'),
+      scrolled: scrolledClass,
       position: cs.position,
       boxShadow: cs.boxShadow,
       height: el.getBoundingClientRect().height,
@@ -101,12 +162,18 @@ export async function dropdownOpenOnHover(page, triggerSel, panelSel) {
   } catch {
     return { found: false };
   }
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(350);
   return page.evaluate((panel) => {
     const el = document.querySelector(panel);
     if (!el) return { found: false };
     const cs = getComputedStyle(el);
-    return { found: true, display: cs.display, visibility: cs.visibility, opacity: cs.opacity };
+    return {
+      found: true,
+      display: cs.display,
+      visibility: cs.visibility,
+      opacity: cs.opacity,
+      height: el.getBoundingClientRect().height,
+    };
   }, panelSel);
 }
 

@@ -1,0 +1,16 @@
+{
+  "runId": "2026-10-29T02-smoke",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "baselineId": null,
+  "paths": [
+    "/homepage"
+  ],
+  "assertionSummary": {
+    "tests": 3,
+    "assertions": 47,
+    "passed": 46,
+    "passRate": 0.9787234042553191
+  },
+  "note": "See behavior.json per case for per-inventory assertion names."
+}

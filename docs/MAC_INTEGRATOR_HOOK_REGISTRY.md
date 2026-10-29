@@ -33,15 +33,15 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 
 1. **#23** whole — **merged** (`ceff3720` ← `193ffdcf`)
 2. **#25** whole — **merged** (`5b423ed8` ← `4884c8ab`); pass-3 live-WP CS 60/60
-3. **#29** whole — content-sweep follow-up (`cursor/sweep-801-followup-ce7f`); fixes **794/800** (and integrator **793/800**) sweep gaps — **not ready**; merge only when branch agent reports ready
+3. **#29** whole — **merged** (`83f35352` ← `efe645952`); sweep-801 follow-up (`/topics` + `/late-fall-2022-issue` WP 404s, immunotherapy, About body post_update)
 4. **#28** whole — article variants (**#24 already merged**; do not double-merge) — when agent ready
-5. **#10** whole — **stacked on #25** (`is_light` + post_update) — after **#28**
-6. **Eric QA (links / images / translate icon)** — targets phase4; whole merge when branch agent reports ready
-7. **Eric QA (share / pagination / In Brief / tablet spacing)** — targets phase4; whole merge when branch agent reports ready
+5. **#10** whole — **stacked on #25** (`is_light` + post_update) — when agent ready
+6. **#30** — Eric QA (links / images / translate icon) — when agent ready
+7. **#31** — Eric QA (share / pagination / In Brief / tablet spacing) — when agent ready
 
-**After #25:** **#29 → #28 → #10 → Eric QA #1 → Eric QA #2** (each **whole merge once**; wait for branch agent “ready”; same post-merge gates below).
+**After #29:** **#28 → #10 → #30 → #31** (each **whole merge once**; wait for branch agent “ready”; same post-merge gates below).
 
-**Done on phase4:** **#22/#27** (`6622635f`, `fcf27bd2`), **#24** (`7c27d051`), **#23** (`ceff3720`), **#25** (`5b423ed8`).
+**Done on phase4:** **#22/#27** (`6622635f`, `fcf27bd2`), **#24** (`7c27d051`), **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`).
 
 **Post_updates (combined on phase4):** #23 four + #25 `seed_issue_covers`, `seed_issue_banners` (+ #10 `is_light` when merged).
 
@@ -55,13 +55,13 @@ Computed-style acceptance on branch: `npm run parity:computed-style-diff:full:li
 
 **Post-merge:** if `cim` resets `system.site:page.front`, run `_df_setup_ensure_home_landing()` (or re-verify anonymous `/` is **200**).
 
-## PR #29 (not ready)
+## PR #29 (merged)
 
-Branch **`cursor/sweep-801-followup-ce7f`** — rebasing onto **`5b423ed8`** (#25 merge) to fix **`/category/immunotherapy`** and remaining content-sweep gaps (integrator **793/800** text98; `/about`, gift/grant articles, etc.).
+Whole merge at **`83f35352`** from **`cursor/sweep-801-followup-ce7f`** @ **`efe645952`**.
 
-**Do not merge** until the branch agent reports ready.
+**Post_updates added:** `ensure_about_impact_body`, `late_fall_2022_tag_links`, `late_fall_2022_byline_placement`, `late_fall_2022_export_byline_trim` (plus all prior #23/#25 post_updates).
 
-**Integrator requirement before merge:** **revert any `/topics` “fix”** on that branch. Live WordPress returns **404** for `/topics`; **#24’s Drupal 404** for `/topics` is correct. A topics index route or 200 response must not ship in #29.
+**WP 404 parity:** `/topics`, `/late-fall-2022-issue` → Drupal **404** (see `parity/config/wp-live-404-paths.json`).
 
 ## Post-merge checklist (DB at schema 10035)
 
@@ -80,7 +80,7 @@ cd ../parity
 npm run parity:smoke:200                              # 0 fails
 npm run parity:template-samples:http                    # 19/19
 npm run parity:url:check                              # 801/801
-PARITY_CONTENT_SWEEP_NO_LIVE_WP=1 npm run parity:content:sweep   # ≥799 text98 among comparable
+PARITY_CONTENT_SWEEP_NO_LIVE_WP=1 npm run parity:content:sweep   # 801/801 text98 among comparable (target)
 npm run parity:issue-live-text:cache                    # 15/15 (0 below98)
 npm run parity:content:sweep:issues:cache               # 15/15 text98
 npx playwright test --project=editor-e2e                # green

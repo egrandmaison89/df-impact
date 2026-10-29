@@ -88,6 +88,38 @@ body {
     padding-left: 20px;
     padding-right: 20px;
   }
+
+  .wp-site-blocks .desktop-header {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .wp-site-blocks .mobile-header {
+    display: none !important;
+  }
+}
+
+/* Article/in-brief: floated lead images must expand <main> height (WP block layout). */
+main#wp--skip-link--target .entry-content.wp-block-post-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Category archive rows (wp-block-query template). */
+.archive-row .wp-block-post-featured-image {
+  margin: 0;
+  overflow: hidden;
+}
+
+.archive-row .wp-block-post-featured-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 260px;
+  object-fit: cover;
+  aspect-ratio: 1450 / 1040;
 }
 
 /*

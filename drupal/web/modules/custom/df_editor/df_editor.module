@@ -383,12 +383,24 @@ function df_editor_issue_publish_bundle_submit(array &$form, FormStateInterface 
 function df_editor_node_update(NodeInterface $node): void {
   if ($node->bundle() === 'issue') {
     $original = $node->original ?? NULL;
-    if ($original instanceof NodeInterface && $node->isPublished()) {
-      if ($node->hasField('field_hero_heading') && $original->hasField('field_hero_heading')) {
-        $old = (string) $original->get('field_hero_heading')->value;
-        $new = (string) $node->get('field_hero_heading')->value;
-        if ($old !== $new) {
+    if ($original instanceof NodeInterface) {
+      if ($original->isPublished() !== $node->isPublished()) {
+        df_editor_invalidate_issue_nav_cache();
+      }
+      elseif ($original->hasField('moderation_state') && $node->hasField('moderation_state')) {
+        $old_mod = (string) $original->get('moderation_state')->value;
+        $new_mod = (string) $node->get('moderation_state')->value;
+        if ($old_mod !== $new_mod && ($old_mod === 'published' || $new_mod === 'published')) {
           df_editor_invalidate_issue_nav_cache();
+        }
+      }
+      if ($node->isPublished()) {
+        if ($node->hasField('field_hero_heading') && $original->hasField('field_hero_heading')) {
+          $old = (string) $original->get('field_hero_heading')->value;
+          $new = (string) $node->get('field_hero_heading')->value;
+          if ($old !== $new) {
+            df_editor_invalidate_issue_nav_cache();
+          }
         }
       }
     }

@@ -37,15 +37,16 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 4. **DB convergence** — **merged** on phase4 (`e0a4f1f4`); `_df_setup_run_post_migrate_integrator_convergence()` + About canonical body
 5. **#32** whole — **merged** (`ef3e2714` ← `cursor/admin-chrome-e2e-ce7f`); site-admin header/footer/hero + `admin-e2e` Playwright
 6. **#34** whole — **merged** (`91b165bf`); admin-e2e teardown + `system.site:page.front: /homepage` + `FixHomeFrontPageConfigSubscriber` (cim-safe `/` 200)
-7. **#31** whole — Eric QA (share / pagination / In Brief / tablet spacing) — **owns** the single **main/footer inset** block in `drupal-overrides.css` — when agent ready (green gate table)
-8. **#28** whole — article variants — **rebase after #31**; drop duplicate main/footer inset CSS — when agent ready
-9. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
-10. **#30** — Eric QA (links / images / translate icon) — when agent ready
-11. **#33** — not ready (agent will report)
+7. **#35** whole — **merged** (`caf402c2` ← `cursor/editor-e2e-stable-ce7f`); issue-nav **Dynamic Page Cache** tags + publish invalidation; editor/admin e2e without `drush cr`; integrator follow-up: unpublish/archive nav bust + admin-e2e hero restore via entity save
+8. **#31** whole — Eric QA (share / pagination / In Brief / tablet spacing) — **owns** the single **main/footer inset** block in `drupal-overrides.css` — when agent ready (green gate table)
+9. **#28** whole — article variants — **rebase after #31**; drop duplicate main/footer inset CSS — when agent ready
+10. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
+11. **#30** — Eric QA (links / images / translate icon) — when agent ready
+12. **#33** — not ready (agent will report)
 
 **Next:** **#31 → #28 → #10 → #30 → #33** (whole merge once each only when that PR’s agent reports ready with a **green gate table**).
 
-**Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`).
+**Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`), **#35** (`caf402c2` + integrator gate follow-up).
 
 **Generated parity gate output** (`parity/reports/content-sweep/`, smoke, url-parity, etc.) is **gitignored** — do not commit sweep JSON/CSV from PR branches.
 

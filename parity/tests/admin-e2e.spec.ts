@@ -83,10 +83,10 @@ function restoreChromeSnapshot(): void {
   for (const key of CONFIG_KEYS) {
     configSet(key, configBefore[key] ?? '');
   }
-  if (latestIssueNid && heroHeadingBefore !== undefined) {
-    const safe = heroHeadingBefore.replace(/'/g, "''");
+  if (latestIssueNid) {
+    const heroJson = JSON.stringify(heroHeadingBefore ?? '');
     drush(
-      `sqlq "UPDATE node__field_hero_heading SET field_hero_heading_value='${safe}' WHERE entity_id=${latestIssueNid}"`,
+      `ev '$n=\\Drupal\\node\\Entity\\Node::load(${latestIssueNid}); if ($n && $n->hasField("field_hero_heading")) { $n->set("field_hero_heading", ${heroJson}); $n->save(); }'`,
     );
   }
   invalidateIssueChromeCache();

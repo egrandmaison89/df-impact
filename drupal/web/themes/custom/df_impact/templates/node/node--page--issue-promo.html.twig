@@ -5,7 +5,7 @@
   <div class="ultp-block-content-wrap">
     {% if issue_promo_image_url %}
       <div class="ultp-block-image ultp-block-image-none">
-        <a href="{{ url }}"><img decoding="async" src="{{ issue_promo_image_url }}" class="ultp-block-image-content lazyloaded" alt="{{ issue_promo_image_alt }}"></a>
+        <a href="{{ url }}"><img decoding="async" src="{{ issue_promo_image_url }}" width="{{ issue_promo_image_width|default(768) }}" height="{{ issue_promo_image_height|default(551) }}" class="ultp-block-image-content lazyloaded" alt="{{ issue_promo_image_alt }}" style="width:100%;height:100%;object-fit:cover"></a>
       </div>
     {% endif %}
     <div class="ultp-block-content">

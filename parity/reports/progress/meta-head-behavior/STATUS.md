@@ -27,4 +27,6 @@ Base: `cursor/phase4-chrome-behavior-0b67`
 2. `npm run parity:head:refpack` and `npm run parity:smoke:baseline` — target **100% metaMatch**.
 3. `npm run parity:behavior:smoke` with `PARITY_BEHAVIOR_STRICT=1` when hero media present.
 
+PR: https://github.com/egrandmaison89/df-impact/pull/6 (branch `cursor/meta-head-behavior-0751` → `cursor/phase4-chrome-behavior-0b67`)
+
 Updated: 2026-10-29 (initial)

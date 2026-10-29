@@ -31,14 +31,14 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 
 ## Merge order (whole merges only)
 
-1. **#25** whole — after hold (a–c); verify pass-2 live-WP computed-style baseline
-2. **#23** whole — post_updates only (no new numbered hooks)
+1. **#23** whole — **merged** (`ceff3720` ← `193ffdcf`); post_updates only (no numbered hooks above 10035)
+2. **#25** whole — **on hold** until agent clears (a–c); verify pass-2 live-WP computed-style baseline
 3. **#28** whole — article variants (**#24 already merged**; do not double-merge)
 4. **#10** whole — **stacked on #25** (`is_light` + post_update)
 
-**Done on phase4:** **#22/#27** (`6622635f`, `fcf27bd2`), **#24** (`7c27d051`).
+**Done on phase4:** **#22/#27** (`6622635f`, `fcf27bd2`), **#24** (`7c27d051`), **#23** (`ceff3720`).
 
-Drupal still requires **#25 before #23** so **10029/10030** exist in install before DB work that assumed higher schema-only ordering; remaining #23 work is **post_update**, not 10031–10033 hooks.
+**#23 post_updates (combined on phase4):** `ensure_home_landing_published`, `in_brief_excerpt`, `seed_listing_excerpts`, `restore_in_brief_summary`.
 
 On `df_setup.module` conflicts with #22, **keep #22’s side**.
 
@@ -68,9 +68,9 @@ npm run parity:url:check              # 801/801
 
 **Issue gates:** committed `parity/cache/wp-issue-pages` + refpack only (`PARITY_ISSUE_WP_CACHE_ONLY=1`).
 
-### PR #23 blocker
+### PR #23 (merged)
 
-`parity:url:check` **801/801** on content-sweep branch before whole merge.
+Whole merge onto phase4 at **`ceff3720`**. Pre-merge gate was `parity:url:check` **801/801** on `cursor/content-sweep-ce7f`.
 
 ## Phase4 reference state
 

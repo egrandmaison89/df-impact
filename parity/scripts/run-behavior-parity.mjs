@@ -20,7 +20,7 @@ if (process.env.PARITY_WP_BASELINE) {
 
 const pw = spawnSync(
   'npx',
-  ['playwright', 'test', '--project=behavior'],
+  ['playwright', 'test', '--project=behavior', '--max-failures=9999'],
   { cwd: parityRoot, stdio: 'inherit', env: { ...process.env, PARITY_ROOT: parityRoot } },
 );
 

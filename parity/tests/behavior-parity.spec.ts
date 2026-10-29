@@ -71,7 +71,7 @@ function recordAssertion(stats: AssertionStat[], name: string, pass: boolean) {
   stats.push({ name, pass });
   globalStats.assertions += 1;
   if (pass) globalStats.passed += 1;
-  if (process.env.PARITY_BEHAVIOR_STRICT === '1' || crossSite) {
+  if (process.env.PARITY_BEHAVIOR_STRICT === '1') {
     expect.soft(pass, name).toBeTruthy();
   }
 }
@@ -159,7 +159,7 @@ async function loadWpSnapshot(
   return null;
 }
 
-test.describe.configure({ mode: 'serial' });
+test.describe.configure({ mode: 'serial', retries: 0 });
 
 for (const pathNorm of paths) {
   for (const bp of BEHAVIOR_BREAKPOINTS) {

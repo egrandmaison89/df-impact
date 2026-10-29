@@ -1,0 +1,48 @@
+# Fast Drupal HTTP guard for PRs targeting the phase4 integration branch (PR #5).
+# Requires a reachable DRUPAL_BASE_URL (Cloud Agent VM, DDEV, or self-hosted runner with DB).
+name: Parity smoke 200
+
+on:
+  pull_request:
+    branches:
+      - cursor/phase4-chrome-behavior-0b67
+
+jobs:
+  smoke-200:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: parity/package-lock.json
+
+      - name: Install parity dependencies
+        working-directory: parity
+        run: npm ci
+
+      - name: Probe Drupal
+        id: drupal
+        env:
+          DRUPAL_BASE_URL: ${{ vars.DRUPAL_SMOKE_BASE_URL || 'http://127.0.0.1:8888' }}
+        run: |
+          if curl -sf --max-time 5 "${DRUPAL_BASE_URL}/" >/dev/null; then
+            echo "reachable=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "reachable=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run smoke-200 guard
+        if: steps.drupal.outputs.reachable == 'true'
+        working-directory: parity
+        env:
+          DRUPAL_BASE_URL: ${{ vars.DRUPAL_SMOKE_BASE_URL || 'http://127.0.0.1:8888' }}
+          SMOKE_DRUPAL_REQUIRED: '1'
+        run: npm run parity:smoke:200
+
+      - name: Drupal not reachable (skipped)
+        if: steps.drupal.outputs.reachable != 'true'
+        run: |
+          echo "::warning::Drupal not reachable at DRUPAL_SMOKE_BASE_URL or http://127.0.0.1:8888 — run npm run parity:smoke:200 locally before merge (parity/docs/MEASUREMENT.md)."

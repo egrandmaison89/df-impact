@@ -32,7 +32,13 @@ for (const [template, entry] of Object.entries(samples)) {
 }
 
 fs.mkdirSync(outDir, { recursive: true });
-const envBase = { ...process.env, PARITY_SERIAL: '1', REPORT_RUN_ID: runId, DRUPAL_BASE_URL: drupalBase };
+const envBase = {
+  ...process.env,
+  PARITY_SERIAL: '1',
+  REPORT_RUN_ID: runId,
+  DRUPAL_BASE_URL: drupalBase,
+  PARITY_WP_SOURCE: process.env.PARITY_WP_SOURCE || 'refpack',
+};
 delete envBase.PARITY_TEMPLATE;
 delete envBase.PARITY_BP;
 delete envBase.PARITY_PATH;
@@ -60,6 +66,8 @@ function loadResult(job) {
 function needsRetry(report) {
   if (!report || report.error) return true;
   if (report.drStatus !== 200) return true;
+  // WP ref-pack missing this path: Drupal-only result is final, not a transient failure.
+  if (report.wpStatus === 404 && report.drStatus === 200) return false;
   if (!report.wpComparable && report.wpStatus !== 200) return true;
   return false;
 }

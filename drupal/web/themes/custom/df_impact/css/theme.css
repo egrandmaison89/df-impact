@@ -585,8 +585,7 @@
 
 /* Topic archive (WordPress /category/[name]): Montserrat title + accent bar. */
 .path-category-archive h1,
-.path-category-archive .page-title,
-.view-topic-archive h1 {
+.path-category-archive .page-title {
   margin: 2.5rem 0;
   font-family: Montserrat, "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.75rem, 2.6vw, 2.375rem);
@@ -594,6 +593,19 @@
   line-height: 1.2;
   color: #003354;
   border-left: 5px solid #00629b;
+  padding-left: 15px;
+}
+
+.view-topic-archive h1.wp-block-query-title.category-header {
+  margin-top: 40px;
+  margin-bottom: 46px;
+  font-family: Montserrat, "Helvetica Neue", Arial, sans-serif;
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 51.68px;
+  color: #003354;
+  max-width: 760px;
+  border-left: none;
   padding-left: 15px;
 }
 
@@ -1402,6 +1414,7 @@ article.post .wp-block-post-terms {
 }
 
 /* PostX “In This Issue” grid — WP style4 crop (768×551), layout-only parity. */
+.issue-page .ultp-block-items-wrap .ultp-block-row,
 .issue-page .ultp-block-70af6c .ultp-block-row {
   column-gap: 40px;
   row-gap: 40px;

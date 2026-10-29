@@ -34,9 +34,11 @@
     ".ultp-block-items-wrap .ultp-block-item img",
     ".postx-post-grid .postx-grid-item",
     ".postx-post-grid .postx-grid-item img",
-    ".wp-block-post-template > .wp-block-post",
-    ".wp-block-post-template > .wp-block-post .wp-block-post-featured-image img",
+    ".wp-block-post-template .wp-block-post",
+    ".wp-block-post-template .wp-block-post img",
+    ".archive-row",
+    ".archive-row img",
     ".wp-block-group.about-impact",
-    ".wp-block-columns"
+    "main .wp-block-columns"
   ]
 }

@@ -2,87 +2,72 @@
   "component": "article",
   "drupalBase": "http://df-impact.ddev.site",
   "refRenderer": "mac-pack-viewport-png",
-  "pages": 3,
+  "pages": 2,
   "rectTolerancePx": 2,
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.1259092338715452,
-    "viewport_median_mac_desktop": 0.4250756172839506,
-    "chrome_median_tablet": 0.17537939579750014,
-    "viewport_median_mac_tablet": 0.5151432291666667,
-    "chrome_median_mobile": 0.19754698160235576,
-    "viewport_median_mac_mobile": 0.33009185185185186
+    "chrome_median_desktop": 0.12727154150095285,
+    "viewport_median_mac_desktop": 0.3170420524691358,
+    "chrome_median_tablet": 0.17283616470141447,
+    "viewport_median_mac_tablet": 0.36286024305555553,
+    "chrome_median_mobile": 0.15911740741561087,
+    "viewport_median_mac_mobile": 0.27497925925925926
   },
   "summary": [
     {
-      "path": "/2026/09/more-than-a-building-name",
-      "bp": "desktop",
-      "error": "missing reference viewport"
-    },
-    {
-      "path": "/2026/09/more-than-a-building-name",
-      "bp": "tablet",
-      "error": "missing reference viewport"
-    },
-    {
-      "path": "/2026/09/more-than-a-building-name",
-      "bp": "mobile",
-      "error": "missing reference viewport"
-    },
-    {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "desktop",
-      "pixelDiffRatio": 0.4250756172839506,
-      "headerPixelDiffRatio": 0.033519761372110365,
-      "footerPixelDiffRatio": 0.09369046258192348,
-      "chromePixelDiffRatio": 0.06360511197701693,
-      "viewportPixelDiffRatioMac": 0.4250756172839506
+      "pixelDiffRatio": 0.4253564814814815,
+      "headerPixelDiffRatio": 0.15929809843400447,
+      "footerPixelDiffRatio": 0.09510149939033684,
+      "chromePixelDiffRatio": 0.12719979891217065,
+      "viewportPixelDiffRatioMac": 0.4253564814814815
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "tablet",
-      "pixelDiffRatio": 0.5151432291666667,
+      "pixelDiffRatio": 0.571322337962963,
       "headerPixelDiffRatio": 0.21032395287958114,
-      "footerPixelDiffRatio": 0.14043483871541915,
-      "chromePixelDiffRatio": 0.17537939579750014,
-      "viewportPixelDiffRatioMac": 0.5151432291666667
+      "footerPixelDiffRatio": 0.12694402541750657,
+      "chromePixelDiffRatio": 0.16863398914854386,
+      "viewportPixelDiffRatioMac": 0.571322337962963
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "mobile",
-      "pixelDiffRatio": 0.33009185185185186,
+      "pixelDiffRatio": 0.3624059259259259,
       "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.23446916489192984,
-      "chromePixelDiffRatio": 0.19738117930460367,
-      "viewportPixelDiffRatioMac": 0.33009185185185186
+      "footerPixelDiffRatio": 0.14968960985998458,
+      "chromePixelDiffRatio": 0.15499140178863102,
+      "viewportPixelDiffRatioMac": 0.3624059259259259
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "desktop",
-      "pixelDiffRatio": 0.20593981481481483,
-      "headerPixelDiffRatio": 0.033519761372110365,
-      "footerPixelDiffRatio": 0.21829870637098003,
-      "chromePixelDiffRatio": 0.1259092338715452,
-      "viewportPixelDiffRatioMac": 0.20593981481481483
+      "pixelDiffRatio": 0.20872762345679013,
+      "headerPixelDiffRatio": 0.15929809843400447,
+      "footerPixelDiffRatio": 0.09538846974546564,
+      "chromePixelDiffRatio": 0.12734328408973505,
+      "viewportPixelDiffRatioMac": 0.20872762345679013
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "tablet",
-      "pixelDiffRatio": 0.17239149305555557,
+      "pixelDiffRatio": 0.15439814814814815,
       "headerPixelDiffRatio": 0.21032395287958114,
-      "footerPixelDiffRatio": 0.13973030985865315,
-      "chromePixelDiffRatio": 0.17502713136911713,
-      "viewportPixelDiffRatioMac": 0.17239149305555557
+      "footerPixelDiffRatio": 0.14375272762898902,
+      "chromePixelDiffRatio": 0.17703834025428508,
+      "viewportPixelDiffRatioMac": 0.15439814814814815
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "mobile",
-      "pixelDiffRatio": 0.23131555555555555,
+      "pixelDiffRatio": 0.1875525925925926,
       "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.23480076948743403,
-      "chromePixelDiffRatio": 0.19754698160235576,
-      "viewportPixelDiffRatioMac": 0.23131555555555555
+      "footerPixelDiffRatio": 0.16619363236790397,
+      "chromePixelDiffRatio": 0.1632434130425907,
+      "viewportPixelDiffRatioMac": 0.1875525925925926
     }
   ]
 }

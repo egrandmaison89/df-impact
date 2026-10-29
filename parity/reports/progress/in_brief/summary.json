@@ -1,0 +1,100 @@
+{
+  "component": "in_brief",
+  "drupalBase": "http://df-impact.ddev.site",
+  "refRenderer": "mac-pack-viewport-png",
+  "pages": 3,
+  "rectTolerancePx": 2,
+  "structuralPackPassAll": true,
+  "structuralRefDrupalPassAll": true,
+  "medians": {
+    "chrome_median_desktop": 0.1273373303479274,
+    "viewport_median_mac_desktop": 0.19768287037037038,
+    "chrome_median_tablet": 0.17793749963015043,
+    "viewport_median_mac_tablet": 0.13217881944444446,
+    "chrome_median_mobile": 0.1664749333171629,
+    "viewport_median_mac_mobile": 0.15310814814814816
+  },
+  "summary": [
+    {
+      "path": "/in-brief",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.22497145061728396,
+      "headerPixelDiffRatio": 0.1527777777777778,
+      "footerPixelDiffRatio": 0.09350827808260936,
+      "chromePixelDiffRatio": 0.12314302793019358,
+      "viewportPixelDiffRatioMac": 0.22497145061728396
+    },
+    {
+      "path": "/in-brief",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.12617476851851853,
+      "headerPixelDiffRatio": 0.21513688917975568,
+      "footerPixelDiffRatio": 0.08142725743031762,
+      "chromePixelDiffRatio": 0.14828207330503665,
+      "viewportPixelDiffRatioMac": 0.12617476851851853
+    },
+    {
+      "path": "/in-brief",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.18362962962962964,
+      "headerPixelDiffRatio": 0.20194066317626527,
+      "footerPixelDiffRatio": 0.18916776215997574,
+      "chromePixelDiffRatio": 0.1955542126681205,
+      "viewportPixelDiffRatioMac": 0.18362962962962964
+    },
+    {
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.1976111111111111,
+      "headerPixelDiffRatio": 0.15929809843400447,
+      "footerPixelDiffRatio": 0.0953872789971041,
+      "chromePixelDiffRatio": 0.1273426887155543,
+      "viewportPixelDiffRatioMac": 0.1976111111111111
+    },
+    {
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.1325491898148148,
+      "headerPixelDiffRatio": 0.21032395287958114,
+      "footerPixelDiffRatio": 0.14555104638071972,
+      "chromePixelDiffRatio": 0.17793749963015043,
+      "viewportPixelDiffRatioMac": 0.1325491898148148
+    },
+    {
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.15310814814814816,
+      "headerPixelDiffRatio": 0.1602931937172775,
+      "footerPixelDiffRatio": 0.1726566729170483,
+      "chromePixelDiffRatio": 0.1664749333171629,
+      "viewportPixelDiffRatioMac": 0.15310814814814816
+    },
+    {
+      "path": "/2023/09/american-association-for-cancer-research",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.19768287037037038,
+      "headerPixelDiffRatio": 0.15929809843400447,
+      "footerPixelDiffRatio": 0.09537656226185033,
+      "chromePixelDiffRatio": 0.1273373303479274,
+      "viewportPixelDiffRatioMac": 0.19768287037037038
+    },
+    {
+      "path": "/2023/09/american-association-for-cancer-research",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.13217881944444446,
+      "headerPixelDiffRatio": 0.21032395287958114,
+      "footerPixelDiffRatio": 0.14555104638071972,
+      "chromePixelDiffRatio": 0.17793749963015043,
+      "viewportPixelDiffRatioMac": 0.13217881944444446
+    },
+    {
+      "path": "/2023/09/american-association-for-cancer-research",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.14950222222222223,
+      "headerPixelDiffRatio": 0.1602931937172775,
+      "footerPixelDiffRatio": 0.1653270541354405,
+      "chromePixelDiffRatio": 0.162810123926359,
+      "viewportPixelDiffRatioMac": 0.14950222222222223
+    }
+  ]
+}

@@ -1,17 +1,20 @@
 {#
 /**
  * @file
- * Theme override for Issue nodes (teaser / cover card).
+ * Issue teaser — cover + label (browse / past issues parity).
  */
 #}
-<div{{ attributes.addClass('issue-card') }}>
-  {% if content.field_cover_image|render|trim %}
-    <a href="{{ url }}">
-      {{ content.field_cover_image }}
-    </a>
-  {% endif %}
-
-  <div class="issue-card__label">
-    <a href="{{ url }}">{{ label }}</a>
-  </div>
-</div>
+{% set cover = issue_cover_url|default(null) %}
+{% if not cover and content.field_cover_image|render|trim %}
+  {% set cover = null %}
+{% endif %}
+{% if issue_cover_url %}
+  <figure class="wp-block-image size-full is-resized issue-cover">
+    <a href="{{ url }}"><img decoding="async" src="{{ issue_cover_url }}" alt="{{ issue_cover_alt|default(label) }}" class="lazyloaded" style="width:250px;height:auto"></a>
+  </figure>
+{% elseif content.field_cover_image|render|trim %}
+  <figure class="wp-block-image size-full is-resized issue-cover">
+    <a href="{{ url }}">{{ content.field_cover_image }}</a>
+  </figure>
+{% endif %}
+<h4 class="wp-block-heading has-tertiary-color has-text-color"><a href="{{ url }}">{{ label }}</a></h4>

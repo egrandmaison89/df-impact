@@ -4,12 +4,14 @@
 
 | Metric | Before (smoke eval) | After WP DOM port |
 | --- | ---: | ---: |
-| Viewport median Mac **desktop** (`/`) | 77.3% | **61.1%** |
-| Viewport median Mac **tablet** | 61.6% | **48.9%** |
-| Viewport median Mac **mobile** | 56.3% | **47.5%** |
-| Chrome median **desktop** | — | **6.6%** (after capture stabilize) |
-| Chrome median **tablet** | — | **17.5%** |
-| Chrome median **mobile** | — | **19.8%** |
+| Viewport median Mac **desktop** (`/`, `/homepage`) | 77.3% | **61.1%** |
+| Viewport median Mac **tablet** | 61.6% | **49.0%** |
+| Viewport median Mac **mobile** | 56.3% | **47.3%** |
+| Chrome median **desktop** | — | **12.9%** |
+| Chrome median **tablet** | — | **18.7%** |
+| Chrome median **mobile** | — | **21.3%** |
+
+PostX card images: `wp_card_870x570` + `width`/`height`/`object-fit:cover` on grid twigs (2026-10-28).
 
 Run: `PACK_COMPARE_PATHS=/,/homepage PROGRESS_COMPONENT=homepage DRUPAL_BASE_URL=http://df-impact.ddev.site npm run parity:compare-ref-pack`
 

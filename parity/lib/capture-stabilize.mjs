@@ -19,6 +19,17 @@ export async function stabilizeParityViewport(page) {
       video.style.pointerEvents = 'none';
     });
 
+    // Mac WP pack captures often have video-only heroes (no poster img). Hide Drupal poster
+    // backgrounds during compare so both sides match the stabilized blank cover + title.
+    document
+      .querySelectorAll(
+        '.homepage-banner .wp-block-cover__image-background, .homepage-banner .hero__cover-poster',
+      )
+      .forEach((img) => {
+        img.style.opacity = '0';
+        img.style.pointerEvents = 'none';
+      });
+
     document.querySelectorAll('img[data-src], img[data-lazy-src], img.lazyload').forEach((img) => {
       const src = img.getAttribute('data-src') || img.getAttribute('data-lazy-src');
       if (src && (!img.getAttribute('src') || img.src.startsWith('data:'))) {

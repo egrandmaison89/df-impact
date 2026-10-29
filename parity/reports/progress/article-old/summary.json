@@ -1,0 +1,46 @@
+{
+  "component": "article-old",
+  "drupalBase": "http://df-impact.ddev.site",
+  "refRenderer": "mac-pack-viewport-png",
+  "pages": 1,
+  "rectTolerancePx": 2,
+  "structuralPackPassAll": true,
+  "structuralRefDrupalPassAll": true,
+  "medians": {
+    "chrome_median_desktop": 0.12620751633610852,
+    "viewport_median_mac_desktop": 0.4243780864197531,
+    "chrome_median_tablet": 0.1758950214232594,
+    "viewport_median_mac_tablet": 0.5151374421296296,
+    "chrome_median_mobile": 0.18973470687721683,
+    "viewport_median_mac_mobile": 0.33023703703703705
+  },
+  "summary": [
+    {
+      "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.4243780864197531,
+      "headerPixelDiffRatio": 0.033519761372110365,
+      "footerPixelDiffRatio": 0.2188952713001067,
+      "chromePixelDiffRatio": 0.12620751633610852,
+      "viewportPixelDiffRatioMac": 0.4243780864197531
+    },
+    {
+      "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.5151374421296296,
+      "headerPixelDiffRatio": 0.21032395287958114,
+      "footerPixelDiffRatio": 0.14146608996693766,
+      "chromePixelDiffRatio": 0.1758950214232594,
+      "viewportPixelDiffRatioMac": 0.5151374421296296
+    },
+    {
+      "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.33023703703703705,
+      "headerPixelDiffRatio": 0.1602931937172775,
+      "footerPixelDiffRatio": 0.2191762200371562,
+      "chromePixelDiffRatio": 0.18973470687721683,
+      "viewportPixelDiffRatioMac": 0.33023703703703705
+    }
+  ]
+}

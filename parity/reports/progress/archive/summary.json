@@ -2,17 +2,17 @@
   "component": "archive",
   "drupalBase": "http://df-impact.ddev.site",
   "refRenderer": "mac-pack-viewport-png",
-  "pages": 5,
+  "pages": 4,
   "rectTolerancePx": 2,
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.18975457333680104,
-    "viewport_median_mac_desktop": 0.4650192901234568,
-    "chrome_median_tablet": 0.17604965348794233,
-    "viewport_median_mac_tablet": 0.6087572337962963,
-    "chrome_median_mobile": 0.17697331034484914,
-    "viewport_median_mac_mobile": 0.4537037037037037
+    "chrome_median_desktop": 0.12863226919109155,
+    "viewport_median_mac_desktop": 0.4648935185185185,
+    "chrome_median_tablet": 0.16805161586896464,
+    "viewport_median_mac_tablet": 0.6830613425925925,
+    "chrome_median_mobile": 0.15537861912124945,
+    "viewport_median_mac_mobile": 0.42234666666666665
   },
   "summary": [
     {
@@ -61,46 +61,31 @@
       "error": "missing reference viewport"
     },
     {
-      "path": "/digital-exclusives",
-      "bp": "desktop",
-      "error": "missing reference viewport"
-    },
-    {
-      "path": "/digital-exclusives",
-      "bp": "tablet",
-      "error": "missing reference viewport"
-    },
-    {
-      "path": "/digital-exclusives",
-      "bp": "mobile",
-      "error": "missing reference viewport"
-    },
-    {
       "path": "/issues",
       "bp": "desktop",
-      "pixelDiffRatio": 0.4650192901234568,
+      "pixelDiffRatio": 0.4648935185185185,
       "headerPixelDiffRatio": 0.15929809843400447,
-      "footerPixelDiffRatio": 0.2202110482395976,
-      "chromePixelDiffRatio": 0.18975457333680104,
-      "viewportPixelDiffRatioMac": 0.4650192901234568
+      "footerPixelDiffRatio": 0.09796643994817864,
+      "chromePixelDiffRatio": 0.12863226919109155,
+      "viewportPixelDiffRatioMac": 0.4648935185185185
     },
     {
       "path": "/issues",
       "bp": "tablet",
-      "pixelDiffRatio": 0.6087572337962963,
+      "pixelDiffRatio": 0.6830613425925925,
       "headerPixelDiffRatio": 0.21032395287958114,
-      "footerPixelDiffRatio": 0.1417753540963035,
-      "chromePixelDiffRatio": 0.17604965348794233,
-      "viewportPixelDiffRatioMac": 0.6087572337962963
+      "footerPixelDiffRatio": 0.12577927885834814,
+      "chromePixelDiffRatio": 0.16805161586896464,
+      "viewportPixelDiffRatioMac": 0.6830613425925925
     },
     {
       "path": "/issues",
       "bp": "mobile",
-      "pixelDiffRatio": 0.4537037037037037,
+      "pixelDiffRatio": 0.42234666666666665,
       "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.1936534269724208,
-      "chromePixelDiffRatio": 0.17697331034484914,
-      "viewportPixelDiffRatioMac": 0.4537037037037037
+      "footerPixelDiffRatio": 0.1504640445252214,
+      "chromePixelDiffRatio": 0.15537861912124945,
+      "viewportPixelDiffRatioMac": 0.42234666666666665
     }
   ]
 }

@@ -7,67 +7,67 @@
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.189881388037304,
-    "viewport_median_mac_desktop": 0.31732445987654323,
-    "chrome_median_tablet": 0.1768774570249893,
-    "viewport_median_mac_tablet": 0.3417534722222222,
-    "chrome_median_mobile": 0.18009809196283671,
-    "viewport_median_mac_mobile": 0.2831985185185185
+    "chrome_median_desktop": 0.12727154150095285,
+    "viewport_median_mac_desktop": 0.3170420524691358,
+    "chrome_median_tablet": 0.17283616470141447,
+    "viewport_median_mac_tablet": 0.36286024305555553,
+    "chrome_median_mobile": 0.15911740741561087,
+    "viewport_median_mac_mobile": 0.27497925925925926
   },
   "summary": [
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "desktop",
-      "pixelDiffRatio": 0.425474537037037,
+      "pixelDiffRatio": 0.4253564814814815,
       "headerPixelDiffRatio": 0.15929809843400447,
-      "footerPixelDiffRatio": 0.22032297858558147,
-      "chromePixelDiffRatio": 0.18981053850979296,
-      "viewportPixelDiffRatioMac": 0.425474537037037
+      "footerPixelDiffRatio": 0.09510149939033684,
+      "chromePixelDiffRatio": 0.12719979891217065,
+      "viewportPixelDiffRatioMac": 0.4253564814814815
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "tablet",
-      "pixelDiffRatio": 0.5208145254629629,
+      "pixelDiffRatio": 0.571322337962963,
       "headerPixelDiffRatio": 0.21032395287958114,
-      "footerPixelDiffRatio": 0.1431091947118059,
-      "chromePixelDiffRatio": 0.1767165737956935,
-      "viewportPixelDiffRatioMac": 0.5208145254629629
+      "footerPixelDiffRatio": 0.12694402541750657,
+      "chromePixelDiffRatio": 0.16863398914854386,
+      "viewportPixelDiffRatioMac": 0.571322337962963
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "mobile",
-      "pixelDiffRatio": 0.34703407407407405,
+      "pixelDiffRatio": 0.3624059259259259,
       "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.19131937435893212,
-      "chromePixelDiffRatio": 0.1758062840381048,
-      "viewportPixelDiffRatioMac": 0.34703407407407405
+      "footerPixelDiffRatio": 0.14968960985998458,
+      "chromePixelDiffRatio": 0.15499140178863102,
+      "viewportPixelDiffRatioMac": 0.3624059259259259
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "desktop",
-      "pixelDiffRatio": 0.20917438271604938,
+      "pixelDiffRatio": 0.20872762345679013,
       "headerPixelDiffRatio": 0.15929809843400447,
-      "footerPixelDiffRatio": 0.22060637669562566,
-      "chromePixelDiffRatio": 0.18995223756481505,
-      "viewportPixelDiffRatioMac": 0.20917438271604938
+      "footerPixelDiffRatio": 0.09538846974546564,
+      "chromePixelDiffRatio": 0.12734328408973505,
+      "viewportPixelDiffRatioMac": 0.20872762345679013
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "tablet",
-      "pixelDiffRatio": 0.16269241898148148,
+      "pixelDiffRatio": 0.15439814814814815,
       "headerPixelDiffRatio": 0.21032395287958114,
       "footerPixelDiffRatio": 0.14375272762898902,
       "chromePixelDiffRatio": 0.17703834025428508,
-      "viewportPixelDiffRatioMac": 0.16269241898148148
+      "viewportPixelDiffRatioMac": 0.15439814814814815
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "mobile",
-      "pixelDiffRatio": 0.21936296296296295,
+      "pixelDiffRatio": 0.1875525925925926,
       "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.20848660605785985,
-      "chromePixelDiffRatio": 0.18438989988756865,
-      "viewportPixelDiffRatioMac": 0.21936296296296295
+      "footerPixelDiffRatio": 0.16619363236790397,
+      "chromePixelDiffRatio": 0.1632434130425907,
+      "viewportPixelDiffRatioMac": 0.1875525925925926
     }
   ]
 }

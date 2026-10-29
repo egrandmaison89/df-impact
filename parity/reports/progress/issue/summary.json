@@ -7,82 +7,94 @@
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.1252006732586421,
-    "viewport_median_mac_desktop": 0.6558248456790123,
-    "chrome_median_tablet": 0.16607261054656236,
-    "viewport_median_mac_tablet": 0.5312369791666667,
-    "chrome_median_mobile": 0.1902622811895044,
-    "viewport_median_mac_mobile": 0.4532577777777778
+    "chrome_median_desktop": 0.11813164203748325,
+    "viewport_median_mac_desktop": 0.6804074074074075,
+    "chrome_median_tablet": 0.14842538318568077,
+    "viewport_median_mac_tablet": 0.6608318865740741,
+    "chrome_median_mobile": 0.19224144090151113,
+    "viewport_median_mac_mobile": 0.6293955555555556
   },
   "summary": [
     {
       "path": "/fall-2026-issue",
       "bp": "desktop",
-      "pixelDiffRatio": 0.6009876543209877,
-      "headerPixelDiffRatio": 0.04164336316181954,
-      "footerPixelDiffRatio": 0.20824178698472484,
-      "chromePixelDiffRatio": 0.1249425750732722,
-      "viewportPixelDiffRatioMac": 0.6009876543209877
+      "pixelDiffRatio": 0.5974591049382716,
+      "headerPixelDiffRatio": 0.15845917225950784,
+      "footerPixelDiffRatio": 0.07677647472845213,
+      "chromePixelDiffRatio": 0.11761782349397998,
+      "viewportPixelDiffRatioMac": 0.5974591049382716
     },
     {
       "path": "/fall-2026-issue",
       "bp": "tablet",
-      "pixelDiffRatio": 0.45121961805555555,
+      "pixelDiffRatio": 0.5259895833333333,
       "headerPixelDiffRatio": 0.21513688917975568,
-      "footerPixelDiffRatio": 0.11495047601571136,
-      "chromePixelDiffRatio": 0.16504368259773353,
-      "viewportPixelDiffRatioMac": 0.45121961805555555
+      "footerPixelDiffRatio": 0.08171387719160586,
+      "chromePixelDiffRatio": 0.14842538318568077,
+      "viewportPixelDiffRatioMac": 0.5259895833333333
     },
     {
       "path": "/fall-2026-issue",
       "bp": "mobile",
-      "pixelDiffRatio": 0.37449481481481484,
+      "pixelDiffRatio": 0.4824059259259259,
       "headerPixelDiffRatio": 0.20194066317626527,
-      "footerPixelDiffRatio": 0.17858389920274348,
-      "chromePixelDiffRatio": 0.1902622811895044,
-      "viewportPixelDiffRatioMac": 0.37449481481481484
+      "footerPixelDiffRatio": 0.18254424107594297,
+      "chromePixelDiffRatio": 0.19224245212610414,
+      "viewportPixelDiffRatioMac": 0.4824059259259259
     },
     {
       "path": "/summer-2025-issue",
       "bp": "desktop",
-      "pixelDiffRatio": 0.710662037037037,
-      "headerPixelDiffRatio": 0.04267337807606264,
-      "footerPixelDiffRatio": 0.20824416481196142,
-      "chromePixelDiffRatio": 0.12545877144401202,
-      "viewportPixelDiffRatioMac": 0.710662037037037
+      "pixelDiffRatio": 0.6990671296296296,
+      "headerPixelDiffRatio": 0.15948918717375093,
+      "footerPixelDiffRatio": 0.07677409690121555,
+      "chromePixelDiffRatio": 0.11813164203748325,
+      "viewportPixelDiffRatioMac": 0.6990671296296296
     },
     {
       "path": "/summer-2025-issue",
       "bp": "tablet",
-      "pixelDiffRatio": 0.6112543402777778,
+      "pixelDiffRatio": 0.6887528935185185,
       "headerPixelDiffRatio": 0.21513688917975568,
-      "footerPixelDiffRatio": 0.11906618781102679,
-      "chromePixelDiffRatio": 0.16710153849539122,
-      "viewportPixelDiffRatioMac": 0.6112543402777778
+      "footerPixelDiffRatio": 0.08171387719160586,
+      "chromePixelDiffRatio": 0.14842538318568077,
+      "viewportPixelDiffRatioMac": 0.6887528935185185
     },
     {
       "path": "/summer-2025-issue",
       "bp": "mobile",
-      "pixelDiffRatio": 0.5320207407407408,
+      "pixelDiffRatio": 0.6711111111111111,
       "headerPixelDiffRatio": 0.20194066317626527,
-      "footerPixelDiffRatio": 0.17858389920274348,
-      "chromePixelDiffRatio": 0.1902622811895044,
-      "viewportPixelDiffRatioMac": 0.5320207407407408
+      "footerPixelDiffRatio": 0.182542218626757,
+      "chromePixelDiffRatio": 0.19224144090151113,
+      "viewportPixelDiffRatioMac": 0.6711111111111111
     },
     {
       "path": "/spring-2026-issue",
       "bp": "desktop",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.6804074074074075,
+      "headerPixelDiffRatio": 0.15948918717375093,
+      "footerPixelDiffRatio": 0.07677409690121555,
+      "chromePixelDiffRatio": 0.11813164203748325,
+      "viewportPixelDiffRatioMac": 0.6804074074074075
     },
     {
       "path": "/spring-2026-issue",
       "bp": "tablet",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.6608318865740741,
+      "headerPixelDiffRatio": 0.21513688917975568,
+      "footerPixelDiffRatio": 0.08171823642751898,
+      "chromePixelDiffRatio": 0.14842756280363734,
+      "viewportPixelDiffRatioMac": 0.6608318865740741
     },
     {
       "path": "/spring-2026-issue",
       "bp": "mobile",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.6293955555555556,
+      "headerPixelDiffRatio": 0.20194066317626527,
+      "footerPixelDiffRatio": 0.18253817372838507,
+      "chromePixelDiffRatio": 0.19223941845232517,
+      "viewportPixelDiffRatioMac": 0.6293955555555556
     }
   ]
 }

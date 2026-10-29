@@ -1,5 +1,10 @@
 {
-  "https://danafarberimpact.org/wp-content/plugins/stackable-ultimate-gutenberg-blocks/dist/frontend_blocks_responsive.css?ver=3.20.2": {
+  "https://danafarberimpact.org/wp-content/plugins/ultimate-post/assets/css/style.min.css?ver=5.1.1": {
+    "file": "assets/danafarberimpact.org_wp-content_plugins_ultimate-post_assets_css_style.min.css",
+    "type": "stylesheet",
+    "bytes": 298007
+  },
+  "https://danafarberimpact.org/wp-content/plugins/stackable-ultimate-gutenberg-blocks/dist/frontend_blocks_responsive.css?ver=3.20.3": {
     "file": "assets/danafarberimpact.org_wp-content_plugins_stackable-ultimate-gutenberg-blocks_dist_frontend_blocks_responsive.css",
     "type": "stylesheet",
     "bytes": 13214
@@ -9,20 +14,15 @@
     "type": "stylesheet",
     "bytes": 16771
   },
-  "https://danafarberimpact.org/wp-content/plugins/better-search/includes/frontend/css/bsearch-styles.min.css?ver=4.5.0": {
+  "https://danafarberimpact.org/wp-content/plugins/stackable-ultimate-gutenberg-blocks/dist/frontend_blocks.css?ver=3.20.3": {
+    "file": "assets/danafarberimpact.org_wp-content_plugins_stackable-ultimate-gutenberg-blocks_dist_frontend_blocks.css",
+    "type": "stylesheet",
+    "bytes": 92646
+  },
+  "https://danafarberimpact.org/wp-content/plugins/better-search/includes/frontend/css/bsearch-styles.min.css?ver=4.5.2": {
     "file": "assets/danafarberimpact.org_wp-content_plugins_better-search_includes_frontend_css_bsearch-styles.min.css",
     "type": "stylesheet",
     "bytes": 1456
-  },
-  "https://danafarberimpact.org/wp-content/plugins/stackable-ultimate-gutenberg-blocks/dist/frontend_blocks.css?ver=3.20.2": {
-    "file": "assets/danafarberimpact.org_wp-content_plugins_stackable-ultimate-gutenberg-blocks_dist_frontend_blocks.css",
-    "type": "stylesheet",
-    "bytes": 92589
-  },
-  "https://danafarberimpact.org/wp-content/plugins/ultimate-post/assets/css/style.min.css?ver=5.1.1": {
-    "file": "assets/danafarberimpact.org_wp-content_plugins_ultimate-post_assets_css_style.min.css",
-    "type": "stylesheet",
-    "bytes": 298007
   },
   "https://danafarberimpact.org/wp-content/uploads/maxmegamenu/style.css?ver=b37063": {
     "file": "assets/danafarberimpact.org_wp-content_uploads_maxmegamenu_style.css",
@@ -34,20 +34,20 @@
     "type": "stylesheet",
     "bytes": 236074
   },
-  "https://danafarberimpact.org/wp-content/plugins/add-search-to-menu/public/css/ivory-search.min.css?ver=5.5.19": {
+  "https://danafarberimpact.org/wp-content/plugins/add-search-to-menu/public/css/ivory-search.min.css?ver=5.5.20": {
     "file": "assets/danafarberimpact.org_wp-content_plugins_add-search-to-menu_public_css_ivory-search.min.css",
     "type": "stylesheet",
     "bytes": 6641
   },
-  "https://fonts.googleapis.com/css?family=Baskervville:600:600,600,700,600,700,600,700": {
-    "file": "assets/fonts.googleapis.com_css",
-    "type": "stylesheet",
-    "bytes": 1676
-  },
-  "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js": {
-    "file": "assets/cdnjs.cloudflare.com_ajax_libs_jquery_3.3.1_jquery.min.js",
+  "https://cdn.cookielaw.org/scripttemplates/otSDKStub.js": {
+    "file": "assets/cdn.cookielaw.org_scripttemplates_otSDKStub.js",
     "type": "script",
-    "bytes": 86927
+    "bytes": 60277
+  },
+  "https://c0.wp.com/c/7.1.4/wp-includes/blocks/cover/style.min.css": {
+    "file": "assets/c0.wp.com_c_7.1.4_wp-includes_blocks_cover_style.min.css",
+    "type": "stylesheet",
+    "bytes": 20316
   },
   "https://use.fontawesome.com/releases/v6.2.1/css/v4-shims.css": {
     "file": "assets/use.fontawesome.com_releases_v6.2.1_css_v4-shims.css",
@@ -59,102 +59,102 @@
     "type": "stylesheet",
     "bytes": 101894
   },
-  "https://cdn.cookielaw.org/scripttemplates/otSDKStub.js": {
-    "file": "assets/cdn.cookielaw.org_scripttemplates_otSDKStub.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js": {
+    "file": "assets/cdnjs.cloudflare.com_ajax_libs_jquery_3.3.1_jquery.min.js",
     "type": "script",
-    "bytes": 60277
+    "bytes": 86927
   },
   "https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i": {
     "file": "assets/fonts.googleapis.com_css",
     "type": "stylesheet",
     "bytes": 65166
   },
-  "https://c0.wp.com/c/7.1.3/wp-includes/css/dashicons.min.css": {
-    "file": "assets/c0.wp.com_c_7.1.3_wp-includes_css_dashicons.min.css",
+  "https://fonts.googleapis.com/css?family=Baskervville:600:600,600,700,600,700,600,700": {
+    "file": "assets/fonts.googleapis.com_css",
+    "type": "stylesheet",
+    "bytes": 1676
+  },
+  "https://c0.wp.com/c/7.1.4/wp-includes/css/dashicons.min.css": {
+    "file": "assets/c0.wp.com_c_7.1.4_wp-includes_css_dashicons.min.css",
     "type": "stylesheet",
     "bytes": 59004
   },
-  "https://c0.wp.com/c/7.1.3/wp-includes/js/jquery/jquery-migrate.min.js": {
-    "file": "assets/c0.wp.com_c_7.1.3_wp-includes_js_jquery_jquery-migrate.min.js",
+  "https://c0.wp.com/c/7.1.4/wp-includes/js/jquery/jquery-migrate.min.js": {
+    "file": "assets/c0.wp.com_c_7.1.4_wp-includes_js_jquery_jquery-migrate.min.js",
     "type": "script",
     "bytes": 13577
   },
-  "https://c0.wp.com/c/7.1.3/wp-includes/blocks/cover/style.min.css": {
-    "file": "assets/c0.wp.com_c_7.1.3_wp-includes_blocks_cover_style.min.css",
-    "type": "stylesheet",
-    "bytes": 20316
-  },
-  "https://c0.wp.com/p/jetpack/16.2/modules/related-posts/related-posts.css": {
-    "file": "assets/c0.wp.com_p_jetpack_16.2_modules_related-posts_related-posts.css",
+  "https://c0.wp.com/p/jetpack/16.3.1/modules/related-posts/related-posts.css": {
+    "file": "assets/c0.wp.com_p_jetpack_16.3.1_modules_related-posts_related-posts.css",
     "type": "stylesheet",
     "bytes": 7486
   },
-  "https://c0.wp.com/c/7.1.3/wp-includes/js/jquery/jquery.min.js": {
-    "file": "assets/c0.wp.com_c_7.1.3_wp-includes_js_jquery_jquery.min.js",
+  "https://c0.wp.com/c/7.1.4/wp-includes/js/jquery/jquery.min.js": {
+    "file": "assets/c0.wp.com_c_7.1.4_wp-includes_js_jquery_jquery.min.js",
     "type": "script",
     "bytes": 87553
   },
-  "https://c0.wp.com/c/7.1.3/wp-includes/js/dist/hooks.min.js": {
-    "file": "assets/c0.wp.com_c_7.1.3_wp-includes_js_dist_hooks.min.js",
+  "https://c0.wp.com/c/7.1.4/wp-includes/js/dist/hooks.min.js": {
+    "file": "assets/c0.wp.com_c_7.1.4_wp-includes_js_dist_hooks.min.js",
     "type": "script",
     "bytes": 5107
   },
-  "https://c0.wp.com/c/7.1.3/wp-includes/js/dist/i18n.min.js": {
-    "file": "assets/c0.wp.com_c_7.1.3_wp-includes_js_dist_i18n.min.js",
-    "type": "script",
-    "bytes": 5791
-  },
-  "https://c0.wp.com/c/7.1.3/wp-includes/js/dist/private-apis.min.js": {
-    "file": "assets/c0.wp.com_c_7.1.3_wp-includes_js_dist_private-apis.min.js",
+  "https://c0.wp.com/c/7.1.4/wp-includes/js/dist/private-apis.min.js": {
+    "file": "assets/c0.wp.com_c_7.1.4_wp-includes_js_dist_private-apis.min.js",
     "type": "script",
     "bytes": 3017
   },
-  "https://c0.wp.com/c/7.1.3/wp-includes/js/dist/api-fetch.min.js": {
-    "file": "assets/c0.wp.com_c_7.1.3_wp-includes_js_dist_api-fetch.min.js",
+  "https://c0.wp.com/c/7.1.4/wp-includes/js/dist/i18n.min.js": {
+    "file": "assets/c0.wp.com_c_7.1.4_wp-includes_js_dist_i18n.min.js",
     "type": "script",
-    "bytes": 7510
+    "bytes": 5791
   },
-  "https://c0.wp.com/c/7.1.3/wp-includes/js/dist/url.min.js": {
-    "file": "assets/c0.wp.com_c_7.1.3_wp-includes_js_dist_url.min.js",
-    "type": "script",
-    "bytes": 10423
-  },
-  "https://c0.wp.com/c/7.1.3/wp-includes/js/hoverIntent.min.js": {
-    "file": "assets/c0.wp.com_c_7.1.3_wp-includes_js_hoverIntent.min.js",
+  "https://c0.wp.com/c/7.1.4/wp-includes/js/hoverIntent.min.js": {
+    "file": "assets/c0.wp.com_c_7.1.4_wp-includes_js_hoverIntent.min.js",
     "type": "script",
     "bytes": 1499
   },
-  "https://danafarberimpact.org/wp-content/plugins/ultimate-post/assets/js/ultp.min.js?ver=5.1.1": {
-    "file": "assets/danafarberimpact.org_wp-content_plugins_ultimate-post_assets_js_ultp.min.js",
+  "https://c0.wp.com/c/7.1.4/wp-includes/js/dist/url.min.js": {
+    "file": "assets/c0.wp.com_c_7.1.4_wp-includes_js_dist_url.min.js",
     "type": "script",
-    "bytes": 137341
+    "bytes": 10423
+  },
+  "https://c0.wp.com/c/7.1.4/wp-includes/js/dist/api-fetch.min.js": {
+    "file": "assets/c0.wp.com_c_7.1.4_wp-includes_js_dist_api-fetch.min.js",
+    "type": "script",
+    "bytes": 7510
   },
   "https://danafarberimpact.org/wp-content/plugins/sg-cachepress/assets/js/lazysizes.min.js?ver=7.8.5": {
     "file": "assets/danafarberimpact.org_wp-content_plugins_sg-cachepress_assets_js_lazysizes.min.js",
     "type": "script",
     "bytes": 7888
   },
+  "https://danafarberimpact.org/wp-content/plugins/ultimate-post/assets/js/ultp.min.js?ver=5.1.1": {
+    "file": "assets/danafarberimpact.org_wp-content_plugins_ultimate-post_assets_js_ultp.min.js",
+    "type": "script",
+    "bytes": 137341
+  },
   "https://danafarberimpact.org/wp-content/plugins/ultimate-post/assets/js/ultp-youtube-gallery-block.js?ver=5.1.1": {
     "file": "assets/danafarberimpact.org_wp-content_plugins_ultimate-post_assets_js_ultp-youtube-gallery-block.js",
     "type": "script",
     "bytes": 18267
   },
-  "https://danafarberimpact.org/wp-content/plugins/better-search/includes/js/better-search-highlight.min.js?ver=4.5.0": {
+  "https://danafarberimpact.org/wp-content/plugins/better-search/includes/js/better-search-highlight.min.js?ver=4.5.2": {
     "file": "assets/danafarberimpact.org_wp-content_plugins_better-search_includes_js_better-search-highlight.min.js",
     "type": "script",
     "bytes": 3019
+  },
+  "https://danafarberimpact.org/wp-content/plugins/add-search-to-menu/public/js/ivory-search.min.js?ver=5.5.20": {
+    "file": "assets/danafarberimpact.org_wp-content_plugins_add-search-to-menu_public_js_ivory-search.min.js",
+    "type": "script",
+    "bytes": 4495
   },
   "https://danafarberimpact.org/wp-content/plugins/megamenu/js/maxmegamenu.min.js?ver=3.10.8": {
     "file": "assets/danafarberimpact.org_wp-content_plugins_megamenu_js_maxmegamenu.min.js",
     "type": "script",
     "bytes": 20831
   },
-  "https://danafarberimpact.org/wp-content/plugins/add-search-to-menu/public/js/ivory-search.min.js?ver=5.5.19": {
-    "file": "assets/danafarberimpact.org_wp-content_plugins_add-search-to-menu_public_js_ivory-search.min.js",
-    "type": "script",
-    "bytes": 4495
-  },
-  "https://danafarberimpact.org/wp-content/plugins/gtranslate/js/dropdown.js?ver=5.0.1": {
+  "https://danafarberimpact.org/wp-content/plugins/gtranslate/js/dropdown.js?ver=5.0.2": {
     "file": "assets/danafarberimpact.org_wp-content_plugins_gtranslate_js_dropdown.js",
     "type": "script",
     "bytes": 11650
@@ -189,11 +189,6 @@
     "type": "script",
     "bytes": 3812
   },
-  "blob:https://danafarberimpact.org/d219de50-6edf-42c0-8ce6-a1c693a99fb7": {
-    "file": "assets/blob_https___danafarberimpact.org_d219de50-6edf-42c0-8ce6-a1c693a99fb7",
-    "type": "script",
-    "bytes": 1327
-  },
   "https://fonts.gstatic.com/s/baskervville/v20/YA9Ur0yU4l_XOrogbkun3kQQsJmppPXZ9Q.woff2": {
     "file": "assets/fonts.gstatic.com_s_baskervville_v20_YA9Ur0yU4l_XOrogbkun3kQQsJmppPXZ9Q.woff2",
     "type": "font",
@@ -209,7 +204,7 @@
     "type": "script",
     "bytes": 5211
   },
-  "https://danafarberimpact.org/wp-includes/js/wp-emoji-release.min.js?ver=7.1.3": {
+  "https://danafarberimpact.org/wp-includes/js/wp-emoji-release.min.js?ver=7.1.4": {
     "file": "assets/danafarberimpact.org_wp-includes_js_wp-emoji-release.min.js",
     "type": "script",
     "bytes": 22752
@@ -229,15 +224,15 @@
     "type": "script",
     "bytes": 993
   },
-  "https://connect.facebook.net/en_US/fbevents.js": {
-    "file": "assets/connect.facebook.net_en_US_fbevents.js",
-    "type": "script",
-    "bytes": 437143
-  },
   "https://www.youtube.com/s/player/096efeec/www-widgetapi.vflset/www-widgetapi.js": {
     "file": "assets/www.youtube.com_s_player_096efeec_www-widgetapi.vflset_www-widgetapi.js",
     "type": "script",
     "bytes": 27034
+  },
+  "https://connect.facebook.net/en_US/fbevents.js": {
+    "file": "assets/connect.facebook.net_en_US_fbevents.js",
+    "type": "script",
+    "bytes": 437143
   },
   "https://connect.facebook.net/signals/config/340424612793527?v=2.9.429&r=stable&domain=danafarberimpact.org&hme=e7a5ac71fbf0293a48c0a6b6de35ad61286effa29f2279ff1fce9a756cccd512&ex_m=118%2C241%2C171%2C27%2C82%2C83%2C162%2C78%2C77%2C11%2C181%2C102%2C20%2C153%2C141%2C46%2C85%2C90%2C149%2C176%2C183%2C8%2C4%2C5%2C7%2C6%2C3%2C103%2C115%2C32%2C17%2C31%2C18%2C33%2C34%2C35%2C37%2C55%2C163%2C87%2C126%2C22%2C24%2C51%2C47%2C49%2C48%2C95%2C104%2C108%2C124%2C160%2C164%2C53%2C125%2C29%2C26%2C133%2C79%2C43%2C166%2C165%2C167%2C157%2C155%2C30%2C42%2C66%2C123%2C178%2C80%2C21%2C128%2C93%2C76%2C23%2C97%2C98%2C130%2C96%2C151%2C150%2C154%2C109%2C177%2C180%2C41%2C56%2C127%2C54%2C161%2C72%2C185%2C110%2C184%2C210%2C255%2C84%2C275%2C274%2C273%2C14%2C25%2C28%2C40%2C62%2C117%2C68%2C10%2C73%2C111%2C112%2C113%2C119%2C144%2C38%2C36%2C146%2C147%2C148%2C143%2C142%2C172%2C86%2C175%2C173%2C174%2C57%2C69%2C67%2C137%2C19%2C179%2C52%2C325%2C326%2C327%2C324%2C341%2C363%2C248%2C237%2C70%2C238%2C236%2C366%2C357%2C59%2C249%2C121%2C145%2C92%2C135%2C61%2C134%2C140%2C139%2C65%2C74%2C168%2C88%2C89%2C129%2C44%2C39%2C60%2C63%2C114%2C182%2C1%2C138%2C16%2C136%2C12%2C2%2C64%2C105%2C15%2C75%2C71%2C132%2C101%2C100%2C187%2C188%2C106%2C107%2C9%2C116%2C186%2C58%2C158%2C99%2C91%2C81%2C131%2C120%2C169%2C50%2C159%2C0%2C94%2C152%2C156%2C170%2C45%2C122%2C13%2C189": {
     "file": "assets/connect.facebook.net_signals_config_340424612793527",
@@ -254,22 +249,12 @@
     "type": "script",
     "bytes": 400
   },
-  "blob:https://danafarberimpact.org/a871a0c4-8a26-445e-8eed-aa82a8c11653": {
-    "file": "assets/blob_https___danafarberimpact.org_a871a0c4-8a26-445e-8eed-aa82a8c11653",
-    "type": "script",
-    "bytes": 1327
-  },
   "https://www.youtube.com/s/player/11a45ffb/www-widgetapi.vflset/www-widgetapi.js": {
     "file": "assets/www.youtube.com_s_player_11a45ffb_www-widgetapi.vflset_www-widgetapi.js",
     "type": "script",
     "bytes": 27034
   },
   "https://fonts.googleapis.com/css?family=Montserrat:700:700,600,600,700,500,400,700,500": {
-    "file": "assets/fonts.googleapis.com_css",
-    "type": "stylesheet",
-    "bytes": 8176
-  },
-  "https://fonts.googleapis.com/css?family=Montserrat:500:700,600,600,700,500,400,700,500": {
     "file": "assets/fonts.googleapis.com_css",
     "type": "stylesheet",
     "bytes": 7224
@@ -284,35 +269,55 @@
     "type": "stylesheet",
     "bytes": 3352
   },
-  "https://fonts.googleapis.com/css?family=Libre+Baskerville:400:700,600,600,700,500,400,700,500": {
+  "https://fonts.googleapis.com/css?family=Montserrat:500:700,600,600,700,500,400,700,500": {
     "file": "assets/fonts.googleapis.com_css",
     "type": "stylesheet",
-    "bytes": 3476
+    "bytes": 7224
   },
   "https://fonts.googleapis.com/css?family=Montserrat:400:700,600,600,700,500,400,700,500": {
     "file": "assets/fonts.googleapis.com_css",
     "type": "stylesheet",
     "bytes": 7224
   },
+  "https://fonts.googleapis.com/css?family=Libre+Baskerville:400:700,600,600,700,500,400,700,500": {
+    "file": "assets/fonts.googleapis.com_css",
+    "type": "stylesheet",
+    "bytes": 3476
+  },
   "https://danafarberimpact.org/wp-content/themes/blockmag/assets/fonts/montserrat/Montserrat-Medium.woff2": {
     "file": "assets/danafarberimpact.org_wp-content_themes_blockmag_assets_fonts_montserrat_Montserrat-Medium.woff2",
     "type": "font",
     "bytes": 66036
-  },
-  "blob:https://danafarberimpact.org/402e4109-9a20-439e-835c-7e73cc83507e": {
-    "file": "assets/blob_https___danafarberimpact.org_402e4109-9a20-439e-835c-7e73cc83507e",
-    "type": "script",
-    "bytes": 1327
   },
   "https://fonts.gstatic.com/s/librebaskerville/v24/kmKnZrc3Hgbbcjq75U4uslyuy4kn0qNZaxMaC82U.woff2": {
     "file": "assets/fonts.gstatic.com_s_librebaskerville_v24_kmKnZrc3Hgbbcjq75U4uslyuy4kn0qNZaxMaC82U.woff2",
     "type": "font",
     "bytes": 33852
   },
-  "blob:https://danafarberimpact.org/a8eb29cc-535e-45d0-a2d6-134bbd3b67fd": {
-    "file": "assets/blob_https___danafarberimpact.org_a8eb29cc-535e-45d0-a2d6-134bbd3b67fd",
+  "blob:https://danafarberimpact.org/3c1d48a2-923f-456d-8182-432b8c5c8199": {
+    "file": "assets/blob_https___danafarberimpact.org_3c1d48a2-923f-456d-8182-432b8c5c8199",
     "type": "script",
     "bytes": 1327
+  },
+  "blob:https://danafarberimpact.org/4daf5741-8c53-4f90-a298-d687844a0947": {
+    "file": "assets/blob_https___danafarberimpact.org_4daf5741-8c53-4f90-a298-d687844a0947",
+    "type": "script",
+    "bytes": 1327
+  },
+  "https://www.youtube.com/s/player/26889474/www-widgetapi.vflset/www-widgetapi.js": {
+    "file": "assets/www.youtube.com_s_player_26889474_www-widgetapi.vflset_www-widgetapi.js",
+    "type": "script",
+    "bytes": 27034
+  },
+  "blob:https://danafarberimpact.org/386be63e-3db7-4b3a-92db-319c1b1c7d33": {
+    "file": "assets/blob_https___danafarberimpact.org_386be63e-3db7-4b3a-92db-319c1b1c7d33",
+    "type": "script",
+    "bytes": 1327
+  },
+  "https://connect.facebook.net/signals/config/340424612793527?v=2.9.429&r=c2&domain=danafarberimpact.org&hme=e7a5ac71fbf0293a48c0a6b6de35ad61286effa29f2279ff1fce9a756cccd512&ex_m=118%2C241%2C171%2C27%2C82%2C83%2C162%2C78%2C77%2C11%2C181%2C102%2C20%2C153%2C141%2C46%2C85%2C90%2C149%2C176%2C183%2C8%2C4%2C5%2C7%2C6%2C3%2C103%2C115%2C32%2C17%2C31%2C18%2C33%2C34%2C35%2C37%2C55%2C163%2C87%2C126%2C22%2C24%2C51%2C47%2C49%2C48%2C95%2C104%2C108%2C124%2C160%2C164%2C53%2C125%2C29%2C26%2C133%2C79%2C43%2C166%2C165%2C167%2C157%2C155%2C30%2C42%2C66%2C123%2C178%2C80%2C21%2C128%2C93%2C76%2C23%2C97%2C98%2C130%2C96%2C151%2C150%2C154%2C109%2C177%2C180%2C41%2C56%2C127%2C54%2C161%2C72%2C185%2C110%2C184%2C210%2C255%2C84%2C275%2C274%2C273%2C14%2C25%2C28%2C40%2C62%2C117%2C68%2C10%2C73%2C111%2C112%2C113%2C119%2C144%2C38%2C36%2C146%2C147%2C148%2C143%2C142%2C172%2C86%2C175%2C173%2C174%2C57%2C69%2C67%2C137%2C19%2C179%2C52%2C325%2C326%2C327%2C324%2C341%2C363%2C248%2C237%2C70%2C238%2C236%2C366%2C357%2C59%2C249%2C121%2C145%2C92%2C135%2C61%2C134%2C140%2C139%2C65%2C74%2C168%2C88%2C89%2C129%2C44%2C39%2C60%2C63%2C114%2C182%2C1%2C138%2C16%2C136%2C12%2C2%2C64%2C105%2C15%2C75%2C71%2C132%2C101%2C100%2C187%2C188%2C106%2C107%2C9%2C116%2C186%2C58%2C158%2C99%2C91%2C81%2C131%2C120%2C169%2C50%2C159%2C0%2C94%2C152%2C156%2C170%2C45%2C122%2C13%2C189": {
+    "file": "assets/connect.facebook.net_signals_config_340424612793527",
+    "type": "script",
+    "bytes": 170463
   },
   "https://danafarberimpact.org/wp-content/plugins/socialsnap/assets/css/socialsnap.css?ver=1.4.2": {
     "file": "assets/danafarberimpact.org_wp-content_plugins_socialsnap_assets_css_socialsnap.css",
@@ -329,29 +334,44 @@
     "type": "font",
     "bytes": 43044
   },
-  "blob:https://danafarberimpact.org/d42ba39d-bc89-40c6-b73a-85f67b1be149": {
-    "file": "assets/blob_https___danafarberimpact.org_d42ba39d-bc89-40c6-b73a-85f67b1be149",
+  "blob:https://danafarberimpact.org/0615ba10-20ac-4b37-b3b6-7b73abe278b9": {
+    "file": "assets/blob_https___danafarberimpact.org_0615ba10-20ac-4b37-b3b6-7b73abe278b9",
     "type": "script",
     "bytes": 1327
-  },
-  "https://fonts.googleapis.com/css?family=Montserrat:700:600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700": {
-    "file": "assets/fonts.googleapis.com_css",
-    "type": "stylesheet",
-    "bytes": 5418
-  },
-  "https://fonts.googleapis.com/css?family=Montserrat:400:600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700": {
-    "file": "assets/fonts.googleapis.com_css",
-    "type": "stylesheet",
-    "bytes": 5418
   },
   "https://fonts.googleapis.com/css?family=Baskervville:600:600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700": {
     "file": "assets/fonts.googleapis.com_css",
     "type": "stylesheet",
     "bytes": 2514
   },
-  "blob:https://danafarberimpact.org/2c972d2a-6a10-477e-8e8e-a1f7af5a1e31": {
-    "file": "assets/blob_https___danafarberimpact.org_2c972d2a-6a10-477e-8e8e-a1f7af5a1e31",
+  "https://fonts.googleapis.com/css?family=Montserrat:400:600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700": {
+    "file": "assets/fonts.googleapis.com_css",
+    "type": "stylesheet",
+    "bytes": 5418
+  },
+  "https://fonts.googleapis.com/css?family=Montserrat:700:600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700,600,400,700,700": {
+    "file": "assets/fonts.googleapis.com_css",
+    "type": "stylesheet",
+    "bytes": 5418
+  },
+  "blob:https://danafarberimpact.org/c34fc892-bcbc-47dc-9a59-32211b4915fc": {
+    "file": "assets/blob_https___danafarberimpact.org_c34fc892-bcbc-47dc-9a59-32211b4915fc",
     "type": "script",
     "bytes": 1327
+  },
+  "blob:https://danafarberimpact.org/f44734d5-2480-48c3-8c49-80a2340e3d69": {
+    "file": "assets/blob_https___danafarberimpact.org_f44734d5-2480-48c3-8c49-80a2340e3d69",
+    "type": "script",
+    "bytes": 1327
+  },
+  "blob:https://danafarberimpact.org/2e347bd1-814d-42ff-a15c-5d250a9013a6": {
+    "file": "assets/blob_https___danafarberimpact.org_2e347bd1-814d-42ff-a15c-5d250a9013a6",
+    "type": "script",
+    "bytes": 1327
+  },
+  "https://www.youtube.com/s/player/daa5d9e6/www-widgetapi.vflset/www-widgetapi.js": {
+    "file": "assets/www.youtube.com_s_player_daa5d9e6_www-widgetapi.vflset_www-widgetapi.js",
+    "type": "script",
+    "bytes": 27034
   }
 }

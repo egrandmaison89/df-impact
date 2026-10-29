@@ -3,6 +3,7 @@
 import { chromium } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
+import { stabilizeParityViewport } from '../lib/capture-stabilize.mjs';
 const BASE = process.env.WP_BASE_URL || 'https://danafarberimpact.org';
 const OUT = path.resolve(process.env.PACK_DIR || 'reference-pack');
 const PAGES = (process.env.PACK_PATHS || '/,/homepage,/fall-2026-issue,/summer-2025-issue,/2024/06/the-charlie-landers-foundation,/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials,/issues,/in-brief,/browse-issues,/past-issues,/category/cancer-research,/about-impact,/search').split(',');
@@ -32,6 +33,7 @@ for (const p of PAGES) {
     fs.mkdirSync(dir, { recursive: true });
     const resp = await page.goto(BASE + p, { waitUntil: 'networkidle', timeout: 60000 }).catch(e => null);
     await page.waitForTimeout(1500);
+    await stabilizeParityViewport(page);
     const html = await page.content();
     const captcha = /sgcaptcha|captcha/i.test(html) && html.length < 20000;
     fs.writeFileSync(path.join(dir, 'rendered.html'), html);

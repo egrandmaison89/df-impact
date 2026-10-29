@@ -71,7 +71,7 @@
     "footer": {
       "rect": {
         "x": 72,
-        "y": 2403.984375,
+        "y": 2617.984375,
         "w": 1296,
         "h": 647.3125
       },
@@ -105,13 +105,13 @@
         "x": 72,
         "y": 148.046875,
         "w": 1296,
-        "h": 2255.9375
+        "h": 2469.9375
       },
       "display": "block",
       "position": "static",
       "top": "auto",
       "width": "1296px",
-      "height": "2255.94px",
+      "height": "2469.94px",
       "margin": "0px",
       "padding": "0px 0px 79.2px",
       "font-family": "Montserrat",

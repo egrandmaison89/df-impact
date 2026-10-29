@@ -51,6 +51,6 @@ Base: `cursor/phase4-chrome-behavior-0b67` | Integration: PR #12 flow
 | `parity:head:manifest` | **773/773** |
 | `parity:url:check` | **801/801** |
 | `parity:behavior:templates` | 48-case cross-site (serial, WP backoff); target `totalMismatchRows: 0` |
-| Embeds backfill | `drush php:script …/df_backfill_all_embeds.php` → JSON before/after counts |
+| Embeds backfill | VM run 2026-10-29: **before** 16 fields (15 article, 1 in_brief) with vimeo/youtube markers; **after** 1 in_brief field updated (articles already iframe-backed). Script: `drush php:script modules/custom/df_migrate/scripts/df_backfill_all_embeds.php` |
 
 Updated: 2026-10-29T05:25Z

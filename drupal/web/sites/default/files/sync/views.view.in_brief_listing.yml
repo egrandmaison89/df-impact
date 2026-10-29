@@ -179,10 +179,13 @@ display:
       display_extenders:
         metatag_display_extender:
           metatags:
-            title: 'In Brief | [site:name]'
-            description: 'Short updates from Dana-Farber Impact Magazine.'
-            og_title: 'In Brief'
+            title: 'In Brief - Impact Magazine'
+            description: 'Read quick highlights of impact from the generous community at Dana-Farber Cancer Institute and The Jimmy Fund.'
+            og_title: 'In Brief - Impact Magazine'
+            og_description: 'Read quick highlights of impact from the generous community at Dana-Farber Cancer Institute and The Jimmy Fund.'
             og_type: website
+            og_site_name: 'Impact Magazine'
+            twitter_cards_type: summary_large_image
           tokenize: false
       path: in-brief
     cache_metadata:

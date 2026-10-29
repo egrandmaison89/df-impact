@@ -108,10 +108,14 @@ display:
       display_extenders:
         metatag_display_extender:
           metatags:
-            title: 'Browse Issues | [site:name]'
-            description: 'Browse quarterly issues of Dana-Farber Impact Magazine.'
-            og_title: 'Browse Issues'
+            title: 'Issues - Impact Magazine'
+            description: 'Browse all past and current issues of the Impact Magazine by Dana-Farber Cancer Institute.'
+            og_title: 'Issues - Impact Magazine'
+            og_description: 'Browse all past and current issues of the Impact Magazine by Dana-Farber Cancer Institute.'
+            og_image: 'https://danafarberimpact.org/wp-content/uploads/2026/08/Fall2026-Cover.jpg'
             og_type: website
+            og_site_name: 'Impact Magazine'
+            twitter_cards_type: summary_large_image
           tokenize: false
       path: browse-issues
     cache_metadata:

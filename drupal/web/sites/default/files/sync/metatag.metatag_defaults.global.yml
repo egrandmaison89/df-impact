@@ -7,14 +7,15 @@ _core:
 id: global
 label: Global
 tags:
-  title: '[current-page:title] | Dana-Farber Impact Magazine'
+  title: '[current-page:title] - [site:name]'
   description: 'Stories from our community of support at Dana-Farber Cancer Institute and The Jimmy Fund.'
-  canonical_url: '[current-page:url]'
-  og_site_name: 'Dana-Farber Impact Magazine'
+  canonical_url: '[current-page:url:absolute]'
+  robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+  og_site_name: '[site:name]'
   og_type: website
-  og_title: '[current-page:title]'
-  og_description: '[current-page:title] | Dana-Farber Impact Magazine'
-  og_url: '[current-page:url]'
+  og_title: '[current-page:title] - [site:name]'
+  og_description: 'Stories from our community of support at Dana-Farber Cancer Institute and The Jimmy Fund.'
+  og_url: '[current-page:url:absolute]'
   twitter_cards_type: summary_large_image
-  twitter_cards_title: '[current-page:title]'
-  twitter_cards_description: '[current-page:title] | Dana-Farber Impact Magazine'
+  twitter_cards_title: '[current-page:title] - [site:name]'
+  twitter_cards_description: 'Stories from our community of support at Dana-Farber Cancer Institute and The Jimmy Fund.'

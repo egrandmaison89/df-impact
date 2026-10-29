@@ -25,7 +25,8 @@
       $(window)
         .off('scroll.dfImpactWpChrome')
         .on('scroll.dfImpactWpChrome', function () {
-          var scrolled = $(window).scrollTop() > 1;
+          var scrolled = $(window).scrollTop() > 50;
+          $('.header, .desktop-header').toggleClass('header--scrolled', scrolled);
           $('.header-logo').toggleClass('scrolled', scrolled);
         });
 

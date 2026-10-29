@@ -1,0 +1,197 @@
+<?php
+
+/**
+ * @file
+ * Head / Open Graph parity with WordPress (Yoast) on danafarberimpact.org.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Production origin for canonical, og:url, and wp-content/uploads asset URLs.
+ */
+function df_metatag_production_origin(): string {
+  return 'https://danafarberimpact.org';
+}
+
+/**
+ * Implements hook_metatags_alter().
+ */
+function df_metatag_metatags_alter(array &$tags, array &$context): void {
+  $origin = df_metatag_production_origin();
+
+  foreach (['canonical_url', 'og_url', 'shortlink'] as $key) {
+    if (!empty($tags[$key])) {
+      $tags[$key] = df_metatag_rewrite_to_production($tags[$key], $origin);
+    }
+  }
+
+  foreach (['og_image', 'og_image_secure_url', 'twitter_cards_image'] as $key) {
+    if (!empty($tags[$key])) {
+      $tags[$key] = df_metatag_rewrite_upload_url($tags[$key], $origin);
+    }
+  }
+
+  $route_match = \Drupal::routeMatch();
+  if ($route_match->getRouteName() === 'view.topic_archive.page_1') {
+    $term = $route_match->getParameter('arg_0');
+    if ($term instanceof \Drupal\taxonomy\TermInterface) {
+      $name = $term->label();
+      $title = $name . ' Archives - Impact Magazine';
+      $description = 'An archive of donor stories about ' . $name . ' for the Impact Magazine by Dana-Farber Cancer Institute and The Jimmy Fund.';
+      $tags['title'] = $title;
+      $tags['description'] = $description;
+      $tags['og_title'] = $title;
+      $tags['og_description'] = $description;
+    }
+  }
+
+  if ($route_match->getRouteName() === '<front>' || df_metatag_is_homepage_path()) {
+    $front_tags = \Drupal::config('metatag.metatag_defaults.front')->get('tags') ?: [];
+    if (is_array($front_tags)) {
+      $tags = array_merge($tags, $front_tags);
+    }
+  }
+}
+
+/**
+ * Whether the active request path is the WordPress home landing (/homepage).
+ */
+function df_metatag_is_homepage_path(): bool {
+  $path = \Drupal::request()->getPathInfo();
+  $path = rtrim($path, '/') ?: '/';
+  return $path === '/homepage' || $path === '/home';
+}
+
+/**
+ * Rewrites a local or alias URL to the production origin, keeping path/query.
+ */
+function df_metatag_rewrite_to_production(string $url, string $origin): string {
+  if ($url === '' || str_starts_with($url, 'mailto:') || str_starts_with($url, 'tel:')) {
+    return $url;
+  }
+  $parts = parse_url($url);
+  if ($parts === FALSE) {
+    return $url;
+  }
+  $path = $parts['path'] ?? '/';
+  if (!str_starts_with($path, '/')) {
+    $path = '/' . $path;
+  }
+  $out = rtrim($origin, '/') . $path;
+  if (!empty($parts['query'])) {
+    $out .= '?' . $parts['query'];
+  }
+  return $out;
+}
+
+/**
+ * Maps Drupal file URLs to WordPress uploads paths on the production host.
+ */
+function df_metatag_rewrite_upload_url(string $url, string $origin): string {
+  if (str_starts_with($url, $origin . '/wp-content/uploads/')) {
+    return $url;
+  }
+  if (preg_match('#/wp-content/uploads/(.+)$#', $url, $m)) {
+    return $origin . '/wp-content/uploads/' . $m[1];
+  }
+  if (preg_match('#/sites/default/files/(.+)$#', $url, $m)) {
+    return $origin . '/wp-content/uploads/' . $m[1];
+  }
+  return df_metatag_rewrite_to_production($url, $origin);
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function df_metatag_page_attachments_alter(array &$attachments): void {
+  $json = df_metatag_build_schema_graph();
+  if ($json === NULL) {
+    return;
+  }
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'script',
+      '#attributes' => [
+        'type' => 'application/ld+json',
+        'class' => ['yoast-schema-graph'],
+      ],
+      '#value' => $json,
+    ],
+    'df_metatag_schema_graph',
+  ];
+}
+
+/**
+ * Builds a Yoast-style schema.org graph for the current page.
+ */
+function df_metatag_build_schema_graph(): ?string {
+  $origin = df_metatag_production_origin();
+  $request = \Drupal::request();
+  $path = rtrim($request->getPathInfo(), '/') ?: '/';
+  $page_url = rtrim($origin, '/') . ($path === '/' ? '/' : $path);
+
+  $title = 'Impact Magazine';
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof \Drupal\node\NodeInterface) {
+    $title = $node->label() . ' - Impact Magazine';
+  }
+  elseif (df_metatag_is_homepage_path() || \Drupal::routeMatch()->getRouteName() === '<front>') {
+    $title = 'Homepage - Impact Magazine';
+  }
+
+  $description = '';
+  $route = \Drupal::routeMatch();
+  $node = $route->getParameter('node');
+  if ($node instanceof \Drupal\node\NodeInterface) {
+    if ($node->hasField('field_meta_description') && !$node->get('field_meta_description')->isEmpty()) {
+      $description = (string) $node->get('field_meta_description')->value;
+    }
+    elseif ($node->hasField('field_description') && !$node->get('field_description')->isEmpty()) {
+      $description = strip_tags((string) $node->get('field_description')->value);
+    }
+  }
+
+  $modified = NULL;
+  if ($node instanceof \Drupal\node\NodeInterface) {
+    $modified = gmdate('c', (int) $node->getChangedTime());
+  }
+
+  $graph = [
+    [
+      '@type' => 'WebPage',
+      '@id' => $page_url . '#webpage',
+      'url' => $page_url,
+      'name' => $title,
+      'isPartOf' => ['@id' => $origin . '/#website'],
+      'description' => $description ?: NULL,
+      'inLanguage' => 'en-US',
+    ],
+    [
+      '@type' => 'WebSite',
+      '@id' => $origin . '/#website',
+      'url' => $origin . '/',
+      'name' => 'Impact Magazine',
+      'description' => 'Stories from our community of support',
+      'inLanguage' => 'en-US',
+    ],
+    [
+      '@type' => 'Organization',
+      '@id' => $origin . '/#organization',
+      'name' => 'Impact Magazine',
+      'url' => $origin . '/',
+    ],
+  ];
+
+  if ($modified !== NULL) {
+    $graph[0]['dateModified'] = $modified;
+  }
+
+  $payload = [
+    '@context' => 'https://schema.org',
+    '@graph' => array_values(array_filter($graph, static fn ($item) => $item !== NULL)),
+  ];
+
+  return json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}

@@ -72,6 +72,49 @@ export async function videoState(page, selector) {
 export const WP_HERO_VIDEO = '.homepage-banner video, .wp-block-cover__video-background';
 export const DRUPAL_HERO_VIDEO = '.hero__cover-video, .homepage-banner video';
 
+export async function headerScrollState(page, selector = '.header, .desktop-header, .impact-header') {
+  return page.evaluate((sel) => {
+    const el = document.querySelector(sel);
+    if (!el) return { found: false };
+    const cs = getComputedStyle(el);
+    return {
+      found: true,
+      className: el.className,
+      scrolled: el.classList.contains('header--scrolled') || el.classList.contains('scrolled'),
+      position: cs.position,
+      boxShadow: cs.boxShadow,
+      height: el.getBoundingClientRect().height,
+    };
+  }, selector);
+}
+
+export async function dropdownOpenOnHover(page, triggerSel, panelSel) {
+  const trigger = page.locator(triggerSel).first();
+  if (!(await trigger.count())) return { found: false };
+  await trigger.hover({ force: true });
+  await page.waitForTimeout(200);
+  return page.evaluate((panel) => {
+    const el = document.querySelector(panel);
+    if (!el) return { found: false };
+    const cs = getComputedStyle(el);
+    return { found: true, display: cs.display, visibility: cs.visibility, opacity: cs.opacity };
+  }, panelSel);
+}
+
+export async function elementPresent(page, selector) {
+  return page.evaluate((sel) => Boolean(document.querySelector(sel)), selector);
+}
+
+export async function revealState(page, selector = '.df-reveal, .df-reveal--visible, .ultp-animation') {
+  return page.evaluate((sel) => {
+    const els = [...document.querySelectorAll(sel)];
+    return {
+      count: els.length,
+      visible: els.filter((el) => el.classList.contains('df-reveal--visible')).length,
+    };
+  }, selector);
+}
+
 export function behaviorOutDir(parityRoot, runId, site, slug) {
   return `${parityRoot}/reports/behavior/${runId}/${site}/${slug}`;
 }

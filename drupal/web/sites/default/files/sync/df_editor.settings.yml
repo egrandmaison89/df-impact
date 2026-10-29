@@ -13,3 +13,13 @@ footer_disclaimer_html: '<strong>About Our Patient Stories</strong>: Dana-Farber
 social_facebook_url: 'https://www.facebook.com/thejimmyfund/'
 social_twitter_url: 'https://twitter.com/TheJimmyFund'
 social_instagram_url: 'https://www.instagram.com/thejimmyfund/?ref=badge'
+footer_dei_html: 'At Dana-Farber we are committed to an inclusive community where human differences are valued and celebrated, and where all are welcome. <a href="https://www.dana-farber.org/inclusion-diversity-and-equity/" data-type="URL" data-id="https://www.dana-farber.org/inclusion-diversity-and-equity/" target="_blank" rel="noreferrer noopener">We work every day</a> to create an innovative, caring, and inclusive environment where each patient, family, and staff member feels valued and respected.'
+footer_copyright_html: 'Copyright © 2026 Dana-Farber Cancer Institute | <a href="https://www.jimmyfund.org/dana-farbers-jimmy-fund-fundraising-website-privacy-policy" data-type="link" data-id="https://www.jimmyfund.org/dana-farbers-jimmy-fund-fundraising-website-privacy-policy" target="_blank" rel="noreferrer noopener">Privacy Policy</a> | <a href="https://www.jimmyfund.org/terms-use" data-type="link" data-id="https://www.jimmyfund.org/terms-use" target="_blank" rel="noreferrer noopener">Terms of Use</a> | <a href="https://www.jimmyfund.org/website-accessibility-statement" data-type="link" data-id="https://www.jimmyfund.org/website-accessibility-statement" target="_blank" rel="noreferrer noopener">Accessibility</a>'
+gtranslate_disclaimer_text: 'Please note that some translations using Google Translate may not be accurately represented and downloaded documents cannot be translated. Dana-Farber and the Jimmy Fund assume no liability for inaccuracies that may result from using this third-party tool, which is for website translation.'
+header_issues_see_all_title: 'See All Issues'
+donate_button_label: Donate
+homepage_hero_override_title: ''
+homepage_hero_override_link: ''
+footer_badge_us_news_media_id: 0
+footer_badge_us_news_children_media_id: 0
+footer_badge_charity_navigator_media_id: 0

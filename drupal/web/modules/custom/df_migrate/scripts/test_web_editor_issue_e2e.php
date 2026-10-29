@@ -130,8 +130,8 @@ function df_migrate_web_editor_issue_e2e(): array {
     if (isset($form['df_homepage_hero']) && ($form['df_homepage_hero']['#access'] ?? TRUE) !== FALSE) {
       $fail('web_editor_issue_form_hides_hero', 'Homepage hero video group must be hidden for web_editor.');
     }
-    if (!isset($form['field_hero_heading'])) {
-      $fail('web_editor_issue_form_hides_hero', 'Web editor must see field_hero_heading on the issue form.');
+    if (isset($form['field_hero_heading']) && ($form['field_hero_heading']['#access'] ?? TRUE) !== FALSE) {
+      $fail('web_editor_issue_form_hides_hero', 'Web editor must not see field_hero_heading on the issue form.');
     }
     foreach (['field_hero_video', 'field_hero_poster'] as $hero_field) {
       if (isset($form[$hero_field])) {

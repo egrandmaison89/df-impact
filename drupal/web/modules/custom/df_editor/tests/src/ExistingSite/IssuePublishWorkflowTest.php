@@ -160,7 +160,7 @@ final class IssuePublishWorkflowTest extends ExistingSiteBase {
     $this->assertArrayHasKey('df_homepage_hero', $form);
     $this->assertFalse($form['df_homepage_hero']['#access'] ?? TRUE);
     $this->assertArrayHasKey('field_hero_heading', $form);
-    $this->assertNotFalse($form['field_hero_heading']['#access'] ?? TRUE);
+    $this->assertFalse($form['field_hero_heading']['#access'] ?? TRUE);
   }
 
 }

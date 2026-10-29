@@ -7,6 +7,14 @@
   display: none !important;
 }
 
+/* WordPress parity: no Drupal breadcrumb, tabs, or contextual edit affordances on the public theme. */
+.contextual,
+.contextual-region .contextual,
+.block-local-tasks-block,
+nav.tabs {
+  display: none !important;
+}
+
 body {
   margin: 0;
 }

@@ -2,7 +2,20 @@
 
 **Branch:** `cursor/phase4-chrome-behavior-0b67`  
 **Updated:** 2026-10-28 (ET)  
-**Parallel agents:** `cursor/templates-inbrief-archives` (not on remote yet), `cursor/meta-head-behavior-0751` (**merged locally**)
+**Parallel agents:** `cursor/templates-inbrief-archives` (not on remote yet), **PR #6** `cursor/meta-head-behavior-0751` (**merged locally** at `129368e3`, same tip as remote PR branch)
+
+## PR #6 — DDEV verification (2026-10-29)
+
+| Check | Result | Notes |
+|-------|--------|--------|
+| `ddev drush updatedb -y && cim -y && cr` | OK | No pending updates; config already imported |
+| `npm run parity:head:refpack` | **metaMatch 0%** (0/13) | Canonical/og URLs double-prefix prod + DDEV (`https://danafarberimpact.org/http://df-impact.ddev.site/...`); empty `<title>` in scrape — **meta agent to fix**, not Mac visual |
+| `npm run parity:url:check` | **98.9%** (792/801) | Report: `parity/reports/url-parity/check-1793235874561.json` |
+| `npm run parity:behavior:smoke` | **0/3 pass** | 1 failed (desktop: header element / scroll class), 2 skipped |
+| Smoke baseline (25-url) | **38/38 Playwright pass** | Run `2026-10-29T01-04-12-321Z`; eval **metaMatchPercent 0%**, pixel gates fail as before (expected) |
+| Mac template regression | **None** | Article viewport median desktop **~31.6%** after verify (unchanged) |
+
+**Push:** Merge already on `origin/cursor/phase4-chrome-behavior-0b67`; no extra merge push (meta not green on DDEV).
 
 ## Scope (this agent only)
 

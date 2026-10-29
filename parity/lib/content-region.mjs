@@ -34,6 +34,9 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
   ];
 
   const CONTENT_SELECTORS = [
+    '.about-impact-page__body',
+    'article.in-brief-post .entry-content',
+    'article.post .entry-content.alignwide',
     '.entry-content.wp-block-post-content',
     '.wp-block-post-content',
     '.entry-content',
@@ -57,7 +60,22 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     for (const sel of REMOVE_SELECTORS) {
       clone.querySelectorAll(sel).forEach((el) => el.remove());
     }
+    // Cloned nodes ignore display:none; drop collapsed archive rows (In Brief load-more).
+    clone.querySelectorAll('.is-collapsed, [hidden], [aria-hidden="true"]').forEach((el) => {
+      el.remove();
+    });
     return clone;
+  }
+
+  function isVisible(el) {
+    if (!(el instanceof HTMLElement)) {
+      return false;
+    }
+    if (el.closest('.is-collapsed, [hidden], [aria-hidden="true"]')) {
+      return false;
+    }
+    const style = getComputedStyle(el);
+    return style.display !== 'none' && style.visibility !== 'hidden';
   }
 
   let root = null;
@@ -72,10 +90,14 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     root = document.body;
   }
   const cleaned = cloneWithoutChrome(root);
-  const headings = [...cleaned.querySelectorAll('h1,h2,h3,h4')].map((h) => ({
-    tag: h.tagName.toLowerCase(),
-    text: (h.textContent || '').replace(/\s+/g, ' ').trim(),
-  }));
-  const text = (cleaned.innerText || '').replace(/\s+/g, ' ').trim();
+  const headings = [...root.querySelectorAll('h1,h2,h3,h4')]
+    .filter(isVisible)
+    .map((h) => ({
+      tag: h.tagName.toLowerCase(),
+      text: (h.textContent || '').replace(/\s+/g, ' ').trim(),
+    }));
+  // Live innerText respects display:none; clone innerText does not.
+  const textSource = root.isConnected ? root : cleaned;
+  const text = (textSource.innerText || '').replace(/\s+/g, ' ').trim();
   return { text, headings, length: text.length, selector: root.className || root.id || root.tagName };
 };

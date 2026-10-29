@@ -1,8 +1,8 @@
 # Mac visual parity — live status
 
-**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). Integrator merges: **Meta #10** `2778e304`, **Templates #13** `f780eb3c`, **VM #14** `9f1e8b49`, **Editor #15**.
+**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). Integrator merges: **Meta #10**, **Templates #13**, **VM #14**, **Editor #15**, **Editor follow-ups #17** (`5efc6901` on `cursor/editor-followups-ce7f`). **Not merged:** PR #16 (superseded by #17).
 
-**Updated:** 2026-10-29 ~2:05 AM ET
+**Updated:** 2026-10-29 ~2:16 AM ET
 
 **Stash:** `mac-wip` (local report PNG backup; not committed).
 
@@ -20,17 +20,19 @@
 
 ---
 
-## DDEV gates (latest run)
+## DDEV gates (post PR #17)
 
 | Gate | Result | Report / run |
 |------|--------|----------------|
+| `drush cim` / `cr` | **ok** | `editor_html` format + role updates imported |
+| `drush df-editor:test-publish-workflow` | **pass** | After removing stale `DF Test Issue Workflow` nodes on DDEV |
 | wp-port assets | **19/19** | `scripts/repro/verify-wp-port-assets.sh` |
-| `parity:head:refpack` | **21/21** | `parity/reports/head-meta/compare-1793253136372.json` |
-| `parity:head:manifest` | **773/773** | `parity/reports/head-meta/manifest-1793253174470.json` |
-| `parity:url:check` | **801/801** | `parity/reports/url-parity/check-1793253175699.json` |
-| `parity:template-samples:http` | **18/18** (all **200**) | `parity/reports/template-samples-http/check-1793253176018.json` |
-| `parity:smoke:200` | **pass** (39 paths, 0 fails) | `parity/reports/smoke-200/smoke-1793253136893.json` |
-| `parity:behavior:smoke` | **pass** (3/3, lite) | `parity/reports/behavior/2026-10-29T06-00-24-489Z/` |
+| `parity:head:refpack` | **21/21** | `parity/reports/head-meta/compare-1793254525998.json` |
+| `parity:head:manifest` | **773/773** | `parity/reports/head-meta/manifest-1793254566078.json` |
+| `parity:url:check` | **801/801** | `parity/reports/url-parity/check-1793254567439.json` |
+| `parity:template-samples:http` | **18/18** (all **200**) | `parity/reports/template-samples-http/check-1793254567745.json` |
+| `parity:smoke:200` | **pass** (39 paths, 0 fails) | `parity/reports/smoke-200/smoke-1793254568956.json` |
+| `parity:behavior:smoke` | **pass** (3/3, lite, prior) | `parity/reports/behavior/2026-10-29T06-00-24-489Z/` |
 
 ---
 
@@ -67,6 +69,15 @@ Evidence: `npm run parity:qa:capture` → `qa-evidence/<id>/drupal|wp-{1440|768|
 | 10 | More Stories with images | **pass** | `10-more-stories/` on couple-commits article; Jetpack grid markup present |
 | 11 | Category spacing under articles | **pass** | `11-category-spacing/` on couple-commits article vs WP |
 
+### Editor RBAC (PR #17 — DDEV, password `test`)
+
+Logged-in HTTP subrequest (`http_kernel` as user):
+
+| Account | `/admin/config/df-impact/homepage-hero` | `/admin/config/df-impact/site-settings` |
+|---------|----------------------------------------|-------------------------------------------|
+| `df_test_web_editor` | **403** (denied) | **403** (denied) |
+| `df_test_site_admin` | **302** → issue edit `#edit-df-homepage-hero` (**200**) | **200** |
+
 ---
 
 ## Mac agent queue
@@ -75,6 +86,6 @@ Evidence: `npm run parity:qa:capture` → `qa-evidence/<id>/drupal|wp-{1440|768|
 2. **Issue ~68% viewport D:** PostX cards / banner (`Fall26-Banner-1024x396.jpg` vs photon).
 3. **Full behavior:** `npm run parity:behavior:templates` periodically (hovers / mobile drawer).
 
-Editor login notes (PR #15): see prior table in git history; `df_test_web_editor` / `df_test_site_admin` on DDEV.
+Editor accounts on DDEV: `df_test_web_editor` / `df_test_site_admin` (password `test`). Site admins use **Impact site settings** and **Homepage hero** (redirects to current issue hero fields).
 
 VM STATUS: `parity/reports/progress/vm-visual/STATUS.md`.

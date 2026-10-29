@@ -40,13 +40,6 @@ content:
       media_types:
         - image
     third_party_settings: {  }
-  field_issue_banner_is_light:
-    type: boolean_checkbox
-    weight: 5
-    region: content
-    settings:
-      display_label: true
-    third_party_settings: {  }
   field_cover_image:
     type: media_library_widget
     weight: 3
@@ -86,6 +79,13 @@ content:
     settings:
       media_types:
         - video
+    third_party_settings: {  }
+  field_issue_banner_is_light:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   field_issue_promo_2:
     type: entity_reference_autocomplete
@@ -132,6 +132,12 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  publish_on:
+    type: datetime_timestamp
+    weight: 99
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   simple_sitemap:
     weight: 10
     region: content
@@ -164,12 +170,6 @@ content:
     third_party_settings: {  }
   url_redirects:
     weight: 50
-    region: content
-    settings: {  }
-    third_party_settings: {  }
-  publish_on:
-    type: datetime_timestamp
-    weight: 99
     region: content
     settings: {  }
     third_party_settings: {  }

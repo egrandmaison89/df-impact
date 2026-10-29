@@ -1,5 +1,5 @@
 gtranslate:
-  version: 1.x
+  version: 1.1
   js:
     js/gtranslate-init.js: {}
 
@@ -21,7 +21,7 @@ archive_listings:
       css/wp-query-pagination.css: { weight: 420 }
 
 global:
-  version: 1.5
+  version: 1.6
   css:
     theme:
       css/theme.css: { weight: 400 }
@@ -36,7 +36,7 @@ global:
     - core/once
 
 wp_port:
-  version: reference-pack
+  version: reference-pack-2
   css:
     theme:
       wp-assets/danafarberimpact.org_wp-content_themes_blockmag_style.css: { weight: 0 }
@@ -59,12 +59,13 @@ wp_port:
   js:
     wp-assets/cdnjs.cloudflare.com_ajax_libs_jquery_3.3.1_jquery.min.js: {}
     wp-assets/danafarberimpact.org_wp-content_plugins_megamenu_js_maxmegamenu.min.js: {}
+    wp-assets/danafarberimpact.org_wp-content_plugins_add-search-to-menu_public_js_ivory-search.min.js: {}
     wp-assets/danafarberimpact.org_wp-content_plugins_socialsnap_assets_js_socialsnap.js: {}
   dependencies:
     - core/jquery
 
 wp_chrome:
-  version: 1.0
+  version: 1.1
   js:
     js/wp-chrome-behaviors.js: {}
   dependencies:

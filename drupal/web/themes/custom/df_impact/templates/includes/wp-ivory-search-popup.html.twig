@@ -1,0 +1,14 @@
+{# Ivory Search popup overlay (reference-pack footer chrome). #}
+<div id="is-popup-wrapper" style="display:none">
+  <div class="popup-search-close"></div>
+  <div class="is-popup-search-form">
+    <form class="is-search-form is-form-style is-form-style-1 is-form-id-701" action="{{ wp_home_url|default('/') }}" method="get" role="search">
+      <label for="is-search-input-701">
+        <span class="is-screen-reader-text">{{ 'Search for:'|t }}</span>
+        <input type="search" id="is-search-input-701" name="s" value="" class="is-search-input" placeholder="" autocomplete="off">
+      </label>
+      <input type="submit" value="{{ 'Search'|t }}" class="is-search-submit">
+      <input type="hidden" name="id" value="701">
+    </form>
+  </div>
+</div>

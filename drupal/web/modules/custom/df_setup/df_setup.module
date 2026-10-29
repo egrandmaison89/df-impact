@@ -724,6 +724,23 @@ function df_setup_issue_season_weight(string $season): int {
 }
 
 /**
+ * Chronology sort key for issues (matches /browse-issues and WP Issues nav).
+ *
+ * Winter Y sorts after Fall/Spring/Summer Y (before Fall Y+1) via (Y+1)*10+1.
+ */
+function df_setup_issue_chronology_sort_value(NodeInterface $issue): int {
+  $year = (int) ($issue->get('field_year')->value ?? 0);
+  $season = mb_strtolower(trim((string) ($issue->get('field_season')->value ?? '')), 'UTF-8');
+  return match ($season) {
+    'fall', 'autumn' => $year * 10 + 4,
+    'summer' => $year * 10 + 3,
+    'spring' => $year * 10 + 2,
+    'winter' => ($year + 1) * 10 + 1,
+    default => 0,
+  };
+}
+
+/**
  * Returns the newest published issue node ID (year desc, season weight desc).
  */
 function df_setup_get_latest_issue_nid(): ?int {
@@ -763,15 +780,12 @@ function df_setup_load_published_issues_sorted(): array {
       $issues[] = $node;
     }
   }
+  $issues = array_values(array_filter($issues, static function (NodeInterface $issue): bool {
+    $season = mb_strtolower(trim((string) ($issue->get('field_season')->value ?? '')), 'UTF-8');
+    return $season !== 'late fall';
+  }));
   usort($issues, static function (NodeInterface $a, NodeInterface $b): int {
-    $year_a = (int) ($a->get('field_year')->value ?? 0);
-    $year_b = (int) ($b->get('field_year')->value ?? 0);
-    if ($year_a !== $year_b) {
-      return $year_b <=> $year_a;
-    }
-    $season_a = df_setup_issue_season_weight((string) ($a->get('field_season')->value ?? ''));
-    $season_b = df_setup_issue_season_weight((string) ($b->get('field_season')->value ?? ''));
-    return $season_b <=> $season_a;
+    return df_setup_issue_chronology_sort_value($b) <=> df_setup_issue_chronology_sort_value($a);
   });
   return $issues;
 }

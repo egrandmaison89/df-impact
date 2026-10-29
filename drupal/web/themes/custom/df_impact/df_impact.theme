@@ -361,6 +361,14 @@ function df_impact_preprocess_html(array &$variables): void {
     'df_site_snippets_header' => NULL,
     'df_site_snippets_footer' => NULL,
   ];
+
+  // WordPress parity: html lang="en-US" (GTranslate + sweep diff).
+  if (!empty($variables['html_attributes']) && $variables['html_attributes'] instanceof \Drupal\Core\Template\Attribute) {
+    $variables['html_attributes']->setAttribute('lang', 'en-US');
+  }
+
+  $front = Url::fromRoute('<front>')->toString();
+  $variables['wp_home_url'] = str_ends_with($front, '/') ? $front : $front . '/';
   $route = \Drupal::routeMatch()->getRouteName();
   $variables['is_category_archive'] = ($route === 'view.topic_archive.page_1');
 
@@ -2558,6 +2566,22 @@ function df_impact_get_header_issue_links(int $limit = 4): array {
  */
 function df_impact_page_attachments_alter(array &$attachments) {
   $attachments['#attached']['library'][] = 'df_impact/gtranslate';
+
+  // Social Snap expects WP-localized config before socialsnap.js (reference-pack).
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'script',
+      '#value' => 'var socialsnap_script = ' . json_encode([
+        'ajaxurl' => '/',
+        'on_media_width' => '250',
+        'on_media_height' => '250',
+        'nonce' => '',
+        'post_id' => '0',
+      ], JSON_UNESCAPED_SLASHES) . ';',
+    ],
+    'df_impact_socialsnap_script',
+  ];
 
   // Add viewport meta tag.
   $viewport = [

@@ -91,7 +91,7 @@ export async function captureSiteBehavior(page, profile, bp) {
   data.headerBeforeScroll = await headerScrollState(page, s.header);
   data.headerScrollDepths = {};
   const headerPresent = await elementPresent(page, s.header);
-  if (headerPresent) {
+  if (!lite && headerPresent && (profile.site !== 'wp' || data.hero?.found)) {
     for (const y of [600, 2000]) {
       await page.evaluate((scrollY) => window.scrollTo(0, scrollY), y);
       await page.waitForTimeout(lite ? 350 : 500);
@@ -132,9 +132,9 @@ export async function captureSiteBehavior(page, profile, bp) {
     data.donateHover = await computedStyleHover(page, s.donate);
     if (s.bodyLink) {
       await scrollSelectorIntoView(page, s.bodyLink);
+      data.bodyLinkDefault = await computedStyle(page, s.bodyLink);
+      data.bodyLinkHover = await computedStyleHover(page, s.bodyLink);
     }
-    data.bodyLinkDefault = await computedStyle(page, s.bodyLink);
-    data.bodyLinkHover = await computedStyleHover(page, s.bodyLink);
     data.cardDefault = await computedStyle(page, s.card);
     data.cardHover = await computedStyleHover(page, s.card);
     data.buttonDefault = await computedStyle(page, s.button);

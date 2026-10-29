@@ -28,6 +28,9 @@
     "parity:behavior:templates:drupal-only": "PARITY_BEHAVIOR_PATHS=auto PARITY_BEHAVIOR_HIT_WP=0 PARITY_BEHAVIOR_CROSS_SITE=0 node scripts/run-behavior-parity.mjs",
     "parity:url:check": "node scripts/check-url-parity.mjs",
     "parity:smoke:200": "node scripts/smoke-200.mjs",
+    "parity:article-dom-blocks": "node scripts/compare-article-dom-blocks.mjs",
+    "parity:header-chrome": "node scripts/compare-header-chrome.mjs",
+    "parity:computed-style-diff:serial": "PARITY_SERIAL=1 node scripts/computed-style-diff.mjs",
     "parity:full": "PARITY_SAMPLE=0 node scripts/run-parity.mjs",
     "report": "node scripts/generate-html-report.mjs",
     "test": "playwright test"

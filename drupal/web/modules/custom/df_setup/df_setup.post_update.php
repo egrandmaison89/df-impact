@@ -7,8 +7,10 @@
  * Do not add df_setup_update_10036+ in df_setup.install. Drupal tracks
  * post_update hooks by function name, so ordering merges no longer skips work.
  *
- * #23 content-sweep: in_brief excerpts + home moderation fix (below).
- * Planned: #25 cover seed, #10 is_light (config + post_update, stacked on #25).
+ * Combined on phase4 integrator:
+ * - **#23** content-sweep: in_brief excerpts + home moderation fix.
+ * - **#25** cover / media seed for issue parity.
+ * - **#10** `is_light` field: config import + backfill post-update (stacked on #25).
  */
 
 declare(strict_types=1);
@@ -84,4 +86,18 @@ function df_setup_post_update_restore_in_brief_summary(): string {
     'in_brief field_summary restored from export: %d updated.',
     (int) ($fixed['updated'] ?? 0),
   );
+}
+
+/**
+ * Seed issue field_cover_image from committed wp-images / WP uploads (browse-issues).
+ */
+function df_setup_post_update_seed_issue_covers(&$sandbox): string {
+  return _df_setup_backfill_issue_cover_images();
+}
+
+/**
+ * Seed issue field_banner_image when empty (issue landing hero parity).
+ */
+function df_setup_post_update_seed_issue_banners(&$sandbox): string {
+  return _df_setup_backfill_issue_banner_images();
 }

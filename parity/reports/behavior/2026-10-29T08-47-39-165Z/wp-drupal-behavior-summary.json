@@ -1,0 +1,26 @@
+{
+  "runId": "2026-10-29T08-47-39-165Z",
+  "generatedAt": "2026-10-29T08:51:20.836Z",
+  "expectedCases": 3,
+  "caseCount": 2,
+  "capturedCaseCount": 2,
+  "incompleteCaseCount": 1,
+  "passCount": 2,
+  "failCount": 0,
+  "totalMismatchRows": 0,
+  "passRate": 1,
+  "failuresBySection": {},
+  "mismatchRowsByTemplate": {
+    "/homepage": 0
+  },
+  "incompleteCases": [
+    {
+      "slug": "_homepage_desktop",
+      "path": "/homepage",
+      "breakpoint": "desktop",
+      "reason": "cross.wp.snapshot",
+      "wpError": "Error: page.goto: net::ERR_TIMED_OUT at https://danafarberimpact.org/\nCall log:\n\u001b[2m  - navigating to \"https://danafarberimpact.org/\", waiting until \"load\"\u001b[22m\n"
+    }
+  ],
+  "failures": []
+}

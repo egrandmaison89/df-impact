@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-10-29T09:22:09.746Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 1,
+  "byTemplate": {
+    "issue": {
+      "runs": 1,
+      "mismatchesAll": 41,
+      "comparableRuns": 1,
+      "mismatchesComparable": 41,
+      "medianMismatchComparable": 41
+    }
+  },
+  "results": [
+    {
+      "template": "issue",
+      "path": "/spring-2026-issue",
+      "bp": "desktop",
+      "mismatchCount": 41,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 2,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 837.984375,
+          "wp": 3369.3125,
+          "drupal": 2531.328125
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 837.984375,
+          "wp": 2573.953125,
+          "drupal": 1735.96875
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 837.984375,
+          "wp": 2722,
+          "drupal": 1884.015625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 837.984375,
+          "wp": 2722,
+          "drupal": 1884.015625
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "y",
+          "delta": 837.984375,
+          "wp": 2772,
+          "drupal": 1934.015625
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "y",
+          "delta": 837.984375,
+          "wp": 2772,
+          "drupal": 1934.015625
+        },
+        {
+          "selector": ".ultp-block-items-wrap .ultp-block-item",
+          "dim": "y",
+          "delta": 485.390625,
+          "wp": 743.078125,
+          "drupal": 257.6875
+        },
+        {
+          "selector": ".ultp-block-items-wrap .ultp-block-item",
+          "dim": "h",
+          "delta": 26,
+          "wp": 609.546875,
+          "drupal": 583.546875
+        },
+        {
+          "selector": ".ultp-block-items-wrap .ultp-block-item img",
+          "dim": "y",
+          "delta": 485.390625,
+          "wp": 743.078125,
+          "drupal": 257.6875
+        },
+        {
+          "selector": "h1",
+          "dim": "x",
+          "delta": 801,
+          "wp": 873,
+          "drupal": 72
+        },
+        {
+          "selector": "h1",
+          "dim": "y",
+          "delta": 183.15625,
+          "wp": 331.203125,
+          "drupal": 148.046875
+        },
+        {
+          "selector": "h1",
+          "dim": "w",
+          "delta": 781,
+          "wp": 515,
+          "drupal": 1296
+        }
+      ]
+    }
+  ]
+}

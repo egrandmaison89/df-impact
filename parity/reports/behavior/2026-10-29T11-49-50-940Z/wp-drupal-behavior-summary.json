@@ -1,0 +1,24 @@
+{
+  "runId": "2026-10-29T11-49-50-940Z",
+  "generatedAt": "2026-10-29T11:51:52.185Z",
+  "expectedCases": 3,
+  "caseCount": 0,
+  "capturedCaseCount": 0,
+  "incompleteCaseCount": 1,
+  "passCount": 0,
+  "failCount": 0,
+  "totalMismatchRows": 0,
+  "passRate": 0,
+  "failuresBySection": {},
+  "mismatchRowsByTemplate": {},
+  "incompleteCases": [
+    {
+      "slug": "_homepage_desktop",
+      "path": "/homepage",
+      "breakpoint": "desktop",
+      "reason": "cross.wp.snapshot",
+      "wpError": "Error: page.waitForTimeout: Target page, context or browser has been closed"
+    }
+  ],
+  "failures": []
+}

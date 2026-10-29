@@ -1,0 +1,18 @@
+{
+  "path": "/homepage",
+  "breakpoint": "tablet",
+  "runId": "2026-10-29T11-31-04-415Z",
+  "crossSite": true,
+  "hitWp": true,
+  "captured": false,
+  "wpError": "Error: page.goto: net::ERR_TIMED_OUT at https://danafarberimpact.org/\nCall log:\n\u001b[2m  - navigating to \"https://danafarberimpact.org/\", waiting until \"load\"\u001b[22m\n",
+  "drError": "Error: page.goto: Test ended.\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:8888/homepage\", waiting until \"load\"\u001b[22m\n",
+  "assertions": [
+    {
+      "name": "cross.wp.snapshot",
+      "pass": false
+    }
+  ],
+  "assertionPass": 0,
+  "assertionTotal": 1
+}

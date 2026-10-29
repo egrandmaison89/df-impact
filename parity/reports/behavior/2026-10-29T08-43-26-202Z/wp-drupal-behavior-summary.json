@@ -1,0 +1,63 @@
+{
+  "runId": "2026-10-29T08-43-26-202Z",
+  "generatedAt": "2026-10-29T08:46:08.937Z",
+  "expectedCases": 3,
+  "caseCount": 2,
+  "capturedCaseCount": 2,
+  "incompleteCaseCount": 1,
+  "passCount": 0,
+  "failCount": 2,
+  "totalMismatchRows": 2,
+  "passRate": 0,
+  "failuresBySection": {
+    "hero": 2
+  },
+  "mismatchRowsByTemplate": {
+    "/homepage": 2
+  },
+  "incompleteCases": [
+    {
+      "slug": "_homepage_tablet",
+      "path": "/homepage",
+      "breakpoint": "tablet",
+      "reason": "cross.wp.snapshot",
+      "wpError": "Error: page.goto: net::ERR_TIMED_OUT at https://danafarberimpact.org/\nCall log:\n\u001b[2m  - navigating to \"https://danafarberimpact.org/\", waiting until \"load\"\u001b[22m\n"
+    }
+  ],
+  "failures": [
+    {
+      "path": "/homepage",
+      "breakpoint": "desktop",
+      "mismatchCount": 1,
+      "mismatches": [
+        {
+          "section": "hero",
+          "diffs": [
+            {
+              "field": "found",
+              "wp": true,
+              "dr": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/homepage",
+      "breakpoint": "mobile",
+      "mismatchCount": 1,
+      "mismatches": [
+        {
+          "section": "hero",
+          "diffs": [
+            {
+              "field": "found",
+              "wp": true,
+              "dr": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "runId": "2026-10-29T11-49-50-940Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "baselineId": null,
+  "paths": [
+    "/homepage"
+  ],
+  "expectedCases": 3,
+  "crossSite": true,
+  "hitWp": true,
+  "assertionSummary": {
+    "tests": 1,
+    "assertions": 0,
+    "passed": 0,
+    "passRate": 0
+  },
+  "crossSiteMismatchCases": 0,
+  "capturedCases": 0,
+  "incompleteCases": 0,
+  "note": "Per-case wp-drupal-behavior-diff.json when crossSite; aggregate via npm run parity:behavior:report-diff"
+}

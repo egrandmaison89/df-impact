@@ -1,0 +1,46 @@
+{
+  "component": "landing_page",
+  "drupalBase": "http://127.0.0.1:8888",
+  "refRenderer": "mac-pack-viewport-png",
+  "pages": 1,
+  "rectTolerancePx": 2,
+  "structuralPackPassAll": true,
+  "structuralRefDrupalPassAll": true,
+  "medians": {
+    "chrome_median_desktop": 0.14562866286982565,
+    "viewport_median_mac_desktop": 0.2824151234567901,
+    "chrome_median_tablet": 0.19779931005286067,
+    "viewport_median_mac_tablet": 0.3146629050925926,
+    "chrome_median_mobile": 0.2391019410420117,
+    "viewport_median_mac_mobile": 0.36493333333333333
+  },
+  "summary": [
+    {
+      "path": "/browse-issues",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.2824151234567901,
+      "headerPixelDiffRatio": 0.17560589112602534,
+      "footerPixelDiffRatio": 0.11565143461362597,
+      "chromePixelDiffRatio": 0.14562866286982565,
+      "viewportPixelDiffRatioMac": 0.2824151234567901
+    },
+    {
+      "path": "/browse-issues",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.3146629050925926,
+      "headerPixelDiffRatio": 0.23142997382198952,
+      "footerPixelDiffRatio": 0.16416864628373182,
+      "chromePixelDiffRatio": 0.19779931005286067,
+      "viewportPixelDiffRatioMac": 0.3146629050925926
+    },
+    {
+      "path": "/browse-issues",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.36493333333333333,
+      "headerPixelDiffRatio": 0.2105130890052356,
+      "footerPixelDiffRatio": 0.2676907930787878,
+      "chromePixelDiffRatio": 0.2391019410420117,
+      "viewportPixelDiffRatioMac": 0.36493333333333333
+    }
+  ]
+}

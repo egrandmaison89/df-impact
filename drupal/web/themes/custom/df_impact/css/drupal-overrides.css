@@ -158,43 +158,6 @@ main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-image 
   max-width: 544px;
 }
 
-/* Category archive — WP wp-block-columns 33/66 at tablet (matches topic-archive twig). */
-.wp-block-post-template > .wp-block-post .wp-block-columns {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: clamp(1rem, 3vw, 2.25rem);
-}
-
-@media (min-width: 768px) {
-  .wp-block-post-template > .wp-block-post .wp-block-column[style*="flex-basis:33"] {
-    flex: 0 0 33% !important;
-    max-width: 33%;
-  }
-
-  .wp-block-post-template > .wp-block-post .wp-block-column[style*="flex-basis:66"] {
-    flex: 1 1 66% !important;
-    min-width: 0;
-  }
-
-  .wp-block-post-template > .wp-block-post .wp-block-post-featured-image img {
-    max-height: none;
-    aspect-ratio: auto;
-    height: auto;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1024px) {
-  .wp-block-post-template > .wp-block-post .wp-block-columns {
-    gap: 1.25rem;
-  }
-
-  .wp-block-post-template > .wp-block-post .wp-block-post-featured-image img {
-    object-fit: cover;
-    min-height: 0;
-  }
-}
-
 /*
  * Header chrome: cancel .wp-site-blocks outer padding on .desktop-header / .mobile-header (blockmag alignfull).
  * Drop nested alignfull side-padding so logo/donate sit at 15px inset like live WP.

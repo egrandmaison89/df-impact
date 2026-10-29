@@ -1,0 +1,109 @@
+{
+  "summary": {
+    "count": 16,
+    "compared": 15,
+    "errors": 1,
+    "textSimilarityMin": 1,
+    "textSimilarityMedian": 1,
+    "textSimilarityP10": 1,
+    "textSimilarityP90": 1,
+    "below98": 0
+  },
+  "results": [
+    {
+      "path": "/fall-2023-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/fall-2024-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/fall-2025-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/fall-2026-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/late-fall-2022-issue",
+      "textSimilarity": null,
+      "error": "wp_cache_missing (set PARITY_ISSUE_WP_CACHE_ONLY=0 to allow live fetch)"
+    },
+    {
+      "path": "/spring-2023-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/spring-2024-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/spring-2025-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/spring-2026-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/summer-2023-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/summer-2024-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/summer-2025-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/summer-2026-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/winter-2023-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/winter-2024-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    },
+    {
+      "path": "/winter-2025-issue",
+      "textSimilarity": 1,
+      "error": null,
+      "wpSource": "issue-cache"
+    }
+  ]
+}

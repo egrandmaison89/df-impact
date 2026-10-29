@@ -1,0 +1,93 @@
+{
+  "generatedAt": "2026-10-29T08:34:28.458Z",
+  "path": "/spring-2026-issue",
+  "breakpoint": "tablet",
+  "width": 768,
+  "viewportHeightPx": 900,
+  "overallDiffPercent": 65.47,
+  "progressDir": "/workspace/parity/reports/progress/issue/spring-2026-issue_tablet",
+  "qaEvidenceDir": "reports/progress/mac-visual/qa-evidence/issue-tablet-spring26-regions",
+  "cascade": {
+    "mode": "per_element",
+    "bestShiftPx": 0,
+    "diffImprovementIfAligned": 0,
+    "hotBandCount": 40,
+    "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+  },
+  "regions": [
+    {
+      "id": "in_this_issue_heading",
+      "label": "In This Issue heading",
+      "y": "240-291",
+      "diffPercent": 100,
+      "shareOfViewport": 5.7,
+      "contributionToOverallPercent": 5.7
+    },
+    {
+      "id": "card_grid",
+      "label": "PostX card grid",
+      "y": "290-900",
+      "diffPercent": 99.6,
+      "shareOfViewport": 67.8,
+      "contributionToOverallPercent": 67.5
+    },
+    {
+      "id": "promo_row",
+      "label": "Promo row",
+      "y": "290-900",
+      "diffPercent": 99.6,
+      "shareOfViewport": 67.8,
+      "contributionToOverallPercent": 67.5
+    },
+    {
+      "id": "in_brief_band",
+      "label": "In Brief band",
+      "y": "900-900",
+      "diffPercent": 0,
+      "shareOfViewport": 0,
+      "contributionToOverallPercent": 0
+    },
+    {
+      "id": "footer",
+      "label": "Footer (in viewport)",
+      "y": "900-900",
+      "diffPercent": 0,
+      "shareOfViewport": 0,
+      "contributionToOverallPercent": 0
+    }
+  ],
+  "topScanBands": [
+    {
+      "y": "0-22",
+      "diffPercent": 100
+    },
+    {
+      "y": "22-44",
+      "diffPercent": 100
+    },
+    {
+      "y": "44-66",
+      "diffPercent": 100
+    },
+    {
+      "y": "66-88",
+      "diffPercent": 100
+    },
+    {
+      "y": "88-110",
+      "diffPercent": 100
+    },
+    {
+      "y": "110-132",
+      "diffPercent": 100
+    },
+    {
+      "y": "132-154",
+      "diffPercent": 100
+    },
+    {
+      "y": "154-176",
+      "diffPercent": 100
+    }
+  ]
+}

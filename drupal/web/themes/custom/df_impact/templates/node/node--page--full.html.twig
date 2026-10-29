@@ -6,12 +6,12 @@
 #}
 {% if is_about_impact_node %}
 <div{{ attributes.addClass('page-node', 'wp-singular', 'page', 'about-impact-page', 'is-layout-flow', 'wp-block-group-is-layout-flow') }}>
-    {{ title_prefix }}
-    <h1 class="wp-block-heading blue-border-header has-text-color has-montserrat-font-family">{{ label }}</h1>
-    {{ title_suffix }}
-    <div class="entry-content wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
-      {{ content.body }}
-    </div>
+  {{ title_prefix }}
+  <h1 class="wp-block-heading blue-border-header has-text-color has-montserrat-font-family">{{ label }}</h1>
+  {{ title_suffix }}
+  <div class="entry-content wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+    {{ content.body }}
+  </div>
 </div>
 {% else %}
 {# Live WP landing pages (e.g. /about) use block groups in <main>, not <article>. #}

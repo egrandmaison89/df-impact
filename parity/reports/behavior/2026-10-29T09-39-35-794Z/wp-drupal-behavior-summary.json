@@ -1,0 +1,72 @@
+{
+  "runId": "2026-10-29T09-39-35-794Z",
+  "generatedAt": "2026-10-29T09:41:35.341Z",
+  "expectedCases": 3,
+  "caseCount": 3,
+  "capturedCaseCount": 3,
+  "incompleteCaseCount": 0,
+  "passCount": 0,
+  "failCount": 3,
+  "totalMismatchRows": 3,
+  "passRate": 0,
+  "failuresBySection": {
+    "hero": 3
+  },
+  "mismatchRowsByTemplate": {
+    "/homepage": 3
+  },
+  "incompleteCases": [],
+  "failures": [
+    {
+      "path": "/homepage",
+      "breakpoint": "desktop",
+      "mismatchCount": 1,
+      "mismatches": [
+        {
+          "section": "hero",
+          "diffs": [
+            {
+              "field": "found",
+              "wp": true,
+              "dr": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/homepage",
+      "breakpoint": "mobile",
+      "mismatchCount": 1,
+      "mismatches": [
+        {
+          "section": "hero",
+          "diffs": [
+            {
+              "field": "found",
+              "wp": true,
+              "dr": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/homepage",
+      "breakpoint": "tablet",
+      "mismatchCount": 1,
+      "mismatches": [
+        {
+          "section": "hero",
+          "diffs": [
+            {
+              "field": "found",
+              "wp": true,
+              "dr": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

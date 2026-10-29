@@ -1,0 +1,715 @@
+{
+  "generatedAt": "2026-10-29T08:59:46.421Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 9,
+  "byTemplate": {
+    "issue": {
+      "runs": 9,
+      "mismatchesAll": 535,
+      "comparableRuns": 7,
+      "mismatchesComparable": 514,
+      "medianMismatchComparable": 86
+    }
+  },
+  "results": [
+    {
+      "template": "issue",
+      "path": "/fall-2026-issue",
+      "bp": "desktop",
+      "mismatchCount": 21,
+      "wpStatus": 0,
+      "drStatus": 200,
+      "wpComparable": false,
+      "wpShellReason": "missing_header_nav",
+      "wpAttempts": 4,
+      "topBoxDeltas": []
+    },
+    {
+      "template": "issue",
+      "path": "/fall-2026-issue",
+      "bp": "tablet",
+      "mismatchCount": 85,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 1,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 1136.375,
+          "wp": 6564.765625,
+          "drupal": 5428.390625
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 1108.375,
+          "wp": 5020.171875,
+          "drupal": 3911.796875
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 1108.421875,
+          "wp": 5211.046875,
+          "drupal": 4102.625
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "footer",
+          "dim": "h",
+          "delta": 27.953125,
+          "wp": 1353.71875,
+          "drupal": 1325.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 0,
+          "drupal": -18.390625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 1108.421875,
+          "wp": 5211.046875,
+          "drupal": 4102.625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 768,
+          "drupal": 804.78125
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        }
+      ]
+    },
+    {
+      "template": "issue",
+      "path": "/fall-2026-issue",
+      "bp": "mobile",
+      "mismatchCount": 88,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 3,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 1500.328125,
+          "wp": 6012.3125,
+          "drupal": 4511.984375
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 8,
+          "wp": 28,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 31.46875,
+          "wp": 222.296875,
+          "drupal": 190.828125
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 16,
+          "wp": 319,
+          "drupal": 335
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 1468.90625,
+          "wp": 4184.296875,
+          "drupal": 2715.390625
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 8,
+          "wp": 28,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 1500.375,
+          "wp": 4406.59375,
+          "drupal": 2906.21875
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 16,
+          "wp": 319,
+          "drupal": 335
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 8,
+          "wp": 0,
+          "drupal": -8
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 1500.375,
+          "wp": 4406.59375,
+          "drupal": 2906.21875
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 16,
+          "wp": 375,
+          "drupal": 391
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "x",
+          "delta": 8,
+          "wp": 28,
+          "drupal": 20
+        }
+      ]
+    },
+    {
+      "template": "issue",
+      "path": "/summer-2025-issue",
+      "bp": "desktop",
+      "mismatchCount": 38,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 4,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 733.96875,
+          "wp": 3265.296875,
+          "drupal": 2531.328125
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 733.96875,
+          "wp": 2469.9375,
+          "drupal": 1735.96875
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 733.96875,
+          "wp": 2617.984375,
+          "drupal": 1884.015625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 733.96875,
+          "wp": 2617.984375,
+          "drupal": 1884.015625
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "y",
+          "delta": 733.96875,
+          "wp": 2667.984375,
+          "drupal": 1934.015625
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "y",
+          "delta": 733.96875,
+          "wp": 2667.984375,
+          "drupal": 1934.015625
+        },
+        {
+          "selector": ".ultp-block-items-wrap .ultp-block-item",
+          "dim": "y",
+          "delta": 485.390625,
+          "wp": 743.078125,
+          "drupal": 257.6875
+        },
+        {
+          "selector": ".ultp-block-items-wrap .ultp-block-item img",
+          "dim": "y",
+          "delta": 485.390625,
+          "wp": 743.078125,
+          "drupal": 257.6875
+        },
+        {
+          "selector": "h1",
+          "dim": "x",
+          "delta": 801,
+          "wp": 873,
+          "drupal": 72
+        },
+        {
+          "selector": "h1",
+          "dim": "y",
+          "delta": 183.15625,
+          "wp": 331.203125,
+          "drupal": 148.046875
+        },
+        {
+          "selector": "h1",
+          "dim": "w",
+          "delta": 781,
+          "wp": 515,
+          "drupal": 1296
+        },
+        {
+          "selector": "h1",
+          "dim": "h",
+          "delta": 50.078125,
+          "wp": 109.6875,
+          "drupal": 59.609375
+        }
+      ]
+    },
+    {
+      "template": "issue",
+      "path": "/summer-2025-issue",
+      "bp": "tablet",
+      "wpComparable": false,
+      "error": "Error: page.content: Unable to retrieve content because the page is navigating and changing the content."
+    },
+    {
+      "template": "issue",
+      "path": "/summer-2025-issue",
+      "bp": "mobile",
+      "mismatchCount": 87,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 4,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 952.328125,
+          "wp": 5542.3125,
+          "drupal": 4589.984375
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 8,
+          "wp": 28,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 31.46875,
+          "wp": 222.296875,
+          "drupal": 190.828125
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 16,
+          "wp": 319,
+          "drupal": 335
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 920.90625,
+          "wp": 3714.296875,
+          "drupal": 2793.390625
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 8,
+          "wp": 28,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 952.375,
+          "wp": 3936.59375,
+          "drupal": 2984.21875
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 16,
+          "wp": 319,
+          "drupal": 335
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 8,
+          "wp": 0,
+          "drupal": -8
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 952.375,
+          "wp": 3936.59375,
+          "drupal": 2984.21875
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 16,
+          "wp": 375,
+          "drupal": 391
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "x",
+          "delta": 8,
+          "wp": 28,
+          "drupal": 20
+        }
+      ]
+    },
+    {
+      "template": "issue",
+      "path": "/spring-2026-issue",
+      "bp": "desktop",
+      "mismatchCount": 41,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 1,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 837.984375,
+          "wp": 3369.3125,
+          "drupal": 2531.328125
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 837.984375,
+          "wp": 2573.953125,
+          "drupal": 1735.96875
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 837.984375,
+          "wp": 2722,
+          "drupal": 1884.015625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 837.984375,
+          "wp": 2722,
+          "drupal": 1884.015625
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "y",
+          "delta": 837.984375,
+          "wp": 2772,
+          "drupal": 1934.015625
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "y",
+          "delta": 837.984375,
+          "wp": 2772,
+          "drupal": 1934.015625
+        },
+        {
+          "selector": ".ultp-block-items-wrap .ultp-block-item",
+          "dim": "y",
+          "delta": 485.390625,
+          "wp": 743.078125,
+          "drupal": 257.6875
+        },
+        {
+          "selector": ".ultp-block-items-wrap .ultp-block-item",
+          "dim": "h",
+          "delta": 26,
+          "wp": 609.546875,
+          "drupal": 583.546875
+        },
+        {
+          "selector": ".ultp-block-items-wrap .ultp-block-item img",
+          "dim": "y",
+          "delta": 485.390625,
+          "wp": 743.078125,
+          "drupal": 257.6875
+        },
+        {
+          "selector": "h1",
+          "dim": "x",
+          "delta": 801,
+          "wp": 873,
+          "drupal": 72
+        },
+        {
+          "selector": "h1",
+          "dim": "y",
+          "delta": 183.15625,
+          "wp": 331.203125,
+          "drupal": 148.046875
+        },
+        {
+          "selector": "h1",
+          "dim": "w",
+          "delta": 781,
+          "wp": 515,
+          "drupal": 1296
+        }
+      ]
+    },
+    {
+      "template": "issue",
+      "path": "/spring-2026-issue",
+      "bp": "tablet",
+      "mismatchCount": 86,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 3,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 955.40625,
+          "wp": 6409.796875,
+          "drupal": 5454.390625
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 927.40625,
+          "wp": 4865.203125,
+          "drupal": 3937.796875
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 927.453125,
+          "wp": 5056.078125,
+          "drupal": 4128.625
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 691.21875,
+          "drupal": 728
+        },
+        {
+          "selector": "footer",
+          "dim": "h",
+          "delta": 27.953125,
+          "wp": 1353.71875,
+          "drupal": 1325.765625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 0,
+          "drupal": -18.390625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 927.453125,
+          "wp": 5056.078125,
+          "drupal": 4128.625
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 36.78125,
+          "wp": 768,
+          "drupal": 804.78125
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "x",
+          "delta": 18.390625,
+          "wp": 38.390625,
+          "drupal": 20
+        }
+      ]
+    },
+    {
+      "template": "issue",
+      "path": "/spring-2026-issue",
+      "bp": "mobile",
+      "mismatchCount": 89,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true,
+      "wpShellReason": null,
+      "wpAttempts": 2,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 1731.265625,
+          "wp": 6373.25,
+          "drupal": 4641.984375
+        },
+        {
+          "selector": "main",
+          "dim": "x",
+          "delta": 8,
+          "wp": 28,
+          "drupal": 20
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 31.46875,
+          "wp": 222.296875,
+          "drupal": 190.828125
+        },
+        {
+          "selector": "main",
+          "dim": "w",
+          "delta": 16,
+          "wp": 319,
+          "drupal": 335
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 1699.84375,
+          "wp": 4545.234375,
+          "drupal": 2845.390625
+        },
+        {
+          "selector": "footer",
+          "dim": "x",
+          "delta": 8,
+          "wp": 28,
+          "drupal": 20
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 1731.3125,
+          "wp": 4767.53125,
+          "drupal": 3036.21875
+        },
+        {
+          "selector": "footer",
+          "dim": "w",
+          "delta": 16,
+          "wp": 319,
+          "drupal": 335
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "x",
+          "delta": 8,
+          "wp": 0,
+          "drupal": -8
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 1731.3125,
+          "wp": 4767.53125,
+          "drupal": 3036.21875
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "w",
+          "delta": 16,
+          "wp": 375,
+          "drupal": 391
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "x",
+          "delta": 8,
+          "wp": 28,
+          "drupal": 20
+        }
+      ]
+    }
+  ]
+}

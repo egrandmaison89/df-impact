@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-10-29T09:39:35.689Z",
+  "drupalBase": "http://127.0.0.1:8888",
+  "pathCount": 40,
+  "httpFailCount": 0,
+  "status5xxCount": 0,
+  "watchdogPhpNew": 0,
+  "fails": [],
+  "watchdog": []
+}

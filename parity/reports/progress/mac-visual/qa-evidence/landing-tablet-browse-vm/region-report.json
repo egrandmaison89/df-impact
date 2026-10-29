@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-10-29T09:31:40.201Z",
+  "path": "/browse-issues",
+  "breakpoint": "tablet",
+  "width": 768,
+  "viewportHeightPx": 900,
+  "overallDiffPercent": 31.54,
+  "progressDir": "/workspace/parity/reports/progress/landing/browse-issues_tablet",
+  "qaEvidenceDir": "reports/progress/mac-visual/qa-evidence/landing-tablet-browse-vm",
+  "cascade": {
+    "mode": "per_element",
+    "bestShiftPx": 0,
+    "diffImprovementIfAligned": 0,
+    "hotBandCount": 40,
+    "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+  },
+  "regions": [
+    {
+      "id": "browse_body",
+      "label": "Browse body / views",
+      "y": "190-900",
+      "diffPercent": 44.4,
+      "shareOfViewport": 78.9,
+      "contributionToOverallPercent": 35.1
+    },
+    {
+      "id": "page_title",
+      "label": "Page title band",
+      "y": "230-270",
+      "diffPercent": 10,
+      "shareOfViewport": 4.4,
+      "contributionToOverallPercent": 0.4
+    },
+    {
+      "id": "footer",
+      "label": "Footer",
+      "y": "900-900",
+      "diffPercent": 0,
+      "shareOfViewport": 0,
+      "contributionToOverallPercent": 0
+    }
+  ],
+  "downstreamShiftCompensation": {
+    "shiftPx": 0,
+    "heroBottomPx": 0,
+    "regions": [
+      {
+        "id": "browse_body",
+        "label": "Browse body / views",
+        "diffPercentRaw": 44.4,
+        "diffPercentAfterVerticalShift": 44.4,
+        "offsetOnlyLikely": false
+      },
+      {
+        "id": "page_title",
+        "label": "Page title band",
+        "diffPercentRaw": 10,
+        "diffPercentAfterVerticalShift": 10,
+        "offsetOnlyLikely": false
+      },
+      {
+        "id": "footer",
+        "label": "Footer",
+        "diffPercentRaw": 0,
+        "diffPercentAfterVerticalShift": 0,
+        "offsetOnlyLikely": false
+      }
+    ]
+  },
+  "topScanBands": [
+    {
+      "y": "0-22",
+      "diffPercent": 100
+    },
+    {
+      "y": "22-44",
+      "diffPercent": 100
+    },
+    {
+      "y": "44-66",
+      "diffPercent": 100
+    },
+    {
+      "y": "66-88",
+      "diffPercent": 100
+    },
+    {
+      "y": "88-110",
+      "diffPercent": 100
+    },
+    {
+      "y": "110-132",
+      "diffPercent": 100
+    },
+    {
+      "y": "132-154",
+      "diffPercent": 100
+    },
+    {
+      "y": "154-176",
+      "diffPercent": 100
+    }
+  ]
+}

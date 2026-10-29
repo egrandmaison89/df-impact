@@ -1,0 +1,618 @@
+{
+  "generatedAt": "2026-10-29T12:10:04.356Z",
+  "runId": "full-cs-1793275116989",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 60,
+  "completed": 60,
+  "stillPending": [
+    "article:/2024/09/wheeling-in-the-years-the-pan-mass-challenge-produces-origin-story-video:desktop",
+    "article:/2024/09/wheeling-in-the-years-the-pan-mass-challenge-produces-origin-story-video:tablet",
+    "article:/2024/09/wheeling-in-the-years-the-pan-mass-challenge-produces-origin-story-video:mobile"
+  ],
+  "desktopMismatchSumByTemplate": {
+    "homepage": {
+      "sum": 250,
+      "paths": 2,
+      "comparableSum": 250
+    },
+    "issue": {
+      "sum": 336,
+      "paths": 3,
+      "comparableSum": 336
+    },
+    "article": {
+      "sum": 208,
+      "paths": 3,
+      "comparableSum": 190
+    },
+    "in_brief": {
+      "sum": 309,
+      "paths": 3,
+      "comparableSum": 309
+    },
+    "landing_page": {
+      "sum": 399,
+      "paths": 4,
+      "comparableSum": 399
+    },
+    "archive": {
+      "sum": 647,
+      "paths": 5,
+      "comparableSum": 647
+    }
+  },
+  "allBpMismatchSumByTemplate": {
+    "homepage": {
+      "sum": 722,
+      "paths": 6,
+      "comparableSum": 722
+    },
+    "issue": {
+      "sum": 964,
+      "paths": 9,
+      "comparableSum": 964
+    },
+    "article": {
+      "sum": 570,
+      "paths": 9,
+      "comparableSum": 516
+    },
+    "in_brief": {
+      "sum": 841,
+      "paths": 9,
+      "comparableSum": 841
+    },
+    "landing_page": {
+      "sum": 1097,
+      "paths": 12,
+      "comparableSum": 1097
+    },
+    "archive": {
+      "sum": 1857,
+      "paths": 15,
+      "comparableSum": 1857
+    }
+  },
+  "results": [
+    {
+      "template": "homepage",
+      "path": "/",
+      "bp": "desktop",
+      "mismatchCount": 125,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "homepage",
+      "path": "/",
+      "bp": "tablet",
+      "mismatchCount": 120,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "homepage",
+      "path": "/",
+      "bp": "mobile",
+      "mismatchCount": 116,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "homepage",
+      "path": "/homepage",
+      "bp": "desktop",
+      "mismatchCount": 125,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "homepage",
+      "path": "/homepage",
+      "bp": "tablet",
+      "mismatchCount": 120,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "homepage",
+      "path": "/homepage",
+      "bp": "mobile",
+      "mismatchCount": 116,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "issue",
+      "path": "/fall-2026-issue",
+      "bp": "desktop",
+      "mismatchCount": 111,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "issue",
+      "path": "/fall-2026-issue",
+      "bp": "tablet",
+      "mismatchCount": 106,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "issue",
+      "path": "/fall-2026-issue",
+      "bp": "mobile",
+      "mismatchCount": 100,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "issue",
+      "path": "/summer-2025-issue",
+      "bp": "desktop",
+      "mismatchCount": 113,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "issue",
+      "path": "/summer-2025-issue",
+      "bp": "tablet",
+      "mismatchCount": 108,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "issue",
+      "path": "/summer-2025-issue",
+      "bp": "mobile",
+      "mismatchCount": 104,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "issue",
+      "path": "/spring-2026-issue",
+      "bp": "desktop",
+      "mismatchCount": 112,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "issue",
+      "path": "/spring-2026-issue",
+      "bp": "tablet",
+      "mismatchCount": 107,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "issue",
+      "path": "/spring-2026-issue",
+      "bp": "mobile",
+      "mismatchCount": 103,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "article",
+      "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "bp": "desktop",
+      "mismatchCount": 93,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "article",
+      "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "bp": "tablet",
+      "mismatchCount": 80,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "article",
+      "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "bp": "mobile",
+      "mismatchCount": 79,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "article",
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "desktop",
+      "mismatchCount": 97,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "article",
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "tablet",
+      "mismatchCount": 84,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "article",
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "mobile",
+      "mismatchCount": 83,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "article",
+      "path": "/2024/09/wheeling-in-the-years-the-pan-mass-challenge-produces-origin-story-video",
+      "bp": "desktop",
+      "mismatchCount": 18,
+      "wpStatus": 404,
+      "drStatus": 200,
+      "wpComparable": false
+    },
+    {
+      "template": "article",
+      "path": "/2024/09/wheeling-in-the-years-the-pan-mass-challenge-produces-origin-story-video",
+      "bp": "tablet",
+      "mismatchCount": 18,
+      "wpStatus": 404,
+      "drStatus": 200,
+      "wpComparable": false
+    },
+    {
+      "template": "article",
+      "path": "/2024/09/wheeling-in-the-years-the-pan-mass-challenge-produces-origin-story-video",
+      "bp": "mobile",
+      "mismatchCount": 18,
+      "wpStatus": 404,
+      "drStatus": 200,
+      "wpComparable": false
+    },
+    {
+      "template": "in_brief",
+      "path": "/in-brief",
+      "bp": "desktop",
+      "mismatchCount": 115,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "in_brief",
+      "path": "/in-brief",
+      "bp": "tablet",
+      "mismatchCount": 100,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "in_brief",
+      "path": "/in-brief",
+      "bp": "mobile",
+      "mismatchCount": 98,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "in_brief",
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "desktop",
+      "mismatchCount": 97,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "in_brief",
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "tablet",
+      "mismatchCount": 84,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "in_brief",
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "mobile",
+      "mismatchCount": 83,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "in_brief",
+      "path": "/2023/09/american-association-for-cancer-research",
+      "bp": "desktop",
+      "mismatchCount": 97,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "in_brief",
+      "path": "/2023/09/american-association-for-cancer-research",
+      "bp": "tablet",
+      "mismatchCount": 84,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "in_brief",
+      "path": "/2023/09/american-association-for-cancer-research",
+      "bp": "mobile",
+      "mismatchCount": 83,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/about",
+      "bp": "desktop",
+      "mismatchCount": 109,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/about",
+      "bp": "tablet",
+      "mismatchCount": 95,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/about",
+      "bp": "mobile",
+      "mismatchCount": 93,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/about-impact",
+      "bp": "desktop",
+      "mismatchCount": 109,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/about-impact",
+      "bp": "tablet",
+      "mismatchCount": 95,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/about-impact",
+      "bp": "mobile",
+      "mismatchCount": 93,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/browse-issues",
+      "bp": "desktop",
+      "mismatchCount": 92,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/browse-issues",
+      "bp": "tablet",
+      "mismatchCount": 83,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/browse-issues",
+      "bp": "mobile",
+      "mismatchCount": 81,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/past-issues",
+      "bp": "desktop",
+      "mismatchCount": 89,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/past-issues",
+      "bp": "tablet",
+      "mismatchCount": 80,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "landing_page",
+      "path": "/past-issues",
+      "bp": "mobile",
+      "mismatchCount": 78,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/category/cancer-research",
+      "bp": "desktop",
+      "mismatchCount": 120,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/category/cancer-research",
+      "bp": "tablet",
+      "mismatchCount": 118,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/category/cancer-research",
+      "bp": "mobile",
+      "mismatchCount": 116,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/category/digital-exclusives",
+      "bp": "desktop",
+      "mismatchCount": 133,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/category/digital-exclusives",
+      "bp": "tablet",
+      "mismatchCount": 123,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/category/digital-exclusives",
+      "bp": "mobile",
+      "mismatchCount": 121,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/category/access-and-equity",
+      "bp": "desktop",
+      "mismatchCount": 129,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/category/access-and-equity",
+      "bp": "tablet",
+      "mismatchCount": 123,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/category/access-and-equity",
+      "bp": "mobile",
+      "mismatchCount": 121,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/digital-exclusives",
+      "bp": "desktop",
+      "mismatchCount": 140,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/digital-exclusives",
+      "bp": "tablet",
+      "mismatchCount": 132,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/digital-exclusives",
+      "bp": "mobile",
+      "mismatchCount": 130,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/issues",
+      "bp": "desktop",
+      "mismatchCount": 125,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/issues",
+      "bp": "tablet",
+      "mismatchCount": 114,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    },
+    {
+      "template": "archive",
+      "path": "/issues",
+      "bp": "mobile",
+      "mismatchCount": 112,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "wpComparable": true
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "generatedAt": "2026-10-29T08:34:36.152Z",
+  "path": "/browse-issues",
+  "breakpoint": "tablet",
+  "width": 768,
+  "viewportHeightPx": 900,
+  "overallDiffPercent": 27.03,
+  "progressDir": "/workspace/parity/reports/progress/issue/browse-issues_tablet",
+  "qaEvidenceDir": "reports/progress/mac-visual/qa-evidence/landing-tablet-browse-regions",
+  "cascade": {
+    "mode": "per_element",
+    "bestShiftPx": 0,
+    "diffImprovementIfAligned": 0,
+    "hotBandCount": 40,
+    "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+  },
+  "regions": [
+    {
+      "id": "top",
+      "label": "Top band (0–25%)",
+      "y": "0-225",
+      "diffPercent": 37.5,
+      "shareOfViewport": 25,
+      "contributionToOverallPercent": 9.4
+    },
+    {
+      "id": "upper_mid",
+      "label": "Upper-mid (25–50%)",
+      "y": "225-450",
+      "diffPercent": 100,
+      "shareOfViewport": 25,
+      "contributionToOverallPercent": 25
+    },
+    {
+      "id": "lower_mid",
+      "label": "Lower-mid (50–75%)",
+      "y": "450-675",
+      "diffPercent": 100,
+      "shareOfViewport": 25,
+      "contributionToOverallPercent": 25
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom (75–100%)",
+      "y": "675-900",
+      "diffPercent": 99.7,
+      "shareOfViewport": 25,
+      "contributionToOverallPercent": 24.9
+    }
+  ],
+  "topScanBands": [
+    {
+      "y": "0-22",
+      "diffPercent": 100
+    },
+    {
+      "y": "22-44",
+      "diffPercent": 100
+    },
+    {
+      "y": "44-66",
+      "diffPercent": 100
+    },
+    {
+      "y": "66-88",
+      "diffPercent": 100
+    },
+    {
+      "y": "88-110",
+      "diffPercent": 100
+    },
+    {
+      "y": "110-132",
+      "diffPercent": 100
+    },
+    {
+      "y": "132-154",
+      "diffPercent": 100
+    },
+    {
+      "y": "154-176",
+      "diffPercent": 100
+    }
+  ]
+}

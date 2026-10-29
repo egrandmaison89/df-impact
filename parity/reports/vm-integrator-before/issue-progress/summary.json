@@ -1,0 +1,73 @@
+{
+  "component": "issue",
+  "drupalBase": "http://127.0.0.1:8888",
+  "refRenderer": "mac-pack-viewport-png",
+  "pages": 2,
+  "rectTolerancePx": 2,
+  "structuralPackPassAll": true,
+  "structuralRefDrupalPassAll": true,
+  "medians": {
+    "chrome_median_desktop": 0.1501423464731109,
+    "viewport_median_mac_desktop": 0.6348699845679013,
+    "chrome_median_tablet": 0.18731462593837578,
+    "viewport_median_mac_tablet": 0.5868525752314815,
+    "chrome_median_mobile": 0.24055089966505422,
+    "viewport_median_mac_mobile": 0.5552933333333334
+  },
+  "summary": [
+    {
+      "path": "/fall-2026-issue",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.5936890432098766,
+      "headerPixelDiffRatio": 0.17695749440715883,
+      "footerPixelDiffRatio": 0.12332719853906295,
+      "chromePixelDiffRatio": 0.1501423464731109,
+      "viewportPixelDiffRatioMac": 0.5936890432098766
+    },
+    {
+      "path": "/fall-2026-issue",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.5190379050925926,
+      "headerPixelDiffRatio": 0.23079597513089006,
+      "footerPixelDiffRatio": 0.14383327674586152,
+      "chromePixelDiffRatio": 0.18731462593837578,
+      "viewportPixelDiffRatioMac": 0.5190379050925926
+    },
+    {
+      "path": "/fall-2026-issue",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.4824977777777778,
+      "headerPixelDiffRatio": 0.20921465968586386,
+      "footerPixelDiffRatio": 0.27188713964424455,
+      "chromePixelDiffRatio": 0.24055089966505422,
+      "viewportPixelDiffRatioMac": 0.4824977777777778
+    },
+    {
+      "path": "/spring-2026-issue",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.676050925925926,
+      "headerPixelDiffRatio": 0.17695749440715883,
+      "footerPixelDiffRatio": 0.12332719853906295,
+      "chromePixelDiffRatio": 0.1501423464731109,
+      "viewportPixelDiffRatioMac": 0.676050925925926
+    },
+    {
+      "path": "/spring-2026-issue",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.6546672453703704,
+      "headerPixelDiffRatio": 0.23079597513089006,
+      "footerPixelDiffRatio": 0.14383327674586152,
+      "chromePixelDiffRatio": 0.18731462593837578,
+      "viewportPixelDiffRatioMac": 0.6546672453703704
+    },
+    {
+      "path": "/spring-2026-issue",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.6280888888888889,
+      "headerPixelDiffRatio": 0.20921465968586386,
+      "footerPixelDiffRatio": 0.27188713964424455,
+      "chromePixelDiffRatio": 0.24055089966505422,
+      "viewportPixelDiffRatioMac": 0.6280888888888889
+    }
+  ]
+}

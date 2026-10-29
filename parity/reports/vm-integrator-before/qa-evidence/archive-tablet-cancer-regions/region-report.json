@@ -1,0 +1,93 @@
+{
+  "generatedAt": "2026-10-29T08:34:33.808Z",
+  "path": "/category/cancer-research",
+  "breakpoint": "tablet",
+  "width": 768,
+  "viewportHeightPx": 900,
+  "overallDiffPercent": 55.96,
+  "progressDir": "/workspace/parity/reports/progress/archive/category_cancer-research_tablet",
+  "qaEvidenceDir": "reports/progress/mac-visual/qa-evidence/archive-tablet-cancer-regions",
+  "cascade": {
+    "mode": "per_element",
+    "bestShiftPx": 0,
+    "diffImprovementIfAligned": 0,
+    "hotBandCount": 40,
+    "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+  },
+  "regions": [
+    {
+      "id": "archive_header",
+      "label": "Archive header / title",
+      "y": "230-265",
+      "diffPercent": 100,
+      "shareOfViewport": 3.9,
+      "contributionToOverallPercent": 3.9
+    },
+    {
+      "id": "archive_filters",
+      "label": "Filters / intro",
+      "y": "264-900",
+      "diffPercent": 99.9,
+      "shareOfViewport": 70.7,
+      "contributionToOverallPercent": 70.6
+    },
+    {
+      "id": "card_rows",
+      "label": "Card / post rows",
+      "y": "264-900",
+      "diffPercent": 99.9,
+      "shareOfViewport": 70.7,
+      "contributionToOverallPercent": 70.6
+    },
+    {
+      "id": "pagination",
+      "label": "Pagination",
+      "y": "900-900",
+      "diffPercent": 0,
+      "shareOfViewport": 0,
+      "contributionToOverallPercent": 0
+    },
+    {
+      "id": "footer",
+      "label": "Footer",
+      "y": "900-900",
+      "diffPercent": 0,
+      "shareOfViewport": 0,
+      "contributionToOverallPercent": 0
+    }
+  ],
+  "topScanBands": [
+    {
+      "y": "0-22",
+      "diffPercent": 100
+    },
+    {
+      "y": "22-44",
+      "diffPercent": 100
+    },
+    {
+      "y": "44-66",
+      "diffPercent": 100
+    },
+    {
+      "y": "66-88",
+      "diffPercent": 100
+    },
+    {
+      "y": "88-110",
+      "diffPercent": 100
+    },
+    {
+      "y": "110-132",
+      "diffPercent": 100
+    },
+    {
+      "y": "132-154",
+      "diffPercent": 100
+    },
+    {
+      "y": "154-176",
+      "diffPercent": 100
+    }
+  ]
+}

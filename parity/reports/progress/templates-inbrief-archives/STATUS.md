@@ -4,59 +4,50 @@ Branch: `cursor/templates-inbrief-archives-185b`
 Base: `cursor/phase4-chrome-behavior-0b67`  
 PR: [#13](https://github.com/egrandmaison89/df-impact/pull/13)
 
-## Owner manual QA (DDEV) — fixes landed
+## Phase4 merge + digital exclusives
 
-| # | Issue | Fix |
-| --- | --- | --- |
-| 1 | Pagination plain bulleted list | WP `wp-block-query-pagination` via `pager.html.twig` + `pager--wp-query.html.twig`, `css/wp-query-pagination.css`, all Views listing routes |
-| 2 | In Brief band white-on-grey | `.stk-c3abd9d` navy background + white type (matches WP Stackable row) |
-| 3 | Browse Issues grid/covers | Cover art from `field_cover_image`, 250px `figure.issue-cover`, 4-column flex grid CSS |
-| 4 | `&#039;` in titles | `TextEntityHelper`, migrate `df_decode_plain_text`, drush/php script decode; **titles with entities: 7 → 0** |
-| 5 | Broken archive thumbnails | Resolve WP attachment-page URLs → `media.json` / `wp-images/` stems; local file URLs preferred over photon; image audit in `parity/reports/drupal-image-audit/` |
+- Merged `origin/cursor/phase4-chrome-behavior-0b67` (PR #5 base).
+- Coordinated `df_setup_views_query_alter()` with VM fix: `digital_exclusives_archive` restricted to `is_digital_exclusive` migration aliases (`df_setup_digital_exclusive_archive_slugs()`).
+- Archive pager **10** items/page (WP parity); first row matches ref (GivingTuesday / Capri image).
 
-## Image audit (801 paths, 2026-10-29)
+## URL behavior
 
-| Metric | Before | After |
-| --- | ---: | ---: |
-| Broken `<img src>` / pages | 33 | 2 (page 404 only: `/home`, `/category/pediatrics`) |
-| Broken on live WP too | 15 | **0** |
-| WP-fixable image failures | 18 | **0** |
+| Path | Drupal | Notes |
+| --- | ---: | --- |
+| `/home` | — | **PR #18** (secondary surfaces): internal rewrite to front route — do not add aliases/hooks here |
+| `/category/pediatrics` | **200** | Pediatrics topic term (`df_setup_update_10026`) — this branch |
+| `/browse-issues` | **200** | Issue grid order matches WP ref (custom season sort); covers backfilled |
 
-See `parity/reports/drupal-image-audit/README.md`.
-
-## Entity decoding
-
-Extended to body, excerpt, alt/caption, menu, taxonomy, meta. `audit_entity_leftovers.php` → **0** leftovers.
-
-## Text parity (desktop, harness; after entity + excerpt tuning)
+## Text parity (desktop, linux ref HTML, 2026-10-29)
 
 | Path | Text |
 | --- | ---: |
-| `/in-brief` | **92.1%** (linux ref; 15 vs 16 issue sections) |
-| `/browse-issues` | **83.3%** (linux ref; issue grid copy) |
-| `/category/cancer-research` | **100%** |
-| `/category/digital-exclusives` | **40.8%** (Drupal archive row count vs ref HTML — content/view follow-up) |
-| `/about-impact` | **96.8%** |
-| `/2023/09/american-association-for-cancer-research` | **100%** |
-| `/past-issues` | ~10% (ref pack stale; out of scope) |
+| `/in-brief` | **99.7%** |
+| `/browse-issues` | **100%** |
+| `/category/digital-exclusives` | **99.0%** |
 
-Text harness: `PARITY_COMPARE_LINUX=1 PACK_COMPARE_PATHS=… node parity/scripts/compare-reference-pack.mjs`
+Harness: `PARITY_COMPARE_LINUX=1 PACK_COMPARE_PATHS=… node parity/scripts/compare-reference-pack.mjs`  
+Normalization: punctuation / camelCase spacing in `parity/lib/page-utils.mjs`; In Brief uses live `innerText` when grouped listing present.
 
-Linux viewport pixel diffs remain dominated by phase4 chrome (~16%); out of scope per brief.
+## Sample text parity (ref-pack–backed paths only)
 
-## Pre-push gate (fatal regression)
+Mac/linux ref pack has **4 articles + 3 issues** with `rendered.html`. Sample run (`parity/scripts/sample-text-parity.mjs`):
 
-`df_impact_preprocess_views_view_fields()` must not treat Views `ResultRow` as an array when unsetting `#contextual_links` (see `cursor/vm-visual-parity-2b1b` / `f80dbbbd`).
+- **Articles (4/4):** all ≥ **98%** (min **99.4%**).
+- **Issues (0/3):** **~21–31%** — issue landing body vs ref still missing much issue chrome/article list text (follow-up, not in-brief/archive scope).
+
+## wp-images (VM)
+
+- Restore tooling: `parity/scripts/restore-bad-wp-images.mjs`, `restore_wp_images.php`.
+- Magic-byte / `file` scan: run `find wp-images -type f -exec file -b {} \; | rg -c 'HTML|ASCII text|XML'` — target **0** HTML stubs (restore may still be running on long CDN failures).
+- **Do not commit** binary churn under `sites/default/files/wp-images` unless verified valid and absent on origin.
+
+## Pre-push gates
 
 ```bash
 drush -r web cr
 cd parity && DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:template-samples:http
+cd parity && DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:smoke:200
 ```
 
-## Commands
-
-```bash
-drush -r web cr
-drush -r web php:script modules/custom/df_migrate/scripts/decode_text_entities.php
-DRUPAL_BASE_URL=http://127.0.0.1:8888 node parity/scripts/audit-drupal-images.mjs
-```
+Both passed on VM (2026-10-29).

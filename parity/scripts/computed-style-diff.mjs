@@ -22,6 +22,10 @@ const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').repl
 const RECT_TOLERANCE = Number(process.env.PARITY_RECT_TOLERANCE_PX || 2);
 const PARITY_GOTO_TIMEOUT_MS = Number(process.env.PARITY_GOTO_TIMEOUT_MS || 120000);
 const PARITY_SETTLE_AFTER_LOAD_MS = Number(process.env.PARITY_SETTLE_AFTER_LOAD_MS || 800);
+const PARITY_WP_MAX_ATTEMPTS = Number(process.env.PARITY_WP_MAX_ATTEMPTS || 4);
+const PARITY_WP_RETRY_BASE_MS = Number(process.env.PARITY_WP_RETRY_BASE_MS || 2000);
+const WP_SHELL_FOOTER_MAX_H = Number(process.env.PARITY_WP_SHELL_FOOTER_MAX_H || 80);
+const CHROME_PROBE_SELECTORS = ['header', '.desktop-header', '.wp-block-main-header'];
 const outDir = path.join(
   parityRoot,
   'reports',
@@ -102,14 +106,68 @@ function jobsFromEnv() {
   return jobs;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function probeWpPageShell(page) {
+  const html = await page.content();
+  const captchaHint = /sgcaptcha|siteground|captcha/i.test(html) && html.length < 35000;
+  let hasChrome = false;
+  for (const sel of CHROME_PROBE_SELECTORS) {
+    if (await page.locator(sel).count()) {
+      hasChrome = true;
+      break;
+    }
+  }
+  let footerH = 0;
+  const footer = page.locator('footer').first();
+  if (await footer.count()) {
+    footerH = await footer.evaluate((el) => el.getBoundingClientRect().height);
+  }
+  const stubFooter = footerH > 0 && footerH < WP_SHELL_FOOTER_MAX_H;
+  return { captchaHint, hasChrome, stubFooter, htmlLength: html.length };
+}
+
+/**
+ * @returns {Promise<{status:number,captcha:boolean,shellReason:string|null,attempts:number,comparable:boolean}>}
+ */
+async function gotoWordPressParityPage(page, url) {
+  let last = { status: 0, captcha: true, shellReason: 'navigation_failed', attempts: 0, comparable: false };
+  for (let attempt = 1; attempt <= PARITY_WP_MAX_ATTEMPTS; attempt++) {
+    const resp = await page.goto(url, { waitUntil: 'load', timeout: PARITY_GOTO_TIMEOUT_MS }).catch(() => null);
+    await page.waitForTimeout(PARITY_SETTLE_AFTER_LOAD_MS);
+    await dismissOverlays(page);
+    await stabilizeParityViewport(page);
+    const status = resp?.status() ?? 0;
+    const shell = await probeWpPageShell(page);
+    let shellReason = null;
+    if (status === 202) shellReason = 'http_202';
+    else if (shell.captchaHint) shellReason = 'captcha_html';
+    else if (!shell.hasChrome) shellReason = 'missing_header_nav';
+    else if (shell.stubFooter) shellReason = 'stub_footer';
+    const comparable = status === 200 && !shellReason;
+    last = {
+      status,
+      captcha: Boolean(shellReason),
+      shellReason,
+      attempts: attempt,
+      comparable,
+    };
+    if (comparable) return last;
+    if (attempt < PARITY_WP_MAX_ATTEMPTS) {
+      await sleep(PARITY_WP_RETRY_BASE_MS * 2 ** (attempt - 1));
+    }
+  }
+  return last;
+}
+
 async function gotoParityPage(page, url) {
   const resp = await page.goto(url, { waitUntil: 'load', timeout: PARITY_GOTO_TIMEOUT_MS }).catch(() => null);
   await page.waitForTimeout(PARITY_SETTLE_AFTER_LOAD_MS);
   await dismissOverlays(page);
   await stabilizeParityViewport(page);
-  const html = await page.content();
-  const captcha = /sgcaptcha|captcha/i.test(html) && html.length < 25000;
-  return { status: resp?.status() ?? 0, captcha };
+  return { status: resp?.status() ?? 0, captcha: false };
 }
 
 async function measure(page, selector) {
@@ -257,7 +315,7 @@ async function comparePath(browser, job) {
   const wpUrl = `${wpBase}${job.path === '/' ? '' : job.path}`;
   const drUrl = `${drupalBase}${job.path === '/' ? '' : job.path}`;
 
-  const wpNav = await gotoParityPage(wpPage, wpUrl);
+  const wpNav = await gotoWordPressParityPage(wpPage, wpUrl);
   const drNav = await gotoParityPage(drPage, drUrl);
 
   const perSelector = {};
@@ -285,6 +343,9 @@ async function comparePath(browser, job) {
     wpStatus: wpNav.status,
     drStatus: drNav.status,
     wpCaptcha: wpNav.captcha,
+    wpShellReason: wpNav.shellReason,
+    wpAttempts: wpNav.attempts,
+    wpComparable: wpNav.comparable,
     mismatchCount: mismatches.length,
     mismatches,
     topBoxDeltas: mismatches
@@ -321,12 +382,38 @@ for (const job of jobs) {
 
 await browser.close();
 
+function median(nums) {
+  const sorted = [...nums].sort((a, b) => a - b);
+  if (!sorted.length) return null;
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
 const byTemplate = {};
 for (const r of results) {
   if (!r.template) continue;
-  if (!byTemplate[r.template]) byTemplate[r.template] = { runs: 0, mismatches: 0 };
-  byTemplate[r.template].runs += 1;
-  byTemplate[r.template].mismatches += r.mismatchCount ?? 0;
+  if (!byTemplate[r.template]) {
+    byTemplate[r.template] = {
+      runs: 0,
+      mismatchesAll: 0,
+      comparableRuns: 0,
+      mismatchesComparable: 0,
+      comparableMismatchCounts: [],
+    };
+  }
+  const bucket = byTemplate[r.template];
+  bucket.runs += 1;
+  bucket.mismatchesAll += r.mismatchCount ?? 0;
+  if (r.wpComparable) {
+    bucket.comparableRuns += 1;
+    bucket.mismatchesComparable += r.mismatchCount ?? 0;
+    bucket.comparableMismatchCounts.push(r.mismatchCount ?? 0);
+  }
+}
+for (const bucket of Object.values(byTemplate)) {
+  bucket.medianMismatchComparable =
+    median(bucket.comparableMismatchCounts) ?? null;
+  delete bucket.comparableMismatchCounts;
 }
 
 const summary = {
@@ -342,6 +429,9 @@ const summary = {
     mismatchCount: r.mismatchCount,
     wpStatus: r.wpStatus,
     drStatus: r.drStatus,
+    wpComparable: r.wpComparable,
+    wpShellReason: r.wpShellReason,
+    wpAttempts: r.wpAttempts,
     topBoxDeltas: r.topBoxDeltas,
     error: r.error,
   })),

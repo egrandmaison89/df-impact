@@ -4,7 +4,19 @@
 **Drupal:** `http://127.0.0.1:8888` (MariaDB `dfimpact`, host Drush).  
 **Method:** `npm run parity:computed-style-diff` (live WP vs Drupal, desktop/tablet/mobile).
 
-**Updated:** 2026-10-29 (integrator merge PR **#10** + **#11**)
+**Updated:** 2026-10-29 (PR diff remediation + captcha-aware harness)
+
+---
+
+## PR #12 diff autopsy vs `cursor/phase4-chrome-behavior-0b67`
+
+GitHub showed ~**256k deletions** because an earlier merge of PR **#10** dropped the tracked **`drupal/web/sites/default/files/wp-images/**`** tree (images were moved aside locally during conflict resolution; the meta branch carried a smaller subset).
+
+**Verified intact (0 deletions vs phase4):** `parity/reference-pack/`, Mac reference PNGs, `drupal/web/modules/custom/df_migrate/data/`, `config/sync`, migration JSON under `drupal/migration-data/`, vendored `wp-assets` (minus accidental VM `blob_*` commits, since removed).
+
+**Remediation (commits on this branch):** restored full phase4 `wp-images`; removed VM `computed-style-diff` / url-parity JSON from the index; gitignored `parity/reports/computed-style-diff/`; restored `playwright-results.json` + head-meta manifest snapshot from phase4.
+
+**After fix:** `git diff --shortstat origin/cursor/phase4-chrome-behavior-0b67...HEAD` ≈ **614 files, +35,620 / −316**; **0 path deletions** vs phase4.
 
 ---
 
@@ -55,7 +67,7 @@ Report: `parity/reports/computed-style-diff/post-merge-pr11/summary.json`
 
 ### Computed-style harness — **done**
 
-`parity/scripts/computed-style-diff.mjs`, `parity/config/parity-selectors.json`, npm script `parity:computed-style-diff`.
+`parity/scripts/computed-style-diff.mjs`, `parity/config/parity-selectors.json`, npm script `parity:computed-style-diff`. WP loads retry with backoff on **202** / captcha HTML / missing header / stub footer; **`wpComparable`** runs feed **`byTemplate.medianMismatchComparable`** (non-comparable samples excluded from medians).
 
 ### Chrome header — **unchanged (good)**
 
@@ -63,11 +75,18 @@ Desktop `.desktop-header` **1440×148**, `.header-logo` **x=15** matches live WP
 
 ---
 
+## Article template (owner QA — 2026-10-29)
+
+| Item | Status |
+|------|--------|
+| Remove Drupal breadcrumb / tabs / contextual pencils on public pages | **done** — breadcrumb block off; `preprocess_breadcrumb` empty; hide `.contextual` + tabs in `drupal-overrides.css`; drop `title_prefix` on article/in-brief |
+| **More stories** Jetpack grid + 350×200 images | **done** — `node--article--full.html.twig` + `df_impact_article_more_story_*()`; skips bogus `featured_image_url` paths |
+| Category links (`wp-block-post-terms`) | **done** — comma separators + `/category/{slug}`; removed pill `.article__tag` styling |
+
 ## Next (visual list)
 
 1. Issue PostX grid: card image rendered size + vertical rhythm (`ultp-block-item`).
-2. Article / in-brief: WP Rank Math breadcrumb band (~149px) before `main`.
-3. Landing `/about`: Gutenberg column blocks vs raw body.
+2. Landing `/about`: Gutenberg column blocks vs raw body.
 4. Archive: row height + featured image box (re-measure after thumbnail URL fix).
 5. `/digital-exclusives` same-path route (or drop from samples; canonical is `/category/digital-exclusives`).
 6. Tablet/mobile chrome + gtranslate.

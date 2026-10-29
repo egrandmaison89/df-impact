@@ -50,6 +50,8 @@ const paths =
         .map((p) => normalizeBehaviorPath(p.trim()))
         .filter(Boolean);
 
+const breakpointFilter = (process.env.PARITY_BEHAVIOR_BREAKPOINT || '').trim();
+
 type AssertionStat = { name: string; pass: boolean };
 type WpSnap = Record<string, unknown> | null;
 
@@ -116,8 +118,13 @@ async function loadWpSnapshot(
   report: Record<string, unknown>,
 ): Promise<WpSnap> {
   const target = wpUrl(pathNorm);
+<<<<<<< HEAD
   const maxAttempts = behaviorLite ? 2 : bp.label === 'desktop' ? 5 : 8;
   const gotoTimeout = behaviorLite ? 75_000 : bp.label === 'desktop' ? 120_000 : 180_000;
+=======
+  const maxAttempts = bp.label === 'desktop' ? 5 : 4;
+  const gotoTimeout = bp.label === 'desktop' ? 120_000 : 150_000;
+>>>>>>> aaf8c003 (Behavior templates: 3 breakpoint passes, longer mobile WP timeouts)
   let lastErr: unknown;
   let snap: WpSnap = null;
 
@@ -163,12 +170,19 @@ test.describe.configure({ mode: 'serial', retries: 0 });
 
 for (const pathNorm of paths) {
   for (const bp of BEHAVIOR_BREAKPOINTS) {
+    if (breakpointFilter && bp.label !== breakpointFilter) {
+      continue;
+    }
     test(`behavior ${pathNorm} @ ${bp.label}`, async ({ browser, browserName }) => {
       test.skip(browserName !== 'chromium', 'Chromium only');
       if (crossSite) {
+<<<<<<< HEAD
         test.setTimeout(
           behaviorLite ? 120_000 : bp.label === 'desktop' ? 300_000 : 420_000,
         );
+=======
+        test.setTimeout(bp.label === 'desktop' ? 360_000 : 1_200_000);
+>>>>>>> aaf8c003 (Behavior templates: 3 breakpoint passes, longer mobile WP timeouts)
       }
       globalStats.tests += 1;
 

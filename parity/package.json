@@ -25,7 +25,7 @@
     "parity:behavior:report-diff": "node scripts/summarize-behavior-wp-diff.mjs",
     "parity:head:refpack": "node scripts/compare-head-meta.mjs",
     "parity:head:manifest": "node scripts/compare-head-meta-manifest.mjs",
-    "parity:behavior:templates": "PARITY_BEHAVIOR_PATHS=auto PARITY_BEHAVIOR_HIT_WP=1 PARITY_BEHAVIOR_CROSS_SITE=1 node scripts/run-behavior-parity.mjs",
+    "parity:behavior:templates": "PARITY_BEHAVIOR_PATHS=auto PARITY_BEHAVIOR_HIT_WP=1 PARITY_BEHAVIOR_CROSS_SITE=1 node scripts/run-behavior-templates-full.mjs",
     "parity:behavior:templates:drupal-only": "PARITY_BEHAVIOR_PATHS=auto PARITY_BEHAVIOR_HIT_WP=0 PARITY_BEHAVIOR_CROSS_SITE=0 node scripts/run-behavior-parity.mjs",
     "parity:url:check": "node scripts/check-url-parity.mjs",
     "parity:launch:lighthouse": "node scripts/run-launch-lighthouse.mjs",

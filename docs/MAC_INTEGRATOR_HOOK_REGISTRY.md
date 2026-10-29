@@ -36,15 +36,16 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 3. **#29** whole — **merged** (`83f35352` ← `efe645952`); sweep-801 follow-up
 4. **DB convergence** — **merged** on phase4 (`e0a4f1f4`); `_df_setup_run_post_migrate_integrator_convergence()` + About canonical body
 5. **#32** whole — **merged** (`ef3e2714` ← `cursor/admin-chrome-e2e-ce7f`); site-admin header/footer/hero + `admin-e2e` Playwright
-6. **#28** whole — article variants — when agent ready
-7. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
-8. **#30** — Eric QA (links / images / translate icon) — when agent ready
-9. **#31** — Eric QA (share / pagination / In Brief / tablet spacing) — when agent ready
-10. **#33** — not ready (agent will report)
+6. **#34** whole — **merged** (`91b165bf`); admin-e2e teardown + `system.site:page.front: /homepage` + `FixHomeFrontPageConfigSubscriber` (cim-safe `/` 200)
+7. **#28** whole — article variants — when agent ready
+8. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
+9. **#30** — Eric QA (links / images / translate icon) — when agent ready
+10. **#31** — Eric QA (share / pagination / In Brief / tablet spacing) — when agent ready
+11. **#33** — not ready (agent will report)
 
 **Next:** **#28 → #10 → #30 → #31 → #33** (whole merge once each when ready).
 
-**Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`).
+**Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`).
 
 **Generated parity gate output** (`parity/reports/content-sweep/`, smoke, url-parity, etc.) is **gitignored** — do not commit sweep JSON/CSV from PR branches.
 
@@ -79,7 +80,7 @@ cd drupal
 ./vendor/bin/drush updatedb:status    # must show no pending updates
 ./vendor/bin/drush php:script web/modules/custom/df_setup/scripts/verify_df_setup_schema.php
 ./vendor/bin/drush php:script web/modules/custom/df_setup/scripts/verify_df_setup_post_updates.php
-# If anonymous GET / is 404 after cim: drush php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); _df_setup_ensure_home_landing();" && drush cr
+# After #34: `cim` should leave `page.front` as `/node/NID` via FixHomeFrontPageConfigSubscriber (sync ships `/homepage`).
 
 cd ../parity
 npm run parity:smoke:200                              # 0 fails

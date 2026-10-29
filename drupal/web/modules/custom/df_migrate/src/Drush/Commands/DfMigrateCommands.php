@@ -215,7 +215,7 @@ final class DfMigrateCommands extends DrushCommands {
   public function syncWordpressPaths(): void {
     $inc = dirname(__DIR__, 3) . '/scripts/df_sync_wordpress_paths.inc';
     if (!is_readable($inc)) {
-      $this->logger()->error(dt('Missing @f', ['@f' => $inc));
+      $this->logger()->error(dt('Missing @f', ['@f' => $inc]));
       return;
     }
     require_once $inc;
@@ -232,7 +232,7 @@ final class DfMigrateCommands extends DrushCommands {
   public function decodeTextEntities(array $options = ['dry-run' => FALSE]): void {
     $inc = dirname(__DIR__, 3) . '/scripts/decode_text_entities.inc';
     if (!is_readable($inc)) {
-      $this->logger()->error(dt('Missing @f', ['@f' => $inc));
+      $this->logger()->error(dt('Missing @f', ['@f' => $inc]));
       return;
     }
     require_once $inc;

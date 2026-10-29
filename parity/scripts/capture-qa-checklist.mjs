@@ -24,15 +24,15 @@ const VIEWPORTS = [
 const CASES = [
   { id: '01-header-scroll', dr: '/homepage', wp: '/', scrollY: 120, clip: '.desktop-header, .impact-header' },
   { id: '02-translate-widget', dr: '/homepage', wp: '/', clip: '.gtranslate_wrapper, #gt-wrapper-23849622, .header' },
-  { id: '03-vimeo-embed', dr: '/2024/06/the-charlie-landers-foundation', wp: '/2024/06/the-charlie-landers-foundation', clip: 'main' },
+  { id: '03-vimeo-embed', dr: '/2023/11/dismantling-gender-disparity-through-mentorship', wp: '/2023/11/dismantling-gender-disparity-through-mentorship', clip: 'main' },
   { id: '04-pagination', dr: '/category/cancer-research/page/2', wp: '/category/cancer-research/page/2', clip: 'main' },
   { id: '05-in-brief-band', dr: '/fall-2026-issue', wp: '/fall-2026-issue', clip: '.wp-block-stackable-columns, .in-brief-button' },
   { id: '06-browse-issues-images', dr: '/browse-issues', wp: '/browse-issues', clip: 'main' },
   { id: '07-html-entities', dr: '/fall-2026-issue', wp: '/fall-2026-issue', clip: '.ultp-block-excerpt, .issue-page' },
   { id: '08-broken-images', dr: '/homepage', wp: '/', clip: 'main .ultp-block-image' },
-  { id: '09-breadcrumb-edit', dr: '/2024/06/the-charlie-landers-foundation', wp: '/2024/06/the-charlie-landers-foundation', clip: 'main' },
-  { id: '10-more-stories', dr: '/2024/06/the-charlie-landers-foundation', wp: '/2024/06/the-charlie-landers-foundation', clip: '.related-posts, .jp-relatedposts, main' },
-  { id: '11-category-spacing', dr: '/2024/06/the-charlie-landers-foundation', wp: '/2024/06/the-charlie-landers-foundation', clip: 'main .wp-block-post-terms, .entry-footer, .taxonomy' },
+  { id: '09-breadcrumb-edit', dr: '/browse-issues', wp: '/browse-issues', clip: 'main' },
+  { id: '10-more-stories', dr: '/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials', wp: '/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials', clip: '.jp-related-posts, .jp-relatedposts, .ultp-post-grid, main' },
+  { id: '11-category-spacing', dr: '/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials', wp: '/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials', clip: 'main .wp-block-post-terms, .entry-footer, .taxonomy' },
 ];
 
 async function shot(page, file, clipSel) {

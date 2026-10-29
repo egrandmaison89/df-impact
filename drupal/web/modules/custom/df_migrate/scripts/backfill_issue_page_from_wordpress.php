@@ -16,6 +16,7 @@
  *   drush scr modules/custom/df_migrate/scripts/backfill_issue_page_from_wordpress.php -- --only-nid=123
  */
 
+use Drupal\df_migrate\IssuePageWpFixture;
 use Drupal\df_migrate\Plugin\migrate\process\DownloadImage;
 use Drupal\file\FileInterface;
 use Drupal\media\Entity\Media;
@@ -64,6 +65,7 @@ foreach ($nids as $nid) {
 
   if ($skip_existing
     && !$issue->get('field_banner_image')->isEmpty()
+    && !$issue->get('field_cover_image')->isEmpty()
     && !$issue->get('field_leadership_message')->isEmpty()
     && !$issue->get('field_issue_promo_2')->isEmpty()) {
     echo "Skip (complete): {$issue->label()} (nid $nid)\n";
@@ -71,16 +73,67 @@ foreach ($nids as $nid) {
   }
 
   $need_banner = !$skip_existing || $issue->get('field_banner_image')->isEmpty();
+  $need_cover = !$skip_existing || $issue->get('field_cover_image')->isEmpty();
   $need_promos = !$skip_existing
     || $issue->get('field_leadership_message')->isEmpty()
     || $issue->get('field_issue_promo_2')->isEmpty();
 
-  if (!$need_banner && !$need_promos) {
+  if (!$need_banner && !$need_cover && !$need_promos) {
     continue;
   }
 
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $nid);
+  $fixture = IssuePageWpFixture::rowForPathAlias($alias);
+  if (is_array($fixture) && empty($fixture['wp_archive_error'])) {
+    $dirty_fixture = df_issue_page_apply_fixture_row($issue, $fixture, $need_banner, $need_cover, $need_promos, $dry_run);
+    if ($dirty_fixture && !$dry_run) {
+      try {
+        $issue->save();
+        $updated++;
+        echo "Fixture applied: {$issue->label()} (nid $nid)\n";
+      }
+      catch (\Throwable $e) {
+        fwrite(STDERR, "  Fixture save failed: " . $e->getMessage() . "\n");
+        $errors++;
+      }
+    }
+    elseif ($dirty_fixture && $dry_run) {
+      echo "[dry-run] Fixture would update {$issue->label()} (nid $nid)\n";
+    }
+    if (!$need_banner || !$issue->get('field_banner_image')->isEmpty()) {
+      $need_banner = FALSE;
+    }
+    if (!$need_cover || !$issue->get('field_cover_image')->isEmpty()) {
+      $need_cover = FALSE;
+    }
+    if (!$need_promos
+      || (!$issue->get('field_leadership_message')->isEmpty() && !$issue->get('field_issue_promo_2')->isEmpty())) {
+      $need_promos = FALSE;
+    }
+    if (!$need_banner && !$need_cover && !$need_promos) {
+      continue;
+    }
+  }
+
   echo "Fetch: $wp_url\n";
-  $html = df_issue_page_http_get($wp_url);
+  $from_cache = FALSE;
+  $html = df_issue_page_playwright_cache_html($issue);
+  if ($html !== '') {
+    echo "  Using Playwright WP cache.\n";
+    $from_cache = TRUE;
+  }
+  if ($html === '') {
+    $html = df_issue_page_reference_pack_html($issue);
+    if ($html !== '') {
+      echo "  Using reference-pack HTML fallback.\n";
+    }
+  }
+  if ($html === '') {
+    $html = df_issue_page_http_get($wp_url);
+    if ($html !== '' && df_issue_page_html_is_bot_block($html)) {
+      $html = '';
+    }
+  }
   if ($html === '') {
     fwrite(STDERR, "  Failed to fetch.\n");
     $errors++;
@@ -148,7 +201,9 @@ foreach ($nids as $nid) {
         fwrite(STDERR, "  Promo target not article/page: $href → {$promo_node->bundle()}\n");
         continue;
       }
-      $promo_nids[] = $mapped;
+      if (!in_array($mapped, $promo_nids, TRUE)) {
+        $promo_nids[] = $mapped;
+      }
       if (count($promo_nids) >= 2) {
         break;
       }
@@ -182,7 +237,9 @@ foreach ($nids as $nid) {
     }
   }
 
-  sleep(1);
+  if (!$from_cache) {
+    sleep(1);
+  }
 }
 
 echo "\nDone. Issues updated: $updated; errors: $errors\n";
@@ -215,6 +272,68 @@ function df_issue_page_wordpress_url(NodeInterface $issue): string {
   return WP_HOST . '/' . $slug . '-issue/';
 }
 
+function df_issue_page_html_is_bot_block(string $html): bool {
+  return strlen($html) < 5000
+    || preg_match('/sgcaptcha|well-known\/sgcaptcha/i', $html);
+}
+
+/**
+ * HTML captured by parity/scripts/fetch-wp-issue-pages.mjs (Playwright).
+ */
+function df_issue_page_playwright_cache_html(NodeInterface $issue): string {
+  $wp_url = df_issue_page_wordpress_url($issue);
+  if ($wp_url === '') {
+    return '';
+  }
+  $path = (string) (parse_url($wp_url, PHP_URL_PATH) ?? '');
+  $pack_slug = trim($path, '/');
+  if ($pack_slug === '') {
+    return '';
+  }
+  $file_slug = str_replace('/', '_', $pack_slug);
+  $roots = [
+    dirname(DRUPAL_ROOT, 2) . '/parity/cache/wp-issue-pages',
+    DRUPAL_ROOT . '/../../parity/cache/wp-issue-pages',
+    '/workspace/parity/cache/wp-issue-pages',
+  ];
+  foreach ($roots as $root) {
+    $file = rtrim($root, '/') . '/' . $file_slug . '.html';
+    if (is_readable($file)) {
+      $body = file_get_contents($file);
+      if (is_string($body) && $body !== '' && !df_issue_page_html_is_bot_block($body)) {
+        return $body;
+      }
+    }
+  }
+  return '';
+}
+
+function df_issue_page_reference_pack_html(NodeInterface $issue): string {
+  $pack_roots = [
+    dirname(DRUPAL_ROOT, 2) . '/parity/reference-pack',
+    DRUPAL_ROOT . '/../../parity/reference-pack',
+    '/workspace/parity/reference-pack',
+    '/var/www/parity/reference-pack',
+  ];
+  $slug = df_issue_page_wordpress_url($issue);
+  if ($slug === '') {
+    return '';
+  }
+  $path = (string) (parse_url($slug, PHP_URL_PATH) ?? '');
+  $pack_slug = trim($path, '/');
+  if ($pack_slug === '') {
+    return '';
+  }
+  foreach ($pack_roots as $root) {
+    $file = rtrim($root, '/') . '/' . str_replace('/', '_', $pack_slug) . '/desktop/rendered.html';
+    if (is_readable($file)) {
+      $body = file_get_contents($file);
+      return is_string($body) ? $body : '';
+    }
+  }
+  return '';
+}
+
 function df_issue_page_http_get(string $url): string {
   $ctx = stream_context_create([
     'http' => [
@@ -227,7 +346,10 @@ function df_issue_page_http_get(string $url): string {
     ],
   ]);
   $data = @file_get_contents($url, FALSE, $ctx);
-  return is_string($data) ? $data : '';
+  if (!is_string($data) || df_issue_page_html_is_bot_block($data)) {
+    return '';
+  }
+  return $data;
 }
 
 function df_issue_page_parse_banner_url(DOMXPath $xpath): string {
@@ -260,11 +382,16 @@ function df_issue_page_parse_banner_url(DOMXPath $xpath): string {
 function df_issue_page_parse_promo_article_urls(DOMXPath $xpath): array {
   $blocks = $xpath->query("//div[contains(@class,'ultp-post-grid-block')]");
   $target = NULL;
+  if ($blocks->length >= 2) {
+    /** @var DOMElement|null $second */
+    $second = $blocks->item(1);
+    $target = $second instanceof DOMElement ? $second : NULL;
+  }
   for ($i = 0; $i < $blocks->length; $i++) {
     /** @var DOMElement $block */
     $block = $blocks->item($i);
     $class = $block->getAttribute('class');
-    if (str_contains($class, 'ultp-block-42b646')) {
+    if (str_contains($class, 'ultp-block-dd35a6') || str_contains($class, 'ultp-block-42b646') || str_contains($class, 'ultp-block-407e0b')) {
       $target = $block;
       break;
     }
@@ -279,9 +406,31 @@ function df_issue_page_parse_promo_article_urls(DOMXPath $xpath): array {
   }
   $hrefs = [];
   $seen = [];
-  $anchors = $xpath->query(".//div[contains(@class,'ultp-block-item')]//h2//a/@href", $target);
-  for ($j = 0; $j < $anchors->length; $j++) {
-    $href = trim(html_entity_decode((string) $anchors->item($j)->nodeValue, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+  $items = $xpath->query(".//div[contains(@class,'ultp-block-item')]", $target);
+  for ($j = 0; $j < $items->length; $j++) {
+    /** @var DOMElement $item */
+    $item = $items->item($j);
+    if (!$item instanceof DOMElement) {
+      continue;
+    }
+    $class = $item->getAttribute('class');
+    if (preg_match('/post-id-(\d+)/', $class, $m)) {
+      $wp_id = (int) $m[1];
+      $mapped = df_issue_page_wp_post_id_to_node_id($wp_id);
+      if ($mapped !== NULL) {
+        $node = \Drupal::entityTypeManager()->getStorage('node')->load($mapped);
+        if ($node instanceof NodeInterface) {
+          $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $mapped);
+          $hrefs[] = 'https://danafarberimpact.org' . $alias;
+          continue;
+        }
+      }
+    }
+    $anchors = $xpath->query('.//h2//a/@href', $item);
+    if ($anchors->length === 0) {
+      continue;
+    }
+    $href = trim(html_entity_decode((string) $anchors->item(0)->nodeValue, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
     if ($href === '') {
       continue;
     }
@@ -296,6 +445,20 @@ function df_issue_page_parse_promo_article_urls(DOMXPath $xpath): array {
     $hrefs[] = $href;
   }
   return $hrefs;
+}
+
+function df_issue_page_wp_post_id_to_node_id(int $wp_id): ?int {
+  static $map = NULL;
+  if ($map === NULL) {
+    $map = [];
+    $rows = \Drupal::database()->select('migrate_map_df_articles', 'm')
+      ->fields('m', ['sourceid1', 'destid1'])
+      ->execute();
+    foreach ($rows as $row) {
+      $map[(int) $row->sourceid1] = (int) $row->destid1;
+    }
+  }
+  return $map[$wp_id] ?? NULL;
 }
 
 function df_issue_page_wp_url_to_node_id(string $wp_url): ?int {
@@ -439,6 +602,84 @@ function df_issue_page_canonical_url(string $url): string {
     return $out;
   }
   return $url;
+}
+
+/**
+ * Applies tracked fixture row (banner, cover, promos) without live HTTP.
+ */
+function df_issue_page_apply_fixture_row(
+  NodeInterface $issue,
+  array $fixture,
+  bool $need_banner,
+  bool $need_cover,
+  bool $need_promos,
+  bool $dry_run,
+): bool {
+  $dirty = FALSE;
+  if ($need_banner && !empty($fixture['banner_url']) && is_string($fixture['banner_url'])) {
+    $banner_url = df_issue_page_canonical_url($fixture['banner_url']);
+    echo ($dry_run ? '[dry-run] ' : '') . "  Fixture banner <= $banner_url\n";
+    if (!$dry_run) {
+      $fid = DownloadImage::getOrCreateFileFromUrl($banner_url);
+      if ($fid !== NULL) {
+        $mid = df_issue_page_get_or_create_media($fid, $issue->label() . ' issue banner');
+        if ($mid !== NULL) {
+          $issue->set('field_banner_image', ['target_id' => $mid]);
+          $dirty = TRUE;
+        }
+      }
+    }
+    else {
+      $dirty = TRUE;
+    }
+  }
+  if ($need_cover && !empty($fixture['cover_url']) && is_string($fixture['cover_url'])) {
+    $cover_url = df_issue_page_canonical_url($fixture['cover_url']);
+    if (str_contains($cover_url, '/wp-content/uploads/')) {
+      echo ($dry_run ? '[dry-run] ' : '') . "  Fixture cover <= $cover_url\n";
+      if (!$dry_run) {
+        $fid = DownloadImage::getOrCreateFileFromUrl($cover_url);
+        if ($fid !== NULL) {
+          $mid = df_issue_page_get_or_create_media($fid, $issue->label() . ' issue cover');
+          if ($mid !== NULL) {
+            $issue->set('field_cover_image', ['target_id' => $mid]);
+            $dirty = TRUE;
+          }
+        }
+      }
+      else {
+        $dirty = TRUE;
+      }
+    }
+  }
+  if ($need_promos && !empty($fixture['promo_wp_post_ids']) && is_array($fixture['promo_wp_post_ids'])) {
+    $promo_nids = [];
+    foreach ($fixture['promo_wp_post_ids'] as $wp_id) {
+      $mapped = df_issue_page_wp_post_id_to_node_id((int) $wp_id);
+      if ($mapped !== NULL && !in_array($mapped, $promo_nids, TRUE)) {
+        $promo_nids[] = $mapped;
+      }
+      if (count($promo_nids) >= 2) {
+        break;
+      }
+    }
+    if ($promo_nids !== []) {
+      echo ($dry_run ? '[dry-run] ' : '') . '  Fixture promos => ' . implode(', ', $promo_nids) . "\n";
+      if (!$dry_run) {
+        if (!empty($promo_nids[0])) {
+          $issue->set('field_leadership_message', ['target_id' => $promo_nids[0]]);
+        }
+        if (!empty($promo_nids[1])) {
+          $issue->set('field_issue_promo_2', ['target_id' => $promo_nids[1]]);
+        }
+        $dirty = TRUE;
+      }
+      else {
+        $dirty = TRUE;
+      }
+    }
+  }
+  return $dirty;
 }
 
 function df_issue_page_get_or_create_media(int $fid, string $alt): ?int {

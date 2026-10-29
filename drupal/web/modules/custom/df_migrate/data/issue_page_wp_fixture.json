@@ -1,0 +1,266 @@
+{
+  "generated_from": "parity/cache/wp-issue-pages + browse-issues covers",
+  "generated_at": "2026-10-29T08:47:20.817Z",
+  "issues": [
+    {
+      "path_alias": "/fall-2023-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2023/09/DFI_Sept-Impact-Online.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2023/10/Impact_Fall2023_Cover-791x1024.jpg",
+      "main_grid_wp_post_ids": [
+        5307,
+        5320,
+        5324,
+        5330,
+        5334
+      ],
+      "promo_wp_post_ids": [
+        5423,
+        5418
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/fall-2024-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2024/09/Big_Fall-Impact-Digital-Banner.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2024/09/DFI_DCIMP2445654_Impact_Fall_Sept_2024_R7-COVER.jpg",
+      "main_grid_wp_post_ids": [
+        7120,
+        7127,
+        7129,
+        7137,
+        7142
+      ],
+      "promo_wp_post_ids": [
+        7220,
+        7216
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/fall-2025-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2025/09/Fall2025-Banner2x-scaled.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2025/09/Fall2025_Cover_1500.jpg",
+      "main_grid_wp_post_ids": [
+        8659,
+        8663,
+        8665,
+        8667,
+        8671
+      ],
+      "promo_wp_post_ids": [
+        8705,
+        8724
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/fall-2026-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2026/08/Fall26-Banner-1024x396.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2026/08/Fall2026-Cover.jpg",
+      "main_grid_wp_post_ids": [
+        9828,
+        9831,
+        9833,
+        9835,
+        9837
+      ],
+      "promo_wp_post_ids": [
+        9969,
+        9873
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/late-fall-2022-issue/",
+      "banner_url": "",
+      "cover_url": "",
+      "main_grid_wp_post_ids": [],
+      "promo_wp_post_ids": [],
+      "wp_archive_error": true
+    },
+    {
+      "path_alias": "/spring-2023-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2023/02/Impact_Spring2023Banner_1750.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2023/10/Impact_Spring2023_Cover-791x1024.jpg",
+      "main_grid_wp_post_ids": [
+        672,
+        670,
+        668,
+        664,
+        662
+      ],
+      "promo_wp_post_ids": [
+        419,
+        424
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/spring-2024-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2024/03/DFI_DCIMP2343144_March-Impact-Online-Banner.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2024/03/DFCI_Impact_Spring2024-2.jpg",
+      "main_grid_wp_post_ids": [
+        6325,
+        6332,
+        6338,
+        6342,
+        6346
+      ],
+      "promo_wp_post_ids": [
+        6313,
+        6319
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/spring-2025-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2025/03/Impact-Web-Banner-Spring2025-2.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2025/03/Impact_Spring_2025_Cover_1500.jpg",
+      "main_grid_wp_post_ids": [
+        8033,
+        7955,
+        7958,
+        8035,
+        7962
+      ],
+      "promo_wp_post_ids": [
+        8041,
+        8072
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/spring-2026-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2026/03/Spring2026-Banner.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2026/03/Spring2026-Cover.jpg",
+      "main_grid_wp_post_ids": [
+        9343,
+        9346,
+        9379,
+        9263,
+        9269
+      ],
+      "promo_wp_post_ids": [
+        9376,
+        9184
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/summer-2023-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2023/07/DFI_Impact_Issue_Hero_Image_Summer_Issue_v1@3x.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2023/10/Impact_Summer2023_Cover-791x1024.jpg",
+      "main_grid_wp_post_ids": [
+        4797,
+        4816,
+        4831,
+        4838,
+        4843
+      ],
+      "promo_wp_post_ids": [
+        4926,
+        4921
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/summer-2024-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2024/06/Summer2024Banner_1750.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2024/06/Impact_Summer2024_Cover.jpg",
+      "main_grid_wp_post_ids": [
+        6622,
+        6625,
+        6630,
+        6636,
+        6639
+      ],
+      "promo_wp_post_ids": [
+        6810,
+        6804
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/summer-2025-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2025/06/DF_Summer-Impact-Digital-Banner-1024x396.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2025/06/Summer2025_Cover_1500.jpg",
+      "main_grid_wp_post_ids": [
+        8267,
+        8274,
+        8257,
+        8278,
+        8281
+      ],
+      "promo_wp_post_ids": [
+        8402
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/summer-2026-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2026/06/Summer26-Banner-1024x396.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2026/06/Summer2026-Cover.jpg",
+      "main_grid_wp_post_ids": [
+        9507,
+        9510,
+        9513,
+        9515,
+        9517
+      ],
+      "promo_wp_post_ids": [
+        9556
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/winter-2023-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2023/11/DFI_DCIMP2343144_Dec-Impact-Online-Banner.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2023/11/Winter_Impact_Cover_2023_R7-791x1024.webp",
+      "main_grid_wp_post_ids": [
+        5816,
+        5842,
+        5852,
+        5866,
+        5870
+      ],
+      "promo_wp_post_ids": [
+        5978,
+        5973
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/winter-2024-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2024/12/Impact-Winter-2024-Issue-Banner.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2024/12/Impact-Winter-2024-1500-1.jpg",
+      "main_grid_wp_post_ids": [
+        7603,
+        7591,
+        7610,
+        7615,
+        7619
+      ],
+      "promo_wp_post_ids": [
+        7688,
+        7686
+      ],
+      "wp_archive_error": false
+    },
+    {
+      "path_alias": "/winter-2025-issue/",
+      "banner_url": "https://danafarberimpact.org/wp-content/uploads/2025/11/Winter2025-Banner.jpg",
+      "cover_url": "https://danafarberimpact.org/wp-content/uploads/2025/11/Winter2025_Cover_1500.jpg",
+      "main_grid_wp_post_ids": [
+        8994,
+        8996,
+        8998,
+        9000,
+        9002
+      ],
+      "promo_wp_post_ids": [
+        9031
+      ],
+      "wp_archive_error": false
+    }
+  ]
+}

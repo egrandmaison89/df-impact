@@ -22,6 +22,10 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     '.wp-block-post-excerpt__more-link',
     '.ultp-loadmore',
     '.ultp-loadmore-action',
+    '.ultp-pagination',
+    '.ultp-pagination-wrap',
+    '.pagination-block-html',
+    '.ultp-block-readmore',
     '.js-in-brief-load-more',
     '.tabs',
     '.related-posts',
@@ -78,6 +82,13 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     // Cloned nodes ignore display:none; drop collapsed archive rows (In Brief load-more).
     clone.querySelectorAll('.is-collapsed, [hidden], [aria-hidden="true"]').forEach((el) => {
       el.remove();
+    });
+    // PostX grids in static ref HTML omit inter-card whitespace in innerText.
+    clone.querySelectorAll('.ultp-block-title, .ultp-block-excerpt, .ultp-block-item').forEach((el) => {
+      el.append(document.createTextNode(' '));
+    });
+    clone.querySelectorAll('.about-impact-page__staff-column p, .about-impact-page__staff-column h3').forEach((el) => {
+      el.append(document.createTextNode(' '));
     });
     return clone;
   }

@@ -216,11 +216,19 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
   $view_id = $view->storage->id();
   $display = $view->current_display ?? '';
 
-  if ($view_id === 'issue_articles' && $display === 'homepage_latest') {
-    $alias = $query->ensureTable('node__field_homepage_sort_weight');
-    if ($alias) {
-      $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 100, '<');
-      $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 0, '>');
+  if ($view_id === 'issue_articles') {
+    if ($display === 'homepage_latest') {
+      $alias = $query->ensureTable('node__field_homepage_sort_weight');
+      if ($alias) {
+        $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 100, '<');
+        $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 0, '>');
+      }
+      df_setup_sql_sort_integer_nulls_last($query, 'node__field_homepage_sort_weight', 'field_homepage_sort_weight_value');
+      df_setup_sql_sort_integer_nulls_last($query, 'node__field_postx_sort_weight', 'field_postx_sort_weight_value');
+    }
+    if (in_array($display, ['block_1', 'default'], TRUE)) {
+      df_setup_sql_sort_integer_nulls_last($query, 'node__field_postx_sort_weight', 'field_postx_sort_weight_value');
+      df_setup_issue_articles_exclude_promo_references($view, $query);
     }
   }
 
@@ -295,6 +303,68 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
       "EXISTS (SELECT 1 FROM {path_alias} pa WHERE pa.path = CONCAT('/node/', {$base_alias}.{$base_field}) AND pa.alias IN ({$in}))"
     );
   }
+}
+
+/**
+ * Sort integer field ASC with NULL and unset values last (PostX weight parity).
+ */
+function df_setup_sql_sort_integer_nulls_last(Sql $query, string $table, string $column): void {
+  $alias = $query->ensureTable($table);
+  if (!$alias) {
+    return;
+  }
+  foreach ($query->orderby as $key => $order) {
+    $field = (string) ($order['field'] ?? '');
+    if ($field !== '' && (str_contains($field, $column) || str_contains($field, 'df_postx_sort_coalesce') || str_contains($field, 'df_home_sort_coalesce'))) {
+      unset($query->orderby[$key]);
+    }
+  }
+  $order_alias = str_contains($column, 'homepage') ? 'df_home_sort_coalesce' : 'df_postx_sort_coalesce';
+  $query->addOrderBy(NULL, "COALESCE({$alias}.{$column}, 999999)", 'ASC', $order_alias);
+}
+
+/**
+ * Excludes issue leadership / second promo cards from the main “In This Issue” grid.
+ */
+function df_setup_issue_articles_exclude_promo_references(ViewExecutable $view, Sql $query): void {
+  $issue_nid = (int) ($view->args[0] ?? 0);
+  if ($issue_nid <= 0) {
+    return;
+  }
+  $exclude = df_setup_issue_promo_article_nids($issue_nid);
+  if ($exclude === []) {
+    return;
+  }
+  $base_table = $view->storage->get('base_table');
+  $base_field = $view->storage->get('base_field');
+  $base_alias = $query->ensureTable($base_table) ?: $base_table;
+  $query->addWhere(0, "{$base_alias}.{$base_field}", $exclude, 'NOT IN');
+}
+
+/**
+ * @return list<int>
+ *   Article node IDs referenced as issue promo cards (not main grid).
+ */
+function df_setup_issue_promo_article_nids(int $issue_nid): array {
+  static $cache = [];
+  if (isset($cache[$issue_nid])) {
+    return $cache[$issue_nid];
+  }
+  $cache[$issue_nid] = [];
+  $issue = \Drupal::entityTypeManager()->getStorage('node')->load($issue_nid);
+  if (!$issue instanceof NodeInterface || $issue->bundle() !== 'issue') {
+    return $cache[$issue_nid];
+  }
+  foreach (['field_leadership_message', 'field_issue_promo_2'] as $field_name) {
+    if (!$issue->hasField($field_name) || $issue->get($field_name)->isEmpty()) {
+      continue;
+    }
+    $referenced = $issue->get($field_name)->entity;
+    if ($referenced instanceof NodeInterface) {
+      $cache[$issue_nid][] = (int) $referenced->id();
+    }
+  }
+  return $cache[$issue_nid];
 }
 
 /**

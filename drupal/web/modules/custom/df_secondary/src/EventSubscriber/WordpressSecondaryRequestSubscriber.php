@@ -24,10 +24,32 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
     return [
       KernelEvents::REQUEST => [
         ['onRequestPreserveTrailingSlash', 29],
+        ['onRequestSearchQuery', 31],
         ['onRequest', 35],
       ],
     ];
   }
+
+  /**
+   * WP ?s= on home paths → /search (before RouterListener; see onRequest for /search → view).
+   */
+  public function onRequestSearchQuery(RequestEvent $event): void {
+    if (!$event->isMainRequest()) {
+      return;
+    }
+    $request = $event->getRequest();
+    $search_term = $request->query->get('s');
+    if ($search_term === NULL || $search_term === '') {
+      return;
+    }
+    $path = rtrim($request->getPathInfo(), '/') ?: '/';
+    if (!in_array($path, ['/', '/homepage', '/home'], TRUE)) {
+      return;
+    }
+    $target = '/search?' . http_build_query(['s' => (string) $search_term]);
+    $event->setResponse(new RedirectResponse($request->getBaseUrl() . $target, 302));
+  }
+
 
   /**
    * Keep WordPress-style trailing slashes (before redirect module normalizer).
@@ -102,9 +124,10 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
       return;
     }
 
-    $search_term = $request->query->get('s');
-    if ($search_term !== NULL && $search_term !== '' && ($path === '/' || $path === '/homepage')) {
-      $this->rebuildRequest($request, '/search', ['s' => $search_term]);
+    // Core Drupal search module owns `/search`; Search API view lives at `/search-legacy`.
+    if ($path === '/search') {
+      $query = $request->query->all();
+      $this->rebuildRequest($request, '/search-legacy', $query);
     }
   }
 
@@ -153,13 +176,17 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
 
   private function rebuildRequest(Request $request, string $path, array $query): void {
     $uri = $path . ($query !== [] ? '?' . http_build_query($query) : '');
+    $server = $request->server->all();
+    $server['REQUEST_URI'] = $uri;
+    $server['QUERY_STRING'] = $query !== [] ? http_build_query($query) : '';
+    $base = $request->getSchemeAndHttpHost();
     $new = Request::create(
-      $uri,
+      $base . $uri,
       $request->getMethod(),
       $query,
       $request->cookies->all(),
       $request->files->all(),
-      $request->server->all(),
+      $server,
       $request->getContent(),
     );
     $new->headers->replace($request->headers->all());

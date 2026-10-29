@@ -27,6 +27,10 @@ final class TopicCategoryArchiveInboundPathProcessor implements InboundPathProce
     $query = $request->query->all();
     $query['page'] = (string) $drupal_page;
     $request->query->replace($query);
+    $request->attributes->set(
+      'df_setup_wp_archive_path',
+      '/category/' . $slug . '/page/' . $wp_page,
+    );
     return '/category/' . $slug;
   }
 

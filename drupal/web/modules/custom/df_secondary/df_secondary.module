@@ -154,6 +154,7 @@ function df_secondary_views_pre_render(ViewExecutable $view): void {
     return;
   }
   if ($view->total_rows === 0) {
+    // WordPress Better Search renders an empty query loop (no apology paragraph).
     $view->empty['area_text_custom'] = [
       'id' => 'area_text_custom',
       'table' => 'views',
@@ -163,7 +164,7 @@ function df_secondary_views_pre_render(ViewExecutable $view): void {
       'admin_label' => '',
       'plugin_id' => 'text_custom',
       'empty' => TRUE,
-      'content' => '<p class="wp-block-paragraph">' . t('Sorry, but nothing matched your search terms. Please try again with some different keywords.') . '</p>',
+      'content' => '',
       'tokenize' => FALSE,
     ];
   }

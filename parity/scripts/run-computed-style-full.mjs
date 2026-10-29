@@ -66,6 +66,8 @@ function loadResult(job) {
 function needsRetry(report) {
   if (!report || report.error) return true;
   if (report.drStatus !== 200) return true;
+  // WP ref-pack missing this path: Drupal-only result is final, not a transient failure.
+  if (report.wpStatus === 404 && report.drStatus === 200) return false;
   if (!report.wpComparable && report.wpStatus !== 200) return true;
   return false;
 }

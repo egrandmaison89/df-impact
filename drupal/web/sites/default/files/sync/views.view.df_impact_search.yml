@@ -54,7 +54,7 @@ display:
           admin_label: ''
           plugin_id: text_custom
           empty: true
-          content: '<p class="wp-block-paragraph">Sorry, but nothing matched your search terms. Please try again with some different keywords.</p>'
+          content: ''
           tokenize: false
       sorts: {  }
       arguments: {  }
@@ -133,7 +133,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: search
+      path: search-legacy
     cache_metadata:
       max-age: 0
       contexts:

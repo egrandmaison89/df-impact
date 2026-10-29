@@ -63,6 +63,12 @@ export function isChallengeHtml(html, url = '') {
 }
 
 function pickRoot($) {
+  if ($('.issue-page, .issue-banner, article.node--type-issue').length) {
+    const main = $('main#main-content, main[role="main"], main').first();
+    if (main.length && (main.text() || '').replace(/\s+/g, ' ').trim().length > 80) {
+      return main;
+    }
+  }
   const query = $('main .wp-block-query, .wp-block-query').first();
   if (query.length && query.find('.wp-block-post, li.wp-block-post').length >= 2) {
     return query;
@@ -125,6 +131,13 @@ function cloneRoot($, root) {
 function normalizeText(s) {
   let t = (s || '')
     .replace(/\u00a0/g, ' ')
+    .replace(/&lt;\/?sup&gt;/gi, '')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/<sup>\s*®\s*<\/sup>/gi, '®')
+    .replace(/<\/sup>/gi, '')
+    .replace(/<sup>/gi, '')
     .replace(/['']/g, "'")
     .replace(/[""]/g, '"')
     .replace(/([a-z])([A-Z])/g, '$1 $2')
@@ -139,6 +152,8 @@ function normalizeText(s) {
     /sorry, but nothing matched your search terms\.?\s*please try again with some different keywords\.?/gi,
     'search landing empty state',
   );
+  t = t.replace(/\bcontinue reading\b/gi, '');
+  t = t.replace(/…/g, '...');
   return t;
 }
 

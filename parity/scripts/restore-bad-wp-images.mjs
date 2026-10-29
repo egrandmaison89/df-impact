@@ -17,6 +17,20 @@ const media = JSON.parse(
   ),
 );
 
+const articles = JSON.parse(
+  fs.readFileSync(
+    path.join(repoRoot, 'drupal/web/modules/custom/df_migrate/data/articles.json'),
+    'utf8',
+  ),
+);
+const articleImageByStem = new Map();
+for (const row of articles) {
+  const url = row.featured_image_url;
+  if (!url || typeof url !== 'string') continue;
+  const stem = path.basename(url.replace(/\/$/, '')).toLowerCase();
+  if (stem) articleImageByStem.set(stem, url.replace(/\/$/, ''));
+}
+
 const index = new Map();
 for (const row of media) {
   const url = row.source_url;
@@ -36,21 +50,34 @@ function validBytes(buf) {
   if (buf.includes(Buffer.from('<html'))) return false;
   const h = buf.subarray(0, 12);
   if (h[0] === 0xff && h[1] === 0xd8) return true;
-  if (h.toString('ascii', 0, 4) === '\x89PNG') return true;
-  if (h.toString('ascii', 0, 4) === 'RIFF') return true;
-  if (h.toString('ascii', 0, 3) === 'GIF') return true;
+  if (h[0] === 0x89 && h[1] === 0x50 && h[2] === 0x4e && h[3] === 0x47) return true;
+  if (h[0] === 0x52 && h[1] === 0x49 && h[2] === 0x46 && h[3] === 0x46) return true;
+  if (h[0] === 0x47 && h[1] === 0x49 && h[2] === 0x46) return true;
   return false;
 }
 
+function photonUrl(uploadsPath) {
+  const clean = uploadsPath.replace(/^\//, '');
+  return `https://i0.wp.com/danafarberimpact.org/wp-content/uploads/${clean}?ssl=1`;
+}
+
 function fetchUrl(url) {
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const r = spawnSync(
-      'curl',
-      ['-sS', '-L', '--max-time', '20', '-A', 'DFMigrate/restore', url],
-      { encoding: 'buffer', maxBuffer: 30 * 1024 * 1024 },
-    );
-    if (r.status === 0 && r.stdout && validBytes(r.stdout)) {
-      return r.stdout;
+  const candidates = [];
+  const m = url.match(/wp-content\/uploads\/(.+?)(\?|$)/);
+  if (m) {
+    candidates.push(photonUrl(m[1]));
+  }
+  candidates.push(url);
+  for (const tryUrl of [...new Set(candidates)]) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const r = spawnSync(
+        'curl',
+        ['-sS', '-L', '--max-time', '25', '-A', 'DFMigrate/restore', tryUrl],
+        { encoding: 'buffer', maxBuffer: 30 * 1024 * 1024 },
+      );
+      if (r.status === 0 && r.stdout && validBytes(r.stdout)) {
+        return r.stdout;
+      }
     }
   }
   return null;
@@ -62,9 +89,38 @@ function restoreOne(filePath) {
   const urls = [];
   if (index.has(base.toLowerCase())) urls.push(index.get(base.toLowerCase()));
   if (index.has(stem)) urls.push(index.get(stem));
+  const stemNoSize = stem.replace(/-\d+x\d+$/, '');
+  if (stemNoSize !== stem && index.has(stemNoSize)) {
+    urls.push(index.get(stemNoSize));
+  }
+  if (/1450-1024x734/.test(base)) {
+    urls.push(photonUrl(`2025/06/${base}`));
+    urls.push(photonUrl(`2025/06/${base.replace('-1024x734', '')}.jpg`));
+  }
+  if (articleImageByStem.has(stem)) {
+    const raw = articleImageByStem.get(stem);
+    urls.push(raw.startsWith('http') ? raw : `https://danafarberimpact.org/${raw.replace(/^\//, '')}`);
+  }
   if (urls.length === 0) {
-    for (const prefix of ['2026/08/', '2026/06/', '2024/06/', '2023/03/', '2023/01/']) {
-      urls.push(`https://i0.wp.com/danafarberimpact.org/wp-content/uploads/${prefix}${encodeURIComponent(base)}?ssl=1`);
+    for (const prefix of [
+      '2026/09/',
+      '2026/08/',
+      '2026/06/',
+      '2025/09/',
+      '2024/09/',
+      '2024/07/',
+      '2024/06/',
+      '2023/11/',
+      '2023/03/',
+      '2023/01/',
+      '2022/11/',
+    ]) {
+      urls.push(photonUrl(`${prefix}${base}`));
+      if (!/\.[a-z0-9]+$/i.test(base)) {
+        for (const ext of ['.jpg', '.png', '.webp']) {
+          urls.push(photonUrl(`${prefix}${base}${ext}`));
+        }
+      }
     }
   }
   for (const u of [...new Set(urls)].slice(0, 6)) {

@@ -82,7 +82,7 @@ function df_setup_update_10001(): void {
 }
 
 /**
- * WordPress Gutenberg body markup for About Impact (/about, /about-impact).
+ * WordPress Gutenberg block markup for About Impact (PR #25 parity).
  */
 function df_setup_about_impact_gutenberg_body(): string {
   return <<<'HTML'
@@ -968,6 +968,37 @@ function df_setup_update_10026(): string {
   ]);
   $term->save();
   return 'Created Pediatrics topic term (tid ' . $term->id() . ').';
+}
+
+/**
+ * Issue landing: PostX NULLS-LAST sort, promo exclusions, WP backfills.
+ *
+ * Uses committed `df_migrate/data/issue_page_wp_fixture.json` (regenerate via
+ * `node parity/scripts/build-issue-page-fixture.mjs` after refreshing cache).
+ * Live WP is fallback only when a fixture row is missing.
+ */
+function df_setup_update_10027(): string {
+  $parts = [];
+  foreach ([
+    'backfill_postx_sort_weights.php',
+    'backfill_issue_page_from_wordpress.php',
+  ] as $script_name) {
+    $script = __DIR__ . '/../df_migrate/scripts/' . $script_name;
+    if (!is_readable($script)) {
+      $parts[] = "$script_name missing";
+      continue;
+    }
+    try {
+      require $script;
+      $parts[] = "$script_name ok";
+    }
+    catch (\Throwable $e) {
+      $parts[] = "$script_name failed: " . $e->getMessage();
+    }
+  }
+  drupal_flush_all_caches();
+  \Drupal::keyValue('df_setup')->set('update_10027_applied', \Drupal::time()->getRequestTime());
+  return implode('; ', $parts);
 }
 
 /**

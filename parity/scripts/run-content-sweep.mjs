@@ -19,6 +19,13 @@ import {
 } from '../lib/content-sweep-extract.mjs';
 import { httpGet } from '../lib/http-get.mjs';
 import { wpArchiveExportHtmlForPath, wpExportHtmlForPath } from '../lib/wp-export-baseline.mjs';
+import { issueWpCacheOnly, loadIssueWpHtml, resolveIssueWpHtml } from '../lib/issue-wp-baseline.mjs';
+import { textSimilarity } from '../lib/page-utils.mjs';
+import { chromium } from '@playwright/test';
+import {
+  createIssueParityPage,
+  issueLandingTextSimilarity,
+} from '../lib/issue-playwright-text.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
@@ -47,9 +54,20 @@ function withTimeout(promise, ms, label) {
   ]);
 }
 const limit = Number(process.env.CONTENT_SWEEP_LIMIT || 0);
+const pathFilterRaw = (process.env.CONTENT_SWEEP_PATHS || '').trim();
+const pathFilter = pathFilterRaw
+  ? pathFilterRaw
+      .split(',')
+      .map((p) => normalizePath(p.trim()))
+      .filter(Boolean)
+  : [];
 
 const urls = (manifest.urls || []).filter(isContentParityUrl);
-const entries = (limit > 0 ? urls.slice(0, limit) : urls).map((entry) => ({
+let selected = urls;
+if (pathFilter.length) {
+  selected = urls.filter((entry) => pathFilter.includes(normalizePath(publicPath(entry))));
+}
+const entries = (limit > 0 ? selected.slice(0, limit) : selected).map((entry) => ({
   entry,
   path: publicPath(entry),
 }));
@@ -120,6 +138,25 @@ function clusterRow(row) {
   return c.length ? c : ['pass'];
 }
 
+let issueBrowser;
+let issueParityPage;
+/** Playwright page is not safe for concurrent issue rows. */
+let issueTextLock = Promise.resolve();
+
+function withIssueTextLock(fn) {
+  const run = issueTextLock.then(() => fn());
+  issueTextLock = run.catch(() => {});
+  return run;
+}
+
+async function getIssueParityPage() {
+  if (!issueBrowser) {
+    issueBrowser = await chromium.launch();
+    issueParityPage = await createIssueParityPage(issueBrowser);
+  }
+  return issueParityPage;
+}
+
 async function processOne({ entry, path: p }) {
   try {
   const row = {
@@ -135,9 +172,24 @@ async function processOne({ entry, path: p }) {
 
   let wpHtml = null;
   const frozen = frozenWpHtmlPath(packRoot, p);
-  const exportHtml = wpExportHtmlForPath(p);
+  const isIssue = row.template === 'issue';
+  const exportHtml = isIssue ? null : wpExportHtmlForPath(p);
   const archiveExportHtml = !exportHtml ? wpArchiveExportHtmlForPath(p) : null;
-  if (frozen) {
+  const cacheOnly = issueWpCacheOnly() || process.env.PARITY_CONTENT_SWEEP_NO_LIVE_WP === '1';
+
+  if (isIssue) {
+    const resolved = resolveIssueWpHtml(p);
+    if (resolved.html) {
+      wpHtml = resolved.html;
+      row.wpSource = resolved.source;
+      row.wpStatus = 200;
+    } else if (cacheOnly) {
+      row.wpComparable = false;
+      row.wpError = 'wp_cache_missing';
+      row.clusters = ['wp_cache_missing'];
+      return row;
+    }
+  } else if (frozen) {
     wpHtml = fs.readFileSync(frozen, 'utf8');
     row.wpSource = 'frozen';
     if (baselinePathForFrozen(p) !== normalizePath(p)) {
@@ -152,6 +204,11 @@ async function processOne({ entry, path: p }) {
     wpHtml = archiveExportHtml;
     row.wpSource = 'export-archive';
     row.wpStatus = 200;
+  } else if (cacheOnly) {
+    row.wpComparable = false;
+    row.wpError = 'wp_cache_missing';
+    row.clusters = ['wp_cache_missing'];
+    return row;
   } else {
     const wpUrl = entry.url || `${wpBase}${p}`;
     const wpRes = await fetchHtml(wpUrl, 'wp');
@@ -192,7 +249,22 @@ async function processOne({ entry, path: p }) {
 
   const wpM = extractContentMetrics(wpHtml);
   const drM = extractContentMetrics(drHtml);
-  row.textSimilarity = wordJaccardSimilarity(wpM.text, drM.text);
+  const useTextSimilarity = isIssue || row.template === 'archive';
+  if (isIssue && wpHtml) {
+    row.textSimilarity = await withIssueTextLock(async () => {
+      const page = await getIssueParityPage();
+      return issueLandingTextSimilarity(page, {
+        wpHtml,
+        drupalUrl: `${drupalBase}${p}`,
+        drupalHtml: drHtml,
+      });
+    });
+    row.textMetric = 'playwright_main_text';
+  } else {
+    row.textSimilarity = useTextSimilarity
+      ? textSimilarity(wpM.text, drM.text)
+      : wordJaccardSimilarity(wpM.text, drM.text);
+  }
   row.h1Match = !wpM.h1 || wpM.h1 === drM.h1 || drM.h1.includes(wpM.h1) || wpM.h1.includes(drM.h1);
   row.titleMatch =
     !wpM.title ||
@@ -282,6 +354,9 @@ for (let i = 0; i < entries.length; i += concurrency) {
   process.stderr.write(`\rcontent-sweep ${Math.min(i + concurrency, entries.length)}/${entries.length}`);
 }
 process.stderr.write('\n');
+if (issueBrowser) {
+  await issueBrowser.close();
+}
 
 const comparable = rows.filter((r) => r.wpComparable !== false && r.drupalStatus === 200);
 const passed = comparable.filter((r) => r.pass);

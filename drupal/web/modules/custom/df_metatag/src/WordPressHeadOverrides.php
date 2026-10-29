@@ -26,6 +26,7 @@ final class WordPressHeadOverrides {
   private const PATH_ALIASES = [
     '/about' => '/about-impact',
     '/home' => '/homepage',
+    '/search-legacy' => '/search',
   ];
 
   public function forPath(string $path): array {

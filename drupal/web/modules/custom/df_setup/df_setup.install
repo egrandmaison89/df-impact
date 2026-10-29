@@ -1183,15 +1183,11 @@ function _df_setup_apply_about_impact_gutenberg_body(): string {
     _df_setup_ensure_about_impact_page();
     return 'Created About Impact page with Gutenberg body.';
   }
+  // Always converge on canonical export + staff sync (never patch a bloated legacy body).
+  $body = _df_setup_sync_about_impact_staff_body(df_setup_about_impact_gutenberg_body());
   $existing = (string) $node->get('body')->value;
-  if (_df_setup_about_impact_body_is_gutenberg($existing)
-    && _df_setup_about_impact_staff_is_synced($existing)) {
+  if ($existing === $body) {
     return 'About Impact Gutenberg body already present.';
-  }
-  $body = df_setup_about_impact_gutenberg_body();
-  if (_df_setup_about_impact_body_is_gutenberg($existing)
-    && !_df_setup_about_impact_staff_is_synced($existing)) {
-    $body = _df_setup_sync_about_impact_staff_body($existing);
   }
   $node->set('body', [
     'value' => $body,

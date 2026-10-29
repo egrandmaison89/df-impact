@@ -133,3 +133,26 @@ function df_setup_post_update_late_fall_2022_export_byline_trim(): string {
   require_once __DIR__ . '/df_setup.install';
   return _df_setup_apply_late_fall_2022_link_parity();
 }
+
+/**
+ * Converges About + truncated article bodies for content-sweep parity (any DB state).
+ */
+function df_setup_post_update_converge_content_sweep_reference_bodies(): string {
+  require_once __DIR__ . '/df_setup.install';
+  $about = _df_setup_apply_about_impact_gutenberg_body();
+  $script = __DIR__ . '/../df_migrate/scripts/df_content_sweep_body_backfill.php';
+  if (!is_readable($script)) {
+    return $about . '; article backfill script missing.';
+  }
+  require_once $script;
+  $result = df_migrate_content_sweep_body_backfill();
+  if (!empty($result['error'])) {
+    return $about . '; article backfill failed: ' . $result['error'];
+  }
+  return sprintf(
+    '%s; article bodies scanned=%d updated=%d.',
+    $about,
+    (int) ($result['scanned'] ?? 0),
+    (int) ($result['updated'] ?? 0),
+  );
+}

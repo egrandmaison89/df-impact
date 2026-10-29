@@ -60,6 +60,18 @@
       $('.mega-sub-menu', $context).each(function () {
         $(this).css('display', 'none');
       });
+
+      $('.mega-toggle-label', $context)
+        .off('click.dfImpactWpChromeMenu')
+        .on('click.dfImpactWpChromeMenu', function (e) {
+          e.preventDefault();
+          var $wrap = $(this).closest('.mega-menu-wrap');
+          var $menu = $wrap.find('.mega-menu').first();
+          $wrap.toggleClass('mega-menu-open');
+          $menu.toggleClass('mega-menu-open');
+          var open = $wrap.hasClass('mega-menu-open');
+          $(this).attr('aria-expanded', open ? 'true' : 'false');
+        });
     },
   };
 })(jQuery, Drupal);

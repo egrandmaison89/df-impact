@@ -14,6 +14,9 @@ use Drupal\node\NodeInterface;
  */
 final class IssuePublisher {
 
+  /** Invalidates chrome that lists the newest published issue (header, home, browse). */
+  public const CACHE_TAG_ISSUE_NAV = 'df_editor:issue_navigation';
+
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly TimeInterface $time,
@@ -32,7 +35,13 @@ final class IssuePublisher {
 
     $this->applyPublishedState($issue);
     $published = $this->publishAttachedArticles($issue);
-    $this->cacheTagsInvalidator->invalidateTags(['node_list:issue', 'node_list:article']);
+    $this->cacheTagsInvalidator->invalidateTags([
+      'node_list:issue',
+      'node_list:article',
+      self::CACHE_TAG_ISSUE_NAV,
+      'config:df_editor.settings',
+      'node:' . $issue->id(),
+    ]);
     return $published;
   }
 

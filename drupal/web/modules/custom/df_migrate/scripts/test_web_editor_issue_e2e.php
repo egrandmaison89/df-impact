@@ -87,6 +87,12 @@ function df_migrate_web_editor_issue_e2e(): array {
     }
     $pass('site_admin_can_edit_site_chrome');
 
+    \Drupal::configFactory()->getEditable('df_editor.settings')
+      ->set('homepage_hero_override_title', '')
+      ->set('homepage_hero_override_link', '')
+      ->save();
+    df_editor_invalidate_issue_nav_cache();
+
     $cover_source = $storage->load(df_setup_get_latest_issue_nid() ?? 0);
     $account_switcher = \Drupal::service('account_switcher');
     $account_switcher->switchTo($web_editor);
@@ -150,8 +156,6 @@ function df_migrate_web_editor_issue_e2e(): array {
     }
     $pass('publish_three_articles');
 
-    drupal_flush_all_caches();
-
     $issue = $storage->load($issue->id());
     if (!$issue instanceof NodeInterface || !$issue->isPublished()) {
       $fail('issue_is_latest', 'Issue must be published.');
@@ -203,7 +207,6 @@ function df_migrate_web_editor_issue_e2e(): array {
     }
     $pass('homepage_features_current_issue');
 
-    drupal_flush_all_caches();
     $browse = (string) $http->get($base . '/browse-issues')->getBody();
     if (!preg_match('#<figure[^>]*issue-cover[^>]*>[\s\S]*?</figure>#', $browse, $first_card)) {
       $fail(

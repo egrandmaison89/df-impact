@@ -42,26 +42,31 @@ function ensureUsers() {
 
 function cleanupPriorRunContent() {
   execSync(
-    `cd /workspace/drupal && ./vendor/bin/drush scr ../parity/scripts/cleanup-editor-e2e-nodes.php -- '${TITLE_PREFIX}' && ./vendor/bin/drush --uri=${drupalBase} cr`,
+    `cd /workspace/drupal && ./vendor/bin/drush scr ../parity/scripts/cleanup-editor-e2e-nodes.php -- '${TITLE_PREFIX}'`,
     { stdio: 'inherit' },
   );
 }
 
-/** After long sweeps or admin-e2e, warm PHP, cache, and common editor routes. */
+/** After long sweeps or admin-e2e, warm PHP routes (no cache rebuild). */
 function warmEnvironmentAfterGate() {
-  drush('cr');
   for (const path of ['/', '/user/login', '/node/add/issue', '/node/add/article']) {
     execSync(`curl -sS -o /dev/null -w "" ${drupalBase}${path}`, { stdio: 'pipe' });
   }
 }
 
 /** admin-e2e leaves override config restored, but verify so homepage hero assertions stay stable. */
+function invalidateIssueChromeCache(): void {
+  drush(
+    `ev '\\Drupal::service("cache_tags.invalidator")->invalidateTags(["node_list:issue","node_list:article","df_editor:issue_navigation","config:df_editor.settings"]);'`,
+  );
+}
+
 function ensureHomepageHeroOverrideClear() {
   const override = drush('cget df_editor.settings homepage_hero_override_title --format=string');
   if (override.trim() !== '') {
     drush('cset df_editor.settings homepage_hero_override_title "" -y');
     drush('cset df_editor.settings homepage_hero_override_link "" -y');
-    drush('cr');
+    invalidateIssueChromeCache();
   }
 }
 
@@ -92,7 +97,7 @@ function cleanupNodes() {
   const nids = [...(issueNid ? [issueNid] : []), ...articleNids];
   if (!nids.length) return;
   execSync(
-    `cd /workspace/drupal && ./vendor/bin/drush ev 'foreach ([${nids.join(',')}] as $nid) { \\Drupal\\node\\Entity\\Node::load($nid)?->delete(); }' && ./vendor/bin/drush cr`,
+    `cd /workspace/drupal && ./vendor/bin/drush ev 'foreach ([${nids.join(',')}] as $nid) { \\Drupal\\node\\Entity\\Node::load($nid)?->delete(); }'`,
     { stdio: 'inherit' },
   );
 }
@@ -102,6 +107,24 @@ async function go(page: import('@playwright/test').Page, route: string) {
     ? route
     : `${drupalBase}${route.startsWith('/') ? route : `/${route}`}`;
   return page.goto(url, { waitUntil: 'domcontentloaded' });
+}
+
+/** Anonymous HTML fetch (no admin session cookies). */
+async function withAnonymousPage(
+  page: import('@playwright/test').Page,
+  fn: (anon: import('@playwright/test').Page) => Promise<void>,
+): Promise<void> {
+  const browser = page.context().browser();
+  if (!browser) {
+    throw new Error('Playwright browser unavailable');
+  }
+  const ctx = await browser.newContext();
+  const anon = await ctx.newPage();
+  try {
+    await fn(anon);
+  } finally {
+    await ctx.close();
+  }
 }
 
 async function logout(page: import('@playwright/test').Page) {
@@ -335,25 +358,23 @@ async function setTopicsReference(page: import('@playwright/test').Page, topicLa
   );
 }
 
-async function saveNodeForm(page: import('@playwright/test').Page, opts?: { savedTitle?: string }) {
+async function saveNodeForm(page: import('@playwright/test').Page) {
   const stickySave = page.locator(
     '.region-sticky input[type="submit"][value="Save"], .region-sticky #edit-submit',
   );
   const submit = (await stickySave.count()) ? stickySave.first() : page.locator('#edit-submit');
+  const beforeUrl = page.url();
   await submit.click();
+  const status = page.locator(
+    '.messages--status, [data-drupal-messages] .messages--status, [role="contentinfo"]:has-text("Status message")',
+  );
   await expect
     .poll(
       async () => {
         if ((await page.locator('.messages--error').count()) > 0) {
           return 'error';
         }
-        if ((await page.locator('.messages--status').count()) > 0) {
-          return 'ok';
-        }
-        if (/\/node\/\d+/.test(page.url())) {
-          return 'ok';
-        }
-        if (opts?.savedTitle && nodeNidByTitle(opts.savedTitle) > 0) {
+        if (await status.count()) {
           return 'ok';
         }
         return '';
@@ -361,9 +382,9 @@ async function saveNodeForm(page: import('@playwright/test').Page, opts?: { save
       { timeout: 120_000, intervals: [250, 500, 1000] },
     )
     .toBe('ok');
-  if ((await page.locator('.messages--error').count()) > 0) {
-    throw new Error(`Node save failed: ${await page.locator('.messages--error').innerText()}`);
-  }
+  await expect(status.first()).toBeVisible({ timeout: 5_000 });
+  await expect(status.first()).toContainText(/created|updated|saved|has been/i);
+  await expect(page.locator('.messages--error')).toHaveCount(0);
 }
 
 async function waitForIssueAddForm(page: import('@playwright/test').Page) {
@@ -392,19 +413,37 @@ async function expectLatestIssueIs(nid: number) {
     .toBe(nid);
 }
 
-async function expectPublicHomepageHero(page: import('@playwright/test').Page, heading: string) {
+/** Anonymous surfaces must reflect publish immediately (no manual cache rebuild). */
+async function expectAnonymousIssueSurfaces(
+  page: import('@playwright/test').Page,
+  heading: string,
+  year: number,
+) {
   await expectLatestIssueIs(issueNid!);
-  drush('cr');
-  await page.goto(`${drupalBase}/?editor_e2e=${Date.now()}`, {
-    waitUntil: 'domcontentloaded',
-    timeout: 120_000,
+
+  await withAnonymousPage(page, async (anon) => {
+    await anon.goto(`${drupalBase}/`, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+    await expect
+      .poll(async () => anon.locator('.homepage-banner h1').innerText(), {
+        timeout: 120_000,
+        intervals: [500, 1000, 2000],
+      })
+      .toContain(heading);
+    await expect(anon.locator('body')).toContainText('Explore the Latest Issue');
+
+    await anon.locator('.mega-menu-link:has-text("Issues")').first().click();
+    await expect(anon.locator(`.mega-menu-link:has-text("Winter ${year}")`).first()).toBeVisible({
+      timeout: 60_000,
+    });
+
+    await anon.goto(`${drupalBase}/browse-issues`, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+    await expect
+      .poll(async () => anon.locator('body').innerText(), {
+        timeout: 120_000,
+        intervals: [500, 1000, 2000],
+      })
+      .toMatch(new RegExp(`Winter\\s+${year}`));
   });
-  await expect
-    .poll(async () => page.locator('.homepage-banner h1').innerText(), {
-      timeout: 120_000,
-      intervals: [500, 1000, 2000],
-    })
-    .toContain(heading);
 }
 
 test.describe('Web editor issue launch (UI)', () => {
@@ -468,7 +507,7 @@ test.describe('Web editor issue launch (UI)', () => {
     await addMediaFromLibrary(page, 'edit-field-cover-image-open-button');
     await addMediaFromLibrary(page, 'edit-field-banner-image-open-button');
     await screenshot(page, '03b-issue-media-selected');
-    await saveNodeForm(page, { savedTitle: ISSUE_TITLE });
+    await saveNodeForm(page);
     let savedIssueNid = 0;
     await expect
       .poll(() => {
@@ -499,7 +538,7 @@ test.describe('Web editor issue launch (UI)', () => {
       await setIssueReference(page, ISSUE_TITLE, issueNid!);
       await setTopicsReference(page, topicLabel);
       await openFormTab(page, 'SEO & Summary');
-      await saveNodeForm(page, { savedTitle: title });
+      await saveNodeForm(page);
       await screenshot(page, `05-article-saved-${articleNids.length + 1}`);
       const inlineErrors = page.locator('.form-item--error-message');
       await expect(inlineErrors).toHaveCount(0);
@@ -541,7 +580,6 @@ test.describe('Web editor issue launch (UI)', () => {
     expect(heroInDb).toBe(HERO_HEADING);
 
     await go(page, '/admin/content/issue-dashboard/clear-preview');
-    drush('cr');
     await expectLatestIssueIs(issueNid!);
 
     const issuePath =
@@ -559,20 +597,15 @@ test.describe('Web editor issue launch (UI)', () => {
       )
       .toBe('200');
 
-    await expectPublicHomepageHero(page, HERO_HEADING);
-    await expect(page.locator('body')).toContainText('Explore the Latest Issue');
-    for (const t of ARTICLE_TITLES) {
-      await expect(page.locator('body')).toContainText(t);
-    }
+    await expectAnonymousIssueSurfaces(page, HERO_HEADING, YEAR);
+    await withAnonymousPage(page, async (anon) => {
+      await anon.goto(`${drupalBase}/`, { waitUntil: 'domcontentloaded' });
+      for (const t of ARTICLE_TITLES) {
+        await expect(anon.locator('body')).toContainText(t);
+      }
+    });
     await screenshot(page, '08-homepage-after-publish');
-
-    const header = page.locator('header, .wp-block-template-part, nav').first();
-    await expect(header).toContainText(/Issues|Winter/i);
-    await expect(header).toContainText(String(YEAR));
     await screenshot(page, '09-header-issues-nav');
-
-    await go(page, '/browse-issues');
-    await expect(page.locator('body')).toContainText(`Winter ${YEAR}`);
     await screenshot(page, '10-browse-issues');
 
     await go(page, issuePath);

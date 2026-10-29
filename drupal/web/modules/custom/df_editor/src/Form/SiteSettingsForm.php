@@ -128,6 +128,7 @@ final class SiteSettingsForm extends ConfigFormBase {
       ->set('header_issues_see_all_title', trim((string) $form_state->getValue('header_issues_see_all_title')))
       ->set('gtranslate_disclaimer_text', $form_state->getValue('gtranslate_disclaimer_text'))
       ->save();
+    df_editor_invalidate_issue_nav_cache();
     parent::submitForm($form, $form_state);
   }
 

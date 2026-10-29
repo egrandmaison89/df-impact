@@ -8,8 +8,10 @@
 declare(strict_types=1);
 
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\df_editor\IssuePublisher;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\filter\FilterFormatInterface;
 use Drupal\node\Form\NodeForm;
@@ -21,6 +23,13 @@ use Drupal\node\NodeInterface;
 /**
  * Implements hook_form_FORM_ID_alter() for article forms.
  */
+/**
+ * Implements hook_form_FORM_ID_alter() for article edit forms.
+ */
+function df_editor_form_node_article_edit_form_alter(array &$form, FormStateInterface $form_state): void {
+  df_editor_form_node_article_form_alter($form, $form_state);
+}
+
 function df_editor_form_node_article_form_alter(array &$form, FormStateInterface $form_state): void {
   if (!isset($form['body']['widget'][0])) {
     return;
@@ -56,6 +65,7 @@ function df_editor_form_node_article_form_alter(array &$form, FormStateInterface
   }
 
   $widget['#description'] = (string) t('Use the toolbar for headings, quotes, images, and media embeds (Vimeo/YouTube). For WordPress-style blocks (pull quote, spacer, buttons), switch to Source and paste the same markup used on migrated stories—see WEB_EDITOR_GUIDE.md.');
+  df_editor_attach_web_editor_save_redirect($form);
 }
 
 /**
@@ -138,9 +148,28 @@ function df_editor_media_require_alt_text(array &$form): void {
 }
 
 /**
+ * Implements hook_views_pre_render().
+ */
+function df_editor_views_pre_render(\Drupal\views\ViewExecutable $view): void {
+  if (!in_array($view->storage->id(), ['browse_issues', 'issue_articles'], TRUE)) {
+    return;
+  }
+  $view->element['#cache']['tags'] = Cache::mergeTags(
+    $view->element['#cache']['tags'] ?? [],
+    [
+      'node_list:issue',
+      'node_list:article',
+      IssuePublisher::CACHE_TAG_ISSUE_NAV,
+      'config:df_editor.settings',
+    ],
+  );
+}
+
+/**
  * Implements hook_page_attachments_alter().
  */
 function df_editor_page_attachments_alter(array &$attachments): void {
+  df_editor_apply_issue_nav_page_cache($attachments);
   if (!\Drupal::moduleHandler()->moduleExists('df_editor')) {
     return;
   }
@@ -161,6 +190,58 @@ function df_editor_page_attachments_alter(array &$attachments): void {
   if (\Drupal::currentUser()->hasPermission('publish issue with articles') && \Drupal::service('path.matcher')->isFrontPage()) {
     \Drupal::messenger()->addWarning(t('Homepage and Issues navigation preview: treating issue @nid as the current featured issue.', ['@nid' => $nid]));
   }
+}
+
+/**
+ * Invalidates render and page cache for issue-driven chrome.
+ */
+function df_editor_invalidate_issue_nav_cache(): void {
+  \Drupal::service('cache_tags.invalidator')->invalidateTags([
+    'node_list:issue',
+    'node_list:article',
+    IssuePublisher::CACHE_TAG_ISSUE_NAV,
+    'config:df_editor.settings',
+  ]);
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function df_editor_preprocess_page(array &$variables): void {
+  df_editor_apply_issue_nav_page_cache($variables);
+}
+
+/**
+ * Adds cache tags so issue publish and df_editor.settings changes bust page cache.
+ *
+ * @param array<string, mixed> $element
+ */
+function df_editor_apply_issue_nav_page_cache(array &$element): void {
+  $tags = [
+    'node_list:issue',
+    'node_list:article',
+    IssuePublisher::CACHE_TAG_ISSUE_NAV,
+    'config:df_editor.settings',
+  ];
+  if (function_exists('df_setup_get_latest_issue_nid')) {
+    $latest = df_setup_get_latest_issue_nid();
+    if ($latest) {
+      $tags[] = 'node:' . $latest;
+    }
+  }
+  $element['#cache']['tags'] = Cache::mergeTags($element['#cache']['tags'] ?? [], $tags);
+  $element['#cache']['contexts'] = Cache::mergeContexts(
+    $element['#cache']['contexts'] ?? [],
+    ['languages:language_interface'],
+  );
+  $element['#cache']['max-age'] = Cache::PERMANENT;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for issue edit forms.
+ */
+function df_editor_form_node_issue_edit_form_alter(array &$form, FormStateInterface $form_state): void {
+  df_editor_form_node_issue_form_alter($form, $form_state);
 }
 
 function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $form_state): void {
@@ -225,6 +306,51 @@ function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $
   if (isset($form['field_year']['widget'][0]['value'])) {
     $form['field_year']['widget'][0]['value']['#max'] = 2105;
   }
+  df_editor_attach_web_editor_save_redirect($form);
+}
+
+/**
+ * Keeps editors on the Gin edit form after save so status messages render.
+ */
+function df_editor_attach_web_editor_save_redirect(array &$form): void {
+  $account = \Drupal::currentUser();
+  if (!$account->hasPermission('create article content') && !$account->hasPermission('create issue content')) {
+    return;
+  }
+  if (!isset($form['actions'])) {
+    return;
+  }
+  foreach (array_keys($form['actions']) as $action) {
+    if (($form['actions'][$action]['#type'] ?? '') !== 'submit') {
+      continue;
+    }
+    if ($action === 'df_publish_issue_bundle') {
+      continue;
+    }
+    $form['actions'][$action]['#submit'][] = 'df_editor_web_editor_node_save_redirect';
+  }
+}
+
+/**
+ * Submit handler: redirect to edit-form after a successful save (Gin status messages).
+ */
+function df_editor_web_editor_node_save_redirect(array &$form, FormStateInterface $form_state): void {
+  if ($form_state->get('df_editor_web_editor_save_redirect_done')) {
+    return;
+  }
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  $node = $form_object->getEntity();
+  if (!$node instanceof NodeInterface || !in_array($node->bundle(), ['issue', 'article'], TRUE)) {
+    return;
+  }
+  if (!$node->id()) {
+    return;
+  }
+  $form_state->set('df_editor_web_editor_save_redirect_done', TRUE);
+  $form_state->setRedirectUrl($node->toUrl('edit-form'));
 }
 
 /**
@@ -255,6 +381,18 @@ function df_editor_issue_publish_bundle_submit(array &$form, FormStateInterface 
  * When an issue is first published via moderation, attach-publish its articles.
  */
 function df_editor_node_update(NodeInterface $node): void {
+  if ($node->bundle() === 'issue') {
+    $original = $node->original ?? NULL;
+    if ($original instanceof NodeInterface && $node->isPublished()) {
+      if ($node->hasField('field_hero_heading') && $original->hasField('field_hero_heading')) {
+        $old = (string) $original->get('field_hero_heading')->value;
+        $new = (string) $node->get('field_hero_heading')->value;
+        if ($old !== $new) {
+          df_editor_invalidate_issue_nav_cache();
+        }
+      }
+    }
+  }
   if ($node->bundle() !== 'issue' || !$node->isPublished()) {
     return;
   }

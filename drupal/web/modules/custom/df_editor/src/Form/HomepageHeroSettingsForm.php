@@ -9,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\df_editor\CurrentIssueNav;
+use Drupal\df_editor\IssuePublisher;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -102,6 +103,7 @@ final class HomepageHeroSettingsForm extends ConfigFormBase {
       ->set('homepage_hero_override_title', trim((string) $form_state->getValue('homepage_hero_override_title')))
       ->set('homepage_hero_override_link', trim((string) $form_state->getValue('homepage_hero_override_link')))
       ->save();
+    df_editor_invalidate_issue_nav_cache();
     parent::submitForm($form, $form_state);
   }
 

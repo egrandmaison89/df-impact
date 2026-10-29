@@ -54,6 +54,13 @@ function configGet(key: string): string {
 function configSet(key: string, value: string): void {
   const escaped = value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
   drush(`cset df_editor.settings ${key} "${escaped}" -y`);
+  invalidateIssueChromeCache();
+}
+
+function invalidateIssueChromeCache(): void {
+  drush(
+    `ev '\\Drupal::service("cache_tags.invalidator")->invalidateTags(["node_list:issue","node_list:article","df_editor:issue_navigation","config:df_editor.settings"]);'`,
+  );
 }
 
 function ensureUsers() {
@@ -82,7 +89,24 @@ function restoreChromeSnapshot(): void {
       `sqlq "UPDATE node__field_hero_heading SET field_hero_heading_value='${safe}' WHERE entity_id=${latestIssueNid}"`,
     );
   }
-  drush('cr');
+  invalidateIssueChromeCache();
+}
+
+async function withAnonymousPage(
+  page: import('@playwright/test').Page,
+  fn: (anon: import('@playwright/test').Page) => Promise<void>,
+): Promise<void> {
+  const browser = page.context().browser();
+  if (!browser) {
+    throw new Error('Playwright browser unavailable');
+  }
+  const ctx = await browser.newContext();
+  const anon = await ctx.newPage();
+  try {
+    await fn(anon);
+  } finally {
+    await ctx.close();
+  }
 }
 
 async function go(page: import('@playwright/test').Page, route: string) {
@@ -113,7 +137,8 @@ async function screenshot(page: import('@playwright/test').Page, name: string) {
 }
 
 async function saveConfigForm(page: import('@playwright/test').Page) {
-  await page.locator('#edit-submit, input[type="submit"][value="Save configuration"]').first().click();
+  const form = page.locator('form.system-config-form, form[id*="df-editor"]').last();
+  await form.locator('#edit-submit, input[type="submit"][value="Save configuration"]').click();
   await expect(page.locator('.messages--status, .messages--error')).toBeVisible({ timeout: 30_000 });
   await expect(page.locator('.messages--error')).toHaveCount(0);
 }
@@ -127,6 +152,11 @@ async function saveIssueForm(page: import('@playwright/test').Page) {
   } else {
     await page.locator('#edit-submit').click({ force: true });
   }
+  const status = page.locator(
+    '.messages--status, [data-drupal-messages] .messages--status, [role="contentinfo"]:has-text("Status message")',
+  );
+  await expect(status.first()).toBeVisible({ timeout: 60_000 });
+  await expect(status.first()).toContainText(/updated|saved|has been/i);
   await expect(page.locator('.messages--error')).toHaveCount(0);
 }
 
@@ -137,7 +167,6 @@ test.describe('Site admin chrome editing (UI)', () => {
   test.beforeAll(() => {
     ensureUsers();
     drush('updb -y');
-    drush('cr');
     latestIssueNid = latestPublishedIssueNid();
     expect(latestIssueNid, 'need a published issue for hero edit').toBeGreaterThan(0);
     for (const key of CONFIG_KEYS) {
@@ -195,41 +224,50 @@ test.describe('Site admin chrome editing (UI)', () => {
 
       configSet('homepage_hero_override_title', '');
       configSet('homepage_hero_override_link', '');
-      drush('cr');
 
       await go(page, '/admin/config/df-impact/homepage-hero');
       await expect(page.locator('#edit-homepage-hero-override-title')).toBeVisible();
       await go(page, `/node/${latestIssueNid}/edit`);
       await page.locator('#edit-field-hero-heading-0-value').fill(HERO_HEADING, { force: true });
       await saveIssueForm(page);
-      drush('cr');
 
-      await logout(page);
-      await go(page, '/');
-      await expect(page.locator('.homepage-banner h1')).toContainText(HERO_HEADING);
-      await expect(page.locator('.homepage-banner h1 a')).toHaveCount(0);
+      await withAnonymousPage(page, async (anon) => {
+        await go(anon, '/');
+        await expect
+          .poll(async () => anon.locator('.homepage-banner h1').innerText(), {
+            timeout: 120_000,
+            intervals: [500, 1000, 2000],
+          })
+          .toContain(HERO_HEADING);
+        await expect(anon.locator('.homepage-banner h1 a')).toHaveCount(0);
+      });
 
       await login(page, SITE_ADMIN.name, SITE_ADMIN.pass);
       await go(page, '/admin/config/df-impact/homepage-hero');
       await page.locator('#edit-homepage-hero-override-title').fill(HERO_OVERRIDE);
       await saveConfigForm(page);
-      drush('cr');
 
-      await logout(page);
-      await go(page, '/');
-      await expect(page.locator('.homepage-banner h1')).toContainText(HERO_OVERRIDE);
-      await expect(page.locator('.homepage-banner h1')).not.toContainText(HERO_HEADING);
+      await withAnonymousPage(page, async (anon) => {
+        await go(anon, '/');
+        await expect
+          .poll(async () => anon.locator('.homepage-banner h1').innerText(), {
+            timeout: 120_000,
+            intervals: [500, 1000, 2000],
+          })
+          .toContain(HERO_OVERRIDE);
+        await expect(anon.locator('.homepage-banner h1')).not.toContainText(HERO_HEADING);
 
-      await expect(page.locator(`a[href*="donate"], a[href*="Donation"]`).first()).toHaveAttribute(
-        'href',
-        new RegExp(DONATE_URL_SUFFIX.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
-      );
+        await expect(anon.locator(`a[href*="donate"], a[href*="Donation"]`).first()).toHaveAttribute(
+          'href',
+          new RegExp(DONATE_URL_SUFFIX.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
+        );
 
-      await page.locator('.mega-menu-link:has-text("Issues")').first().click();
-      await expect(page.locator(`.mega-menu-link:has-text("${SEE_ALL_LABEL}")`).first()).toBeVisible();
+        await anon.locator('.mega-menu-link:has-text("Issues")').first().click();
+        await expect(anon.locator(`.mega-menu-link:has-text("${SEE_ALL_LABEL}")`).first()).toBeVisible();
 
-      await go(page, '/');
-      await expect(page.locator('footer')).toContainText(FOOTER_LINK_TITLE);
+        await go(anon, '/');
+        await expect(anon.locator('footer')).toContainText(FOOTER_LINK_TITLE);
+      });
       await screenshot(page, '03-front-end-chrome');
     } finally {
       restoreChromeSnapshot();

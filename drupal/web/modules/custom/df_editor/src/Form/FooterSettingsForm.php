@@ -147,6 +147,7 @@ final class FooterSettingsForm extends ConfigFormBase {
       ->set('footer_badge_us_news_children_media_id', (int) $form_state->getValue('footer_badge_us_news_children_media_id'))
       ->set('footer_badge_charity_navigator_media_id', (int) $form_state->getValue('footer_badge_charity_navigator_media_id'))
       ->save();
+    df_editor_invalidate_issue_nav_cache();
     parent::submitForm($form, $form_state);
   }
 

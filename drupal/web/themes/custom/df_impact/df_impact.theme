@@ -1822,7 +1822,7 @@ function df_impact_in_brief_byline(NodeInterface $node): string {
 function df_impact_in_brief_listing_excerpt(NodeInterface $node): string {
   $row = df_impact_in_brief_manifest_row($node);
   if (!empty($row['excerpt'])) {
-    return trim(strip_tags((string) $row['excerpt']));
+    return df_impact_decode_plain_text(trim(strip_tags((string) $row['excerpt'])));
   }
   return df_impact_in_brief_plain_excerpt($node);
 }
@@ -1879,10 +1879,7 @@ function df_impact_in_brief_manifest_row(NodeInterface $node): array {
  * Decodes HTML entities for plain-text fields (titles, excerpts, alts).
  */
 function df_impact_decode_plain_text(?string $text): string {
-  if ($text === NULL || $text === '') {
-    return '';
-  }
-  return html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+  return \Drupal\df_migrate\TextEntityHelper::decode($text);
 }
 
 function df_impact_archive_excerpt_for_node(NodeInterface $node): string {

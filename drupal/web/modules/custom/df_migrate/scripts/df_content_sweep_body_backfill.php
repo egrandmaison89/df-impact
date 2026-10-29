@@ -53,10 +53,9 @@ foreach ($articles as $row) {
   $featured = $cleaner->getFeaturedAbsoluteUrl($node);
   $cleaned = $cleaner->cleanArticleHtml($export_body, $featured);
   $plain_clean = strlen(trim(strip_tags($cleaned['html'])));
-  if ($plain_clean <= $plain_current + 40) {
+  if ($plain_clean <= $plain_current + 20) {
     continue;
   }
-  // Skip when cleaner would not increase stored body (export-only blocks removed at render).
   $node->set('body', [
     'value' => $cleaned['html'],
     'format' => $node->get('body')->format ?? 'full_html',

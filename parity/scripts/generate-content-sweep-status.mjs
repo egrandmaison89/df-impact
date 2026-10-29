@@ -60,6 +60,8 @@ Latest artifact: \`${latest}\` · CSV: \`${latest.replace('.json', '.csv')}\`
 | **Pass** (≥98% text, 0 shortcodes, 0 wp-internal links, links OK) | **${report.passed}** (${((report.passRateAmongComparable || 0) * 100).toFixed(1)}% of comparable) |
 | ≥98% text similarity (comparable) | ${report.text98AmongComparable} |
 | ≥98% text similarity (all ${report.total} URLs) | ${report.text98AmongAll ?? report.rows.filter((r) => (r.textSimilarity ?? 0) >= 0.98).length} |
+| Broken in-body links (total) | ${report.rows.reduce((s, r) => s + (r.brokenInternalLinks?.length || 0), 0)} |
+| **In-scope pass** (excludes \`issue\` template — deferred to issue-landing PR) | ${report.rows.filter((r) => r.template !== 'issue' && r.pass).length} / ${report.rows.filter((r) => r.template !== 'issue').length} |
 
 ## Text similarity distribution (comparable)
 

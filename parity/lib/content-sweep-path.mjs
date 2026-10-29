@@ -4,7 +4,15 @@ import path from 'node:path';
 /** WP paths whose reference-pack folder differs from pathToPackSlug. */
 export const REF_PACK_SLUG_OVERRIDES = {
   '/digital-exclusives': 'category_digital-exclusives',
+  '/home': 'homepage',
+  '/tag/digital-exclusives': 'category_digital-exclusives',
 };
+
+/** Strip pagination suffix so page 2+ can reuse page-1 ref-pack HTML. */
+export function baselinePathForFrozen(publicPath) {
+  const normalized = normalizePath(publicPath);
+  return normalized.replace(/\/page\/\d+$/i, '');
+}
 
 export function normalizePath(p) {
   const x = p.startsWith('/') ? p : `/${p}`;
@@ -25,7 +33,8 @@ export function pathToPackSlug(p) {
 }
 
 export function frozenWpHtmlPath(packRoot, publicPath) {
-  const slug = pathToPackSlug(publicPath);
+  const basePath = baselinePathForFrozen(publicPath);
+  const slug = pathToPackSlug(basePath);
   const file = path.join(packRoot, slug, 'desktop', 'rendered.html');
   return fs.existsSync(file) ? file : null;
 }

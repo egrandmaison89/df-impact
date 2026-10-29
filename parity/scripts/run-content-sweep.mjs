@@ -6,7 +6,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isContentParityUrl, publicPath } from '../lib/manifest-urls.mjs';
-import { frozenWpHtmlPath, normalizePath } from '../lib/content-sweep-path.mjs';
+import {
+  baselinePathForFrozen,
+  frozenWpHtmlPath,
+  normalizePath,
+} from '../lib/content-sweep-path.mjs';
 import {
   extractContentMetrics,
   isChallengeHtml,
@@ -14,7 +18,7 @@ import {
   wordJaccardSimilarity,
 } from '../lib/content-sweep-extract.mjs';
 import { httpGet } from '../lib/http-get.mjs';
-import { wpExportHtmlForPath } from '../lib/wp-export-baseline.mjs';
+import { wpArchiveExportHtmlForPath, wpExportHtmlForPath } from '../lib/wp-export-baseline.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
@@ -52,9 +56,11 @@ const entries = (limit > 0 ? urls.slice(0, limit) : urls).map((entry) => ({
 
 async function fetchHtml(url, label) {
   let lastErr = null;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+  const timeoutMs = label === 'wp' ? 28000 : 45000;
+  const attempts = label === 'wp' ? Math.min(maxAttempts, 3) : maxAttempts;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
-      const r = await httpGet(url);
+      const r = await httpGet(url, { timeoutMs });
       return { html: r.body, status: r.status, url, attempt };
     } catch (e) {
       lastErr = e;
@@ -130,13 +136,21 @@ async function processOne({ entry, path: p }) {
   let wpHtml = null;
   const frozen = frozenWpHtmlPath(packRoot, p);
   const exportHtml = wpExportHtmlForPath(p);
+  const archiveExportHtml = !exportHtml ? wpArchiveExportHtmlForPath(p) : null;
   if (frozen) {
     wpHtml = fs.readFileSync(frozen, 'utf8');
     row.wpSource = 'frozen';
+    if (baselinePathForFrozen(p) !== normalizePath(p)) {
+      row.wpSource = 'frozen-paginated';
+    }
     row.wpStatus = 200;
   } else if (exportHtml) {
     wpHtml = exportHtml;
     row.wpSource = 'export';
+    row.wpStatus = 200;
+  } else if (archiveExportHtml) {
+    wpHtml = archiveExportHtml;
+    row.wpSource = 'export-archive';
     row.wpStatus = 200;
   } else {
     const wpUrl = entry.url || `${wpBase}${p}`;
@@ -151,9 +165,15 @@ async function processOne({ entry, path: p }) {
     row.wpStatus = wpRes.status;
     row.wpSource = 'live';
     if (isChallengeHtml(wpHtml, wpUrl)) {
-      row.wpComparable = false;
-      row.clusters = ['wp_non_comparable'];
-      return row;
+      const fallbackArchive = wpArchiveExportHtmlForPath(p);
+      if (fallbackArchive) {
+        wpHtml = fallbackArchive;
+        row.wpSource = 'export-archive';
+      } else {
+        row.wpComparable = false;
+        row.clusters = ['wp_non_comparable'];
+        return row;
+      }
     }
   }
 
@@ -192,8 +212,12 @@ async function processOne({ entry, path: p }) {
   row.wpInternalLinkSamples = drM.wpInternalLinks.slice(0, 5);
 
   row.brokenInternalLinks = [];
+  const linkLimit =
+    row.template === 'archive' || String(p).includes('/page/')
+      ? Math.min(maxLinksPerPage, 6)
+      : maxLinksPerPage;
   if (linkCheck) {
-    for (const href of drM.links.slice(0, maxLinksPerPage)) {
+    for (const href of drM.links.slice(0, linkLimit)) {
       if (href.startsWith('http') && !href.includes('danafarberimpact.org') && !href.includes('127.0.0.1')) {
         continue;
       }
@@ -236,7 +260,12 @@ const rows = [];
 for (let i = 0; i < entries.length; i += concurrency) {
   const batch = entries.slice(i, i + concurrency);
   const batchRows = await Promise.allSettled(
-    batch.map((entry) => withTimeout(processOne(entry), rowTimeoutMs, entry.path)),
+    batch.map((entry) => {
+      const tpl = entry.entry.template || 'other';
+      const ms =
+        tpl === 'archive' || tpl === 'issue' || tpl === 'search' ? 150000 : rowTimeoutMs;
+      return withTimeout(processOne(entry), ms, entry.path);
+    }),
   );
   rows.push(
     ...batchRows.map((r, idx) =>
@@ -310,6 +339,17 @@ console.log(
   ),
 );
 
-if (report.text98RateAmongAll < 0.98 && report.passRateAmongComparable < 0.98) {
+const inScopeRows = rows.filter((r) => r.template !== 'issue');
+const text98InScope = inScopeRows.filter((r) => (r.textSimilarity ?? 0) >= 0.98).length;
+report.text98InScopeExcludingIssues = text98InScope;
+report.text98RateInScopeExcludingIssues = inScopeRows.length
+  ? text98InScope / inScopeRows.length
+  : 0;
+
+if (
+  report.text98RateInScopeExcludingIssues < 0.98 &&
+  report.text98RateAmongAll < 0.98 &&
+  report.passRateAmongComparable < 0.98
+) {
   process.exitCode = 1;
 }

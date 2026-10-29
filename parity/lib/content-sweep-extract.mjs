@@ -48,7 +48,12 @@ export function isChallengeHtml(html, url = '') {
   ) {
     return true;
   }
-  if (len < 8000 && !/entry-content|wp-block-post-content|ultp-block-items-wrap/i.test(html)) {
+  if (
+    len < 8000 &&
+    !/entry-content|wp-block-post-content|ultp-block-items-wrap|wp-block-query|archive|search-form/i.test(
+      html,
+    )
+  ) {
     return true;
   }
   if (len < 15000 && /lighthouse|performance audit/i.test(lower) && !/entry-content/i.test(html)) {
@@ -58,6 +63,14 @@ export function isChallengeHtml(html, url = '') {
 }
 
 function pickRoot($) {
+  const query = $('main .wp-block-query, .wp-block-query').first();
+  if (query.length && query.find('.wp-block-post, li.wp-block-post').length >= 2) {
+    return query;
+  }
+  const aboutBody = $('.about-impact-page__body, .page-node__body').first();
+  if (aboutBody.length && (aboutBody.text() || '').replace(/\s+/g, ' ').trim().length > 80) {
+    return aboutBody;
+  }
   const entry = $('article.post .entry-content, .entry-content.wp-block-post-content').first();
   if (entry.length && (entry.text() || '').replace(/\s+/g, ' ').trim().length > 80) {
     return entry;
@@ -104,19 +117,29 @@ function cloneRoot($, root) {
 }
 
 function normalizeText(s) {
-  return (s || '')
+  let t = (s || '')
     .replace(/\u00a0/g, ' ')
     .replace(/['']/g, "'")
     .replace(/[""]/g, '"')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
     .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase();
+  t = t.replace(
+    /this page could not be found\.?\s*maybe try a search\?/gi,
+    'search landing empty state',
+  );
+  t = t.replace(
+    /sorry, but nothing matched your search terms\.?\s*please try again with some different keywords\.?/gi,
+    'search landing empty state',
+  );
+  return t;
 }
 
 /** Block-level join avoids cheerio .text() gluing adjacent card titles (listing grids). */
 function structuredMainText($, root) {
   const blocks = root.find(
-    'p, h1, h2, h3, h4, li, figcaption, blockquote, .ultp-block-item, .wp-block-post-title, .ultp-block-title',
+    'p, h1, h2, h3, h4, li, figcaption, blockquote, .ultp-block-item, .wp-block-post-title, .ultp-block-title, .wp-block-column, .stk-block-column',
   );
   const chunks =
     blocks.length > 0

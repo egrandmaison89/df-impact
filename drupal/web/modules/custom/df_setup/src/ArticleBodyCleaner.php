@@ -21,7 +21,7 @@ final class ArticleBodyCleaner {
   /**
    * Dated WP posts: /2026/03/post-slug/.
    */
-  private const DATED_POST_PATTERN = '#https?://(?:www\.)?danafarberimpact\.org/\d{4}/\d{2}/([^/]+)/?#i';
+  private const DATED_POST_PATTERN = '~https?://(?:www\.)?danafarberimpact\.org/(\d{4})/(\d{2})/([^/?#]+)/?~i';
 
   /** @var int Matches string field max_length (byline, photo_credit). */
   private const STRING_FIELD_MAX = 255;
@@ -242,23 +242,60 @@ final class ArticleBodyCleaner {
    * Strips standalone By / Photography lines (after deck removal).
    */
   private function removeStandaloneBylineParagraphs(string $html): string {
-    $patterns = [
-      '#<p[^>]*>\s*(?:<strong>)?\s*By\s+[^<]+?(?:</strong>)?\s*</p>#iu',
-      '#<p[^>]*>\s*(?:<strong>)?\s*Written by\s+[^<]+?(?:</strong>)?\s*</p>#iu',
-      '#<p[^>]*>\s*Photograph(?:y|s)?\s+by\s+[^<]*?</p>#i',
-      '#<p[^>]*>\s*Photos?\s+by\s+[^<]*?</p>#i',
-    ];
-    foreach ($patterns as $p) {
-      $html = preg_replace($p, '', $html) ?? $html;
+    if ($html === '' || !str_contains($html, '<p')) {
+      return $html;
     }
-    return $html;
+
+    $doc = new \DOMDocument();
+    libxml_use_internal_errors(TRUE);
+    $wrapped = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div id="df-root">' . $html . '</div></body></html>';
+    $doc->loadHTML($wrapped);
+    libxml_clear_errors();
+
+    $xpath = new \DOMXPath($doc);
+    $root = $doc->getElementById('df-root');
+    if (!$root) {
+      return $html;
+    }
+
+    /** @var \DOMElement $p */
+    foreach ($xpath->query('.//p', $root) as $p) {
+      $text = trim(html_entity_decode(strip_tags($doc->saveHTML($p)), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+      if ($text === '') {
+        continue;
+      }
+      $len = mb_strlen($text);
+      $sentenceLike = substr_count($text, '.') > 1 || $len > 160;
+      if (!$sentenceLike && preg_match('/^(?:Written by|By)\s+/iu', $text)) {
+        $p->parentNode?->removeChild($p);
+        continue;
+      }
+      if ($len <= 120 && preg_match('/^Photograph(?:y|s)?\s+by\s+/iu', $text)) {
+        $p->parentNode?->removeChild($p);
+        continue;
+      }
+      if ($len <= 120 && preg_match('/^Photos?\s+by\s+/iu', $text)) {
+        $p->parentNode?->removeChild($p);
+      }
+    }
+
+    $out = '';
+    foreach ($root->childNodes as $child) {
+      $out .= $doc->saveHTML($child);
+    }
+    return $out;
   }
 
   /**
    * Rewrites WordPress absolute URLs in anchors to local paths.
    */
   private function rewriteInternalLinks(string $html): string {
-    if ($html === '' || (!str_contains($html, 'danafarberimpact.org') && !str_contains($html, '/wp-content/'))) {
+    if (
+      $html === '' ||
+      (!str_contains($html, 'danafarberimpact.org') &&
+        !str_contains($html, '/wp-content/') &&
+        !str_contains($html, '/stories/'))
+    ) {
       return $html;
     }
 
@@ -304,12 +341,17 @@ final class ArticleBodyCleaner {
       return '/sites/default/files/wp-images/' . basename($href);
     }
 
-    if (!str_contains($href, 'danafarberimpact.org')) {
+    $path = str_starts_with($href, '/') ? $href : parse_url($href, PHP_URL_PATH);
+    if (!is_string($path) || $path === '') {
       return NULL;
     }
 
-    $path = parse_url($href, PHP_URL_PATH);
-    if (!is_string($path)) {
+    $storyAlias = $this->mapStoriesPathToDrupalAlias($path);
+    if ($storyAlias !== NULL) {
+      return $storyAlias;
+    }
+
+    if (!str_contains($href, 'danafarberimpact.org')) {
       return NULL;
     }
 
@@ -331,7 +373,7 @@ final class ArticleBodyCleaner {
     }
 
     if (preg_match(self::DATED_POST_PATTERN, $href, $m)) {
-      return '/stories/' . $m[1];
+      return '/' . $m[1] . '/' . $m[2] . '/' . $m[3];
     }
 
     if (preg_match('#/wp-content/uploads/(.+)$#i', $path, $m)) {
@@ -339,6 +381,39 @@ final class ArticleBodyCleaner {
     }
 
     return NULL;
+  }
+
+  /**
+   * Maps legacy /stories/{slug} paths to migrated Drupal aliases.
+   */
+  private function mapStoriesPathToDrupalAlias(string $path): ?string {
+    if (!preg_match('~^/stories/([^/]+)/?$~', $path, $m)) {
+      return NULL;
+    }
+    $slug = strtolower($m[1]);
+    static $by_slug = NULL;
+    if ($by_slug === NULL) {
+      $by_slug = [];
+      $module_path = \Drupal::service('extension.list.module')->getPath('df_migrate');
+      foreach (['articles.json', 'in_brief.json'] as $file) {
+        $json_path = DRUPAL_ROOT . '/' . $module_path . '/data/' . $file;
+        if (!is_readable($json_path)) {
+          continue;
+        }
+        $rows = json_decode((string) file_get_contents($json_path), TRUE);
+        if (!is_array($rows)) {
+          continue;
+        }
+        foreach ($rows as $row) {
+          $row_slug = isset($row['slug']) ? strtolower((string) $row['slug']) : '';
+          $alias = $row['drupal_alias'] ?? '';
+          if ($row_slug !== '' && is_string($alias) && $alias !== '') {
+            $by_slug[$row_slug] = '/' . ltrim($alias, '/');
+          }
+        }
+      }
+    }
+    return $by_slug[$slug] ?? NULL;
   }
 
   /**

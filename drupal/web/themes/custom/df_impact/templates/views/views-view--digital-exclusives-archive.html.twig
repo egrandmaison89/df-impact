@@ -1,49 +1,17 @@
 {#
 /**
  * @file
- * Full view wrapper for Digital Exclusives archive (matching WP category UX).
- *
- * @see stable9/templates/views/views-view.html.twig
+ * Digital Exclusives archive — same query layout as topic archives.
  */
 #}
-<div{{ attributes.addClass('de-archive', 'view-digital-exclusives-archive') }}>
-  <div class="container de-archive__inner">
-    {{ title_prefix }}
-    {% if title %}
-      <h2 class="de-archive__admin-title visually-hidden">{{ title }}</h2>
-    {% endif %}
-    {{ title_suffix }}
+<h1 class="wp-block-heading alignwide blue-border-header has-text-color has-montserrat-font-family">{{ 'Digital Exclusives'|t }}</h1>
 
-    {% if header %}
-      <header class="de-archive__header">
-        {{ header }}
-      </header>
-    {% endif %}
+{% if rows %}
+  {{ rows }}
+{% elseif empty %}
+  {{ empty }}
+{% endif %}
 
-    {{ exposed }}
-    {{ attachment_before }}
-
-    {% if rows %}
-      {{ rows }}
-    {% elseif empty %}
-      <div class="de-archive__empty">
-        {{ empty }}
-      </div>
-    {% endif %}
-
-    {% if pager %}
-      {{ pager }}
-    {% endif %}
-
-    {{ attachment_after }}
-    {{ more }}
-
-    {% if footer %}
-      <footer class="de-archive__footer">
-        {{ footer }}
-      </footer>
-    {% endif %}
-
-    {{ feed_icons }}
-  </div>
-</div>
+{% if pager %}
+  {{ pager }}
+{% endif %}

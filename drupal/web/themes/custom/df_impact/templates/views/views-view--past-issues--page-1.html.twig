@@ -1,0 +1,23 @@
+{#
+/**
+ * @file
+ * Past issues landing (/past-issues/) — WordPress Recent Issues band.
+ */
+#}
+<h1 class="wp-block-heading blue-border-header has-text-color has-montserrat-font-family">{{ 'Recent Issues'|t }}</h1>
+
+{% if rows %}
+  <div class="wp-block-group is-content-justification-left is-layout-flex wp-block-group-is-layout-flex" style="margin-top:40px">
+    {% for row in rows %}
+      <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained" style="padding-left:20px">
+        {{ row.content }}
+      </div>
+    {% endfor %}
+  </div>
+{% elseif empty %}
+  {{ empty }}
+{% endif %}
+
+{% if pager %}
+  {{ pager }}
+{% endif %}

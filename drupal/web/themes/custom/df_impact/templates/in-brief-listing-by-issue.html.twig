@@ -1,21 +1,26 @@
 {#
 /**
  * @file
- * In Brief archive: one section per issue, "Load more" per section.
+ * In Brief archive (/in-brief/) — WordPress PostX sections grouped by issue.
  */
 #}
+<h1 class="wp-block-heading alignwide blue-border-header has-text-color has-montserrat-font-family">{{ 'In Brief'|t }}</h1>
+
 {% for section in sections %}
-  <section class="in-brief-page__issue-section">
-    <h2 class="in-brief-page__issue-heading">{{ section.issue_label }}</h2>
-    <div class="in-brief-page__items">
-      {% for item in section.items %}
-        {{ item }}
-      {% endfor %}
+  <h2 class="wp-block-heading orange-border-header has-text-color has-montserrat-font-family">{{ section.issue_label }}</h2>
+
+  <div class="ultp-post-grid-block wp-block-ultimate-post-post-list-3 ultp-block-{{ section.ultp_block_id }} alignwide">
+    <div class="ultp-block-wrapper">
+      <div class="ultp-block-items-wrap ultp-block-row ultp-block-column-1 ultp-block-content-middle ultp-layout1">
+        {% for item in section.items %}
+          {{ item }}
+        {% endfor %}
+      </div>
+      {% if section.show_more %}
+        <div class="ultp-loadmore">
+          <span class="ultp-loadmore-action js-in-brief-load-more" tabindex="0" role="button">{{ 'Load More Briefs'|t }}</span>
+        </div>
+      {% endif %}
     </div>
-    {% if section.show_more %}
-      <button type="button" class="in-brief-page__load-more js-in-brief-load-more">
-        {{ 'Load More Briefs'|t }}
-      </button>
-    {% endif %}
-  </section>
+  </div>
 {% endfor %}

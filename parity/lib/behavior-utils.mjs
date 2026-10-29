@@ -58,7 +58,15 @@ export async function computedStyleHover(page, selector) {
       }
       await loc.hover({ timeout: 8000 });
       await page.waitForTimeout(650);
-      const hovering = await loc.evaluate((el) => el.matches(':hover'));
+      let hovering = await loc.evaluate((el) => el.matches(':hover'));
+      if (!hovering && box) {
+        const cdp = await page.context().newCDPSession(page);
+        const x = box.x + box.width / 2;
+        const y = box.y + box.height / 2;
+        await cdp.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
+        await page.waitForTimeout(700);
+        hovering = await loc.evaluate((el) => el.matches(':hover'));
+      }
       if (hovering) break;
     } catch {
       if (attempt === 2) {

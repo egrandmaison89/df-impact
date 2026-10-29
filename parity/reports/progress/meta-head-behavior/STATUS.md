@@ -31,6 +31,7 @@ Base: `cursor/phase4-chrome-behavior-0b67`
 ## Nondeterminism handling (network / DOM)
 
 - **Route abort:** cookie/consent vendor scripts (`cookiebot`, `onetrust`, `osano`, `trustarc`, `quantcast`, `iubenda`) blocked in `prepareBehaviorPage()` so banner DOM does not affect widget counts.
+- **Consent DOM removal:** after accept/dismiss clicks, `dismissOverlays()` removes `#onetrust-*`, Cookiebot, and similar roots so they do not block pointer hover on footer/links during capture (widgets already exclude consent nodes).
 - **WP live load:** intermittent timeouts or incomplete hero/nav → `cross.wp.snapshot` (no diff for that case); not counted as a behavior mismatch row.
 
 ## Gates

@@ -11,15 +11,8 @@ body {
   margin: 0;
 }
 
-/* Live behavior parity: sticky header + mega flyout hover (Max Mega Menu). */
+/* Mega flyout hover (Max Mega Menu). Sticky header comes from WP pack (`header { position: sticky }`). */
 @media (min-width: 769px) {
-  .desktop-header,
-  .impact-header,
-  .header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
 
   #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children:hover > ul.mega-sub-menu,
   #mega-menu-max_mega_menu_1 li.mega-menu-flyout.mega-menu-item-has-children:hover > ul.mega-sub-menu {
@@ -36,6 +29,17 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+/* `.desktop-header .scrolled` in WP CSS is for `.header-logo.scrolled` only. */
+.impact-header.scrolled,
+.desktop-header.scrolled {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+.gtranslate_wrapper select:not(.gt_selector) {
+  display: none !important;
+}
+
 .wp-site-blocks {
   width: 100%;
   max-width: none;
@@ -48,9 +52,10 @@ body {
  */
 @media (min-width: 769px) {
   .wp-site-blocks .desktop-header.alignfull {
-    margin-left: calc(-1 * var(--wp--custom--spacing--outer)) !important;
-    margin-right: calc(-1 * var(--wp--custom--spacing--outer)) !important;
-    width: unset;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100%;
   }
 
   .wp-site-blocks .desktop-header .alignfull,

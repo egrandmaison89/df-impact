@@ -53,8 +53,10 @@
         .off('scroll.dfImpactWpChrome')
         .on('scroll.dfImpactWpChrome', function () {
           var scrolled = $(window).scrollTop() > 50;
-          $('.header, .desktop-header, .impact-header').toggleClass('header--scrolled scrolled', scrolled);
-          $('.desktop-header, .impact-header, .header-logo').toggleClass('scrolled', scrolled);
+          // WP CSS `.desktop-header .scrolled { max-width: 250px }` applies only to `.header-logo.scrolled`.
+          // Do not add `.scrolled` to `.impact-header` / `.desktop-header` or the whole header collapses.
+          $('.header, .desktop-header, .impact-header').toggleClass('header--scrolled', scrolled);
+          $('.header-logo').toggleClass('scrolled', scrolled);
         })
         .trigger('scroll');
 

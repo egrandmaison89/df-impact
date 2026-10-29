@@ -1243,3 +1243,92 @@ function df_setup_entity_view_alter(array &$build, EntityInterface $entity, Enti
     $entity->getCacheTags(),
   );
 }
+
+/**
+ * WP reference-pack map: issue path alias => hero uses is-light (mega-nav solid bg).
+ *
+ * @return array<string, bool>
+ */
+function df_setup_issue_banner_is_light_reference_map(): array {
+  $repo_root = dirname(DRUPAL_ROOT, 2);
+  $pack_root = $repo_root . '/parity/reference-pack';
+  if (!is_dir($pack_root)) {
+    return [];
+  }
+  $map = [];
+  foreach (scandir($pack_root) ?: [] as $dir) {
+    if ($dir === '.' || $dir === '..' || !str_ends_with($dir, '-issue')) {
+      continue;
+    }
+    $html_file = $pack_root . '/' . $dir . '/tablet/rendered.html';
+    if (!is_readable($html_file)) {
+      continue;
+    }
+    $html = file_get_contents($html_file);
+    if ($html === FALSE) {
+      continue;
+    }
+    $map['/' . $dir] = (bool) preg_match(
+      '/<div class="wp-block-cover alignfull is-light"/',
+      $html,
+    );
+  }
+  return $map;
+}
+
+/**
+ * Ensures the issue edit form exposes field_issue_banner_is_light (idempotent).
+ */
+function df_setup_ensure_issue_banner_is_light_form_display(): string {
+  if (!FieldConfig::loadByName('node', 'issue', 'field_issue_banner_is_light')) {
+    return 'field_issue_banner_is_light not installed; form display skipped.';
+  }
+  $form_display = \Drupal\Core\Entity\Entity\EntityFormDisplay::load('node.issue.default');
+  if (!$form_display || $form_display->getComponent('field_issue_banner_is_light')) {
+    return 'Issue form display already includes field_issue_banner_is_light.';
+  }
+  $form_display->setComponent('field_issue_banner_is_light', [
+    'type' => 'boolean_checkbox',
+    'weight' => 5,
+    'region' => 'content',
+    'settings' => ['display_label' => TRUE],
+  ])->save();
+  return 'Added field_issue_banner_is_light to issue form display.';
+}
+
+/**
+ * Idempotent backfill of field_issue_banner_is_light from reference-pack WP HTML.
+ */
+function df_setup_backfill_issue_banner_is_light(): string {
+  if (!FieldConfig::loadByName('node', 'issue', 'field_issue_banner_is_light')) {
+    return 'field_issue_banner_is_light missing; backfill skipped.';
+  }
+  $map = df_setup_issue_banner_is_light_reference_map();
+  if ($map === []) {
+    return 'Reference-pack issue map empty; backfill skipped.';
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $alias_manager = \Drupal::service('path_alias.manager');
+  $updated = 0;
+  $query = $storage->getQuery()->condition('type', 'issue')->accessCheck(FALSE);
+  foreach ($storage->loadMultiple($query->execute()) as $node) {
+    if (!$node instanceof NodeInterface || !$node->hasField('field_issue_banner_is_light')) {
+      continue;
+    }
+    $path = $alias_manager->getAliasByPath('/node/' . $node->id());
+    if (!isset($map[$path])) {
+      continue;
+    }
+    $want = $map[$path] ? 1 : 0;
+    $have = $node->get('field_issue_banner_is_light')->isEmpty()
+      ? NULL
+      : (int) $node->get('field_issue_banner_is_light')->value;
+    if ($have === $want) {
+      continue;
+    }
+    $node->set('field_issue_banner_is_light', $want);
+    $node->save();
+    $updated++;
+  }
+  return "Backfilled field_issue_banner_is_light on $updated issue(s).";
+}

@@ -14,7 +14,19 @@ const parityRoot = path.resolve(__dirname, '..');
 const samples = JSON.parse(
   fs.readFileSync(path.join(parityRoot, 'config', 'template-samples.json'), 'utf8'),
 );
+const wpLive404 = JSON.parse(
+  fs.readFileSync(path.join(parityRoot, 'config', 'wp-live-404-paths.json'), 'utf8'),
+);
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://df-impact.ddev.site').replace(/\/$/, '');
+
+function normalizePath(p) {
+  if (!p || p === '/') return '/';
+  return `/${p.replace(/^\/+|\/+$/g, '')}`;
+}
+
+function expect404(pathname) {
+  return Object.prototype.hasOwnProperty.call(wpLive404, normalizePath(pathname));
+}
 
 const paths = [...new Set(Object.values(samples).flatMap((e) => e.paths || []))];
 
@@ -29,7 +41,9 @@ function checkOne(pathname) {
         res.resume();
         res.on('end', () => {
           const location = res.headers.location || null;
-          const ok = res.statusCode === 200 && !location;
+          const ok =
+            (res.statusCode === 200 && !location) ||
+            (expect404(pathname) && res.statusCode === 404 && !location);
           resolve(
             ok
               ? { path: pathname, status: res.statusCode, ok: true }

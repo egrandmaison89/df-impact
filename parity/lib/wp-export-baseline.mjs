@@ -158,7 +158,11 @@ export function wpExportHtmlForPath(publicPath) {
       byline: b.byline,
       created: b.created,
       categories: b.topics || [],
-    })).forEach((v, k) => cache.set(k, v));
+    })).forEach((v, k) => {
+      if (!cache.has(k)) {
+        cache.set(k, v);
+      }
+    });
 
     indexByPath(loadJson('issues.json'), (i) => ({
       path:

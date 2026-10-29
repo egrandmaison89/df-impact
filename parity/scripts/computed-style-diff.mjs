@@ -26,6 +26,18 @@ const WP_BASELINE_RUN = process.env.PARITY_CS_WP_BASELINE_RUN || '';
 const wpBaseLive = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(/\/$/, '');
 const packRoot = path.join(parityRoot, 'reference-pack');
+const wpLive404Paths = JSON.parse(
+  fs.readFileSync(path.join(parityRoot, 'config', 'wp-live-404-paths.json'), 'utf8'),
+);
+
+function normalizePath(p) {
+  if (!p || p === '/') return '/';
+  return `/${String(p).replace(/^\/+|\/+$/g, '')}`;
+}
+
+function isWpLive404Path(publicPath) {
+  return Object.prototype.hasOwnProperty.call(wpLive404Paths, normalizePath(publicPath));
+}
 let refPackServer = null;
 let refPackBase = null;
 const RECT_TOLERANCE = Number(process.env.PARITY_RECT_TOLERANCE_PX || 2);
@@ -471,7 +483,8 @@ async function runOneJob(browser, job) {
     if (report.wpStatus === 0 || report.wpStatus >= 400) {
       report.wpComparable = false;
     }
-    if (report.drStatus !== 200) {
+    const dr404Ok = isWpLive404Path(job.path) && report.drStatus === 404;
+    if (report.drStatus !== 200 && !dr404Ok) {
       throw new Error(`Drupal HTTP ${report.drStatus}`);
     }
     results.push(report);

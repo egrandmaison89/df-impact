@@ -16,6 +16,7 @@
 
 declare(strict_types=1);
 
+use Drupal\Core\Config\FileStorage;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 
@@ -176,4 +177,48 @@ function df_setup_post_update_repair_internal_links_and_media(): string {
     (int) ($result['featured_scanned'] ?? 0),
     (int) ($result['lead_body_resync'] ?? 0),
   );
+}
+
+/**
+ * Installs issue banner is-light field config and backfills from reference-pack.
+ */
+function df_setup_post_update_issue_banner_is_light(): string {
+  $messages = [df_setup_import_issue_banner_is_light_config()];
+  $messages[] = df_setup_ensure_issue_banner_is_light_form_display();
+  $messages[] = df_setup_backfill_issue_banner_is_light();
+  return implode(' ', array_filter($messages));
+}
+
+/**
+ * Imports field storage + field config from this module's config/install (idempotent).
+ */
+function df_setup_import_issue_banner_is_light_config(): string {
+  if (!\Drupal::moduleHandler()->moduleExists('field')) {
+    return 'Field module unavailable.';
+  }
+  $module_path = \Drupal::service('extension.list.module')->getPath('df_setup');
+  $install_storage = new FileStorage($module_path . '/config/install');
+  $installed = [];
+
+  if (!FieldStorageConfig::loadByName('node', 'field_issue_banner_is_light')) {
+    $data = $install_storage->read('field.storage.node.field_issue_banner_is_light');
+    if ($data) {
+      FieldStorageConfig::create($data)->save();
+      $installed[] = 'storage';
+    }
+  }
+
+  if (!FieldConfig::loadByName('node', 'issue', 'field_issue_banner_is_light')) {
+    $data = $install_storage->read('field.field.node.issue.field_issue_banner_is_light');
+    if ($data) {
+      FieldConfig::create($data)->save();
+      $installed[] = 'field';
+    }
+  }
+
+  if ($installed !== []) {
+    \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+    return 'Imported field_issue_banner_is_light ' . implode('+', $installed) . '.';
+  }
+  return 'field_issue_banner_is_light config already present.';
 }

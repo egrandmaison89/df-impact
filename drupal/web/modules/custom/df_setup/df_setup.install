@@ -1200,3 +1200,119 @@ function _df_setup_apply_about_impact_gutenberg_body(): string {
   $node->save();
   return 'Updated About Impact body to Gutenberg block structure.';
 }
+
+/**
+ * Rewrites stored content links from legacy issue URL to WP tag archive.
+ */
+function _df_setup_apply_late_fall_2022_link_parity(): string {
+  $search = [
+    'https://danafarberimpact.org/late-fall-2022-issue/',
+    'http://danafarberimpact.org/late-fall-2022-issue/',
+    'https://www.danafarberimpact.org/late-fall-2022-issue/',
+    '/late-fall-2022-issue/',
+    '/late-fall-2022-issue',
+  ];
+  $replace = [
+    '/tag/late-fall-2022/',
+    '/tag/late-fall-2022/',
+    '/tag/late-fall-2022/',
+    '/tag/late-fall-2022/',
+    '/tag/late-fall-2022',
+  ];
+
+  $link_replaced = 0;
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()->accessCheck(FALSE)->execute();
+  foreach ($storage->loadMultiple($nids) as $node) {
+    if (!$node instanceof \Drupal\node\NodeInterface) {
+      continue;
+    }
+    $changed = FALSE;
+    foreach ($node->getFieldDefinitions() as $field_name => $definition) {
+      if (!$node->hasField($field_name) || $definition->getFieldStorageDefinition()->getMainPropertyName() !== 'value') {
+        continue;
+      }
+      $field = $node->get($field_name);
+      if ($field->isEmpty()) {
+        continue;
+      }
+      foreach ($field as $delta => $item) {
+        $raw = (string) $item->value;
+        if ($raw === '' || !str_contains($raw, 'late-fall-2022-issue')) {
+          continue;
+        }
+        $next = str_replace($search, $replace, $raw);
+        if ($next !== $raw) {
+          $field->get($delta)->value = $next;
+          $changed = TRUE;
+          $link_replaced++;
+        }
+      }
+    }
+    if ($changed) {
+      $node->save();
+    }
+  }
+
+  $issue_ids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'issue')
+    ->condition('field_season', 'late fall')
+    ->condition('field_year', '2022')
+    ->range(0, 1)
+    ->execute();
+  $issue_id = $issue_ids ? (int) reset($issue_ids) : 0;
+  if ($issue_id === 0) {
+    return "Late Fall 2022 links: {$link_replaced} field value(s) updated; issue node not found for byline backfill.";
+  }
+
+  $article_ids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('field_issue.target_id', $issue_id)
+    ->execute();
+  $export_path = DRUPAL_ROOT . '/modules/custom/df_migrate/data/articles.json';
+  $export_by_slug = [];
+  if (is_readable($export_path)) {
+    $rows = json_decode((string) file_get_contents($export_path), TRUE);
+    if (is_array($rows)) {
+      foreach ($rows as $row) {
+        if (!empty($row['slug'])) {
+          $export_by_slug[(string) $row['slug']] = (string) ($row['body'] ?? '');
+        }
+      }
+    }
+  }
+  $byline_removed = 0;
+  foreach ($storage->loadMultiple($article_ids) as $article) {
+    $slug = $article->hasField('path') ? NULL : NULL;
+    $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $article->id());
+    if (!preg_match('#/([^/]+)$#', $alias, $m)) {
+      continue;
+    }
+    $slug = $m[1];
+    $export_body = $export_by_slug[$slug] ?? '';
+    if ($export_body === '' || stripos($export_body, '/tag/late-fall-2022') !== FALSE) {
+      continue;
+    }
+    if (!$article->hasField('body') || $article->get('body')->isEmpty()) {
+      continue;
+    }
+    $body = (string) $article->get('body')->value;
+    $next = preg_replace(
+      '/<!-- wp:paragraph[^>]*-->\\s*<p[^>]*>\\s*<a href="\\/tag\\/late-fall-2022\\/?">Late Fall 2022<\\/a>.*?<\\/p>\\s*<!-- \\/wp:paragraph -->\\s*/is',
+      '',
+      $body,
+    );
+    if (is_string($next) && $next !== $body) {
+      $article->set('body', [
+        'value' => $next,
+        'format' => $article->get('body')->format ?? 'full_html',
+      ]);
+      $article->save();
+      $byline_removed++;
+    }
+  }
+
+  return "Late Fall 2022 link parity: {$link_replaced} link rewrite(s), {$byline_removed} synthetic byline(s) removed.";
+}

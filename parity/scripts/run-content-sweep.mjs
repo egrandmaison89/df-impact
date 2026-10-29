@@ -19,11 +19,7 @@ import {
 } from '../lib/content-sweep-extract.mjs';
 import { httpGet } from '../lib/http-get.mjs';
 import { wpArchiveExportHtmlForPath, wpExportHtmlForPath } from '../lib/wp-export-baseline.mjs';
-import {
-  issueWpCacheOnly,
-  loadIssueTagArchiveFallbackHtml,
-  resolveIssueWpHtml,
-} from '../lib/issue-wp-baseline.mjs';
+import { issueWpCacheOnly, resolveIssueWpHtml } from '../lib/issue-wp-baseline.mjs';
 import { issueFixtureForPath, issueHasWpArchiveError } from '../lib/issue-page-fixture.mjs';
 import { textSimilarity } from '../lib/page-utils.mjs';
 import { chromium } from '@playwright/test';
@@ -189,19 +185,18 @@ async function processOne({ entry, path: p }) {
   let wpHtml = null;
   const frozen = frozenWpHtmlPath(packRoot, p);
   const isIssue = row.template === 'issue';
-  const legacyIssueTagArchive = isIssue && issueHasWpArchiveError(p);
+  const wpArchiveErrorIssue = isIssue && issueHasWpArchiveError(p);
   const exportHtml = isIssue ? null : wpExportHtmlForPath(p);
   const archiveExportHtml = !exportHtml ? wpArchiveExportHtmlForPath(p) : null;
   const cacheOnly = issueWpCacheOnly() || process.env.PARITY_CONTENT_SWEEP_NO_LIVE_WP === '1';
 
   if (isIssue) {
-    if (legacyIssueTagArchive) {
-      const tagHtml = loadIssueTagArchiveFallbackHtml(p);
-      if (tagHtml) {
-        wpHtml = tagHtml;
-        row.wpSource = 'issue-tag-frozen';
-        row.wpStatus = 200;
-        row.legacyIssueTagArchive = true;
+    if (wpArchiveErrorIssue) {
+      const frozen404 = frozenWpHtmlPath(packRoot, p);
+      if (frozen404) {
+        wpHtml = fs.readFileSync(frozen404, 'utf8');
+        row.wpSource = 'frozen';
+        row.wpStatus = isWp404BaselineHtml(wpHtml) || isWpLive404Path(p) ? 404 : 200;
       }
     }
     if (!wpHtml) {
@@ -269,24 +264,7 @@ async function processOne({ entry, path: p }) {
     }
   }
 
-  let drupalFetchPath = p;
-  if (legacyIssueTagArchive) {
-    const issuesPath = path.join(
-      parityRoot,
-      '../drupal/web/modules/custom/df_migrate/data/issues.json',
-    );
-    if (fs.existsSync(issuesPath)) {
-      const issues = JSON.parse(fs.readFileSync(issuesPath, 'utf8'));
-      const issueRow = issues.find(
-        (issue) => normalizePath(issue.path_alias || issue.drupal_alias || '') === normalizePath(p),
-      );
-      if (issueRow?.slug) {
-        drupalFetchPath = `/tag/${issueRow.slug}`;
-        row.drupalTagArchiveCompare = drupalFetchPath;
-      }
-    }
-  }
-  const dr = await fetchHtml(`${drupalBase}${drupalFetchPath}`, 'drupal');
+  const dr = await fetchHtml(`${drupalBase}${p}`, 'drupal');
   if (dr.error) {
     row.drupalError = dr.error;
     row.clusters = ['drupal_fetch_failed'];

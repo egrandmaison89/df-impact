@@ -31,6 +31,11 @@ services:
     tags:
       - { name: event_subscriber }
 
+  df_setup.legacy_issue_not_found:
+    class: Drupal\df_setup\EventSubscriber\LegacyIssueNotFoundSubscriber
+    tags:
+      - { name: event_subscriber }
+
   df_setup.wordpress_homepage_route:
     class: Drupal\df_setup\EventSubscriber\WordpressHomepageRouteSubscriber
     tags:

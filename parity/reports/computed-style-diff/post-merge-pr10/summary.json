@@ -1,0 +1,117 @@
+{
+  "generatedAt": "2026-10-29T04:39:16.272Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "jobCount": 2,
+  "byTemplate": {
+    "article": {
+      "runs": 2,
+      "mismatches": 65
+    }
+  },
+  "results": [
+    {
+      "template": "article",
+      "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "bp": "desktop",
+      "mismatchCount": 46,
+      "wpStatus": 200,
+      "drStatus": 200,
+      "topBoxDeltas": [
+        {
+          "selector": ".wp-site-blocks",
+          "dim": "h",
+          "delta": 572.515625,
+          "wp": 3149.53125,
+          "drupal": 2577.015625
+        },
+        {
+          "selector": "main",
+          "dim": "y",
+          "delta": 201.875,
+          "wp": 349.921875,
+          "drupal": 148.046875
+        },
+        {
+          "selector": "main",
+          "dim": "h",
+          "delta": 370.640625,
+          "wp": 2152.296875,
+          "drupal": 1781.65625
+        },
+        {
+          "selector": "footer",
+          "dim": "y",
+          "delta": 572.515625,
+          "wp": 2502.21875,
+          "drupal": 1929.703125
+        },
+        {
+          "selector": ".footer-dark",
+          "dim": "y",
+          "delta": 572.515625,
+          "wp": 2502.21875,
+          "drupal": 1929.703125
+        },
+        {
+          "selector": ".wp-block-footer-widget-area-columns",
+          "dim": "y",
+          "delta": 572.515625,
+          "wp": 2552.21875,
+          "drupal": 1979.703125
+        },
+        {
+          "selector": ".wp-block-columns",
+          "dim": "y",
+          "delta": 572.515625,
+          "wp": 2552.21875,
+          "drupal": 1979.703125
+        },
+        {
+          "selector": "h1",
+          "dim": "y",
+          "delta": 27,
+          "wp": 221.046875,
+          "drupal": 248.046875
+        },
+        {
+          "selector": "h1",
+          "dim": "h",
+          "delta": 52.4375,
+          "wp": 104.875,
+          "drupal": 52.4375
+        },
+        {
+          "selector": "h2",
+          "dim": "y",
+          "delta": 989.234375,
+          "wp": 2552.21875,
+          "drupal": 1562.984375
+        },
+        {
+          "selector": "h2",
+          "dim": "w",
+          "delta": 809.59375,
+          "wp": 486.40625,
+          "drupal": 1296
+        },
+        {
+          "selector": "h2",
+          "dim": "h",
+          "delta": 19.21875,
+          "wp": 34.3125,
+          "drupal": 53.53125
+        }
+      ]
+    },
+    {
+      "template": "article",
+      "path": "/2024/06/the-charlie-landers-foundation",
+      "bp": "desktop",
+      "mismatchCount": 19,
+      "wpStatus": 0,
+      "drStatus": 200,
+      "topBoxDeltas": []
+    }
+  ]
+}

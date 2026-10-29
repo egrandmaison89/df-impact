@@ -939,8 +939,18 @@ function df_impact_issue_banner_image_url(string $uri): string {
   if ($real === FALSE || !is_file($real)) {
     $live = df_impact_wp_live_url_for_missing_file_uri($uri);
     if ($live !== NULL) {
+      if (preg_match('#wp-content/uploads/(.+)$#', $live, $m)) {
+        $photon = df_impact_wp_i0_derivative_url('public://wp-content/uploads/' . $m[1], '1024', '396');
+        if ($photon !== NULL) {
+          return $photon;
+        }
+      }
       return $live;
     }
+  }
+  $banner_photon = df_impact_wp_i0_derivative_url($uri, '1024', '396');
+  if ($banner_photon !== NULL && df_impact_wp_uploads_path_from_uri($uri) !== NULL) {
+    return $banner_photon;
   }
   if (preg_match('/-1024x396\.(jpe?g|png|webp)$/i', $uri)) {
     return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);

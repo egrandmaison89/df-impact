@@ -2,7 +2,7 @@
 
 **Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Merged:** PR **#18** `cursor/secondary-surfaces-ce7f` (`b6905482`). **Not merged:** PR #16 (superseded).
 
-**Updated:** 2026-10-29 ~2:55 AM ET
+**Updated:** 2026-10-29 ~3:15 AM ET
 
 ---
 
@@ -32,12 +32,12 @@
 
 | PR | Branch | Head | In PR #5 |
 |----|--------|------|----------|
-| #10 Meta | `cursor/meta-head-behavior-0751` | `2778e304` | yes |
+| #10 Meta | `cursor/meta-head-behavior-0751` | **`456734b2`** (Drupal capture retry) | yes |
 | #13 Templates | `cursor/templates-inbrief-archives-185b` | **`f1593b50`** (≥ `9cf106ab`) | yes |
 | #14 VM | `cursor/vm-visual-parity-2b1b` | **`6876d0ed`** (header logo × fix, Social Snap) | yes |
 | #17 Editor | `cursor/editor-followups-ce7f` | `5efc6901` | yes |
 
-**DDEV backfills (this run):** `df_backfill_article_body.php` (**16**/447), `df_backfill_all_embeds.php`, `decode_text_entities.php` (**53→0** entities), `df-migrate:backfill-jetpack-related` (**439**), then **`cim`** + **`cr`**.
+**DDEV backfills (this run):** `cim` / `updb` / `cr`, `df_backfill_article_body.php` (**16**/447), `df_backfill_all_embeds.php`, `decode_text_entities.php` (**53→0** entities), `df-migrate:backfill-jetpack-related` (**439**), **`cr`**. PR **#13** / **#14** heads unchanged; merged PR **#10** **`456734b2`**.
 
 ---
 
@@ -77,24 +77,26 @@
 
 ---
 
-## Template pixel medians (Mac pack, desktop)
+## Template pixel medians (Mac pack viewport %)
 
-| Template | Before viewport D | After viewport D | Before chrome D | After chrome D |
-|----------|-------------------|------------------|-----------------|----------------|
-| **homepage** | 32.7% | **31.8%** | 14.3% | **4.8%** |
-| **issue** | 68.2% | **67.4%** | 11.0% | **1.3%** |
-| article | 31.2% | **30.4%** | 14.1% | **5.0%** |
-| in_brief | 19.9% | **19.1%** | 14.1% | **5.1%** |
-| landing_page | 34.5% | **33.7%** | 14.2% | **5.0%** |
-| archive | 30.2% | **29.4%** | 14.4% | **4.9%** |
+**Prior baseline (integrator ~2:00 AM ET):** homepage **~33%**, issue **~67.8%**, archive **~30.4%** desktop viewport. **Now (~3:15 AM ET):** `parity:compare-template`, `DRUPAL_BASE_URL=http://df-impact.ddev.site`.
 
-**Before** = post–first integrator merge (~2:00 AM ET). **After** = post **`6876d0ed`** + hero/banner parity tweaks (~2:55 AM ET; `parity:compare-template`, `DRUPAL_BASE_URL=http://df-impact.ddev.site`). Chrome medians ~14% → ~5% (header logo × fix). Homepage hero: no poster `<img>` (matches WP reference pack).
+| Template | Desktop vp (was → now) | Tablet vp | Mobile vp | Chrome D |
+|----------|------------------------|-----------|-----------|----------|
+| **homepage** | 33% → **31.8%** | **33.7%** | **32.3%** | **5.0%** |
+| **issue** | 67.8% → **67.4%** | **65.2%** | **62.5%** | **1.3%** |
+| article | 31.2% → **30.4%** | **34.1%** | **24.9%** | **5.0%** |
+| in_brief | 19.9% → **19.1%** | **12.2%** | **14.8%** | **5.1%** |
+| landing_page | 34.5% → **33.7%** | **39.1%** | **35.9%** | **5.0%** |
+| archive | 30.4% → **29.4%** | **53.8%** | **35.0%** | **4.9%** |
+
+Issue viewport still dominated by **article roster / title drift** vs live WP (see `docs/PHASE1_GAP_REGISTER.md`); banner photon + alignfull breakout applied this run.
 
 ### DDEV wp-images restore + full audit
 
 | Metric | Before restore | After restore / audit |
 |--------|----------------|------------------------|
-| Magic-byte HTML stubs in `wp-images/` | **137** / 1673 | **41** / 1673 |
+| Magic-byte HTML stubs in `wp-images/` | **137** / 1673 | **13** / 1673 (DDEV `file` scan) |
 | `restore-bad-wp-images.mjs` | — | **96/109** restored (**13** unmappable) |
 | `audit-drupal-images.mjs` (801 inventory paths) | — | **2178** unique `<img>` URLs checked |
 | Broken on Drupal (fixable from WP) | — | **0** |

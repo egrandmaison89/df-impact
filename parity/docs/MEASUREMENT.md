@@ -36,3 +36,24 @@ npm run parity:compare-ref-pack
 ```
 
 Full **738-URL** run is for outlier clusters only; fix at template/filter level.
+
+## Pre-push guard: `parity:smoke:200` (required for all agents)
+
+Before every push to visual/meta/template branches (and before opening PRs into **`cursor/phase4-chrome-behavior-0b67`** / PR **#5**), run:
+
+```bash
+cd drupal/web && ../vendor/bin/drush serve 127.0.0.1:8888   # or DDEV
+cd parity && npm ci
+DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:smoke:200
+```
+
+**What it checks (fast, Drupal-only):**
+
+1. **HTTP** — every path in `parity/config/template-samples.json` plus the manifest **sample inventory** (`loadUrls()` with `PARITY_SAMPLE=1`, same picks as parity smoke runs) must not return **5xx** or a Drupal fatal HTML shell.
+2. **Watchdog** — no new **`php`** log rows (severity ≤ Error) after the run starts.
+
+Report: `parity/reports/smoke-200/smoke-<timestamp>.json`. Exit **0** = OK, **1** = failing path(s) or watchdog, **2** = Drupal unreachable (`SMOKE_DRUPAL_REQUIRED=1`, default).
+
+**CI:** `.github/workflows/parity-smoke-200.yml` runs on PRs to `cursor/phase4-chrome-behavior-0b67` when `DRUPAL_SMOKE_BASE_URL` (repo variable) or `http://127.0.0.1:8888` is reachable; otherwise it warns and skips (hosted runners have no DB by default).
+
+**Typical failure:** theme preprocess fatals (e.g. treating a Views `ResultRow` as an array) → site-wide **500**; caught by homepage + template samples in one pass.

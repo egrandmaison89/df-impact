@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.issue.field_banner_image
     - field.field.node.issue.field_cover_image
+    - field.field.node.issue.field_hero_heading
     - field.field.node.issue.field_hero_poster
     - field.field.node.issue.field_hero_video
     - field.field.node.issue.field_description
@@ -52,6 +53,14 @@ content:
     region: content
     settings:
       rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_hero_heading:
+    type: string_textfield
+    weight: 22
+    region: content
+    settings:
+      size: 80
       placeholder: ''
     third_party_settings: {  }
   field_hero_poster:
@@ -150,8 +159,13 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  publish_on:
+    type: datetime_timestamp
+    weight: 99
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   promote: true
-  publish_on: true
   sticky: true
   unpublish_on: true

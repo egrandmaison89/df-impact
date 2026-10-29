@@ -60,6 +60,7 @@ final class ArticleBodyCleaner {
     }
 
     $html = $this->rewriteInternalLinks($html);
+    $html = $this->convertOembedsToIframes($html);
 
     $html = preg_replace("/^\s+/", '', $html) ?? $html;
     $html = preg_replace("/\s+$/", '', $html) ?? $html;
@@ -404,6 +405,290 @@ final class ArticleBodyCleaner {
   public static function stemBasename(string $basename): string {
     $basename = preg_replace('/\?.*$/', '', $basename) ?? $basename;
     return strtolower(preg_replace('/-\d+x\d+(?=\.[^.]+$)/', '', $basename) ?? $basename);
+  }
+
+  /**
+   * Converts WP oEmbed placeholders (video/social) to responsive iframes.
+   */
+  public function normalizeOembedHtml(string $html): string {
+    return $this->convertOembedsToIframes($html);
+  }
+
+  /**
+   * Counts bodies that still need oEmbed iframe conversion (for backfill reports).
+   *
+   * @return array{vimeo: int, youtube: int, twitter: int, instagram: int, plain_wrapper: int, total_markers: int}
+   */
+  public static function countOembedConversionMarkers(string $html): array {
+    $html = $html ?? '';
+    if ($html === '') {
+      return [
+        'vimeo' => 0,
+        'youtube' => 0,
+        'twitter' => 0,
+        'instagram' => 0,
+        'plain_wrapper' => 0,
+        'total_markers' => 0,
+      ];
+    }
+    $vimeo = preg_match_all('#vimeo\.com#i', $html) ?: 0;
+    $youtube = preg_match_all('#(?:youtube\.com|youtu\.be)#i', $html) ?: 0;
+    $twitter = preg_match_all('#(?:twitter\.com|x\.com)/[^/\s"\']+/status/\d+#i', $html) ?: 0;
+    $instagram = preg_match_all('#instagram\.com/(?:p|reel|tv)/#i', $html) ?: 0;
+    $plain_wrapper = 0;
+    if (str_contains($html, 'wp-block-embed__wrapper')) {
+      $doc = new \DOMDocument();
+      libxml_use_internal_errors(TRUE);
+      $wrapped = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div id="df-root">' . $html . '</div></body></html>';
+      $doc->loadHTML($wrapped);
+      libxml_clear_errors();
+      $xpath = new \DOMXPath($doc);
+      $wrappers = $xpath->query('//*[@id="df-root"]//div[contains(@class,"wp-block-embed__wrapper")]');
+      if ($wrappers) {
+        foreach ($wrappers as $wrapper) {
+          if (!$wrapper instanceof \DOMElement) {
+            continue;
+          }
+          if ($wrapper->getElementsByTagName('iframe')->length > 0) {
+            continue;
+          }
+          $plain_wrapper++;
+        }
+      }
+    }
+    $total = $plain_wrapper + ($vimeo > 0 ? 1 : 0) + ($youtube > 0 ? 1 : 0);
+    return [
+      'vimeo' => (int) $vimeo,
+      'youtube' => (int) $youtube,
+      'twitter' => (int) $twitter,
+      'instagram' => (int) $instagram,
+      'plain_wrapper' => (int) $plain_wrapper,
+      'total_markers' => (int) max($plain_wrapper, $total),
+    ];
+  }
+
+  /**
+   * Replace WP oEmbed placeholder URLs with responsive iframes.
+   */
+  private function convertOembedsToIframes(string $html): string {
+    if ($html === '') {
+      return $html;
+    }
+    $needles = ['wp-block-embed', 'vimeo', 'youtube', 'twitter', 'instagram', 'x.com', 'blockquote'];
+    $hit = FALSE;
+    foreach ($needles as $needle) {
+      if (str_contains($html, $needle)) {
+        $hit = TRUE;
+        break;
+      }
+    }
+    if (!$hit) {
+      return $html;
+    }
+
+    $doc = new \DOMDocument();
+    libxml_use_internal_errors(TRUE);
+    $wrapped = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div id="df-root">' . $html . '</div></body></html>';
+    $doc->loadHTML($wrapped);
+    libxml_clear_errors();
+
+    $xpath = new \DOMXPath($doc);
+    $root = $doc->getElementById('df-root');
+    if (!$root) {
+      return $html;
+    }
+
+    $wrappers = $xpath->query('.//div[contains(@class,"wp-block-embed__wrapper")]', $root);
+    if ($wrappers) {
+      foreach ($wrappers as $wrapper) {
+        if (!$wrapper instanceof \DOMElement) {
+          continue;
+        }
+        if ($wrapper->getElementsByTagName('iframe')->length > 0) {
+          continue;
+        }
+        $url = trim(html_entity_decode($wrapper->textContent ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        $iframe = $this->buildEmbedShellForUrl($url, $doc);
+        if ($iframe === NULL) {
+          $iframe = $this->buildEmbedFromWrapperChildren($wrapper, $doc);
+        }
+        if ($iframe === NULL) {
+          continue;
+        }
+        while ($wrapper->firstChild) {
+          $wrapper->removeChild($wrapper->firstChild);
+        }
+        $wrapper->appendChild($iframe);
+      }
+    }
+
+    $iframes = $xpath->query('.//iframe[@src]', $root);
+    if ($iframes) {
+      foreach ($iframes as $iframeEl) {
+        if (!$iframeEl instanceof \DOMElement) {
+          continue;
+        }
+        $src = html_entity_decode($iframeEl->getAttribute('src') ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $normalized = $this->normalizeOembedEmbedSrc($src);
+        if ($normalized !== NULL && $normalized !== $src) {
+          $iframeEl->setAttribute('src', $normalized);
+        }
+      }
+    }
+
+    $paragraphs = $xpath->query('.//p', $root);
+    if ($paragraphs) {
+      foreach ($paragraphs as $p) {
+        if (!$p instanceof \DOMElement) {
+          continue;
+        }
+        $text = trim(html_entity_decode($p->textContent ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        if ($text === '' || $p->getElementsByTagName('a')->length > 0) {
+          continue;
+        }
+        if (!preg_match('#^https?://#i', $text)) {
+          continue;
+        }
+        $iframe = $this->buildEmbedShellForUrl($text, $doc);
+        if ($iframe === NULL) {
+          continue;
+        }
+        $figure = $doc->createElement('figure');
+        $figure->setAttribute('class', 'wp-block-embed aligncenter is-type-video wp-block-embed-vimeo');
+        $inner = $doc->createElement('div');
+        $inner->setAttribute('class', 'wp-block-embed__wrapper');
+        $inner->appendChild($iframe);
+        $figure->appendChild($inner);
+        $p->parentNode?->replaceChild($figure, $p);
+      }
+    }
+
+    $out = '';
+    foreach ($root->childNodes as $child) {
+      $out .= $doc->saveHTML($child);
+    }
+    return $out !== '' ? $out : $html;
+  }
+
+  /**
+   * Builds a responsive iframe shell for an oEmbed URL (video or social).
+   */
+  private function buildEmbedShellForUrl(string $url, \DOMDocument $doc): ?\DOMElement {
+    $url = trim(html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    if ($url === '') {
+      return NULL;
+    }
+
+    $embedSrc = $this->normalizeOembedEmbedSrc($url);
+    if ($embedSrc === NULL) {
+      return NULL;
+    }
+
+    return $this->createResponsiveIframeShell($doc, $embedSrc, $this->oembedAspectPadding($embedSrc));
+  }
+
+  /**
+   * Derives embed URL from Twitter blockquote / nested anchors inside a wrapper.
+   */
+  private function buildEmbedFromWrapperChildren(\DOMElement $wrapper, \DOMDocument $doc): ?\DOMElement {
+    $xpath = new \DOMXPath($doc);
+    $quotes = $xpath->query('.//blockquote[contains(@class,"twitter-tweet")]', $wrapper);
+    if ($quotes && $quotes->length > 0) {
+      foreach ($quotes as $quote) {
+        if (!$quote instanceof \DOMElement) {
+          continue;
+        }
+        $links = $quote->getElementsByTagName('a');
+        for ($i = $links->length - 1; $i >= 0; $i--) {
+          $href = $links->item($i)?->getAttribute('href') ?? '';
+          if ($href !== '' && preg_match('#(?:twitter\.com|x\.com)/.+/status/\d+#i', $href)) {
+            return $this->buildEmbedShellForUrl($href, $doc);
+          }
+        }
+      }
+    }
+    $anchors = $wrapper->getElementsByTagName('a');
+    for ($i = 0; $i < $anchors->length; $i++) {
+      $href = $anchors->item($i)?->getAttribute('href') ?? '';
+      if ($href === '') {
+        continue;
+      }
+      $shell = $this->buildEmbedShellForUrl($href, $doc);
+      if ($shell !== NULL) {
+        return $shell;
+      }
+    }
+    return NULL;
+  }
+
+  /**
+   * @return \DOMElement|null
+   *   Responsive padding wrapper containing iframe.
+   */
+  private function createResponsiveIframeShell(\DOMDocument $doc, string $embedSrc, string $padding): ?\DOMElement {
+    if ($embedSrc === '') {
+      return NULL;
+    }
+    $shell = $doc->createElement('div');
+    $shell->setAttribute('style', $padding);
+
+    $iframe = $doc->createElement('iframe');
+    $iframe->setAttribute('src', $embedSrc);
+    $iframe->setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%;');
+    $iframe->setAttribute('frameborder', '0');
+    $iframe->setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share');
+    $iframe->setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    $iframe->setAttribute('allowfullscreen', 'true');
+    $iframe->setAttribute('title', 'Embedded content');
+    if (str_contains($embedSrc, 'platform.twitter.com') || str_contains($embedSrc, 'instagram.com')) {
+      $iframe->setAttribute('scrolling', 'no');
+    }
+
+    $shell->appendChild($iframe);
+    return $shell;
+  }
+
+  private function oembedAspectPadding(string $embedSrc): string {
+    if (str_contains($embedSrc, 'platform.twitter.com') || str_contains($embedSrc, 'instagram.com')) {
+      return 'max-width:540px;margin:0 auto;';
+    }
+    return 'padding:56.25% 0 0 0;position:relative;';
+  }
+
+  /**
+   * Normalizes watch/share URLs to player embed URLs (WP oEmbed parity).
+   */
+  private function normalizeOembedEmbedSrc(string $url): ?string {
+    $url = trim(html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    if ($url === '') {
+      return NULL;
+    }
+    if (preg_match('#^https?://player\.vimeo\.com/video/\d+#i', $url)) {
+      return $url;
+    }
+    if (preg_match('#vimeo\.com/(?:video/)?(\d+)(?:/([a-f0-9]+))?#i', $url, $m)) {
+      $src = 'https://player.vimeo.com/video/' . $m[1];
+      if (!empty($m[2])) {
+        $src .= '?h=' . $m[2];
+      }
+      return $src;
+    }
+    if (preg_match('#youtube\.com/embed/([a-zA-Z0-9_-]+)#i', $url, $m)) {
+      return 'https://www.youtube.com/embed/' . $m[1];
+    }
+    if (preg_match('#(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]+)#i', $url, $m)) {
+      return 'https://www.youtube.com/embed/' . $m[1];
+    }
+    if (preg_match('#(?:twitter\.com|x\.com)/(?:#!/)?([^/]+)/status(?:es)?/(\d+)#i', $url, $m)) {
+      return 'https://platform.twitter.com/embed/Tweet.html?id=' . $m[2];
+    }
+    if (preg_match('#instagram\.com/(?:p|reel|tv)/([A-Za-z0-9_-]+)#i', $url, $m)) {
+      return 'https://www.instagram.com/p/' . $m[1] . '/embed';
+    }
+    if (preg_match('#^https?://(?:www\.)?instagram\.com/.+/embed#i', $url)) {
+      return $url;
+    }
+    return NULL;
   }
 
 }

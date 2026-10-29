@@ -1,0 +1,27 @@
+df_editor.issue_dashboard:
+  title: 'Issue dashboard'
+  description: 'Draft issue, attached articles, preview, and publish.'
+  parent: system.admin_content
+  route_name: df_editor.issue_dashboard
+  weight: 2
+
+df_editor.site_settings:
+  title: 'Impact site settings'
+  description: 'Header logo, donate button, and main navigation menu.'
+  parent: system.admin_config
+  route_name: df_editor.site_settings
+  weight: 5
+
+df_editor.homepage_hero:
+  title: 'Homepage hero'
+  description: 'Edit video, poster, and heading on the current featured issue.'
+  parent: df_editor.site_settings
+  route_name: df_editor.homepage_hero
+  weight: 5
+
+df_editor.footer_settings:
+  title: 'Impact footer settings'
+  description: 'Footer about links, address, disclaimer, and social URLs.'
+  parent: df_editor.site_settings
+  route_name: df_editor.footer_settings
+  weight: 10

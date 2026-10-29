@@ -3,17 +3,8 @@
 #}
 <article{{ attributes.addClass('article', 'wp-singular', 'post') }}>
 
-  <div style="height:25px" aria-hidden="true" class="wp-block-spacer"></div>
-
-  <div class="wp-block-group alignfull is-content-justification-center is-layout-constrained wp-block-group-is-layout-constrained">
-    {{ title_prefix }}
-    <h1 style="color:#003354;font-size:38px" class="alignwide wp-block-post-title has-text-color has-libre-baskerville-font-family">{{ label }}</h1>
-    {{ title_suffix }}
-  </div>
-
   <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
-    <main class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow" style="margin-top:0;padding-top:0">
-      <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+    <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
 
         {% if article_lead_figure is defined and article_lead_figure %}
           {{ article_lead_figure }}
@@ -38,27 +29,37 @@
         {% if content.field_content_sections|render|trim %}
           {{ content.field_content_sections }}
         {% endif %}
-      </div>
-    </main>
-  </div>
 
-  {% if content.field_topics|render|trim or content.field_cancer_types|render|trim %}
-    <div class="article__tags alignwide">
-      {{ content.field_topics }}
-      {{ content.field_cancer_types }}
+        {% if article_post_term_links is defined and article_post_term_links|length %}
+          <div class="taxonomy-category has-link-color wp-block-post-terms has-text-color">
+            {% for term in article_post_term_links %}
+              {% if not loop.first %}<span class="wp-block-post-terms__separator">, </span>{% endif %}
+              <a href="{{ term.url }}" rel="tag">{{ term.label }}</a>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if article_more_stories_cards is defined and article_more_stories_cards|length %}
+          <div class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
+            <div style="height:18px" aria-hidden="true" class="wp-block-spacer"></div>
+            <h3 class="wp-block-heading has-montserrat-font-family" style="font-size:26px;font-style:normal;font-weight:700">{{ 'More stories:'|t }}</h3>
+            <nav class="jp-relatedposts-i2 wp-block-jetpack-related-posts" style="line-height:1.5;" data-layout="grid" aria-label="{{ 'Related Posts'|t }}">
+              <ul class="jp-related-posts-i2__list" role="list" data-post-count="{{ article_more_stories_cards|length }}">
+                {% for card in article_more_stories_cards %}
+                  <li class="jp-related-posts-i2__post">
+                    <a href="{{ card.url }}" class="jp-related-posts-i2__post-link">
+                      {{ card.title }}
+                      {% if card.image_url %}
+                        <img loading="lazy" class="jp-related-posts-i2__post-img" src="{{ card.image_url }}" width="350" height="200" alt="{{ card.image_alt }}">
+                      {% endif %}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </nav>
+          </div>
+        {% endif %}
     </div>
-  {% endif %}
-
-  {% if content.field_related_articles|render|trim %}
-    <section class="related-articles alignwide">
-      <h2 class="wp-block-heading">{{ 'More Stories'|t }}</h2>
-      {{ content.field_related_articles }}
-    </section>
-  {% elseif related_by_topic is defined and related_by_topic|render|trim %}
-    <section class="related-articles alignwide">
-      <h2 class="wp-block-heading">{{ 'More Stories'|t }}</h2>
-      {{ related_by_topic }}
-    </section>
-  {% endif %}
+  </div>
 
 </article>

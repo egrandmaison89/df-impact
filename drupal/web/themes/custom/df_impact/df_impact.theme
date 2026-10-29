@@ -318,9 +318,11 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
       catch (\Exception) {
         $variables['article_url'] = NULL;
       }
-      $meta = df_impact_article_card_image_meta($node);
+      $meta = df_impact_archive_row_image_meta($node);
       $variables['archive_featured_image_url'] = $meta['url'] ?? NULL;
       $variables['archive_featured_image_alt'] = $meta['alt'] ?? $node->label();
+      $variables['archive_featured_image_width'] = $meta['width'] ?? 1450;
+      $variables['archive_featured_image_height'] = $meta['height'] ?? 1040;
       $variables['archive_excerpt'] = df_impact_archive_excerpt_for_node($node);
       $variables['archive_title_plain'] = df_impact_decode_plain_text($node->label());
     }
@@ -388,8 +390,16 @@ function df_impact_preprocess_page(&$variables) {
   $variables['is_front'] = \Drupal::service('path.matcher')->isFrontPage();
   $variables['is_about_impact'] = df_impact_is_about_impact_page();
 
-  // Donate CTA — match legacy WordPress / Jimmy Fund campaign parameters.
+  $route_node = \Drupal::routeMatch()->getParameter('node');
+  if ($route_node instanceof NodeInterface && in_array($route_node->bundle(), ['article', 'in_brief'], TRUE)) {
+    $variables['wp_singular_post_title'] = $route_node->label();
+  }
+
+  // Donate CTA — defaults match WordPress; df_editor Site settings override when set.
   $variables['donate_url'] = 'https://danafarber.jimmyfund.org/site/Donation2?df_id=2101&mfc_pref=T&2101.donation=form1&utm_source=dfimpact&utm_medium=button&utm_campaign=AGDFI031323&s_src=AGDFI031323&s_subsrc=AGDFI031323';
+  if (\Drupal::moduleHandler()->moduleExists('df_editor')) {
+    \Drupal::service('df_editor.site_chrome')->applyPreprocessPage($variables);
+  }
   $route_provider = \Drupal::service('router.route_provider');
   if ($route_provider->getRoutesByNames(['df_searchstax.page'])) {
     $variables['search_page_url'] = Url::fromRoute('df_searchstax.page')->toString();
@@ -401,7 +411,12 @@ function df_impact_preprocess_page(&$variables) {
   $variables['about_impact_url'] = Url::fromUri('internal:/about')->toString();
 
   // Header Issues dropdown — recent published issues (WordPress chrome).
-  $variables['header_issue_links'] = df_impact_get_header_issue_links(4);
+  if (function_exists('df_setup_get_header_issue_links')) {
+    $variables['header_issue_links'] = df_setup_get_header_issue_links(4);
+  }
+  else {
+    $variables['header_issue_links'] = df_impact_get_header_issue_links(4);
+  }
 
   // WXR wp_navigation "Main Nav" + dropdown-menu (Issues submenu items as top links).
   $latest_issue_url = NULL;
@@ -412,20 +427,27 @@ function df_impact_preprocess_page(&$variables) {
       $latest_issue_url = $latest_issue->toUrl()->toString();
     }
   }
-  $variables['header_primary_links'] = [
-    [
-      'title' => t('Current Issue'),
-      'url' => $latest_issue_url ?: Url::fromRoute('view.browse_issues.page_1')->toString(),
-    ],
-    [
-      'title' => t('Past Issues'),
-      'url' => Url::fromRoute('view.past_issues.page_1')->toString(),
-    ],
-    [
-      'title' => t('About'),
-      'url' => $variables['about_impact_url'],
-    ],
-  ];
+  if (empty($variables['header_primary_links'])) {
+    $variables['header_primary_links'] = [
+      [
+        'title' => t('Current Issue'),
+        'url' => $latest_issue_url ?: Url::fromRoute('view.browse_issues.page_1')->toString(),
+      ],
+      [
+        'title' => t('Past Issues'),
+        'url' => Url::fromRoute('view.past_issues.page_1')->toString(),
+      ],
+      [
+        'title' => t('About'),
+        'url' => $variables['about_impact_url'],
+      ],
+    ];
+  }
+
+  if (\Drupal::moduleHandler()->moduleExists('df_editor') && !empty($variables['header_primary_links'])) {
+    $variables['header_primary_links'] = \Drupal::service('df_editor.current_issue_nav')
+      ->applyCurrentIssueUrl($variables['header_primary_links']);
+  }
 
   $topic_order = [
     'Cancer Research',
@@ -482,6 +504,7 @@ function df_impact_preprocess_page(&$variables) {
       }
     }
   }
+
 }
 
 /**
@@ -489,6 +512,7 @@ function df_impact_preprocess_page(&$variables) {
  */
 function df_impact_preprocess_node(&$variables) {
   $node = $variables['node'];
+  unset($variables['elements']['#contextual_links']);
 
   // Add view mode class.
   $variables['attributes']['class'][] = 'node--view-mode-' . str_replace('_', '-', $variables['view_mode']);
@@ -553,6 +577,8 @@ function df_impact_preprocess_node(&$variables) {
     if ($image) {
       $variables['issue_promo_image_url'] = $image['url'];
       $variables['issue_promo_image_alt'] = $image['alt'];
+      $variables['issue_promo_image_width'] = $image['width'] ?? 768;
+      $variables['issue_promo_image_height'] = $image['height'] ?? 551;
     }
     else {
       $banner = df_impact_issue_banner_meta($node);
@@ -561,11 +587,13 @@ function df_impact_preprocess_node(&$variables) {
     }
     $variables['issue_promo_excerpt'] = '';
     if ($node->hasField('field_excerpt') && !$node->get('field_excerpt')->isEmpty()) {
-      $variables['issue_promo_excerpt'] = strip_tags($node->get('field_excerpt')->value ?? '');
+      $raw = strip_tags($node->get('field_excerpt')->value ?? '');
+      $variables['issue_promo_excerpt'] = html_entity_decode($raw, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
     elseif ($node->hasField('body') && !$node->get('body')->isEmpty()) {
       $text = strip_tags($node->get('body')->value ?? '');
-      $variables['issue_promo_excerpt'] = text_summary($text, NULL, 280);
+      $summary = text_summary($text, NULL, 280);
+      $variables['issue_promo_excerpt'] = html_entity_decode($summary, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
   }
 
@@ -613,22 +641,17 @@ function df_impact_preprocess_node(&$variables) {
       }
     }
 
-    if ($node->hasField('field_related_articles') && $node->get('field_related_articles')->isEmpty()) {
-      $topic_ids = [];
-      if ($node->hasField('field_topics')) {
-        foreach ($node->get('field_topics') as $item) {
-          $topic_ids[] = $item->target_id;
-        }
-      }
-      if ($topic_ids !== []) {
-        $variables['related_by_topic'] = views_embed_view(
-          'related_articles',
-          'block_1',
-          implode('+', $topic_ids),
-          (string) $node->id(),
-        );
-      }
+    if (isset($variables['content']['field_related_articles'])) {
+      $variables['content']['field_related_articles']['#access'] = FALSE;
     }
+    if (isset($variables['content']['field_topics'])) {
+      $variables['content']['field_topics']['#access'] = FALSE;
+    }
+    if (isset($variables['content']['field_cancer_types'])) {
+      $variables['content']['field_cancer_types']['#access'] = FALSE;
+    }
+    $variables['article_post_term_links'] = df_impact_article_post_term_links($node);
+    $variables['article_more_stories_cards'] = df_impact_article_more_story_cards($node);
   }
 }
 
@@ -676,18 +699,8 @@ function df_impact_preprocess_block(&$variables) {
  * Implements hook_preprocess_HOOK() for breadcrumb.
  */
 function df_impact_preprocess_breadcrumb(array &$variables): void {
-  if (df_impact_is_about_impact_page()) {
-    $variables['breadcrumb'] = [];
-  }
-  // WordPress category archives have no breadcrumb trail.
-  if (\Drupal::routeMatch()->getRouteName() === 'view.topic_archive.page_1') {
-    $variables['breadcrumb'] = [];
-  }
-  // WordPress issue landings have no breadcrumb trail.
-  $node = \Drupal::routeMatch()->getParameter('node');
-  if ($node instanceof NodeInterface && in_array($node->bundle(), ['issue', 'in_brief'], TRUE)) {
-    $variables['breadcrumb'] = [];
-  }
+  // WordPress front-end pages do not show Drupal-style breadcrumb trails.
+  $variables['breadcrumb'] = [];
 }
 
 /**
@@ -1189,6 +1202,26 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
 /**
  * Card image URL aligned with WP PostX grid sizing (870×570 crop when possible).
  */
+/**
+ * PostX card URL with article export fallback when wp-images lacks uploads mapping.
+ */
+function df_impact_card_image_url_for_parity_node(NodeInterface $node, string $uri): string {
+  $photon = df_impact_wp_i0_postx_card_url($uri);
+  if ($photon !== NULL && df_impact_wp_uploads_path_from_uri($uri) !== NULL) {
+    return $photon;
+  }
+  $row = df_impact_article_export_row_for_node($node);
+  if (is_array($row)) {
+    foreach (df_impact_article_export_try_image_urls($row) as $candidate) {
+      $candidate = trim(html_entity_decode((string) $candidate, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+      if ($candidate !== '' && str_contains($candidate, 'wp-content/uploads')) {
+        return df_impact_card_image_url_for_parity_from_src($candidate);
+      }
+    }
+  }
+  return df_impact_card_image_url_for_parity($uri);
+}
+
 function df_impact_card_image_url_for_parity(string $uri): string {
   $file_system = \Drupal::service('file_system');
   if (!$file_system->realpath($uri)) {
@@ -1280,11 +1313,33 @@ function df_impact_wp_uploads_path_from_uri(string $uri): ?string {
   $basename = basename($relative);
   $stem = strtolower(pathinfo($basename, PATHINFO_FILENAME));
   $index = df_impact_media_source_url_index();
-  $source = $index[$stem] ?? NULL;
+  $candidates = array_values(array_unique(array_filter([
+    $stem,
+    preg_replace('/_1450$/', '', $stem),
+    preg_replace('/-\d+x\d+$/', '', $stem),
+  ])));
+  $source = NULL;
+  foreach ($candidates as $key) {
+    if ($key !== '' && isset($index[$key])) {
+      $source = $index[$key];
+      break;
+    }
+  }
   if (!is_string($source)) {
     $needle = strtolower($basename);
     foreach ($index as $candidate) {
       if (is_string($candidate) && str_contains(strtolower($candidate), $needle)) {
+        $source = $candidate;
+        break;
+      }
+    }
+  }
+  if (!is_string($source)) {
+    foreach ($index as $key => $candidate) {
+      if (!is_string($candidate)) {
+        continue;
+      }
+      if (str_contains($stem, $key) || str_contains($key, $stem)) {
         $source = $candidate;
         break;
       }
@@ -1316,6 +1371,232 @@ function df_impact_wp_i0_postx_card_url(string $uri): ?string {
     return NULL;
   }
   return 'https://i0.wp.com/danafarberimpact.org/' . $uploads_path . '?fit=768%2C551&ssl=1';
+}
+
+/**
+ * Jetpack related-posts thumbnail (350×200 resize, matches live WP).
+ */
+function df_impact_jetpack_related_image_url(string $uri): string {
+  $photon = df_impact_wp_i0_derivative_url($uri, '350', '200');
+  if ($photon) {
+    return $photon;
+  }
+  if (str_contains($uri, 'wp-images/')) {
+    $index = df_impact_media_source_url_index();
+    $basename = basename($uri);
+    $stems = [
+      strtolower(pathinfo($basename, PATHINFO_FILENAME)),
+      strtolower(preg_replace('/-\d+x\d+$/', '', pathinfo($basename, PATHINFO_FILENAME))),
+    ];
+    foreach ($stems as $stem) {
+      $source = $index[$stem] ?? NULL;
+      if (!is_string($source)) {
+        continue;
+      }
+      if (preg_match('#wp-content/uploads/(.+)$#', $source, $m)) {
+        return 'https://i0.wp.com/danafarberimpact.org/wp-content/uploads/' . $m[1] . '?resize=350%2C200&ssl=1';
+      }
+    }
+  }
+  $from_src = df_impact_card_image_url_for_parity($uri);
+  if (str_contains($from_src, 'i0.wp.com')) {
+    return df_impact_wp_i0_derivative_url_from_photon_src($from_src, '350', '200') ?? $from_src;
+  }
+  return $from_src;
+}
+
+/**
+ * @return list<array{url: string, label: string}>
+ */
+function df_impact_article_post_term_links(NodeInterface $node): array {
+  $links = [];
+  foreach (['field_topics', 'field_cancer_types'] as $field_name) {
+    if (!$node->hasField($field_name) || $node->get($field_name)->isEmpty()) {
+      continue;
+    }
+    foreach ($node->get($field_name) as $item) {
+      $term = $item->entity;
+      if (!$term) {
+        continue;
+      }
+      $slug = function_exists('df_setup_topic_category_slug')
+        ? df_setup_topic_category_slug($term->label())
+        : strtolower(preg_replace('/[^a-z0-9]+/i', '-', $term->label()));
+      $links[] = [
+        'url' => Url::fromUri('internal:/category/' . $slug)->toString(),
+        'label' => $term->label(),
+      ];
+    }
+  }
+  return $links;
+}
+
+/**
+ * Related story nodes for article footer (manual refs or topic-based view).
+ *
+ * @return \Drupal\node\NodeInterface[]
+ */
+function df_impact_article_more_story_nodes(NodeInterface $article): array {
+  if ($article->bundle() !== 'article') {
+    return [];
+  }
+  $nodes = [];
+  if ($article->hasField('field_related_articles') && !$article->get('field_related_articles')->isEmpty()) {
+    foreach ($article->get('field_related_articles') as $item) {
+      $ref = $item->entity;
+      if ($ref instanceof NodeInterface && $ref->isPublished() && (int) $ref->id() !== (int) $article->id()) {
+        $nodes[] = $ref;
+      }
+    }
+  }
+  return array_slice($nodes, 0, 3);
+}
+
+/**
+ * @return list<array{url: string, title: string, image_url: string|null, image_alt: string}>
+ */
+function df_impact_jetpack_related_image_for_article(NodeInterface $related): ?string {
+  $row = df_impact_article_export_row_for_node($related);
+  if (is_array($row)) {
+    foreach (df_impact_article_export_try_image_urls($row) as $candidate) {
+      if (preg_match('#danafarberimpact\.org/wp-content/uploads/(.+\.(?:jpe?g|png|webp|gif))#i', $candidate, $m)) {
+        return 'https://i0.wp.com/danafarberimpact.org/wp-content/uploads/' . $m[1] . '?resize=350%2C200&ssl=1';
+      }
+    }
+  }
+  $uri = df_impact_node_featured_image_uri($related);
+  if ($uri !== NULL) {
+    $url = df_impact_jetpack_related_image_url($uri);
+    if (str_contains($url, 'i0.wp.com')) {
+      return $url;
+    }
+  }
+  $meta = df_impact_article_card_image_meta($related);
+  if ($meta && !empty($meta['url']) && str_contains($meta['url'], 'i0.wp.com')) {
+    return df_impact_wp_i0_derivative_url_from_photon_src($meta['url'], '350', '200') ?? $meta['url'];
+  }
+  return NULL;
+}
+
+function df_impact_article_more_story_cards(NodeInterface $article): array {
+  $cards = [];
+  foreach (df_impact_article_more_story_nodes($article) as $related) {
+    if ($related->bundle() === 'in_brief') {
+      $meta = df_impact_in_brief_card_image_meta($related);
+      $image_url = $meta['url'] ?? NULL;
+      if ($image_url && !str_contains($image_url, 'i0.wp.com')) {
+        $image_url = df_impact_wp_i0_derivative_url_from_photon_src($image_url, '350', '200') ?? $image_url;
+      }
+      $cards[] = [
+        'url' => df_impact_in_brief_item_url($related),
+        'title' => $related->label(),
+        'image_url' => $image_url,
+        'image_alt' => $meta['alt'] ?? $related->label(),
+      ];
+      continue;
+    }
+    $meta = df_impact_article_card_image_meta($related);
+    $cards[] = [
+      'url' => $related->toUrl()->toString(),
+      'title' => $related->label(),
+      'image_url' => df_impact_jetpack_related_image_for_article($related),
+      'image_alt' => $meta['alt'] ?? $related->label(),
+    ];
+  }
+  return $cards;
+}
+
+/**
+ * File URI for an article's featured image, when stored locally.
+ */
+function df_impact_node_featured_image_uri(NodeInterface $node): ?string {
+  if (!$node->hasField('field_featured_image') || $node->get('field_featured_image')->isEmpty()) {
+    return NULL;
+  }
+  $media = $node->get('field_featured_image')->entity;
+  if ($media && $media->hasField('field_media_image') && !$media->get('field_media_image')->isEmpty()) {
+    $file = $media->get('field_media_image')->entity;
+    if ($file) {
+      return $file->getFileUri();
+    }
+  }
+  return NULL;
+}
+
+function df_impact_wp_i0_derivative_url_from_photon_src(string $src, string $width, string $height): ?string {
+  if (preg_match('#i\d*\.wp\.com/danafarberimpact\.org/(.+?)(?:\?|$)#', $src, $m)) {
+    return 'https://i0.wp.com/danafarberimpact.org/' . $m[1] . '?resize=' . rawurlencode($width) . '%2C' . rawurlencode($height) . '&ssl=1';
+  }
+  return NULL;
+}
+
+/**
+ * Archive row thumbnail URL — WP uses full post-thumbnail (_1450), not PostX fit.
+ */
+function df_impact_archive_thumbnail_url_for_parity(string $uri): string {
+  $uploads_path = df_impact_wp_uploads_path_from_uri($uri);
+  if ($uploads_path !== NULL) {
+    return 'https://danafarberimpact.org/' . $uploads_path;
+  }
+  return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+}
+
+function df_impact_archive_thumbnail_url_from_src(string $src): string {
+  if (preg_match('#danafarberimpact\.org/wp-content/uploads/#', $src)) {
+    return $src;
+  }
+  if (preg_match('#/wp-content/uploads/(.+)$#', $src, $m)) {
+    $uri = 'public://wp-content/uploads/' . $m[1];
+    if (\Drupal::service('file_system')->realpath($uri)) {
+      return df_impact_archive_thumbnail_url_for_parity($uri);
+    }
+    return 'https://danafarberimpact.org/wp-content/uploads/' . $m[1];
+  }
+  return $src;
+}
+
+/**
+ * Featured image metadata for category / archive list rows (1450×1040 markup).
+ */
+function df_impact_archive_row_image_meta(NodeInterface $node): ?array {
+  if ($node->bundle() !== 'article') {
+    return NULL;
+  }
+  if ($node->hasField('field_featured_image') && !$node->get('field_featured_image')->isEmpty()) {
+    $media = $node->get('field_featured_image')->entity;
+    if ($media && $media->hasField('field_media_image') && !$media->get('field_media_image')->isEmpty()) {
+      $file = $media->get('field_media_image')->entity;
+      if ($file) {
+        $alt = (string) $media->get('field_media_image')->alt;
+        if ($alt === '') {
+          $alt = $node->label();
+        }
+        return [
+          'url' => df_impact_archive_thumbnail_url_for_parity($file->getFileUri()),
+          'alt' => $alt,
+          'width' => 1450,
+          'height' => 1040,
+        ];
+      }
+    }
+  }
+  $row = df_impact_article_export_row_for_node($node);
+  if (!is_array($row)) {
+    return NULL;
+  }
+  foreach (df_impact_article_export_try_image_urls($row) as $candidate) {
+    $src = df_impact_article_fallback_image_src($candidate);
+    if ($src === NULL || $src === '') {
+      continue;
+    }
+    return [
+      'url' => df_impact_archive_thumbnail_url_from_src($src),
+      'alt' => df_impact_article_export_lead_alt($row, $node) ?: $node->label(),
+      'width' => 1450,
+      'height' => 1040,
+    ];
+  }
+  return NULL;
 }
 
 /**
@@ -1364,7 +1645,7 @@ function df_impact_article_card_image_meta(NodeInterface $node): ?array {
           $alt = $node->label();
         }
         return [
-          'url' => df_impact_card_image_url_for_parity($file->getFileUri()),
+          'url' => df_impact_card_image_url_for_parity_node($node, $file->getFileUri()),
           'alt' => $alt,
           'width' => 768,
           'height' => 551,
@@ -1378,7 +1659,7 @@ function df_impact_article_card_image_meta(NodeInterface $node): ?array {
   }
   foreach (df_impact_article_export_try_image_urls($row) as $candidate) {
     $src = df_impact_article_fallback_image_src($candidate);
-    if ($src === NULL || $src === '') {
+    if ($src === NULL || $src === '' || !df_impact_is_usable_article_image_src($src)) {
       continue;
     }
     return [
@@ -1406,10 +1687,14 @@ function df_impact_build_homepage_hero(?NodeInterface $issue): ?array {
     $video_url = 'https://danafarberimpact.org/wp-content/uploads/2026/09/Impact_Ambient.mp4';
   }
   $poster_url = df_impact_media_file_url($issue, 'field_hero_poster', 'field_media_image');
+  $heading = t('Stories From Our Community of Support');
+  if ($issue->hasField('field_hero_heading') && !$issue->get('field_hero_heading')->isEmpty()) {
+    $heading = $issue->get('field_hero_heading')->value;
+  }
   return [
     'video_url' => $video_url,
     'poster_url' => $poster_url,
-    'title' => t('Stories From Our Community of Support'),
+    'title' => $heading,
   ];
 }
 
@@ -1590,7 +1875,7 @@ function df_impact_article_export_try_image_urls(array $row): array {
   };
 
   $primary = (string) ($row['featured_image_url'] ?? '');
-  if ($primary !== '') {
+  if ($primary !== '' && str_contains($primary, 'wp-content/uploads')) {
     $push($primary);
   }
   $body = isset($row['body']) && is_string($row['body']) ? $row['body'] : '';
@@ -1607,6 +1892,13 @@ function df_impact_article_export_try_image_urls(array $row): array {
 /**
  * Resolves a WordPress uploads URL to a displayable image src (local public file preferred).
  */
+function df_impact_is_usable_article_image_src(string $src): bool {
+  return (bool) preg_match(
+    '#(?:wp-content/uploads/|/sites/default/files/wp-images/|i\d*\.wp\.com/).+\.(?:jpe?g|png|gif|webp)(?:\?|$)#i',
+    $src,
+  );
+}
+
 function df_impact_article_fallback_image_src(string $url): ?string {
   $url = trim(html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
   $clean = preg_replace('/\?.*$/', '', $url);
@@ -1658,6 +1950,9 @@ function df_impact_article_fallback_image_src(string $url): ?string {
         }
       }
     }
+  }
+  if (preg_match('#^https?://#i', $clean) && df_impact_is_usable_article_image_src($clean)) {
+    return $clean;
   }
   if (preg_match('/\.(jpe?g|png|gif|webp)(\?|$)/i', $clean)) {
     return $clean;

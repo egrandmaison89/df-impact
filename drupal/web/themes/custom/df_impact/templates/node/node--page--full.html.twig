@@ -5,8 +5,10 @@
  */
 #}
 {% if is_about_impact_node %}
-  <article{{ attributes.addClass('page-node', 'wp-singular', 'page') }}>
-    <div class="page-node__body wp-block-post-content">
+  <article{{ attributes.addClass('page-node', 'wp-singular', 'page', 'about-impact-page') }}>
+    {{ title_prefix }}
+    {{ title_suffix }}
+    <div class="entry-content wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
       {{ content.body }}
     </div>
   </article>

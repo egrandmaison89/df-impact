@@ -6,12 +6,19 @@
 
   function applyReducedMotionHeroVideos() {
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    $('.homepage-banner video, .wp-block-cover__video-background').each(function () {
+    $('.homepage-banner video, .wp-block-cover__video-background, .hero__cover-video').each(function () {
       var video = this;
       if (reduced) {
         video.pause();
         video.removeAttribute('autoplay');
         video.currentTime = 0;
+        return;
+      }
+      if (video.autoplay && video.paused) {
+        var playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(function () {});
+        }
       }
     });
   }
@@ -46,20 +53,18 @@
         .off('scroll.dfImpactWpChrome')
         .on('scroll.dfImpactWpChrome', function () {
           var scrolled = $(window).scrollTop() > 50;
-          $('.header, .desktop-header').toggleClass('header--scrolled', scrolled);
+          // WP CSS `.desktop-header .scrolled { max-width: 250px }` applies only to `.header-logo.scrolled`.
+          // Do not add `.scrolled` to `.impact-header` / `.desktop-header` or the whole header collapses.
+          $('.header, .desktop-header, .impact-header').toggleClass('header--scrolled', scrolled);
           $('.header-logo').toggleClass('scrolled', scrolled);
-        });
+        })
+        .trigger('scroll');
 
       $('.disclaimer-popup, .disclaimer-popup-mobile', $context)
         .off('click.dfImpactWpChrome')
         .on('click.dfImpactWpChrome', function () {
           $(this).find('.popup-text').toggle();
         });
-
-      // Reference-pack captures chrome with flyouts collapsed.
-      $('.mega-sub-menu', $context).each(function () {
-        $(this).css('display', 'none');
-      });
 
       $('.mega-toggle-label', $context)
         .off('click.dfImpactWpChromeMenu')

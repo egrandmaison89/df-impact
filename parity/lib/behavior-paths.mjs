@@ -11,6 +11,16 @@ export function normalizeBehaviorPath(p) {
   return x.startsWith('/') ? x : `/${x}`;
 }
 
+/** All template sample paths use wp-chrome-header (article, issue, in-brief, archive, landing). */
+export function pathUsesChromeHeader(pathNorm) {
+  const p = normalizeBehaviorPath(pathNorm);
+  return p.length > 0 && p !== '/';
+}
+
+export function expectedBehaviorCaseCount(pathList) {
+  return pathList.length * 3;
+}
+
 export function loadTemplateSamplePaths() {
   const raw = JSON.parse(
     fs.readFileSync(path.join(parityRoot, 'config', 'template-samples.json'), 'utf8'),

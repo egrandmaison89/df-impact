@@ -1,0 +1,21 @@
+uuid: f293a4b5-c637-4567-2345-678899001122
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_hero_heading
+    - node.type.issue
+  module:
+    - node
+id: node.issue.field_hero_heading
+field_name: field_hero_heading
+entity_type: node
+bundle: issue
+label: 'Homepage hero heading'
+description: 'Large headline over the homepage cover video when this issue is the featured (newest published) issue.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

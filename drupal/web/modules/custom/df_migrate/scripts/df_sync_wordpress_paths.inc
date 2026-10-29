@@ -284,4 +284,31 @@ function df_sync_static_page_aliases(): void {
     ])->save();
     echo "Path alias created: $alias -> $internal\n";
   }
+
+  \Drupal::moduleHandler()->loadInclude('df_setup', 'install');
+  if (function_exists('df_setup_update_10022')) {
+    echo df_setup_update_10022() . "\n";
+  }
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $home_nids = $node_storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'Home')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if ($home_nids) {
+    $system_path = '/node/' . reset($home_nids);
+    foreach (['/home', '/homepage'] as $alias) {
+      if ($storage->loadByProperties(['alias' => $alias])) {
+        continue;
+      }
+      $storage->create([
+        'path' => $system_path,
+        'alias' => $alias,
+        'langcode' => 'en',
+        'status' => TRUE,
+      ])->save();
+      echo "Path alias created: $alias -> $system_path\n";
+    }
+  }
 }

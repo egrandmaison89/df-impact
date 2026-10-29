@@ -1,0 +1,94 @@
+{
+  "path": "/homepage",
+  "breakpoint": "desktop",
+  "match": false,
+  "mismatchCount": 2,
+  "mismatches": [
+    {
+      "section": "donateHover",
+      "diffs": [
+        {
+          "field": "color",
+          "wp": "rgb(127, 176, 205)",
+          "dr": "rgb(192, 216, 230)"
+        }
+      ]
+    },
+    {
+      "section": "footerHover",
+      "diffs": [
+        {
+          "field": "color",
+          "wp": "rgb(236, 236, 239)",
+          "dr": "rgb(124, 174, 204)"
+        }
+      ]
+    }
+  ],
+  "sections": {
+    "hero": {
+      "ok": true,
+      "diffs": []
+    },
+    "navDefault": {
+      "ok": true,
+      "diffs": []
+    },
+    "navHover": {
+      "ok": true,
+      "diffs": []
+    },
+    "donateDefault": {
+      "ok": true,
+      "diffs": []
+    },
+    "donateHover": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "color",
+          "wp": "rgb(127, 176, 205)",
+          "dr": "rgb(192, 216, 230)"
+        }
+      ]
+    },
+    "footerHover": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "color",
+          "wp": "rgb(236, 236, 239)",
+          "dr": "rgb(124, 174, 204)"
+        }
+      ]
+    },
+    "bodyLinkHover": {
+      "ok": true,
+      "diffs": []
+    },
+    "issuesDropdown": {
+      "ok": true,
+      "diffs": []
+    },
+    "headerScroll": {
+      "ok": true,
+      "diffs": []
+    },
+    "reveal": {
+      "ok": true,
+      "diffs": []
+    },
+    "widgets": {
+      "ok": true,
+      "diffs": []
+    },
+    "cardHover": {
+      "ok": true,
+      "diffs": []
+    },
+    "buttonHover": {
+      "ok": true,
+      "diffs": []
+    }
+  }
+}

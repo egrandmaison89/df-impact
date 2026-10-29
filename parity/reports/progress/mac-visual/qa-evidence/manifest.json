@@ -1,0 +1,128 @@
+{
+  "generatedAt": "2026-10-29T06:07:21.962Z",
+  "drupalBase": "http://df-impact.ddev.site",
+  "wpBase": "https://danafarberimpact.org",
+  "cases": [
+    {
+      "id": "01-header-scroll",
+      "files": [
+        "qa-evidence/01-header-scroll/drupal-1440.png",
+        "qa-evidence/01-header-scroll/wp-1440.png",
+        "qa-evidence/01-header-scroll/drupal-768.png",
+        "qa-evidence/01-header-scroll/wp-768.png",
+        "qa-evidence/01-header-scroll/drupal-375.png",
+        "qa-evidence/01-header-scroll/wp-375.png"
+      ]
+    },
+    {
+      "id": "02-translate-widget",
+      "files": [
+        "qa-evidence/02-translate-widget/drupal-1440.png",
+        "qa-evidence/02-translate-widget/wp-1440.png",
+        "qa-evidence/02-translate-widget/drupal-768.png",
+        "qa-evidence/02-translate-widget/wp-768.png",
+        "qa-evidence/02-translate-widget/drupal-375.png",
+        "qa-evidence/02-translate-widget/wp-375.png"
+      ]
+    },
+    {
+      "id": "03-vimeo-embed",
+      "files": [
+        "qa-evidence/03-vimeo-embed/drupal-1440.png",
+        "qa-evidence/03-vimeo-embed/wp-1440.png",
+        "qa-evidence/03-vimeo-embed/drupal-768.png",
+        "qa-evidence/03-vimeo-embed/wp-768.png",
+        "qa-evidence/03-vimeo-embed/drupal-375.png",
+        "qa-evidence/03-vimeo-embed/wp-375.png"
+      ]
+    },
+    {
+      "id": "04-pagination",
+      "files": [
+        "qa-evidence/04-pagination/drupal-1440.png",
+        "qa-evidence/04-pagination/wp-1440.png",
+        "qa-evidence/04-pagination/drupal-768.png",
+        "qa-evidence/04-pagination/wp-768.png",
+        "qa-evidence/04-pagination/drupal-375.png",
+        "qa-evidence/04-pagination/wp-375.png"
+      ]
+    },
+    {
+      "id": "05-in-brief-band",
+      "files": [
+        "qa-evidence/05-in-brief-band/drupal-1440.png",
+        "qa-evidence/05-in-brief-band/wp-1440.png",
+        "qa-evidence/05-in-brief-band/drupal-768.png",
+        "qa-evidence/05-in-brief-band/wp-768.png",
+        "qa-evidence/05-in-brief-band/drupal-375.png",
+        "qa-evidence/05-in-brief-band/wp-375.png"
+      ]
+    },
+    {
+      "id": "06-browse-issues-images",
+      "files": [
+        "qa-evidence/06-browse-issues-images/drupal-1440.png",
+        "qa-evidence/06-browse-issues-images/wp-1440.png",
+        "qa-evidence/06-browse-issues-images/drupal-768.png",
+        "qa-evidence/06-browse-issues-images/wp-768.png",
+        "qa-evidence/06-browse-issues-images/drupal-375.png",
+        "qa-evidence/06-browse-issues-images/wp-375.png"
+      ]
+    },
+    {
+      "id": "07-html-entities",
+      "files": [
+        "qa-evidence/07-html-entities/drupal-1440.png",
+        "qa-evidence/07-html-entities/wp-1440.png",
+        "qa-evidence/07-html-entities/drupal-768.png",
+        "qa-evidence/07-html-entities/wp-768.png",
+        "qa-evidence/07-html-entities/drupal-375.png",
+        "qa-evidence/07-html-entities/wp-375.png"
+      ]
+    },
+    {
+      "id": "08-broken-images",
+      "files": [
+        "qa-evidence/08-broken-images/drupal-1440.png",
+        "qa-evidence/08-broken-images/wp-1440.png",
+        "qa-evidence/08-broken-images/drupal-768.png",
+        "qa-evidence/08-broken-images/wp-768.png",
+        "qa-evidence/08-broken-images/drupal-375.png",
+        "qa-evidence/08-broken-images/wp-375.png"
+      ]
+    },
+    {
+      "id": "09-breadcrumb-edit",
+      "files": [
+        "qa-evidence/09-breadcrumb-edit/drupal-1440.png",
+        "qa-evidence/09-breadcrumb-edit/wp-1440.png",
+        "qa-evidence/09-breadcrumb-edit/drupal-768.png",
+        "qa-evidence/09-breadcrumb-edit/wp-768.png",
+        "qa-evidence/09-breadcrumb-edit/drupal-375.png",
+        "qa-evidence/09-breadcrumb-edit/wp-375.png"
+      ]
+    },
+    {
+      "id": "10-more-stories",
+      "files": [
+        "qa-evidence/10-more-stories/drupal-1440.png",
+        "qa-evidence/10-more-stories/wp-1440.png",
+        "qa-evidence/10-more-stories/drupal-768.png",
+        "qa-evidence/10-more-stories/wp-768.png",
+        "qa-evidence/10-more-stories/drupal-375.png",
+        "qa-evidence/10-more-stories/wp-375.png"
+      ]
+    },
+    {
+      "id": "11-category-spacing",
+      "files": [
+        "qa-evidence/11-category-spacing/drupal-1440.png",
+        "qa-evidence/11-category-spacing/wp-1440.png",
+        "qa-evidence/11-category-spacing/drupal-768.png",
+        "qa-evidence/11-category-spacing/wp-768.png",
+        "qa-evidence/11-category-spacing/drupal-375.png",
+        "qa-evidence/11-category-spacing/wp-375.png"
+      ]
+    }
+  ]
+}

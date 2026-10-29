@@ -1,0 +1,255 @@
+<?php
+
+/**
+ * @file
+ * Editor roles, site chrome, and issue publishing workflow.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\filter\FilterFormatInterface;
+use Drupal\node\Form\NodeForm;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter() for issue edit forms.
+ */
+/**
+ * Implements hook_form_FORM_ID_alter() for article forms.
+ */
+function df_editor_form_node_article_form_alter(array &$form, FormStateInterface $form_state): void {
+  if (!isset($form['body']['widget'][0])) {
+    return;
+  }
+  $account = \Drupal::currentUser();
+  $widget = &$form['body']['widget'][0];
+  $stored_format = $widget['#default_value']['format'] ?? $widget['#format'] ?? NULL;
+
+  if ($account->hasPermission('use text format full_html')) {
+    $widget['#format'] = 'full_html';
+    $widget['#default_value']['format'] = $stored_format === 'full_html' ? 'full_html' : ($widget['#default_value']['format'] ?? 'full_html');
+    $widget['#allowed_formats'] = ['full_html', 'editor_html'];
+  }
+  elseif ($account->hasPermission('use text format editor_html')) {
+    if ($stored_format === 'full_html' && $account->hasPermission('use legacy full html on stored content')) {
+      $widget['#format'] = 'full_html';
+      $widget['#default_value']['format'] = 'full_html';
+      $widget['#allowed_formats'] = ['full_html'];
+    }
+    else {
+      $widget['#format'] = 'editor_html';
+      $widget['#default_value']['format'] = 'editor_html';
+      $widget['#allowed_formats'] = ['editor_html'];
+    }
+  }
+
+  $widget['#description'] = (string) t('Use the toolbar for headings, quotes, images, and media embeds (Vimeo/YouTube). For WordPress-style blocks (pull quote, spacer, buttons), switch to Source and paste the same markup used on migrated stories—see WEB_EDITOR_GUIDE.md.');
+}
+
+/**
+ * Implements hook_entity_access() for legacy Full HTML on migrated bodies.
+ */
+function df_editor_entity_access(EntityInterface $entity, $operation, AccountInterface $account): AccessResult {
+  if ($operation !== 'use' || !$entity instanceof FilterFormatInterface || $entity->id() !== 'full_html') {
+    return AccessResult::neutral();
+  }
+  if ($account->hasPermission('use text format full_html')) {
+    return AccessResult::neutral();
+  }
+  if ($account->hasPermission('use legacy full html on stored content')) {
+    return AccessResult::allowed()->cachePerPermissions();
+  }
+  return AccessResult::neutral();
+}
+
+/**
+ * Implements hook_node_presave().
+ *
+ * Web editors with legacy Full HTML may only keep that format on existing nodes.
+ */
+function df_editor_node_presave(NodeInterface $node): void {
+  if ($node->bundle() !== 'article' || !$node->hasField('body') || $node->get('body')->isEmpty()) {
+    return;
+  }
+  $format = $node->get('body')->format;
+  if ($format !== 'full_html') {
+    return;
+  }
+  $account = \Drupal::currentUser();
+  if ($account->hasPermission('use text format full_html')) {
+    return;
+  }
+  if (!$account->hasPermission('use legacy full html on stored content')) {
+    return;
+  }
+  $original = $node->original ?? NULL;
+  if (!$original instanceof NodeInterface || $original->get('body')->format !== 'full_html') {
+    $node->set('body', [
+      'value' => $node->get('body')->value,
+      'format' => 'editor_html',
+    ]);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for media forms (require alt text).
+ */
+function df_editor_form_media_image_form_alter(array &$form, FormStateInterface $form_state): void {
+  df_editor_media_require_alt_text($form);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for media library edit.
+ */
+function df_editor_form_media_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!is_object($form_object) || !method_exists($form_object, 'getEntity')) {
+    return;
+  }
+  $media = $form_object->getEntity();
+  if ($media && $media->bundle() === 'image') {
+    df_editor_media_require_alt_text($form);
+  }
+}
+
+/**
+ * Marks image alt fields required for accessibility parity.
+ */
+function df_editor_media_require_alt_text(array &$form): void {
+  if (isset($form['field_media_image']['widget'][0]['#alt_field_required'])) {
+    $form['field_media_image']['widget'][0]['#alt_field_required'] = TRUE;
+  }
+  if (isset($form['field_media_image']['widget'][0]['alt'])) {
+    $form['field_media_image']['widget'][0]['alt']['#required'] = TRUE;
+    $form['field_media_image']['widget'][0]['alt']['#description'] = (string) t('Required. Describe the image for screen readers (WordPress alt parity).');
+  }
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function df_editor_page_attachments_alter(array &$attachments): void {
+  if (!\Drupal::moduleHandler()->moduleExists('df_editor')) {
+    return;
+  }
+  /** @var \Drupal\df_editor\IssuePreview $preview */
+  $preview = \Drupal::service('df_editor.issue_preview');
+  $nid = $preview->getPreviewIssueNid();
+  if ($nid === NULL) {
+    return;
+  }
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => ['name' => 'df-preview-issue', 'content' => (string) $nid],
+    ],
+    'df_editor_preview_issue',
+  ];
+  if (\Drupal::currentUser()->hasPermission('publish issue with articles') && \Drupal::service('path.matcher')->isFrontPage()) {
+    \Drupal::messenger()->addWarning(t('Homepage and Issues navigation preview: treating issue @nid as the current featured issue.', ['@nid' => $nid]));
+  }
+}
+
+function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  $entity = $form_object->getEntity();
+  if (!$entity instanceof NodeInterface || $entity->bundle() !== 'issue') {
+    return;
+  }
+
+  if (isset($form['field_hero_video'])) {
+    $form['field_hero_video']['#description'] = (string) t('Ambient MP4 for the homepage cover video when this issue is the newest published issue. Autoplay, muted, loop—same behavior as WordPress.');
+    $form['field_hero_video']['#weight'] = 20;
+  }
+  if (isset($form['field_hero_poster'])) {
+    $form['field_hero_poster']['#description'] = (string) t('Poster image shown while the homepage hero video loads (cover image).');
+    $form['field_hero_poster']['#weight'] = 21;
+  }
+  if (isset($form['field_hero_heading'])) {
+    $form['field_hero_heading']['#description'] = (string) t('Large heading over the homepage hero video. Only shown when this issue is the current featured issue on the homepage.');
+    $form['field_hero_heading']['#weight'] = 22;
+  }
+
+  $group = [
+    '#type' => 'details',
+    '#title' => t('Homepage hero (site admins)'),
+    '#open' => TRUE,
+    '#weight' => 15,
+  ];
+  foreach (['field_hero_video', 'field_hero_poster', 'field_hero_heading'] as $field_name) {
+    if (isset($form[$field_name])) {
+      $group[$field_name] = $form[$field_name];
+      unset($form[$field_name]);
+    }
+  }
+  if (isset($group['field_hero_video']) || isset($group['field_hero_poster']) || isset($group['field_hero_heading'])) {
+    $form['df_homepage_hero'] = $group;
+    if (!\Drupal::currentUser()->hasPermission('administer df site settings')) {
+      $form['df_homepage_hero']['#access'] = FALSE;
+    }
+  }
+
+  if (\Drupal::currentUser()->hasPermission('publish issue with articles')) {
+    $form['df_publish_issue_bundle'] = [
+      '#type' => 'submit',
+      '#value' => t('Publish issue and all attached articles'),
+      '#weight' => 101,
+      '#submit' => ['df_editor_issue_publish_bundle_submit'],
+      '#limit_validation_errors' => [],
+    ];
+  }
+
+  if (isset($form['publish_on'])) {
+    $form['publish_on']['#description'] = (string) t('Optional: schedule this issue to go live automatically (requires Scheduler).');
+    $form['publish_on']['#weight'] = 99;
+  }
+}
+
+/**
+ * Submit handler: publish issue and attached articles.
+ */
+function df_editor_issue_publish_bundle_submit(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  $issue = $form_object->getEntity();
+  if (!$issue instanceof NodeInterface) {
+    return;
+  }
+  /** @var \Drupal\df_editor\IssuePublisher $publisher */
+  $publisher = \Drupal::service('df_editor.issue_publisher');
+  $articles = $publisher->publishIssueWithArticles($issue);
+  \Drupal::messenger()->addStatus(t('Published issue @issue and @count article(s).', [
+    '@issue' => $issue->label(),
+    '@count' => count($articles),
+  ]));
+  $form_state->setRedirect('entity.node.canonical', ['node' => $issue->id()]);
+}
+
+/**
+ * Implements hook_node_update().
+ *
+ * When an issue is first published via moderation, attach-publish its articles.
+ */
+function df_editor_node_update(NodeInterface $node): void {
+  if ($node->bundle() !== 'issue' || !$node->isPublished()) {
+    return;
+  }
+  $original = $node->original ?? NULL;
+  if (!$original instanceof NodeInterface || $original->isPublished()) {
+    return;
+  }
+  if (!\Drupal::currentUser()->hasPermission('publish issue with articles')) {
+    return;
+  }
+  \Drupal::service('df_editor.issue_publisher')->publishAttachedArticles($node);
+}

@@ -34,10 +34,19 @@ export async function preparePage(page) {
   });
 }
 
+const CONSENT_ROOT_IDS = [
+  'onetrust-banner-sdk',
+  'onetrust-pc-sdk',
+  'onetrust-consent-sdk',
+  'CybotCookiebotDialog',
+  'cookiebanner',
+];
+
 export async function dismissOverlays(page) {
   const selectors = [
     'button:has-text("Accept")',
     'button:has-text("I Accept")',
+    'button:has-text("Accept All")',
     'button:has-text("Got it")',
     '#onetrust-accept-btn-handler',
     '.cc-dismiss',
@@ -47,6 +56,32 @@ export async function dismissOverlays(page) {
     if (await el.isVisible().catch(() => false)) {
       await el.click({ timeout: 2000 }).catch(() => {});
     }
+  }
+  await page.waitForTimeout(200);
+  await page.evaluate((ids) => {
+    for (const id of ids) {
+      document.getElementById(id)?.remove();
+    }
+    document.querySelectorAll('[id^="onetrust-"], .cookiebot, #CybotCookiebotDialog').forEach((el) => {
+      el.remove();
+    });
+  }, CONSENT_ROOT_IDS);
+}
+
+/** Remove consent layers that block pointer events on footer links (live WP). */
+export async function ensurePointerClearForSelector(page, selector) {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await dismissOverlays(page);
+    const blocked = await page.evaluate((sel) => {
+      const el = document.querySelector(sel.split(',')[0].trim());
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      if (!top || top === el || el.contains(top)) return false;
+      return Boolean(top.closest('#onetrust-banner-sdk, #onetrust-pc-sdk, [id^="onetrust-"], .cookiebot'));
+    }, selector);
+    if (!blocked) return;
+    await page.waitForTimeout(300);
   }
 }
 
@@ -64,24 +99,39 @@ export async function scrollForLazyLoad(page) {
   });
 }
 
-export async function waitForFonts(page) {
-  await page.evaluate(async () => {
-    if (!document.fonts) {
-      return;
-    }
-    const families = [
-      '400 16px Montserrat',
-      '600 16px Montserrat',
-      '700 16px Montserrat',
-      '400 16px Roboto',
-      '600 16px Roboto',
-      '400 16px "Baskervville"',
-    ];
-    await Promise.all(
-      families.map((spec) => document.fonts.load(spec).catch(() => undefined)),
-    );
-    await document.fonts.ready;
-  });
+/** Bounded font wait — live WP never settles on document.fonts.ready. */
+export async function waitForFonts(page, maxMs = 5000) {
+  await Promise.race([
+    page.evaluate(async () => {
+      if (!document.fonts) {
+        return;
+      }
+      const families = [
+        '400 16px Montserrat',
+        '600 16px Montserrat',
+        '700 16px Montserrat',
+        '400 16px Roboto',
+        '600 16px Roboto',
+        '400 16px "Baskervville"',
+      ];
+      await Promise.all(families.map((spec) => document.fonts.load(spec).catch(() => undefined)));
+      await Promise.race([
+        document.fonts.ready,
+        new Promise((r) => setTimeout(r, 3500)),
+      ]);
+    }),
+    page.waitForTimeout(maxMs),
+  ]);
+}
+
+/**
+ * Navigate with load (not networkidle) and a capped post-load settle for parity/behavior.
+ */
+export async function gotoWithBoundedSettle(page, url, { timeout = 90000, settleMs = 1200 } = {}) {
+  await page.goto(url, { waitUntil: 'load', timeout });
+  await dismissOverlays(page);
+  await waitForFonts(page, Math.min(settleMs + 800, 6000));
+  await page.waitForTimeout(Math.min(settleMs, 1500));
 }
 
 export async function extractMainText(page) {

@@ -5,6 +5,8 @@
  * Functions to support theming in the Dana-Farber Impact theme.
  */
 
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
 use Drupal\df_setup\ArticleCreditLabels;
@@ -406,7 +408,8 @@ function df_impact_preprocess_page(&$variables) {
     $variables['search_page_url'] = Url::fromRoute('df_searchstax.page')->toString();
   }
   else {
-    $variables['search_page_url'] = Url::fromRoute('view.df_impact_search.page_1')->toString();
+    // Public WP URL is /search (?s=); view route is /search-legacy (core owns /search).
+    $variables['search_page_url'] = '/search';
   }
 
   $variables['about_impact_url'] = Url::fromUri('internal:/about')->toString();
@@ -518,6 +521,22 @@ function df_impact_preprocess_node(&$variables) {
   // Add view mode class.
   $variables['attributes']['class'][] = 'node--view-mode-' . str_replace('_', '-', $variables['view_mode']);
   $variables['is_about_impact_node'] = df_impact_is_about_impact_page($node);
+
+  if (\Drupal::routeMatch()->getRouteName() === 'view.df_impact_search.page_1') {
+    $term = trim((string) (\Drupal::request()->query->get('s') ?? ''));
+    $variables['search_result_title'] = df_impact_search_highlight_text($node->label(), $term);
+    $excerpt = '';
+    if ($node->hasField('field_excerpt') && !$node->get('field_excerpt')->isEmpty()) {
+      $excerpt = strip_tags((string) $node->get('field_excerpt')->value);
+    }
+    elseif ($node->hasField('body') && !$node->get('body')->isEmpty()) {
+      $excerpt = text_summary(strip_tags((string) $node->get('body')->value), NULL, 280);
+    }
+    elseif ($node->bundle() === 'in_brief') {
+      $excerpt = df_impact_in_brief_plain_excerpt($node);
+    }
+    $variables['search_result_excerpt'] = df_impact_search_highlight_text(trim($excerpt), $term);
+  }
 
   if ($node->bundle() === 'in_brief' && $variables['view_mode'] === 'in_brief_listing') {
     $variables['in_brief_collapsed'] = !empty($variables['elements']['#in_brief_collapsed']);
@@ -687,6 +706,10 @@ function df_impact_theme_suggestions_node_alter(array &$suggestions, array $vari
   $node = $variables['elements']['#node'];
   $view_mode = $variables['elements']['#view_mode'];
   $suggestions[] = 'node__' . $node->bundle() . '__' . $view_mode;
+  $route = \Drupal::routeMatch()->getRouteName();
+  if ($route === 'view.df_impact_search.page_1') {
+    $suggestions[] = 'node__' . $node->bundle() . '__search_result';
+  }
 }
 
 /**
@@ -705,6 +728,8 @@ function df_impact_preprocess_block(&$variables) {
     'view.topic_archive.page_1',
     'view.digital_exclusives_archive.page_1',
     'view.past_issues.page_1',
+    'view.df_impact_search.page_1',
+    'system.404',
   ], TRUE);
 }
 
@@ -799,6 +824,7 @@ function df_impact_route_uses_wp_query_pager(): bool {
     'past_issues',
     'in_brief_listing',
     'browse_issues',
+    'df_impact_search',
   ], TRUE);
 }
 
@@ -2325,6 +2351,27 @@ function df_impact_get_header_issue_links(int $limit = 4): array {
     ];
   }
   return $links;
+}
+
+/**
+ * Wrap search term hits like WordPress Better Search (mark.bsearch_highlight).
+ */
+function df_impact_search_highlight_text(string $text, string $term): \Drupal\Core\Render\Markup {
+  $escaped = Html::escape($text);
+  if ($term === '') {
+    return Markup::create($escaped);
+  }
+  $parts = preg_split('/(\s+)/u', $term, -1, PREG_SPLIT_DELIM_CAPTURE);
+  $needles = array_values(array_filter(array_map('trim', $parts), static fn(string $p): bool => $p !== ''));
+  if ($needles === []) {
+    return Markup::create($escaped);
+  }
+  $highlighted = $escaped;
+  foreach ($needles as $needle) {
+    $pattern = '/' . preg_quote(Html::escape($needle), '/') . '/iu';
+    $highlighted = preg_replace($pattern, '<mark class="bsearch_highlight">$0</mark>', $highlighted) ?? $highlighted;
+  }
+  return Markup::create($highlighted);
 }
 
 /**

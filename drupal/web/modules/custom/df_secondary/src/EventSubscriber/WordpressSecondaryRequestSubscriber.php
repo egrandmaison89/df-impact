@@ -105,6 +105,13 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
     $search_term = $request->query->get('s');
     if ($search_term !== NULL && $search_term !== '' && ($path === '/' || $path === '/homepage')) {
       $this->rebuildRequest($request, '/search', ['s' => $search_term]);
+      return;
+    }
+
+    // Core Drupal search module owns `/search`; Search API view lives at `/search-legacy`.
+    if ($path === '/search') {
+      $query = $request->query->all();
+      $this->rebuildRequest($request, '/search-legacy', $query);
     }
   }
 

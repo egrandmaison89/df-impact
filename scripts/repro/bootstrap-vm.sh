@@ -66,6 +66,12 @@ echo "==> Config import"
 "${DRUSH[@]}" config:delete system.logging -y 2>/dev/null || true
 # site:install seeds Basic page content that blocks a full config sync.
 "${DRUSH[@]}" sql:query "DELETE FROM node_field_data; DELETE FROM node_field_revision; DELETE FROM node; DELETE FROM node_revision;" 2>/dev/null || true
+# node.type.* must exist before field config that references bundles (issue, article, …).
+"${DRUSH[@]}" sql:query "DELETE FROM node_field_data; DELETE FROM node_field_revision; DELETE FROM node; DELETE FROM node_revision;" 2>/dev/null || true
+SYNC="${DRUPAL}/web/sites/default/files/sync"
+mkdir -p /tmp/cim-node-types
+cp "${SYNC}"/node.type.*.yml /tmp/cim-node-types/
+"${DRUSH[@]}" cim -y --partial --source=/tmp/cim-node-types
 "${DRUSH[@]}" cim -y
 "${DRUSH[@]}" updatedb -y
 "${DRUSH[@]}" pm:enable df_editor -y 2>/dev/null || true
@@ -83,8 +89,10 @@ for m in df_taxonomy_topics df_taxonomy_cancer_types df_taxonomy_channels df_med
   "${DRUSH[@]}" migrate:import "$m" -y || true
 done
 
+"${DRUSH[@]}" pm:enable df_secondary -y
 "${DRUSH[@]}" df-migrate:sync-wordpress-paths
 "${DRUSH[@]}" php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); echo _df_setup_run_post_migrate_integrator_convergence();"
+"${DRUSH[@]}" search-api:index
 "${DRUSH[@]}" cr
 
 echo "Done. Start server: cd drupal && ./vendor/bin/drush -r web serve 127.0.0.1:8888"

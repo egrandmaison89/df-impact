@@ -43,6 +43,15 @@ final class ArticleBodyCleaner {
    *
    * @return array{html: string, byline: string, photo_credit: string, photo_caption: string}
    */
+  /**
+   * Rewrites legacy WP absolute links only (no deck/byline/figure stripping).
+   *
+   * Safe to run after converge / late-fall post_updates; idempotent.
+   */
+  public function rewriteInternalLinksInHtml(string $html): string {
+    return $this->rewriteInternalLinks($html);
+  }
+
   public function cleanArticleHtml(string $html, ?string $featuredImageUrl = NULL): array {
     $byline = '';
     $photo_credit = '';
@@ -336,6 +345,9 @@ final class ArticleBodyCleaner {
     if ($href === '') {
       return NULL;
     }
+    if (preg_match('#(https?://(?:www\.)?danafarberimpact\.org[^\s"\'<>]+)#i', $href, $embedded)) {
+      $href = $embedded[1];
+    }
 
     if (str_starts_with($href, '/wp-content/uploads/')) {
       return '/sites/default/files/wp-images/' . basename($href);
@@ -343,7 +355,22 @@ final class ArticleBodyCleaner {
 
     $path = str_starts_with($href, '/') ? $href : parse_url($href, PHP_URL_PATH);
     if (!is_string($path) || $path === '') {
+      if (str_contains($href, 'danafarberimpact.org')) {
+        return '/';
+      }
       return NULL;
+    }
+
+    if ($path === '/' || $path === '') {
+      return '/';
+    }
+
+    if (preg_match('#^/tag/([a-z0-9-]+)/?$#i', $path, $tm)) {
+      return '/tag/' . strtolower($tm[1]) . '/';
+    }
+
+    if (preg_match('#/late-fall-2022-issue/?$#i', $path)) {
+      return '/tag/late-fall-2022/';
     }
 
     $storyAlias = $this->mapStoriesPathToDrupalAlias($path);

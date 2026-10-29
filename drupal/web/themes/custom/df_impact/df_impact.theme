@@ -542,6 +542,7 @@ function df_impact_preprocess_node(&$variables) {
     $variables['in_brief_image_alt'] = $image['alt'] ?? $node->label();
     $variables['in_brief_excerpt'] = df_impact_in_brief_plain_excerpt($node);
     $variables['in_brief_byline'] = df_impact_in_brief_byline($node);
+    $variables['in_brief_photo_credit_display'] = df_impact_in_brief_photo_credit_display($node);
     $variables['in_brief_listing_excerpt'] = df_impact_in_brief_listing_excerpt($node);
     if ($node->hasField('field_summary') && !$node->get('field_summary')->isEmpty()) {
       $summary = (string) $node->get('field_summary')->value;
@@ -1152,14 +1153,33 @@ function df_impact_article_add_drop_cap_class(string $html): string {
 }
 
 /**
- * Lead figcaption from export body when the Drupal caption field is empty.
+ * Lead figcaption from the migrated node body (first lead image block).
+ */
+function df_impact_article_wp_lead_figcaption_from_body(NodeInterface $node): string {
+  if (!$node->hasField('body') || $node->get('body')->isEmpty()) {
+    return '';
+  }
+  return df_impact_article_extract_first_lead_figcaption((string) $node->get('body')->value);
+}
+
+/**
+ * Lead figcaption from export JSON when body is empty.
  */
 function df_impact_article_wp_lead_figcaption_from_export(NodeInterface $node): string {
   $row = df_impact_article_export_row_for_node($node);
   if (!is_array($row)) {
     return '';
   }
-  $body = (string) ($row['body'] ?? '');
+  return df_impact_article_extract_first_lead_figcaption((string) ($row['body'] ?? ''));
+}
+
+/**
+ * @return non-empty-string
+ */
+function df_impact_article_extract_first_lead_figcaption(string $body): string {
+  if ($body === '') {
+    return '';
+  }
   if (preg_match('/<figcaption class="wp-element-caption">(.*?)<\/figcaption>/s', $body, $match)) {
     return trim(html_entity_decode(strip_tags($match[1]), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
   }
@@ -1278,12 +1298,12 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
   $layout = df_impact_article_wp_lead_block_meta($node);
   $align_class = $layout['align'] === 'left' ? 'alignleft' : 'alignright';
   $size_class = $layout['size_slug'] === 'full' ? 'size-full' : 'size-large';
-  $caption = '';
-  if ($node->hasField('field_photo_caption') && !$node->get('field_photo_caption')->isEmpty()) {
-    $caption = trim((string) $node->get('field_photo_caption')->value);
-  }
+  $caption = df_impact_article_wp_lead_figcaption_from_body($node);
   if ($caption === '') {
     $caption = df_impact_article_wp_lead_figcaption_from_export($node);
+  }
+  if ($caption === '' && $node->hasField('field_photo_caption') && !$node->get('field_photo_caption')->isEmpty()) {
+    $caption = trim((string) $node->get('field_photo_caption')->value);
   }
 
   $src = NULL;
@@ -1346,6 +1366,15 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
  * PostX card URL with article export fallback when wp-images lacks uploads mapping.
  */
 function df_impact_card_image_url_for_parity_node(NodeInterface $node, string $uri): string {
+  $file_system = \Drupal::service('file_system');
+  $resolved = df_impact_resolve_wp_images_uri($uri) ?? $uri;
+  $real = $file_system->realpath($resolved);
+  if (is_string($real) && is_readable($real) && filesize($real) >= 512) {
+    $info = @getimagesize($real);
+    if (is_array($info) && !empty($info[0])) {
+      return df_impact_card_image_url_for_parity($resolved);
+    }
+  }
   $photon = df_impact_wp_i0_postx_card_url($uri);
   if ($photon !== NULL && df_impact_wp_uploads_path_from_uri($uri) !== NULL) {
     return $photon;
@@ -1431,9 +1460,14 @@ function df_impact_card_image_url_for_parity_from_src(string $src): string {
     return $src;
   }
   if (preg_match('#/wp-content/uploads/(.+)$#', $src, $m)) {
+    $file_system = \Drupal::service('file_system');
     $uri = 'public://wp-content/uploads/' . $m[1];
-    if (\Drupal::service('file_system')->realpath($uri)) {
+    if ($file_system->realpath($uri)) {
       return df_impact_card_image_url_for_parity($uri);
+    }
+    $wp_images = df_impact_resolve_wp_images_uri('public://wp-images/' . basename($m[1]));
+    if (is_string($wp_images) && $file_system->realpath($wp_images)) {
+      return df_impact_card_image_url_for_parity($wp_images);
     }
   }
   return $src;
@@ -2305,6 +2339,20 @@ function df_impact_in_brief_plain_excerpt(NodeInterface $node): string {
 function df_impact_in_brief_byline(NodeInterface $node): string {
   $row = df_impact_in_brief_manifest_row($node);
   return $row['byline'] ?? '';
+}
+
+/**
+ * WordPress photo credit line for In Brief full pages (migrate manifest).
+ */
+function df_impact_in_brief_photo_credit_display(NodeInterface $node): string {
+  if ($node->hasField('field_photo_credit') && !$node->get('field_photo_credit')->isEmpty()) {
+    return ArticleCreditLabels::formatPhotoCredit((string) $node->get('field_photo_credit')->value);
+  }
+  $row = df_impact_in_brief_manifest_row($node);
+  if (empty($row['photo_credit'])) {
+    return '';
+  }
+  return ArticleCreditLabels::formatPhotoCredit((string) $row['photo_credit']);
 }
 
 /**

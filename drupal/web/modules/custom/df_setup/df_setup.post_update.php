@@ -11,12 +11,25 @@
  * - **#23** content-sweep: in_brief excerpts + home moderation fix.
  * - **#25** cover / media seed for issue parity.
  * - **#10** `is_light` field: config import + backfill post-update (stacked on #25).
+ * - **#30** internal links, inline images, featured media repair.
  */
 
 declare(strict_types=1);
 
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
+
+/**
+ * Ensures df_secondary is enabled so /search matches WP (update_10034 on fresh VMs).
+ */
+function df_setup_post_update_ensure_df_secondary_search(): string {
+  if (\Drupal::moduleHandler()->moduleExists('df_secondary')) {
+    return 'df_secondary already enabled.';
+  }
+  \Drupal::service('module_installer')->install(['df_secondary']);
+  drupal_flush_all_caches();
+  return 'Enabled df_secondary for /search parity.';
+}
 
 /**
  * Publishes Home and sets page.front when 10035 ran before moderation fix.
@@ -140,4 +153,27 @@ function df_setup_post_update_late_fall_2022_export_byline_trim(): string {
 function df_setup_post_update_converge_content_sweep_reference_bodies(): string {
   require_once __DIR__ . '/df_setup.install';
   return _df_setup_converge_content_sweep_reference_bodies();
+}
+
+/**
+ * Rewrites WP internal links, localizes inline images, fixes broken featured media.
+ */
+function df_setup_post_update_repair_internal_links_and_media(): string {
+  $script = __DIR__ . '/../df_migrate/scripts/df_setup_content_repair.php';
+  if (!is_readable($script)) {
+    return 'df_setup_content_repair.php missing';
+  }
+  require_once $script;
+  $result = df_setup_content_repair_run();
+  return sprintf(
+    'Content repair: link fields %d/%d, inline images %d/%d, featured %d updated / %d cleared (scanned %d), lead body resync %d.',
+    (int) ($result['link_fields_updated'] ?? 0),
+    (int) ($result['fields_scanned'] ?? 0),
+    (int) ($result['inline_nodes_updated'] ?? 0),
+    (int) ($result['inline_nodes_scanned'] ?? 0),
+    (int) ($result['featured_updated'] ?? 0),
+    (int) ($result['featured_cleared'] ?? 0),
+    (int) ($result['featured_scanned'] ?? 0),
+    (int) ($result['lead_body_resync'] ?? 0),
+  );
 }

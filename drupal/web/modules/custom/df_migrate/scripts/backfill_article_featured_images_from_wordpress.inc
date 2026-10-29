@@ -217,7 +217,7 @@ function df_article_featured_build_try_urls(array $row): array {
   };
 
   $primary = (string) ($row['featured_image_url'] ?? '');
-  if ($primary !== '') {
+  if ($primary !== '' && df_article_featured_is_direct_image_url($primary)) {
     $push('articles.json:featured_image_url', $primary);
   }
 
@@ -257,6 +257,148 @@ function df_article_featured_canonical_url(string $url): string {
     return $parts['scheme'] . '://' . $parts['host'] . $parts['path'];
   }
   return $url;
+}
+
+/**
+ * TRUE when URL points at an image asset, not a WP attachment/page slug URL.
+ */
+function df_article_featured_is_direct_image_url(string $url): bool {
+  $url = trim(html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+  if ($url === '') {
+    return FALSE;
+  }
+  if (preg_match('#/wp-content/uploads/#i', $url)) {
+    return TRUE;
+  }
+  if (preg_match('#i\d*\.wp\.com/.+/wp-content/uploads/#i', $url)) {
+    return TRUE;
+  }
+  return (bool) preg_match('~\.(jpe?g|png|gif|webp|avif)(\?|#|$)~i', $url);
+}
+
+/**
+ * Whether the article's featured media file is a usable image on disk.
+ */
+function df_article_featured_media_is_valid(NodeInterface $node): bool {
+  if (!$node->hasField('field_featured_image') || $node->get('field_featured_image')->isEmpty()) {
+    return FALSE;
+  }
+  $media = $node->get('field_featured_image')->entity;
+  if (!$media instanceof Media || !$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
+    return FALSE;
+  }
+  /** @var \Drupal\file\FileInterface|null $file */
+  $file = $media->get('field_media_image')->entity;
+  if (!$file instanceof FileInterface) {
+    return FALSE;
+  }
+  $uri = $file->getFileUri();
+  $real = \Drupal::service('file_system')->realpath($uri);
+  if ($real === FALSE || !is_readable($real)) {
+    return FALSE;
+  }
+  $size = filesize($real);
+  if ($size === FALSE || $size < 512) {
+    return FALSE;
+  }
+  $info = @getimagesize($real);
+  return is_array($info) && !empty($info[0]);
+}
+
+/**
+ * Replaces broken/missing featured images using articles.json body/upload URLs.
+ *
+ * @return array{scanned: int, updated: int, cleared: int, failed: int}
+ */
+function df_migrate_repair_invalid_article_featured_images(): array {
+  $articles_path = dirname(__DIR__) . '/data/articles.json';
+  if (!is_readable($articles_path)) {
+    return ['scanned' => 0, 'updated' => 0, 'cleared' => 0, 'failed' => 0];
+  }
+  $rows = json_decode((string) file_get_contents($articles_path), TRUE);
+  if (!is_array($rows)) {
+    return ['scanned' => 0, 'updated' => 0, 'cleared' => 0, 'failed' => 0];
+  }
+
+  $database = \Drupal::database();
+  $wp_to_nid = [];
+  if ($database->schema()->tableExists('migrate_map_df_articles')) {
+    $wp_to_nid = array_map('intval', $database->select('migrate_map_df_articles', 'm')
+      ->fields('m', ['sourceid1', 'destid1'])
+      ->execute()
+      ->fetchAllKeyed());
+  }
+
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $stats = ['scanned' => 0, 'updated' => 0, 'cleared' => 0, 'failed' => 0];
+
+  foreach ($rows as $row) {
+    if (!is_array($row)) {
+      continue;
+    }
+    $nid = df_article_featured_resolve_nid($row, $wp_to_nid);
+    if ($nid === NULL) {
+      continue;
+    }
+    /** @var \Drupal\node\NodeInterface|null $node */
+    $node = $node_storage->load($nid);
+    if (!$node instanceof NodeInterface || $node->bundle() !== 'article') {
+      continue;
+    }
+    $stats['scanned']++;
+    if (df_article_featured_media_is_valid($node)) {
+      continue;
+    }
+
+    $title = (string) ($row['title'] ?? $node->label());
+    $try_urls = df_article_featured_build_try_urls($row);
+    $mid = NULL;
+    foreach ($try_urls as $item) {
+      $url = df_article_featured_canonical_url(df_article_featured_absolutize($item['url']));
+      if ($url === '') {
+        continue;
+      }
+      $fid = DownloadImage::getOrCreateFileFromUrl($url);
+      if ($fid === NULL) {
+        continue;
+      }
+      $mid = df_article_featured_get_or_create_media($fid, $title);
+      if ($mid !== NULL) {
+        break;
+      }
+    }
+
+    if ($mid === NULL) {
+      if (!$node->get('field_featured_image')->isEmpty()) {
+        $node->set('field_featured_image', []);
+        $node->save();
+        $stats['cleared']++;
+      }
+      continue;
+    }
+
+    $current_mid = $node->get('field_featured_image')->isEmpty()
+      ? NULL
+      : (int) $node->get('field_featured_image')->target_id;
+    if ($current_mid === (int) $mid) {
+      continue;
+    }
+
+    $node->set('field_featured_image', ['target_id' => $mid]);
+    try {
+      $node->save();
+      $stats['updated']++;
+    }
+    catch (\Throwable $e) {
+      $stats['failed']++;
+      \Drupal::logger('df_migrate')->error('Featured repair save failed nid @nid: @msg', [
+        '@nid' => $nid,
+        '@msg' => $e->getMessage(),
+      ]);
+    }
+  }
+
+  return $stats;
 }
 
 function df_article_featured_first_upload_url(string $html): string {

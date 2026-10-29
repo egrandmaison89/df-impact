@@ -15,10 +15,19 @@
         </figure>
       {% endif %}
 
+      {% set has_byline = in_brief_byline is defined and in_brief_byline|trim %}
+      {% set has_photo_credit = in_brief_photo_credit_display is defined and in_brief_photo_credit_display|trim %}
       {% if in_brief_issue_url %}
-        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500"><a href="{{ in_brief_issue_url }}">{{ in_brief_issue_label }}</a>{% if in_brief_byline %}<br>By {{ in_brief_byline }}{% endif %}</p>
-      {% elseif in_brief_byline %}
-        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">By {{ in_brief_byline }}</p>
+        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
+          <a href="{{ in_brief_issue_url }}">{{ in_brief_issue_label }}</a>
+          {% if has_byline %}<br>By {{ in_brief_byline }}{% endif %}
+          {% if has_photo_credit %}<br>{{ in_brief_photo_credit_display }}{% endif %}
+        </p>
+      {% elseif has_byline or has_photo_credit %}
+        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
+          {% if has_byline %}By {{ in_brief_byline }}{% endif %}
+          {% if has_photo_credit %}{% if has_byline %}<br>{% endif %}{{ in_brief_photo_credit_display }}{% endif %}
+        </p>
       {% endif %}
 
       {% if content.body|render|trim %}

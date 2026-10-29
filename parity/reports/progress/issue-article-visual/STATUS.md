@@ -1,72 +1,53 @@
-# Issue + article visual parity (pass-2 WP cache baseline)
+# Issue + article visual parity (pass-4 WP cache baseline)
 
-Baseline: frozen HTML in `parity/cache/wp-issue-pages` and `parity/cache/wp-article-variants` (`PARITY_WP_SOURCE=cache`), **not** reference-pack totals (PR #25).
+Baseline: frozen HTML in `parity/cache/wp-issue-pages` and `parity/cache/wp-article-variants` (`PARITY_WP_SOURCE=cache`), **not** reference-pack totals.
 
 ## Computed-style totals
 
 | Run | `totalMismatches` | Jobs | Notes |
 |-----|-------------------|------|--------|
-| **before** `before-1793275744948` | **2918** | 33 | Pre fixture-wait / job-spec fixes |
-| **after** `after-1793276157423` | **2728** | 33 | **−190** vs before |
-| **pass3** `pass3-1793279970259` | **2475** | 33 | **−253** vs after; shared chrome + main width + video embed |
+| **after** `after-1793276157423` | **2728** | 33 | Pre pass-3 chrome |
+| **pass3** `pass3-1793279970259` | **2475** | 33 | Global main/footer + content-box (regressed pull_quote / gallery / custom_blocks medians) |
+| **pass4** `pass4-1793290601355` | **2120** | 33 | Issue-scoped main/footer, mobile header 100vw bleed, header twig parity, article WP cache committed |
 
-### Median comparable mismatches per template
+### Median comparable mismatches per template (after vs pass4)
 
-| Template | Before | After | Pass3 |
-|----------|--------|-------|-------|
-| issue | 113 | 107 | **73** |
-| article_hero | — | 90 | **70** |
-| article_sidebar | — | 90 | **67** |
-| article_no_hero | 94 | 76 | **72** |
-| article_pull_quote | 72 | 57 | **67** |
-| article_gallery | 77 | 58 | **68** |
-| article_video_embed | 73 | 91 | **67** (< 73 ✓) |
-| article_long_form | 75 | 75 | **67** |
-| article_custom_blocks | 76 | 58 | **71** |
+| Template | After | Pass4 | vs after |
+|----------|-------|-------|----------|
+| issue | 107 | **80** | ok |
+| article_hero | 90 | **54** | ok |
+| article_no_hero | 76 | **62** | ok |
+| article_sidebar | 90 | **54** | ok |
+| article_pull_quote | 57 | **54** | ok |
+| article_gallery | 58 | **75** | reg (pass3 scoped chrome removed global main breakout; residual header stack + gallery body height) |
+| article_video_embed | 91 | **54** | ok |
+| article_long_form | 75 | **73** | ok |
+| article_custom_blocks | 58 | **73** | reg (tablet/mobile chrome + block layout; desktop main column unchanged vs pass3) |
 
-## Pass3 theme fixes (shared)
+## Pass4 root cause (three pass3 regressions)
 
-- **`drupal-overrides.css`:** `.wp-site-blocks` content-box width; main/footer **20px inset / max 1400px**; mega-menu link **min-width 117px** + box-sizing; desktop header **18px** vertical padding; hide empty `.wp-block-main-header`.
-- **`components.css`:** YouTube/Vimeo **800px max-width**, **16:9** responsive wrapper + absolute iframe in `.entry-content` / `.article__body`.
-- **`df_impact.theme`:** Local `wp-images` header logo when present; lead image prefers local file over Photon (video sample `imgNatural`).
-- **`wp-fixture-html.mjs`:** Wait for header logo load in fixture ready.
+| Regression | Pass3 cause | Pass4 fix |
+|------------|-------------|-----------|
+| **pull_quote** (+10 desktop) | Global `> main` / footer 1400px breakout + fixture refresh | Issue-only breakout; **pull_quote median 54 ≤ 57** |
+| **gallery** (+10 median) | Same global main/footer on issue pages bled into comparable footer/main rects on gallery desktop | Scoped `:has(main .issue-page)`; gallery desktop down vs pass3 107 but mobile header/menu stack still ~75 median |
+| **custom_blocks** (+13 tablet) | Mega-menu `@media (min-width: 768px)` + mobile `.wp-site-blocks` inset | Mega rules at **769px+**; mobile header **100vw** alignfull (not −20px bleed) |
 
-## Shared chrome properties still differing (pass3 aggregate, all 33 jobs)
+Shared chrome kept from pass3: `.wp-site-blocks` **content-box** width, video embed CSS, issue-only main/footer **1400px** column on desktop.
 
-Most remaining noise is layout cascade (main/footer width), not isolated header CSS:
+## Mobile / tablet header
 
-| Property (selector) | Jobs hit | Typical WP → Drupal |
-|---------------------|----------|---------------------|
-| `header :: height` / `rect.h` | 30 / 27 | 143px → 139px desktop; **269.5 → 190.8** tablet/mobile |
-| `header :: rect.x` | 26 | 0 vs 20px (mobile/tablet inset) |
-| `footer :: rect.x` / `rect.w` | 33 | 72/1296 vs 20/1400 desktop (main column breakout) |
-| `main :: rect.h` / `height` | 33 | Content height (embeds, blocks, grid) |
-| `.wp-site-blocks :: height` | 33 | Document height follows main/footer |
+- **Twig:** single `header.wp-block-template-part` (removed empty `.wp-block-main-header` shell).
+- **CSS:** `.mobile-header.alignfull` uses **100vw** + `calc(50% - 50vw)` margins (WP blockmag bleed); collapsed mega menu via Max Mega Menu + `display:none` when not `.mega-menu-open`.
 
-Mega-menu **width/style** deltas dropped after pass3 min-width/box-sizing; residual **4px** desktop header height is padding/stack, not menu item width.
-
-## Article long_form — top property keys (pass3, all breakpoints)
-
-1. `footer :: rect.x` / `rect.w` / `rect.y` — main column geometry (shared pass3 rule)
-2. `.footer-dark :: rect.*` — full-bleed footer wrapper
-3. `.wp-block-footer-widget-area-columns :: rect.*`
-4. `main :: rect.h` / `height` — body copy length / floats
-5. `.wp-site-blocks :: height`
-6. `main :: rect.y` — header stack offset (~4px desktop)
-7. Shared **header** height on tablet/mobile (~79px gap — mobile header block height)
-
-Real content fixes in pass3 (not chrome): main width alignment + lead image URL; long_form median **75 → 67**.
-
-## Text gates
+## Text gates (pass4 branch)
 
 - `parity:template-samples:http` **19/19** (`DRUPAL_BASE_URL=http://127.0.0.1:8888`)
 - `parity:article-variants:compare` **16/16**
-- Issue content sweep **15/15** comparable @ ≥0.98 (`/late-fall-2022-issue` = `wp_non_comparable` — WP cache/live archive shell)
+- Issue content sweep **15/15** comparable @ ≥0.98 (`PARITY_ISSUE_WP_CACHE_ONLY=1`)
 
 ## Commands
 
 ```bash
-PARITY_WP_SOURCE=cache VISUAL_TAG=pass3 node parity/scripts/run-issue-article-visual-parity.mjs
-node parity/scripts/aggregate-style-mismatches.mjs parity/reports/computed-style-diff/<runId>
-node parity/scripts/aggregate-style-mismatches.mjs parity/reports/computed-style-diff/pass3-1793279970259
+VISUAL_TAG=pass4 PARITY_WP_SOURCE=cache node parity/scripts/run-issue-article-visual-parity.mjs
+node parity/scripts/aggregate-style-mismatches.mjs parity/reports/computed-style-diff/pass4-1793290601355
 ```

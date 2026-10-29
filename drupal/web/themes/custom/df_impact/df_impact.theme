@@ -1369,7 +1369,7 @@ function df_impact_card_image_url_for_parity(string $uri): string {
     $uri = df_impact_resolve_wp_images_uri($uri) ?? $uri;
   }
   if ($file_system->realpath($uri)) {
-    return df_impact_file_absolute_url($uri);
+    return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
   }
   $photon = df_impact_wp_i0_postx_card_url($uri);
   if ($photon) {

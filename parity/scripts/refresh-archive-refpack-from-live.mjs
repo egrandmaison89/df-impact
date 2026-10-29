@@ -32,8 +32,18 @@ for (const publicPath of paths) {
     const page = await browser.newPage();
     await page.setViewportSize(size);
     const url = `${wpBase}${publicPath === '/' ? '' : publicPath}`;
-    const resp = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 120000 }).catch(() => null);
-    const status = resp?.status() ?? 0;
+    let status = 0;
+    for (let attempt = 1; attempt <= 4; attempt++) {
+      const resp = await page
+        .goto(url, { waitUntil: 'load', timeout: 120000 })
+        .catch(() => null);
+      status = resp?.status() ?? 0;
+      await page.waitForTimeout(1500);
+      if (status === 200 && !/sgcaptcha|siteground/i.test(await page.content())) {
+        break;
+      }
+      await page.waitForTimeout(2000 * attempt);
+    }
     process.stderr.write(`fetch ${publicPath} ${bp} status=${status}\n`);
     const html = await page.content();
     const dir = path.join(packRoot, slug, bp);

@@ -22,4 +22,4 @@ Distinct: **`rgba(0, 0, 0, 0)`** and **`rgb(255, 255, 255)`** (e.g. issue pages 
 
 - **Removed** tablet/mobile `navDefault` field omission — parity requires matching WP per path.
 - **Harness:** Drupal `navLink` selector matches WP (`#mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link`) so tablet compares the same (desktop) mega menu node WP uses at 768px, not the visible mobile drawer link.
-- **Drupal CSS:** white nav link background only where WP samples white — `body.path-browse-issues` and `body.wp-chrome-nav-bg-solid` (fall/spring 2026 issue aliases); other paths stay transparent.
+- **Drupal:** `field_issue_banner_is_light` (deploy: **`df_setup_update_10035()`**) → hero `is-light` + `body.issue-chrome-nav-solid`; CSS + `body.path-browse-issues`.

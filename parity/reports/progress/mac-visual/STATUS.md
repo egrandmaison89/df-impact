@@ -53,7 +53,11 @@ Command: `DRUPAL_BASE_URL=http://df-impact.ddev.site PARITY_TEMPLATE=<name> npm 
 
 **Pager:** WP `/category/{slug}/page/N` already **200** (paginate subscriber).
 
-### 6. Meta merge `b4e15df2` — **pending** (commit local work first, then merge + `parity:head:refpack`).
+### 6. Meta merge `b4e15df2` — **done**
+
+Merged `origin/cursor/meta-head-behavior-0751` → `b9aa06d2`. Visual regression: homepage chrome D **~4.95%** (unchanged).
+
+**`parity:head:refpack` (2026-10-29):** **61.9%** metaMatch (**13/21**), 19/21 Drupal reachable — report `parity/reports/head-meta/compare-1793244440548.json`. (Full 738-URL smoke metaMatch **~14.5%** uses a different baseline harness.)
 
 ---
 

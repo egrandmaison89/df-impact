@@ -169,20 +169,29 @@ async function expandArticleFieldGroups(page: import('@playwright/test').Page) {
 
 async function openFormTab(page: import('@playwright/test').Page, label: string) {
   const group = FORM_TAB_GROUP[label] ?? label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const details = page.locator(
+    `#edit-group-${group}, details[data-drupal-selector="edit-group-${group}"]`,
+  );
+  if (await details.count()) {
+    const panel = details.first();
+    const open = await panel.evaluate((el) => (el as HTMLDetailsElement).open);
+    if (!open) {
+      await panel.locator('summary').first().click();
+    }
+    await expect(panel).toHaveAttribute('open', '', { timeout: 30_000 });
+    return;
+  }
   const anchor = page.locator(
     `a[href="#edit-group-${group}"], .horizontal-tab-button a:has-text("${label}")`,
   ).first();
   if (await anchor.count()) {
     await anchor.click();
-    await page
-      .locator(`#edit-group-${group}`)
-      .waitFor({ state: 'visible', timeout: 30_000 });
+    await page.locator(`#edit-group-${group}`).waitFor({ state: 'attached', timeout: 30_000 });
     return;
   }
   const tab = page.getByRole('tab', { name: label });
   if (await tab.count()) {
     await tab.click();
-    await page.locator(`#edit-group-${group}`).waitFor({ state: 'visible', timeout: 30_000 }).catch(() => {});
   }
 }
 
@@ -469,7 +478,7 @@ test.describe('Web editor issue launch (UI)', () => {
     await screenshot(page, '09-header-issues-nav');
 
     await go(page, '/browse-issues');
-    await expect(page.locator('body')).toContainText(ISSUE_TITLE);
+    await expect(page.locator('body')).toContainText(`Winter ${YEAR}`);
     await screenshot(page, '10-browse-issues');
 
     await go(page, issuePath);

@@ -313,11 +313,27 @@ export function buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap) {
     drSnap.buttonDefault,
     drSnap.buttonHover,
   );
+  sections.shareIconHover = optionalHoverCompare(
+    wpSnap.shareIconDefault,
+    wpSnap.shareIconHover,
+    drSnap.shareIconDefault,
+    drSnap.shareIconHover,
+  );
   if (bp.label === 'mobile') {
     const wpOpen = Boolean(wpSnap.mobileMenu?.opened);
     const drOpen = Boolean(drSnap.mobileMenu?.opened);
-    sections.mobileMenu =
-      wpOpen === drOpen ? { ok: true, diffs: [] } : { ok: false, diffs: [{ field: 'mobile.open', wp: wpOpen, dr: drOpen }] };
+    const openDiffs =
+      wpOpen === drOpen ? [] : [{ field: 'mobile.open', wp: wpOpen, dr: drOpen }];
+    const drawerDiffs =
+      wpOpen && drOpen
+        ? compareStyles(wpSnap.mobileMenu?.drawerStyle, drSnap.mobileMenu?.drawerStyle).diffs.map(
+            (d) => ({ ...d, field: `mobile.drawer.${d.field}` }),
+          )
+        : [];
+    sections.mobileMenu = {
+      ok: openDiffs.length === 0 && drawerDiffs.length === 0,
+      diffs: [...openDiffs, ...drawerDiffs],
+    };
   }
 
   for (const [name, result] of Object.entries(sections)) {

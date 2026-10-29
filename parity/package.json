@@ -31,6 +31,7 @@
     "parity:article-dom-blocks": "node scripts/compare-article-dom-blocks.mjs",
     "parity:header-chrome": "node scripts/compare-header-chrome.mjs",
     "parity:computed-style-diff:serial": "PARITY_SERIAL=1 node scripts/computed-style-diff.mjs",
+    "parity:computed-style-diff:full": "node scripts/run-computed-style-full.mjs",
     "parity:full": "PARITY_SAMPLE=0 node scripts/run-parity.mjs",
     "report": "node scripts/generate-html-report.mjs",
     "test": "playwright test"

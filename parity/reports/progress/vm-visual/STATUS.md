@@ -48,25 +48,38 @@ GitHub showed ~**256k deletions** because an earlier merge of PR **#10** dropped
 
 ### Pre-push guard — **`parity:smoke:200`** (required)
 
-`npm run parity:smoke:200` — **39 paths** (all `template-samples.json` + manifest sample inventory), **0** HTTP fails after `9acb109d`. Documented in `parity/docs/MEASUREMENT.md`; CI: `.github/workflows/parity-smoke-200.yml` on PRs to `cursor/phase4-chrome-behavior-0b67`.
+`npm run parity:smoke:200` — **40 paths**, **0** HTTP fails (`smoke-1793253687198.json`, post-`e922cc40`). `parity:head:refpack` **21/21** (`compare-1793253766182.json`, `HEAD_REFPACK_CHECK_WP=0`). Documented in `parity/docs/MEASUREMENT.md`; CI: `.github/workflows/parity-smoke-200.yml` on PRs to `cursor/phase4-chrome-behavior-0b67`.
+
+**Note:** VM shell may export `PARITY_PATH` — **unset** before template-wide `parity:computed-style-diff` runs.
 
 **Note:** Applied legacy aliases via `df_setup_update_10022()` + `/home` alias; extended `df_sync_static_page_aliases()` so future `df-migrate:sync-wordpress-paths` keeps `/about` and `/home`.
 
 ---
 
-## Computed-style-diff mismatch totals (desktop, live WP)
+## Computed-style-diff mismatch totals (live WP, desktop Σ all sample paths)
 
-Report: `parity/reports/computed-style-diff/post-merge-pr11/summary.json`
+**Baseline (pre-header fix, VM):** homepage **74**, issue **120**, article **69**, in_brief **98**, landing_page **133**, archive **188**.
 
-| Template | Mismatch sum (all sample paths) | Primary deltas (when WP 200) |
-|----------|--------------------------------:|------------------------------|
-| **homepage** | **74** | Hero/grids vs short page when WP returns **202** captcha shell; chrome OK when both 200 |
-| **issue** | **120** | PostX card **y/h** + image **w/h** on `fall-2026-issue`; issue banner **h1 x** on overlay |
-| **article** | **40** → **~25** (couple, ref-pack) | **main h Δ 312→16px** vs ref-pack couple (`post-article-fix3`); live WP **main h Δ≈56px** when WP 200 (`post-article-fix2`); **main y Δ≈52px** (title wrap / band) |
-| **in_brief** | **98** | Same title/`<main>` split + spacer (re-measure pending) |
-| **landing_page** | refpack **`landing-about`** | `/about` desktop viewport Linux **16.7%**, Mac **34.8%**; text sim **96.2%**; chrome **Δx=72** → **`.desktop-header` x=0 w=1440** (bleed margins restored) |
-| **archive** | refpack **`archive-refpack`** (3 categories × 3 BP) | DE listing filter **`is_digital_exclusive`** slugs → order matches WP ref-pack top row (GivingTuesday first); text sim TBD re-run |
-| **homepage tablet/mobile** | live WP **`post-tablet-home`** + refpack medians | Tablet **87** mismatches; refpack chrome median Linux **~17%** tablet / **~21%** mobile after **desktop/mobile header toggle** in `drupal-overrides.css` |
+**Full serial run:** `parity/reports/computed-style-diff/full-cs-2026-10-29/` (`npm run parity:computed-style-diff:full`, **58/60** jobs; **3** WP retry rounds). **Unset `PARITY_PATH`** in shell before running.
+
+| Template | Baseline desktop Σ | `full-cs-2026-10-29` desktop Σ | Δ | Notes |
+|----------|-------------------:|---------------------------------:|--:|-------|
+| **homepage** | 74 | **100** | +26 | Two paths (`/`, `/homepage`); hero/grid when WP 200 |
+| **issue** | 120 | **167** | +47 | PostX card **y/h**, issue banner **h1** |
+| **article** | 69 | **124** | +55 | Share block + title band; couple desktop **40** per-path |
+| **in_brief** | 98 | **88** | −10 | **`/in-brief` desktop** job hung (WP); 2/3 paths counted |
+| **landing_page** | 133 | **155** | +22 | `/about` Gutenberg blocks; **`/browse-issues` mobile** missing |
+| **archive** | 188 | **295** | +107 | Query row **y/h**, pagination; footer tablet **w** (fix landed mid-run — re-run pending) |
+
+**All breakpoints Σ (same run):** homepage **480**, issue **718**, article **524**, in_brief **521**, landing_page **632**, archive **1214**.
+
+**Fixes this turn:** footer template-part bleed (tablet **`.footer-dark` x=0 w=768** verified post-`drush cr`); `parity:computed-style-diff:full` + job timeout; behavior harness **share icon hover**; mobile menu slide animation CSS.
+
+| Template | Primary deltas (when WP 200) |
+|----------|------------------------------|
+| **archive / landing** | `.footer-dark` / `.wp-site-blocks` box; archive row thumbnails; landing block layout vs ref-pack |
+| **issue** | PostX card image rendered size + vertical rhythm |
+| **article** | **main h** vs ref-pack ~16px; live WP **main y** when comparable |
 
 **Baseline (pre-content, `/` desktop):** **31** mismatches → **50** after full homepage content (migrations complete).
 

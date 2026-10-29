@@ -5,7 +5,15 @@
   <div class="ultp-block-content-wrap">
     {% if article_card_image_url %}
       <div class="ultp-block-image ultp-block-image-zoomIn">
-        <a href="{{ article_url }}"><img decoding="async" src="{{ article_card_image_url }}" width="{{ article_card_image_width }}" height="{{ article_card_image_height }}" class="ultp-block-image-content lazyloaded" alt="{{ article_card_image_alt }}" style="width:100%;height:100%;object-fit:cover"></a>
+        {% include '@df_impact/includes/postx-card-image.html.twig' with {
+          card_url: article_url,
+          image_url: article_card_image_url,
+          srcset: article_card_image_srcset,
+          sizes: article_card_image_sizes,
+          width: article_card_image_width,
+          height: article_card_image_height,
+          alt: article_card_image_alt,
+        } only %}
       </div>
     {% endif %}
     <div class="ultp-block-content">

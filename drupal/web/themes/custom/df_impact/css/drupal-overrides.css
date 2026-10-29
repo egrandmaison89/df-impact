@@ -100,6 +100,20 @@ body {
   }
 }
 
+/* Social Snap inline share — WP block layout stacks icon rows (flex row was ~96px vs ~304px). */
+.ss-inline-share-wrapper.ss-left-inline-content .ss-social-icons-container {
+  display: block !important;
+}
+
+.ss-inline-share-wrapper.ss-left-inline-content .ss-social-icons-container > li {
+  display: block;
+  margin: 0 0 16px;
+}
+
+.ss-inline-share-wrapper.ss-left-inline-content {
+  padding-bottom: 8px;
+}
+
 /* Article/in-brief: floated lead images must expand <main> height (WP block layout). */
 main#wp--skip-link--target .entry-content.wp-block-post-content::after {
   content: "";
@@ -123,28 +137,99 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
 }
 
 /*
- * alignfull under .wp-site-blocks: desktop header fills shell without double-bleed.
+ * Header chrome: cancel .wp-site-blocks outer padding on .desktop-header / .mobile-header (blockmag alignfull).
+ * Drop nested alignfull side-padding so logo/donate sit at 15px inset like live WP.
  */
 @media (min-width: 769px) {
+  .wp-site-blocks .homepage-banner.wp-block-cover.alignfull,
+  .wp-site-blocks .issue-page > .wp-block-cover.alignfull {
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
   .wp-site-blocks .desktop-header.alignfull {
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+    max-width: none;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .wp-site-blocks .desktop-header.alignfull .impact-header.alignfull,
+  .wp-site-blocks .desktop-header.alignfull .is-content-justification-space-between.alignfull {
     margin-left: 0 !important;
     margin-right: 0 !important;
     width: 100% !important;
-    max-width: 100%;
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
   }
 
-  .wp-site-blocks .desktop-header .alignfull,
-  .wp-site-blocks .desktop-header .impact-header.alignfull {
+  .wp-site-blocks .desktop-header .left-side-header,
+  .wp-site-blocks .desktop-header .right-side-header {
     margin-left: 0 !important;
     margin-right: 0 !important;
-    width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .wp-site-blocks .mobile-header.alignfull {
+    margin-left: -20px !important;
+    margin-right: -20px !important;
+    width: calc(100% + 40px) !important;
+    max-width: none;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
   }
 
-  .wp-site-blocks > header.wp-block-template-part {
-    margin-left: 0;
-    margin-right: 0;
-    max-width: 100%;
+  .wp-site-blocks .mobile-header.alignfull .impact-header.alignfull,
+  .wp-site-blocks .mobile-header.alignfull .is-content-justification-space-between.alignfull {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
   }
+
+  .wp-site-blocks .mobile-header .left-side-header,
+  .wp-site-blocks .mobile-header .right-side-header {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* Article singular title band — match WP line breaks (main y parity). */
+.wp-block-group.alignfull.is-content-justification-center h1.wp-block-post-title.alignwide {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 1.38;
+  word-break: break-word;
+}
+
+@media only screen and (max-width: 860px) {
+  .wp-block-group.alignfull.is-content-justification-center h1.wp-block-post-title.alignwide {
+    font-size: 28px;
+  }
+}
+
+/* Social Snap share icons — WP hover/focus parity (inline block). */
+.ss-inline-share-wrapper .ss-social-icons-container a:hover .ss-network-icon svg,
+.ss-inline-share-wrapper .ss-social-icons-container a:focus-visible .ss-network-icon svg {
+  opacity: 0.85;
 }
 
 .visually-hidden {

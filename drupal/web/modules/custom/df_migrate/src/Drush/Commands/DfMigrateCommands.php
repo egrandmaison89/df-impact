@@ -223,6 +223,51 @@ final class DfMigrateCommands extends DrushCommands {
   }
 
   /**
+   * Compare export JSON publish status to Drupal node published flag.
+   */
+  #[Command(name: 'df-migrate:audit-export-publish-status')]
+  #[Bootstrap(level: DrupalBootLevels::FULL)]
+  #[Usage(name: 'drush df-migrate:audit-export-publish-status', description: 'Audit articles.json and in_brief.json vs migrate maps.')]
+  #[Option(name: 'json', description: 'Emit JSON summary on stdout.')]
+  public function auditExportPublishStatus(array $options = ['json' => FALSE]): void {
+    $inc = dirname(__DIR__, 3) . '/scripts/df_audit_export_publish_status.inc';
+    if (!is_readable($inc)) {
+      $this->logger()->error(dt('Missing @f', ['@f' => $inc]));
+      return;
+    }
+    require_once $inc;
+    try {
+      $summary = df_migrate_audit_export_publish_status_run();
+    }
+    catch (\Throwable $e) {
+      $this->logger()->error($e->getMessage());
+      return;
+    }
+    if ($options['json']) {
+      $this->output()->writeln(json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+      return;
+    }
+    $rows = [];
+    foreach ($summary['migrations'] as $r) {
+      $rows[] = [
+        $r['migration'],
+        (string) $r['matched'],
+        (string) count($r['export_published_drupal_unpublished']),
+        (string) count($r['export_draft_drupal_published']),
+      ];
+    }
+    $this->io()->table(
+      ['Migration', 'Matched', 'Export pub / Drupal unpub', 'Export draft / Drupal pub'],
+      $rows,
+    );
+    $this->io()->note(dt('Totals: matched @m; mismatches @a / @b', [
+      '@m' => $summary['matched_total'],
+      '@a' => $summary['export_published_drupal_unpublished_total'],
+      '@b' => $summary['export_draft_drupal_published_total'],
+    ]));
+  }
+
+  /**
    * Decode HTML entities in node titles and plain-text fields (one-time fix).
    */
   #[Command(name: 'df-migrate:decode-text-entities')]

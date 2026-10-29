@@ -44,7 +44,18 @@ display:
       cache:
         type: search_api_none
         options: {  }
-      empty: {  }
+      empty:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text_custom
+          empty: true
+          content: '<p class="wp-block-paragraph">Sorry, but nothing matched your search terms. Please try again with some different keywords.</p>'
+          tokenize: false
       sorts: {  }
       arguments: {  }
       filters:
@@ -66,7 +77,7 @@ display:
             description: ''
             use_operator: false
             operator: search_op
-            identifier: keys
+            identifier: s
             required: false
             remember: false
             multiple: false
@@ -122,7 +133,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: search-legacy
+      path: search
     cache_metadata:
       max-age: 0
       contexts:

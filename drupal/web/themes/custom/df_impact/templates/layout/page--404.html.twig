@@ -1,0 +1,26 @@
+{#
+  WordPress error404 layout (BlockMag search header pattern).
+#}
+<div class="wp-site-blocks">
+
+  {% include '@df_impact/includes/wp-chrome-header.html.twig' %}
+
+  <div class="wp-block-group alignfull no-margin-top header-media-inner-post without-bg is-layout-constrained wp-block-group-is-layout-constrained">
+    <div class="wp-block-group alignfull is-layout-flow wp-block-group-is-layout-flow" style="padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px">
+      <div class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
+        <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow"></div>
+      </div>
+    </div>
+  </div>
+
+  <main id="wp--skip-link--target" class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow" role="main">
+    <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+      <h1 class="wp-block-heading has-text-align-center">{{ 'Page not found'|t }}</h1>
+      <p class="wp-block-paragraph has-text-align-center">{{ 'It looks like nothing was found at this location. Try a search below.'|t }}</p>
+      {{ page.content }}
+    </div>
+  </main>
+
+  {% include '@df_impact/includes/wp-chrome-footer.html.twig' %}
+
+</div>

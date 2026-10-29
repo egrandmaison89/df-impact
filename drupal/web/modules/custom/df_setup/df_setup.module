@@ -256,8 +256,7 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
     return;
   }
 
-  $ids = ['homepage_digital_exclusives', 'digital_exclusives_archive'];
-  if (!in_array($view_id, $ids, TRUE)) {
+  if (!in_array($view_id, ['homepage_digital_exclusives', 'digital_exclusives_archive'], TRUE)) {
     return;
   }
 

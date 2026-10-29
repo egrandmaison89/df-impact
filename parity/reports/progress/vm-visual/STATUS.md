@@ -4,7 +4,7 @@
 **Drupal:** `http://127.0.0.1:8888` (MariaDB `dfimpact`, host Drush).  
 **Method:** `npm run parity:computed-style-diff` (live WP vs Drupal, desktop/tablet/mobile).
 
-**Updated:** 2026-10-29 (smoke-200 guard, refpack about/archive, chrome tablet/mobile)
+**Updated:** 2026-10-29 (merge phase4 @ `b51df612`, header logo x, Social Snap JS, gates)
 
 ---
 
@@ -62,10 +62,10 @@ Report: `parity/reports/computed-style-diff/post-merge-pr11/summary.json`
 |----------|--------------------------------:|------------------------------|
 | **homepage** | **74** | Hero/grids vs short page when WP returns **202** captcha shell; chrome OK when both 200 |
 | **issue** | **120** | PostX card **y/h** + image **w/h** on `fall-2026-issue`; issue banner **h1 x** on overlay |
-| **article** | **69** → **40** (couple, WP 200) | **main y Δ≈6px**; **main h Δ≈312px** still (`post-clearfix-main`) — body/related block height vs WP, not float collapse |
+| **article** | **40** → **~25** (couple, ref-pack) | **main h Δ 312→16px** vs ref-pack couple (`post-article-fix3`); live WP **main h Δ≈56px** when WP 200 (`post-article-fix2`); **main y Δ≈52px** (title wrap / band) |
 | **in_brief** | **98** | Same title/`<main>` split + spacer (re-measure pending) |
-| **landing_page** | refpack **`landing-about`** | `/about` desktop viewport Linux **16.7%**, Mac **34.8%**; text sim **96.2%**; chrome **Δx=72** (`.wp-site-blocks` padding) |
-| **archive** | refpack **`archive-refpack`** (3 categories × 3 BP) | Desktop viewport Mac median **30.3%**; archive row thumb CSS added; DE text sim **41%** (listing copy drift) |
+| **landing_page** | refpack **`landing-about`** | `/about` desktop viewport Linux **16.7%**, Mac **34.8%**; text sim **96.2%**; chrome **Δx=72** → **`.desktop-header` x=0 w=1440** (bleed margins restored) |
+| **archive** | refpack **`archive-refpack`** (3 categories × 3 BP) | DE listing filter **`is_digital_exclusive`** slugs → order matches WP ref-pack top row (GivingTuesday first); text sim TBD re-run |
 | **homepage tablet/mobile** | live WP **`post-tablet-home`** + refpack medians | Tablet **87** mismatches; refpack chrome median Linux **~17%** tablet / **~21%** mobile after **desktop/mobile header toggle** in `drupal-overrides.css` |
 
 **Baseline (pre-content, `/` desktop):** **31** mismatches → **50** after full homepage content (migrations complete).
@@ -84,9 +84,28 @@ Report: `parity/reports/computed-style-diff/post-merge-pr11/summary.json`
 
 `parity/scripts/computed-style-diff.mjs`, `parity/config/parity-selectors.json`, npm script `parity:computed-style-diff`. WP loads retry with backoff on **202** / captcha HTML / missing header / stub footer; **`wpComparable`** runs feed **`byTemplate.medianMismatchComparable`** (non-comparable samples excluded from medians).
 
-### Chrome header — **unchanged (good)**
+### Chrome header — **logo / donate inset (2026-10-29)**
 
-Desktop `.desktop-header` **1440×148**, `.header-logo` **x=15** matches live WP. Open: gtranslate **x Δ≈119px**, mega menu **±2px** width.
+Blockmag pads nested `.alignfull` header groups (+72px) and sets nested alignfull `width:inherit` → **`.header-logo` x≈159** vs WP **15**. Fix: bleed **`.desktop-header` / `.mobile-header`** with blockmag negative margins, zero side-padding on nested rows, cancel stray **`.left-side-header`** alignfull margins on mobile.
+
+| Viewport | Metric | WP (live / ref-pack) | Drupal (post-`e922cc40`) |
+|----------|--------|----------------------|---------------------------|
+| 1440 | `.header-logo` x | **15** | **15** |
+| 1440 @ scroll 300 | logo img h | **~67** (`.header-logo.scrolled`) | **~67**; header h **143** vs WP **~143** |
+| 1024 | logo x / donate x | **15** / **~904** | **15** / **~916** (±2px donate w) |
+| 768 / 390 | mobile logo x | **15** | **15** |
+
+Harness: `npm run parity:header-chrome` (`parity/scripts/compare-header-chrome.mjs`). Eric **`.header--scrolled` 100vw** rule unchanged on `.desktop-header.alignfull`.
+
+### Article main height — **2026-10-29**
+
+| Metric | Before (`post-clearfix-main`) | After (`post-article-fix3` / ref-pack) |
+|--------|------------------------------:|---------------------------------------:|
+| **main h Δ** (couple desktop) | **312px** | **16px** vs ref-pack; **56px** vs live WP when comparable |
+| **`.desktop-header` x Δ** | **72px** | **0px** |
+| **DE archive 1st title** | CLL Sept 2026 (channel-only filter) | GivingTuesday March 2026 (matches WP category archive) |
+
+Harness: `npm run parity:article-dom-blocks` (`parity/scripts/compare-article-dom-blocks.mjs`); article samples + **PMC video** slug in `template-samples.json`.
 
 ---
 

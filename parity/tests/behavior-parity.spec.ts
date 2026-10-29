@@ -201,19 +201,25 @@ for (const pathNorm of paths) {
 
       const isHome = pathNorm === '/' || pathNorm === '/homepage';
 
-      await gotoWithBoundedSettle(drPage, drupalUrl(pathNorm), {
-        timeout: 90_000,
-        settleMs: behaviorLite ? 600 : 1000,
-      });
-      const drSnap = await captureSiteBehavior(drPage, DRUPAL_PROFILE, bp);
-      report.dr = drSnap;
-      await drPage.screenshot({ path: path.join(outBase, 'drupal-scroll.png'), fullPage: false });
-      if (pathUsesChromeHeader(pathNorm)) {
-        await headerScrollScreenshots(drPage, outBase, 'drupal');
-      }
+      let drSnap: WpSnap = null;
+      try {
+        await gotoWithBoundedSettle(drPage, drupalUrl(pathNorm), {
+          timeout: 90_000,
+          settleMs: behaviorLite ? 600 : 1000,
+        });
+        drSnap = await captureSiteBehavior(drPage, DRUPAL_PROFILE, bp);
+        report.dr = drSnap;
+        await drPage.screenshot({ path: path.join(outBase, 'drupal-scroll.png'), fullPage: false });
+        if (pathUsesChromeHeader(pathNorm)) {
+          await headerScrollScreenshots(drPage, outBase, 'drupal');
+        }
 
-      if (bp.label === 'mobile' && drSnap.mobileMenu?.opened) {
-        await drPage.screenshot({ path: path.join(outBase, 'drupal-drawer-open.png'), fullPage: false });
+        if (bp.label === 'mobile' && drSnap?.mobileMenu?.opened) {
+          await drPage.screenshot({ path: path.join(outBase, 'drupal-drawer-open.png'), fullPage: false });
+        }
+      } catch (e) {
+        report.drError = String(e);
+        globalStats.incompleteCases += 1;
       }
 
       if (crossSite && wpSnap && drSnap && wpSnapshotReady(pathNorm, wpSnap)) {
@@ -264,13 +270,27 @@ for (const pathNorm of paths) {
 
 test.afterAll(() => {
   const runDir = path.join(parityRoot, 'reports/behavior', runId);
-  const expectedCases = expectedBehaviorCaseCount(paths);
-  writeJson(path.join(runDir, 'run-meta.json'), {
+  const fullPaths =
+    pathsRaw === 'auto' ? loadTemplateSamplePaths() : paths;
+  const metaPath = path.join(runDir, 'run-meta.json');
+  let pathsForMeta = fullPaths;
+  if (fs.existsSync(metaPath)) {
+    try {
+      const existing = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+      if (Array.isArray(existing.paths) && existing.paths.length > pathsForMeta.length) {
+        pathsForMeta = existing.paths;
+      }
+    } catch {
+      /* keep fullPaths */
+    }
+  }
+  const expectedCases = expectedBehaviorCaseCount(pathsForMeta);
+  writeJson(metaPath, {
     runId,
     wpBase,
     drupalBase,
     baselineId: baselineId || null,
-    paths,
+    paths: pathsForMeta,
     expectedCases,
     crossSite,
     hitWp,

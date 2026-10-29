@@ -1,0 +1,13 @@
+{#
+  Simplified Social Snap inline share (reference-pack article pages).
+#}
+{% if article_share_links is defined and article_share_links.networks %}
+  <div class="ss-inline-share-wrapper ss-left-inline-content ss-regular-icons ss-with-spacing ss-rounded-icons ss-without-labels social-share">
+    <p class="ss-social-share-label">{{ 'Share This Story'|t }}</p>
+    <div class="ss-inline-share-content">
+      {% for network in article_share_links.networks %}
+        <a href="{{ network.href }}" aria-label="{{ network.label }}" class="{{ network.class }}" rel="nofollow noopener" data-ss-ss-network-id="{{ network.id }}" data-ss-ss-post-id="{{ article_share_links.post_id }}" data-ss-ss-location="inline_content" data-ss-ss-permalink="{{ article_share_links.permalink }}" data-ss-ss-type="share">{{ network.label }}</a>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}

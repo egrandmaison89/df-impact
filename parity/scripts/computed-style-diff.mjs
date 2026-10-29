@@ -363,24 +363,49 @@ if (!jobs.length) {
 }
 
 fs.mkdirSync(outDir, { recursive: true });
-const browser = await chromium.launch();
+const serial = process.env.PARITY_SERIAL === '1';
+const interJobMs = Number(process.env.PARITY_INTER_JOB_MS || 1500);
 const results = [];
 
-for (const job of jobs) {
+async function runOneJob(browser, job) {
   const label = `${job.template}_${pathSlug(job.path)}_${job.bp}`;
   process.stderr.write(`compare ${label}\n`);
   try {
     const report = await comparePath(browser, job);
+    if (report.wpStatus === 0 || report.wpStatus >= 400) {
+      report.wpComparable = false;
+    }
+    if (report.drStatus !== 200) {
+      throw new Error(`Drupal HTTP ${report.drStatus}`);
+    }
     results.push(report);
     const outFile = path.join(outDir, `${label}.json`);
     fs.writeFileSync(outFile, JSON.stringify(report, null, 2));
-    process.stderr.write(`  mismatches=${report.mismatchCount} wp=${report.wpStatus} dr=${report.drStatus}\n`);
+    process.stderr.write(
+      `  mismatches=${report.mismatchCount} wp=${report.wpStatus} comparable=${report.wpComparable} dr=${report.drStatus}\n`,
+    );
   } catch (e) {
-    results.push({ ...job, error: String(e) });
+    results.push({ ...job, error: String(e), wpComparable: false });
+    process.stderr.write(`  ERROR ${String(e)}\n`);
   }
 }
 
-await browser.close();
+if (serial) {
+  for (const job of jobs) {
+    const browser = await chromium.launch();
+    await runOneJob(browser, job);
+    await browser.close();
+    if (interJobMs > 0) {
+      await new Promise((r) => setTimeout(r, interJobMs));
+    }
+  }
+} else {
+  const browser = await chromium.launch();
+  for (const job of jobs) {
+    await runOneJob(browser, job);
+  }
+  await browser.close();
+}
 
 function median(nums) {
   const sorted = [...nums].sort((a, b) => a - b);

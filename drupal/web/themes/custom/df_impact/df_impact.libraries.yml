@@ -59,6 +59,7 @@ wp_port:
   js:
     wp-assets/cdnjs.cloudflare.com_ajax_libs_jquery_3.3.1_jquery.min.js: {}
     wp-assets/danafarberimpact.org_wp-content_plugins_megamenu_js_maxmegamenu.min.js: {}
+    wp-assets/danafarberimpact.org_wp-content_plugins_socialsnap_assets_js_socialsnap.js: {}
   dependencies:
     - core/jquery
 

@@ -27,7 +27,13 @@
     "parity:behavior:templates": "PARITY_BEHAVIOR_PATHS=auto PARITY_BEHAVIOR_HIT_WP=1 PARITY_BEHAVIOR_CROSS_SITE=1 node scripts/run-behavior-parity.mjs",
     "parity:behavior:templates:drupal-only": "PARITY_BEHAVIOR_PATHS=auto PARITY_BEHAVIOR_HIT_WP=0 PARITY_BEHAVIOR_CROSS_SITE=0 node scripts/run-behavior-parity.mjs",
     "parity:url:check": "node scripts/check-url-parity.mjs",
+    "parity:launch:lighthouse": "node scripts/run-launch-lighthouse.mjs",
+    "parity:launch:axe": "node scripts/run-launch-axe.mjs",
+    "parity:launch:tags-test": "cd ../drupal && ddev exec ./vendor/bin/phpunit --bootstrap web/modules/custom/df_launch/tests/bootstrap.php web/modules/custom/df_launch/tests/src/Unit/LaunchEnvironmentTest.php",
     "parity:smoke:200": "node scripts/smoke-200.mjs",
+    "parity:article-dom-blocks": "node scripts/compare-article-dom-blocks.mjs",
+    "parity:header-chrome": "node scripts/compare-header-chrome.mjs",
+    "parity:computed-style-diff:serial": "PARITY_SERIAL=1 node scripts/computed-style-diff.mjs",
     "parity:full": "PARITY_SAMPLE=0 node scripts/run-parity.mjs",
     "report": "node scripts/generate-html-report.mjs",
     "test": "playwright test"
@@ -35,6 +41,8 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
     "@playwright/test": "^1.51.0",
+    "chrome-launcher": "^1.2.2",
+    "lighthouse": "^12.8.2",
     "pixelmatch": "^7.1.0",
     "pngjs": "^7.0.0"
   }

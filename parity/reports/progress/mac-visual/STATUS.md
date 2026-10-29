@@ -1,10 +1,30 @@
 # Mac visual parity — live status
 
-**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). Integrator merges: **Meta #10**, **Templates #13**, **VM #14**, **Editor #15**, **Editor follow-ups #17** (`5efc6901` on `cursor/editor-followups-ce7f`). **Not merged:** PR #16 (superseded by #17).
+**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Merged:** PR **#18** secondary (`b6905482`), PR **#19** launch (`d071765f`, `df_launch` prod-gated). **Not merged:** PR #16 (superseded).
 
-**Updated:** 2026-10-29 ~2:16 AM ET
+**Updated:** 2026-10-29 ~3:15 AM ET
 
-**Stash:** `mac-wip` (local report PNG backup; not committed).
+---
+
+## Export publish status (node 28 / `?p=8386`)
+
+| Check | Result |
+|-------|--------|
+| Live WP `?p=8386` | **404** (not public) |
+| Live WP `/stories/pici-fosters-…/` | **404** |
+| Export `articles.json` (`wp_id` **8386**) | `"status": "draft"` (export uses **`status`**, not `post_status`) |
+| Drupal node **28** | **unpublished** (`status=0`) — matches export |
+| DDEV `/?p=8386` | **301** → canonical → **403** (expected for draft) |
+
+**Migration mapping:** `df_articles` / `df_in_brief` map export `published`→`status=1` + `moderation_state=published`, `draft`→`0` + `draft`. **No mapping change required.**
+
+**Audit** (`drush df-migrate:audit-export-publish-status`):
+
+| Migration | Matched | Export pub / Drupal unpub | Export draft / Drupal pub |
+|-----------|---------|---------------------------|---------------------------|
+| df_articles | 439 | **0** | **0** |
+| df_in_brief | 323 | **0** | **0** |
+| **Total** | **762** | **0** | **0** |
 
 ---
 
@@ -12,80 +32,114 @@
 
 | PR | Branch | Head | In PR #5 |
 |----|--------|------|----------|
-| #10 Meta | `cursor/meta-head-behavior-0751` | `2778e304` | yes |
-| #13 Templates | `cursor/templates-inbrief-archives-185b` | `f780eb3c` | yes |
-| #14 VM | `cursor/vm-visual-parity-2b1b` | `9f1e8b49` | yes |
+| #10 Meta | `cursor/meta-head-behavior-0751` | **`456734b2`** (Drupal capture retry) | yes |
+| #13 Templates | `cursor/templates-inbrief-archives-185b` | **`f1593b50`** (≥ `9cf106ab`) | yes |
+| #14 VM | `cursor/vm-visual-parity-2b1b` | **`6876d0ed`** (header logo × fix, Social Snap) | yes |
+| #17 Editor | `cursor/editor-followups-ce7f` | `5efc6901` | yes |
 
-**Post-merge DDEV:** `drush cim`, `updb`, `cr`; `php:script` `df_backfill_article_body.php` (0/439 new), `decode_text_entities.php` (entities **113→0**); `df-migrate:backfill-jetpack-related` (**439** updated). **Fix:** `DfMigrateCommands.php` parse error (`dt()` paren) so Drush commands register.
+**DDEV backfills (this run):** `cim` / `updb` / `cr`, `df_backfill_article_body.php` (**16**/447), `df_backfill_all_embeds.php`, `decode_text_entities.php` (**53→0** entities), `df-migrate:backfill-jetpack-related` (**439**), **`cr`**. PR **#13** / **#14** heads unchanged; merged PR **#10** **`456734b2`**.
 
 ---
 
-## DDEV gates (post PR #17)
+## PR #18 secondary surfaces (DDEV)
+
+| Step | Result |
+|------|--------|
+| `pm:enable df_secondary` | enabled |
+| `cim` / `cr` | OK |
+| `search-api:index df_impact_content` | **459** items |
+| `simple-sitemap:generate` | **19/19** queue items |
+
+| URL | Result |
+|-----|--------|
+| `/` | **200** |
+| `/homepage` | **200** |
+| `/home` | **200** |
+| `/?s=cancer` | **200** (search) |
+| `/feed` | **200** |
+| `/robots.txt` | **200** |
+| `/?p=8390` | **301** → `/2025/06/john-t-…` (**200** follow) |
+| `/?p=8386` | **301** → `/stories/pici-…` (**403** — node unpublished) |
+
+---
+
+## DDEV gates (latest)
 
 | Gate | Result | Report / run |
 |------|--------|----------------|
-| `drush cim` / `cr` | **ok** | `editor_html` format + role updates imported |
-| `drush df-editor:test-publish-workflow` | **pass** | After removing stale `DF Test Issue Workflow` nodes on DDEV |
-| wp-port assets | **19/19** | `scripts/repro/verify-wp-port-assets.sh` |
-| `parity:head:refpack` | **21/21** | `parity/reports/head-meta/compare-1793254525998.json` |
-| `parity:head:manifest` | **773/773** | `parity/reports/head-meta/manifest-1793254566078.json` |
-| `parity:url:check` | **801/801** | `parity/reports/url-parity/check-1793254567439.json` |
-| `parity:template-samples:http` | **18/18** (all **200**) | `parity/reports/template-samples-http/check-1793254567745.json` |
-| `parity:smoke:200` | **pass** (39 paths, 0 fails) | `parity/reports/smoke-200/smoke-1793254568956.json` |
-| `parity:behavior:smoke` | **pass** (3/3, lite, prior) | `parity/reports/behavior/2026-10-29T06-00-24-489Z/` |
+| wp-port assets | **20/20** | `scripts/repro/verify-wp-port-assets.sh` |
+| `parity:head:refpack` | **21/21** | `compare-1793256215357.json` |
+| `parity:head:manifest` | **773/773** | `manifest-1793256253158.json` |
+| `parity:url:check` | **801/801** | `check-1793256254467.json` |
+| `parity:template-samples:http` | **19/19** @ **200** | `check-1793256254784.json` |
+| `parity:smoke:200` | **pass** (40 paths) | `smoke-1793256256004.json` |
+| `parity:behavior:smoke` (lite) | **pass** (3/3) | `behavior/2026-10-29T06-32-43-899Z/` |
 
 ---
 
-## Template pixel medians (Mac pack, desktop viewport D)
+## Template pixel medians (Mac pack viewport %)
 
-| Template | Before viewport D | After viewport D | Before chrome D | After chrome D |
-|----------|-------------------|------------------|-----------------|----------------|
-| **homepage** | 33.0% | **32.7%** | 5.1% | **14.3%** |
-| **issue** | 67.8% | **68.2%** | 2.1% | **11.0%** |
-| article | — | **31.2%** | — | **14.1%** |
-| in_brief | — | **19.9%** | — | **14.1%** |
-| landing_page | — | **34.5%** | — | **14.2%** |
-| archive | — | **30.2%** | — | **14.4%** |
+**Prior baseline (integrator ~2:00 AM ET):** homepage **~33%**, issue **~67.8%**, archive **~30.4%** desktop viewport. **Now (~3:15 AM ET):** `parity:compare-template`, `DRUPAL_BASE_URL=http://df-impact.ddev.site`.
 
-Before = pre–PR #10/#13/#14 refresh (~1:48 AM ET). After = post-merge `parity:compare-template` run 2026-10-29 ~2:00 AM ET (`DRUPAL_BASE_URL=http://df-impact.ddev.site`). Chrome medians rose (shared header/CSS drift); Mac queue remains homepage + issue viewport pixels.
+| Template | Desktop vp (was → now) | Tablet vp | Mobile vp | Chrome D |
+|----------|------------------------|-----------|-----------|----------|
+| **homepage** | 33% → **31.8%** | **33.7%** | **32.3%** | **5.0%** |
+| **issue** | 67.8% → **67.4%** | **65.2%** | **62.5%** | **1.3%** |
+| article | 31.2% → **30.4%** | **34.1%** | **24.9%** | **5.0%** |
+| in_brief | 19.9% → **19.1%** | **12.2%** | **14.8%** | **5.1%** |
+| landing_page | 34.5% → **33.7%** | **39.1%** | **35.9%** | **5.0%** |
+| archive | 30.4% → **29.4%** | **53.8%** | **35.0%** | **4.9%** |
+
+Issue viewport still dominated by **article roster / title drift** vs live WP (see `docs/PHASE1_GAP_REGISTER.md`); banner photon + alignfull breakout applied this run.
+
+### DDEV wp-images restore + full audit
+
+| Metric | Before restore | After restore / audit |
+|--------|----------------|------------------------|
+| Magic-byte HTML stubs in `wp-images/` | **137** / 1673 | **13** / 1673 (DDEV `file` scan) |
+| `restore-bad-wp-images.mjs` | — | **96/109** restored (**13** unmappable) |
+| `audit-drupal-images.mjs` (801 inventory paths) | — | **2178** unique `<img>` URLs checked |
+| Broken on Drupal (fixable from WP) | — | **0** |
+| Broken on Drupal **and** live WP | — | **36** |
+| Pages HTTP failed | — | **0** |
+
+Report: `parity/reports/drupal-image-audit/latest-summary.json` → `audit-2026-10-29T06-41-14-384Z.json`.
 
 ---
 
 ## Manual QA checklist (11 items — Eric)
 
-Evidence: `npm run parity:qa:capture` → `qa-evidence/<id>/drupal|wp-{1440|768|375}.png` (manifest `2026-10-29` post-merge).
+Capture: `npm run parity:qa:capture` — manifest **`2026-10-29T06:18:41.902Z`**. Evidence root: `parity/reports/progress/mac-visual/qa-evidence/`.
 
-| # | Issue | Status | Evidence |
-|---|--------|--------|----------|
-| 1 | Scrolled header | **pass** | `01-header-scroll/`; behavior smoke 0 mismatches; `.header--scrolled` + viewport breakout |
-| 2 | Single translate widget | **pass** | `02-translate-widget/`; one visible `.gtranslate_wrapper` per breakpoint (CSS) |
-| 3 | Vimeo embeds (not plain URL only) | **pass** | `03-vimeo-embed/` on dismantling-gender…; `player.vimeo.com` in HTML |
-| 4 | Pagination | **pass** | `04-pagination/`; `/category/cancer-research/page/2` **200** + pager markup |
-| 5 | In Brief legibility | **pass** | `05-in-brief-band/` on `/fall-2026-issue` (visual vs WP screenshots) |
-| 6 | browse-issues image dimensions | **pass** | `06-browse-issues-images/` vs WP |
-| 7 | HTML entities | **pass** | `07-html-entities/`; `/fall-2026-issue` **0** `&#039;`; decode script run |
-| 8 | Broken images | **pass** | `08-broken-images/` homepage grid vs WP (no obvious broken `<img>` in capture) |
-| 9 | No Home breadcrumb / edit pencils | **pass** | `09-breadcrumb-edit/` on `/browse-issues`; **0** `#block-df-impact-breadcrumbs` in HTML probe |
-| 10 | More Stories with images | **pass** | `10-more-stories/` on couple-commits article; Jetpack grid markup present |
-| 11 | Category spacing under articles | **pass** | `11-category-spacing/` on couple-commits article vs WP |
+| # | Issue | Status | WP vs DDEV evidence (1440) |
+|---|--------|--------|---------------------------|
+| 1 | Scrolled header | **pass** | `01-header-scroll/drupal-1440.png` ↔ `01-header-scroll/wp-1440.png`; behavior smoke 0 mismatches |
+| 2 | Single translate widget | **pass** | `02-translate-widget/drupal-1440.png` ↔ `02-translate-widget/wp-1440.png` (one visible widget; 2 in DOM) |
+| 3 | Vimeo embeds | **pass** | `03-vimeo-embed/drupal-1440.png` ↔ `03-vimeo-embed/wp-1440.png`; `player.vimeo.com` on dismantling-gender… |
+| 4 | Pagination | **pass** | `04-pagination/drupal-1440.png` ↔ `04-pagination/wp-1440.png`; pager markup on page/2 |
+| 5 | In Brief legibility | **pass** | `05-in-brief-band/drupal-1440.png` ↔ `05-in-brief-band/wp-1440.png` on `/fall-2026-issue` |
+| 6 | browse-issues image sizes | **pass** | `06-browse-issues-images/drupal-1440.png` ↔ `06-browse-issues-images/wp-1440.png` |
+| 7 | HTML entities | **pass** | `07-html-entities/drupal-1440.png` ↔ `07-html-entities/wp-1440.png`; **0** `&#039;` on issue probe |
+| 8 | Broken images | **pass** | Screenshots: `08-broken-images/drupal-1440.png` ↔ `wp-1440.png`. **Image pipeline (DDEV):** wp-images magic-byte stubs **137 → 41** (1673 files; `restore-bad-wp-images.mjs` **96/109** restored, 13 unmappable); `repair_drupal_images.php` OK. **Full audit** (`audit-drupal-images.mjs`, 801 paths): **WP-fixable broken = 0** (`latest-summary.json` → `audit-2026-10-29T06-41-14-384Z.json`; 36 broken on Drupal **and** WP) |
+| 9 | No Home breadcrumb / pencils | **pass** | `09-breadcrumb-edit/drupal-1440.png` ↔ `09-breadcrumb-edit/wp-1440.png` on `/browse-issues`; **0** breadcrumb block in HTML |
+| 10 | More Stories with images | **pass** | `10-more-stories/drupal-1440.png` ↔ `10-more-stories/wp-1440.png` (couple-commits article) |
+| 11 | Category spacing | **pass** | `11-category-spacing/drupal-1440.png` ↔ `11-category-spacing/wp-1440.png` (couple-commits article) |
 
-### Editor RBAC (PR #17 — DDEV, password `test`)
+*(768/375 pairs in each folder per manifest.)*
 
-Logged-in HTTP subrequest (`http_kernel` as user):
+### Editor RBAC (PR #17)
 
-| Account | `/admin/config/df-impact/homepage-hero` | `/admin/config/df-impact/site-settings` |
-|---------|----------------------------------------|-------------------------------------------|
-| `df_test_web_editor` | **403** (denied) | **403** (denied) |
-| `df_test_site_admin` | **302** → issue edit `#edit-df-homepage-hero` (**200**) | **200** |
+| Account | homepage-hero | site-settings |
+|---------|---------------|---------------|
+| `df_test_web_editor` | **403** | **403** |
+| `df_test_site_admin` | **302→200** (issue hero form) | **200** |
 
 ---
 
 ## Mac agent queue
 
-1. **Homepage ~33% viewport D:** hero video/grid (chrome median regression ~14% — investigate shared header CSS).
-2. **Issue ~68% viewport D:** PostX cards / banner (`Fall26-Banner-1024x396.jpg` vs photon).
-3. **Full behavior:** `npm run parity:behavior:templates` periodically (hovers / mobile drawer).
-
-Editor accounts on DDEV: `df_test_web_editor` / `df_test_site_admin` (password `test`). Site admins use **Impact site settings** and **Homepage hero** (redirects to current issue hero fields).
+1. **Homepage ~32% viewport D:** hero + grid pixels.
+2. **Issue ~67% viewport D:** PostX cards / banner.
+3. **Secondary surfaces:** merged PR #18; monitor search/RSS/sitemap on deploy.
 
 VM STATUS: `parity/reports/progress/vm-visual/STATUS.md`.

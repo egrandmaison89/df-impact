@@ -1,0 +1,22 @@
+df_secondary.site_rss:
+  path: '/df-secondary/site-rss'
+  defaults:
+    _controller: '\Drupal\df_secondary\Controller\FeedController::siteFeed'
+  requirements:
+    _access: 'TRUE'
+
+df_secondary.feed_category:
+  path: '/category/{slug}/feed'
+  defaults:
+    _controller: '\Drupal\df_secondary\Controller\FeedController::categoryFeed'
+  requirements:
+    _access: 'TRUE'
+    slug: '[a-z0-9-]+'
+
+df_secondary.feed_node:
+  path: '/node/{node}/feed'
+  defaults:
+    _controller: '\Drupal\df_secondary\Controller\FeedController::nodeFeed'
+  requirements:
+    _entity_access: 'node.view'
+    node: \d+

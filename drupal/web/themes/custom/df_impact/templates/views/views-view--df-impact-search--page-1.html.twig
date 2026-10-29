@@ -1,0 +1,18 @@
+{#
+  WordPress-style search results (/?s= parity uses error404 body class via module).
+#}
+{% if search_has_query %}
+  <header class="search-page-header">
+    <h1 class="wp-block-heading">{{ 'Search Results for'|t }} “{{ search_query|e }}”</h1>
+  </header>
+{% endif %}
+{% if rows %}
+  {{ rows }}
+{% elseif empty %}
+  <div class="search-no-results">
+    {{ empty }}
+  </div>
+{% endif %}
+{% if pager %}
+  {{ pager }}
+{% endif %}

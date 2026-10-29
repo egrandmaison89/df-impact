@@ -28,6 +28,11 @@ final class WordpressLegacyPathSubscriber implements EventSubscriberInterface {
     $request = $event->getRequest();
     $path = rtrim($request->getPathInfo(), '/') ?: '/';
 
+    if ($path === '/digital-exclusives') {
+      $this->rebuildRequest($request, '/category/digital-exclusives', []);
+      return;
+    }
+
     if ($path === '/stories') {
       $this->rebuildRequest($request, '/issues', []);
       return;

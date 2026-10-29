@@ -6,6 +6,14 @@ df_editor.site_settings:
   requirements:
     _permission: 'administer df site settings'
 
+df_editor.homepage_hero:
+  path: '/admin/config/df-impact/homepage-hero'
+  defaults:
+    _controller: '\Drupal\df_editor\Controller\HomepageHeroController::editRedirect'
+    _title: 'Homepage hero'
+  requirements:
+    _permission: 'administer df site settings'
+
 df_editor.footer_settings:
   path: '/admin/config/df-impact/footer-settings'
   defaults:

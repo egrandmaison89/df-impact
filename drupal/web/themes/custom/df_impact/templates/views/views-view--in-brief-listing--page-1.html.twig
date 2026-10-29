@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * In Brief archive view wrapper (title rendered inside grouped rows).
+ */
+#}
+<div{{ attributes.addClass('view-in-brief-listing', 'view-id-in_brief_listing') }}>
+  {{ title_prefix }}
+  {{ title_suffix }}
+
+  {% if header %}
+    {{ header }}
+  {% endif %}
+
+  {{ exposed }}
+  {{ attachment_before }}
+
+  {% if rows %}
+    {{ rows }}
+  {% elseif empty %}
+    {{ empty }}
+  {% endif %}
+
+  {{ pager }}
+  {{ attachment_after }}
+  {{ more }}
+  {{ footer }}
+  {{ feed_icons }}
+</div>

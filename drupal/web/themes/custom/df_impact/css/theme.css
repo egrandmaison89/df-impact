@@ -1831,7 +1831,8 @@
   gap: var(--space-lg);
 }
 
-.in-brief-page__item.is-collapsed {
+.in-brief-page__item.is-collapsed,
+.ultp-block-item.is-collapsed {
   display: none;
 }
 

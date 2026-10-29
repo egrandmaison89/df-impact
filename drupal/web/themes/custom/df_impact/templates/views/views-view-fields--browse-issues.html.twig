@@ -2,21 +2,13 @@
 /**
  * @file
  * Issue card for browse issues — WordPress /browse-issues/ parity (cover + h4).
- *
- * Thumbnail from cover, issue banner, or first linked article featured image.
  */
 #}
-<div class="issue-card">
-  {% if issue_thumbnail is defined and issue_thumbnail %}
-    <a href="{{ issue_url }}" class="issue-card__cover-link" tabindex="-1" aria-hidden="true">
-      <div class="issue-card__cover">
-        {{ issue_thumbnail }}
-      </div>
-    </a>
-  {% endif %}
-  {% if fields.title is defined %}
-    <div class="issue-card__label">
-      <h4 class="issue-card__heading">{{ fields.title.content }}</h4>
-    </div>
-  {% endif %}
-</div>
+{% if issue_cover_url is defined and issue_cover_url %}
+  <figure class="wp-block-image size-full is-resized issue-cover">
+    <a href="{{ issue_url }}"><img decoding="async" src="{{ issue_cover_url }}" alt="{{ issue_cover_alt }}" class="lazyloaded" style="width:250px;height:auto"></a>
+  </figure>
+{% endif %}
+{% if fields.title is defined %}
+  <h4 class="wp-block-heading has-tertiary-color has-text-color">{{ fields.title.content|render|striptags|trim }}</h4>
+{% endif %}

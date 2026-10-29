@@ -1,0 +1,515 @@
+{
+  "component": "templates-inbrief-archives",
+  "drupalBase": "http://127.0.0.1:8888",
+  "refRenderer": "linux-local-rendered-html",
+  "pages": 2,
+  "rectTolerancePx": 2,
+  "structuralPackPassAll": false,
+  "structuralRefDrupalPassAll": false,
+  "medians": {
+    "chrome_median_linux_desktop": 0.12937543442336197,
+    "viewport_median_mac_desktop": 0.2825262345679012,
+    "chrome_median_linux_tablet": 0.14977636415014345,
+    "viewport_median_mac_tablet": 0.26549913194444447,
+    "chrome_median_linux_mobile": 0.20257725694444445,
+    "viewport_median_mac_mobile": 0.2865185185185185
+  },
+  "summary": [
+    {
+      "path": "/in-brief",
+      "bp": "desktop",
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 52,
+      "headerPixelDiffRatioLinux": 0.12865398956002982,
+      "footerPixelDiffRatioLinux": 0.1300786608367627,
+      "chromePixelDiffRatioLinux": 0.12936632519839625,
+      "viewportPixelDiffRatioLinux": 0.24691743827160495,
+      "viewportPixelDiffRatioMac": 0.22232947530864197,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 16240.890625,
+          "actual": 3070.375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
+    },
+    {
+      "path": "/in-brief",
+      "bp": "tablet",
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 18,
+      "headerPixelDiffRatioLinux": 0.18305799696180555,
+      "footerPixelDiffRatioLinux": 0.11087013352638353,
+      "chromePixelDiffRatioLinux": 0.14696406524409455,
+      "viewportPixelDiffRatioLinux": 0.12584056712962963,
+      "viewportPixelDiffRatioMac": 0.1317795138888889,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 24081.46875,
+          "actual": 3972.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1294.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 191.28125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 35615.03125,
+          "actual": 3972.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1294.265625
+        }
+      ]
+    },
+    {
+      "path": "/in-brief",
+      "bp": "mobile",
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 22,
+      "headerPixelDiffRatioLinux": 0.15891666666666668,
+      "footerPixelDiffRatioLinux": 0.24328819444444444,
+      "chromePixelDiffRatioLinux": 0.20110243055555554,
+      "viewportPixelDiffRatioLinux": 0.20784592592592593,
+      "viewportPixelDiffRatioMac": 0.1985925925925926,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 191.28125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 38327.234375,
+          "actual": 5914.78125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 191.28125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 39368.53125,
+          "actual": 5914.78125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1535.125
+        }
+      ]
+    },
+    {
+      "path": "/browse-issues",
+      "bp": "desktop",
+      "structuralPackPass": false,
+      "structuralPackFailures": 4,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 52,
+      "headerPixelDiffRatioLinux": 0.12865398956002982,
+      "footerPixelDiffRatioLinux": 0.1300968792866941,
+      "chromePixelDiffRatioLinux": 0.12937543442336197,
+      "viewportPixelDiffRatioLinux": 0.24608333333333332,
+      "viewportPixelDiffRatioMac": 0.2825262345679012,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2394.1875,
+          "actual": 901.34375
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1296,
+          "actual": 1440
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1584
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
+        }
+      ]
+    },
+    {
+      "path": "/browse-issues",
+      "bp": "tablet",
+      "structuralPackPass": false,
+      "structuralPackFailures": 5,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 18,
+      "headerPixelDiffRatioLinux": 0.18305799696180555,
+      "footerPixelDiffRatioLinux": 0.11649473133848134,
+      "chromePixelDiffRatioLinux": 0.14977636415014345,
+      "viewportPixelDiffRatioLinux": 0.12399305555555555,
+      "viewportPixelDiffRatioMac": 0.26549913194444447,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3319.0625,
+          "actual": 879.140625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 768
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1353.71875,
+          "actual": 1294.265625
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 191.28125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 38.390625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 1313.5,
+          "actual": 879.140625
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 1301.765625,
+          "actual": 1294.265625
+        }
+      ]
+    },
+    {
+      "path": "/browse-issues",
+      "bp": "mobile",
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 22,
+      "headerPixelDiffRatioLinux": 0.15891666666666668,
+      "footerPixelDiffRatioLinux": 0.24623784722222222,
+      "chromePixelDiffRatioLinux": 0.20257725694444445,
+      "viewportPixelDiffRatioLinux": 0.19400296296296296,
+      "viewportPixelDiffRatioMac": 0.2865185185185185,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 191.28125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 5432.421875,
+          "actual": 857.53125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 375
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 191.28125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 28
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 1900,
+          "actual": 857.53125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 2002.125,
+          "actual": 1535.125
+        }
+      ]
+    }
+  ]
+}

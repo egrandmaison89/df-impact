@@ -4,24 +4,12 @@
  * Compact In Brief item for the /in-brief archive (grouped by issue).
  */
 #}
-<div{{ attributes.addClass('in-brief-item') }}>
-  {% if content.field_image|render|trim %}
-    <div class="in-brief-item__image">
-      {{ content.field_image }}
-    </div>
-  {% endif %}
-  <div class="in-brief-item__body">
-    {{ title_prefix }}
-    <h3 class="in-brief-item__title">
-      {% if content.field_link|render|trim %}
-        {{ content.field_link }}
-      {% else %}
-        {{ label }}
-      {% endif %}
-    </h3>
-    {{ title_suffix }}
-    {% if content.field_summary|render|trim %}
-      <div class="in-brief-item__summary">{{ content.field_summary }}</div>
-    {% endif %}
-  </div>
-</div>
+{% include '@df_impact/includes/in-brief-ultp-item.html.twig' with {
+  node: node,
+  label: label,
+  in_brief_item_url: in_brief_item_url,
+  in_brief_image_url: in_brief_image_url,
+  in_brief_image_alt: in_brief_image_alt,
+  in_brief_excerpt: in_brief_excerpt,
+  collapsed: in_brief_collapsed|default(false),
+} only %}

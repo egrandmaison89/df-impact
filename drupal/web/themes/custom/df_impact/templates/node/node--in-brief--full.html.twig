@@ -1,35 +1,35 @@
 {#
 /**
  * @file
- * Theme override for In Brief nodes (full view mode).
+ * In Brief full view — WordPress entry-content parity (list-style body).
  */
 #}
-<div{{ attributes.addClass('in-brief-item') }}>
-  {% if content.field_image|render|trim %}
-    <div class="in-brief-item__image">
-      {{ content.field_image }}
-    </div>
-  {% endif %}
-
-  <div class="in-brief-item__content">
+<article{{ attributes.addClass('wp-singular', 'in-brief-post') }}>
+  <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
     {{ title_prefix }}
-    <h2 class="in-brief-item__title">
-      {% if content.field_link|render|trim %}
-        {{ content.field_link }}
-      {% else %}
-        {{ label }}
-      {% endif %}
-    </h2>
+    <h1 class="wp-block-post-title has-libre-baskerville-font-family">{{ label }}</h1>
     {{ title_suffix }}
 
-    <div class="in-brief-item__summary">
-      {{ content.field_summary }}
-    </div>
+    {% if in_brief_image_url %}
+      <figure class="wp-block-image alignwide size-large">
+        <a href="{{ in_brief_item_url }}"><img decoding="async" src="{{ in_brief_image_url }}" alt="{{ in_brief_image_alt }}" class="wp-post-image"></a>
+      </figure>
+    {% endif %}
 
-    {% if content.field_issue|render|trim %}
-      <div class="in-brief-item__issue">
-        {{ content.field_issue }}
+    {% if in_brief_excerpt %}
+      <div class="wp-block-post-excerpt">
+        <p class="wp-block-post-excerpt__excerpt">{{ in_brief_excerpt }}</p>
+      </div>
+    {% elseif content.field_summary|render|trim %}
+      <div class="wp-block-post-excerpt">
+        {{ content.field_summary }}
       </div>
     {% endif %}
+
+    {% if in_brief_item_url %}
+      <p class="wp-block-paragraph">
+        <a href="{{ in_brief_item_url }}">{{ 'Continue Reading'|t }}</a>
+      </p>
+    {% endif %}
   </div>
-</div>
+</article>

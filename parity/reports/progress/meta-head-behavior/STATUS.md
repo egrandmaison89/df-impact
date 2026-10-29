@@ -1,7 +1,7 @@
 # Meta / head / behavior / URL agent status
 
-Branch: `cursor/meta-head-behavior-0751` | PR: https://github.com/egrandmaison89/df-impact/pull/10  
-Base: `cursor/phase4-chrome-behavior-0b67` | **Stacked on PR #25** `cursor/gutenberg-hover-archive-2b1b` (rebased 2026-10-29)
+Branch: `cursor/meta-head-behavior-0751` @ **`a54a92b6`** (rebased onto phase4 **`6abb0698`**) | PR: https://github.com/egrandmaison89/df-impact/pull/10  
+Base: `cursor/phase4-chrome-behavior-0b67` | **`is_light` only** — home/hero via phase4 `#32` + `df_setup_post_update_ensure_home_landing_published()` (not in #10 post_update).
 
 ## Site owner QA (Eric / DDEV) — 2026-10-29
 
@@ -61,4 +61,25 @@ Base: `cursor/phase4-chrome-behavior-0b67` | **Stacked on PR #25** `cursor/guten
 - Harness: `pagerHover`, `categoryLinkHover`, `inBriefButtonHover`, `cardHover` in cross-site diff (optional when DOM missing).
 - Theme: `theme.css` — In Brief band + banner CTA hover/focus; ultp card title link hover; archive pager/category `:focus-visible`.
 
-Updated: 2026-10-29T16:35Z
+Updated: 2026-10-29T17:05Z
+
+## Post-rebase integrator gates (VM @ `a54a92b6`)
+
+| Gate | Result |
+| --- | --- |
+| `drush updatedb:status` | **none pending** |
+| `verify_df_setup_schema.php` | **10035 / OK** |
+| `verify_df_setup_post_updates.php` | **OK** |
+| `verify-wp-port-assets.sh` @ `:8888` | **20/20** |
+| `GET /` | **200** |
+| `/browse-issues` `issue-cover` | **15** |
+| `parity:smoke:200` | **40 paths, 0 fails** |
+| `parity:template-samples:http` | **19/19** |
+| `parity:url:check` | **801/801** |
+| `parity:content:sweep` (cache-only) | **801 comparable; 10 paths &lt;0.98 text** (category archives — pre-existing sweep debt) |
+| `parity:issue-live-text:cache` | **15/15, below98=0** |
+| `parity:content:sweep:issues:cache` | **15/15 text98** |
+| `playwright` `admin-e2e` | **2/2** |
+| `playwright` `editor-e2e` | **1/2** (article save: entity reference node:785 — investigate on phase4) |
+| `drush df-editor:test-issue-e2e` | **12/12 PASS** |
+| Behavior `2026-10-29T12-cross18-final` | **51/51, 0 mismatch** (pre-rebase run; code delta is nav/is_light only) |

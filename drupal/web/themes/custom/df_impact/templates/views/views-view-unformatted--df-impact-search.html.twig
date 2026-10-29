@@ -5,9 +5,9 @@
  */
 #}
 {% if rows %}
-  <div class="search-results grid grid--3">
+  <ul class="alignwide wp-block-post-template is-layout-flow wp-block-post-template-is-layout-flow search-results">
     {% for row in rows %}
       {{ row.content }}
     {% endfor %}
-  </div>
+  </ul>
 {% endif %}

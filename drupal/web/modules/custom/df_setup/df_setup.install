@@ -1068,3 +1068,35 @@ function df_setup_update_10028(): string {
   drupal_flush_all_caches();
   return 'About Impact staff block synced to WordPress reference.';
 }
+
+/**
+ * Search parity (PR #24): enable df_secondary and move Search API view off /search.
+ */
+function df_setup_update_10029(): string {
+  $messages = [];
+  /** @var \Drupal\Core\Extension\ModuleInstallerInterface $installer */
+  $installer = \Drupal::service('module_installer');
+  if (!\Drupal::moduleHandler()->moduleExists('df_secondary')) {
+    $installer->install(['df_secondary']);
+    $messages[] = 'Enabled df_secondary.';
+  }
+  $view = \Drupal::entityTypeManager()->getStorage('view')->load('df_impact_search');
+  if ($view) {
+    $display = &$view->getDisplay('page_1');
+    if (($display['display_options']['path'] ?? '') !== 'search-legacy') {
+      $display['display_options']['path'] = 'search-legacy';
+      $view->save();
+      $messages[] = 'Set df_impact_search page path to search-legacy.';
+    }
+  }
+  drupal_flush_all_caches();
+  return $messages !== [] ? implode(' ', $messages) : 'Search parity already configured.';
+}
+
+/**
+ * Ensures Home landing exists when page.front points at a missing nid (local VM drift).
+ */
+function df_setup_update_10030(): string {
+  _df_setup_ensure_home_landing();
+  return 'Home landing verified; page.front set to /node/NID for Home page.';
+}

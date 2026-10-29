@@ -1,0 +1,32 @@
+{#
+  Search result row — WordPress Better Search / query block layout.
+#}
+<li{{ attributes.addClass('wp-block-post', 'node--view-mode-search-result') }}>
+  <div class="wp-block-columns is-layout-flex wp-block-columns-is-layout-flex">
+    {% if content.field_featured_image|render|trim %}
+      <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:33%">
+        <div class="wp-block-group is-nowrap is-layout-flex wp-block-group-is-layout-flex">
+          <figure class="wp-block-post-featured-image">
+            <a href="{{ url }}">{{ content.field_featured_image }}</a>
+          </figure>
+        </div>
+      </div>
+    {% endif %}
+    <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:77%">
+      <div class="wp-block-group wp-block-post-container is-layout-flow wp-block-group-is-layout-flow">
+        <h2 class="wp-block-post-title" style="font-size:24px;font-style:normal;font-weight:600">
+          <a href="{{ url }}">{{ search_result_title|default(label) }}</a>
+        </h2>
+        {% if search_result_excerpt %}
+          <div class="wp-block-post-excerpt has-text-color has-black-color">
+            <p class="wp-block-post-excerpt__excerpt">{{ search_result_excerpt }}</p>
+          </div>
+        {% elseif content.field_excerpt|render|trim %}
+          <div class="wp-block-post-excerpt has-text-color has-black-color">
+            {{ content.field_excerpt }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</li>

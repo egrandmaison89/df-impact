@@ -36,6 +36,7 @@ export const WP_PROFILE = {
       'main .wp-block-query-pagination a, main .pagination a, main nav.pager a, main .pager__item a',
     categoryLink: 'main .wp-block-categories-list a, main .archive a[href*="/category/"]',
     inBriefButton: 'main .in-brief-button a, .in-brief-button a.wp-block-button__link',
+    shareIcon: 'main .ss-inline-share-wrapper .ss-social-icons-container a, .ss-inline-share-wrapper .ss-social-icons-container a',
   },
   reveal: '.ultp-animation, .homepage-section, [class*="ultp-animation"]',
 };
@@ -60,6 +61,7 @@ export const DRUPAL_PROFILE = {
       'main .wp-block-query-pagination a, main .pagination a, main nav.pager a, main .pager__item a',
     categoryLink: 'main .wp-block-categories-list a, main .archive a[href*="/category/"]',
     inBriefButton: 'main .in-brief-button a, .in-brief-button a.wp-block-button__link',
+    shareIcon: 'main .ss-inline-share-wrapper .ss-social-icons-container a, .ss-inline-share-wrapper .ss-social-icons-container a',
   },
   reveal: '.df-reveal, .df-reveal--visible, .ultp-animation, .homepage-section',
 };
@@ -139,6 +141,11 @@ export async function captureSiteBehavior(page, profile, bp) {
     data.cardHover = await computedStyleHover(page, s.card);
     data.buttonDefault = await computedStyle(page, s.button);
     data.buttonHover = await computedStyleHover(page, s.button);
+    if (s.shareIcon) {
+      await scrollSelectorIntoView(page, s.shareIcon);
+      data.shareIconDefault = await computedStyle(page, s.shareIcon);
+      data.shareIconHover = await computedStyleHover(page, s.shareIcon);
+    }
   } else {
     data.footerDefault = await computedStyle(page, s.footerLink);
     data.navHover = null;

@@ -23,23 +23,21 @@
   {% endif %}
 
   <main id="wp--skip-link--target" class="wp-block-group is-layout-flow wp-block-group-is-layout-flow" role="main">
-    <div class="entry-content wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
-      {% if page.hero %}
-        {{ page.hero }}
-      {% endif %}
-      {% if page.sidebar %}
-        <div class="layout-with-sidebar">
-          <div class="layout-with-sidebar__content">
-            {{ page.content }}
-          </div>
-          <aside class="layout-with-sidebar__sidebar" role="complementary">
-            {{ page.sidebar }}
-          </aside>
+    {% if page.hero %}
+      {{ page.hero }}
+    {% endif %}
+    {% if page.sidebar %}
+      <div class="layout-with-sidebar">
+        <div class="layout-with-sidebar__content">
+          {{ page.content }}
         </div>
-      {% else %}
-        {{ page.content }}
-      {% endif %}
-    </div>
+        <aside class="layout-with-sidebar__sidebar" role="complementary">
+          {{ page.sidebar }}
+        </aside>
+      </div>
+    {% else %}
+      {{ page.content }}
+    {% endif %}
     <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained"></div>
   </main>
 

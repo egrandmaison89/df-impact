@@ -64,9 +64,10 @@ const selectorConfig = JSON.parse(
 );
 const ALL_SELECTORS = [...new Set([...selectorConfig.chrome, ...selectorConfig.content])];
 
-const samples = JSON.parse(
-  fs.readFileSync(path.join(parityRoot, 'config', 'template-samples.json'), 'utf8'),
-);
+const samplesFile = process.env.PARITY_SAMPLES_JSON
+  ? path.join(parityRoot, 'config', process.env.PARITY_SAMPLES_JSON)
+  : path.join(parityRoot, 'config', 'template-samples.json');
+const samples = JSON.parse(fs.readFileSync(samplesFile, 'utf8'));
 
 function normalizeFontFamily(v) {
   return String(v)

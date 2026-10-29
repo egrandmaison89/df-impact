@@ -74,7 +74,8 @@ body {
  */
 .wp-site-blocks {
   box-sizing: content-box !important;
-  --wp--custom--spacing--outer: clamp(20px, 5vw, 72px);
+  /* Live WP global layout (--wp--custom--spacing--outer), not clamp(20px, 5vw, 72px). */
+  --wp--custom--spacing--outer: max(1.75rem, 5vw);
   width: calc(100vw - 2 * var(--wp--custom--spacing--outer, 72px)) !important;
   max-width: none;
   margin-left: auto;
@@ -84,20 +85,66 @@ body {
 }
 
 @media (max-width: 768px) {
-  .wp-site-blocks {
-    width: calc(100vw - 40px) !important;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
   .wp-site-blocks .desktop-header {
     display: none !important;
+  }
+}
+
+/*
+ * PR #28 (article-variants): main/footer ~20px inset, max 1400px — stacks with outer var above.
+ * Header/footer alignfull rules below still bleed using --wp--custom--spacing--outer.
+ */
+@media (min-width: 769px) {
+  .wp-site-blocks > main#wp--skip-link--target,
+  .wp-site-blocks > footer {
+    box-sizing: border-box;
+    max-width: 1400px;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px) - 40px) !important;
+    margin-left: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .wp-site-blocks > main#wp--skip-link--target,
+  .wp-site-blocks > footer {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }
 
 @media (min-width: 769px) {
   .wp-site-blocks .mobile-header {
     display: none !important;
+  }
+}
+
+/*
+ * Live WP: main/footer content column ~20px inset inside outer padding, max 1400px.
+ * Uses --wp--custom--spacing--outer (max(1.75rem, 5vw)) so tablet widths track WP.
+ */
+@media (min-width: 769px) {
+  .wp-site-blocks > main#wp--skip-link--target,
+  .wp-site-blocks > footer {
+    box-sizing: border-box;
+    max-width: 1400px;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px) - 40px) !important;
+    margin-left: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .wp-site-blocks > main#wp--skip-link--target,
+  .wp-site-blocks > footer {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }
 
@@ -205,9 +252,9 @@ main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-image 
 
 @media (max-width: 768px) {
   .wp-site-blocks .mobile-header.alignfull {
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    width: calc(100% + 40px) !important;
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 20px)) !important;
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 20px)) !important;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 20px)) !important;
     max-width: none;
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -305,9 +352,9 @@ main .ultp-block-item a:hover {
 
 @media (max-width: 768px) {
   .wp-site-blocks > footer.wp-block-template-part {
-    width: calc(100% + 40px);
-    margin-left: -20px;
-    margin-right: -20px;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 20px));
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 20px));
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 20px));
     max-width: 100vw;
     box-sizing: border-box;
   }

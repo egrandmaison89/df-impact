@@ -484,7 +484,7 @@ function df_impact_preprocess_page(&$variables) {
   $variables['latest_issue_url'] = NULL;
   $variables['latest_issue_label'] = NULL;
   $variables['homepage_hero'] = NULL;
-  if (!empty($variables['is_front'])) {
+  if (df_impact_is_wordpress_homepage_path()) {
     $latest_nid = df_impact_get_latest_issue_nid();
     if ($latest_nid !== NULL) {
       $issue = \Drupal::entityTypeManager()->getStorage('node')->load($latest_nid);
@@ -659,11 +659,23 @@ function df_impact_preprocess_node(&$variables) {
  * Implements hook_theme_suggestions_page_alter().
  */
 function df_impact_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  if (df_impact_is_wordpress_homepage_path()) {
+    $suggestions[] = 'page__front';
+    return;
+  }
   // Add page template suggestions based on node type.
   $node = \Drupal::routeMatch()->getParameter('node');
   if ($node instanceof NodeInterface) {
     $suggestions[] = 'page__node__' . $node->bundle();
   }
+}
+
+/**
+ * WordPress serves the magazine homepage at / and /homepage (legacy page node).
+ */
+function df_impact_is_wordpress_homepage_path(): bool {
+  $path = rtrim(\Drupal::request()->getPathInfo(), '/') ?: '/';
+  return \Drupal::service('path.matcher')->isFrontPage() || $path === '/homepage';
 }
 
 /**
@@ -918,6 +930,18 @@ function df_impact_preprocess_homepage_article_card_fields(array &$variables): v
  * @return array{url: string, alt: string}|null
  */
 function df_impact_issue_banner_image_url(string $uri): string {
+  $resolved = df_impact_resolve_wp_images_uri($uri);
+  if ($resolved !== NULL) {
+    $uri = $resolved;
+  }
+  $file_system = \Drupal::service('file_system');
+  $real = $file_system->realpath($uri);
+  if ($real === FALSE || !is_file($real)) {
+    $live = df_impact_wp_live_url_for_missing_file_uri($uri);
+    if ($live !== NULL) {
+      return $live;
+    }
+  }
   if (preg_match('/-1024x396\.(jpe?g|png|webp)$/i', $uri)) {
     return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
   }
@@ -957,6 +981,30 @@ function df_impact_issue_browse_cover_meta(NodeInterface $issue): ?array {
           'alt' => df_impact_decode_plain_text($alt),
         ];
       }
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Live WordPress uploads URL when a vendored wp-images file is missing locally.
+ */
+function df_impact_wp_live_url_for_missing_file_uri(string $uri): ?string {
+  $relative = str_replace('public://', '', $uri);
+  $basename = basename($relative);
+  if ($basename === '' || $basename === '.' || $basename === '..') {
+    return NULL;
+  }
+  if (str_starts_with($relative, 'wp-content/uploads/')) {
+    return 'https://danafarberimpact.org/' . $relative;
+  }
+  if (str_starts_with($relative, 'wp-images/')) {
+    $uploads_tail = substr($relative, strlen('wp-images/'));
+    if (preg_match('#^\d{4}/\d{2}/#', $uploads_tail)) {
+      return 'https://danafarberimpact.org/wp-content/uploads/' . $uploads_tail;
+    }
+    foreach (['2026/08', '2026/09', '2026/06', '2025/12', '2025/09'] as $prefix) {
+      return 'https://danafarberimpact.org/wp-content/uploads/' . $prefix . '/' . $basename;
     }
   }
   return NULL;
@@ -1686,7 +1734,8 @@ function df_impact_build_homepage_hero(?NodeInterface $issue): ?array {
     // Local migrations often omit large hero files; match production WP hero for behavior parity.
     $video_url = 'https://danafarberimpact.org/wp-content/uploads/2026/09/Impact_Ambient.mp4';
   }
-  $poster_url = df_impact_media_file_url($issue, 'field_hero_poster', 'field_media_image');
+  // WordPress homepage cover uses video only (no poster img in reference pack).
+  $poster_url = NULL;
   $heading = t('Stories From Our Community of Support');
   if ($issue->hasField('field_hero_heading') && !$issue->get('field_hero_heading')->isEmpty()) {
     $heading = $issue->get('field_hero_heading')->value;

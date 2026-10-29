@@ -2,7 +2,29 @@
 
 **Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Merged:** PR **#18** `cursor/secondary-surfaces-ce7f` (`b6905482`). **Not merged:** PR #16 (superseded).
 
-**Updated:** 2026-10-29 ~2:32 AM ET
+**Updated:** 2026-10-29 ~2:55 AM ET
+
+---
+
+## Export publish status (node 28 / `?p=8386`)
+
+| Check | Result |
+|-------|--------|
+| Live WP `?p=8386` | **404** (not public) |
+| Live WP `/stories/pici-fosters-…/` | **404** |
+| Export `articles.json` (`wp_id` **8386**) | `"status": "draft"` (export uses **`status`**, not `post_status`) |
+| Drupal node **28** | **unpublished** (`status=0`) — matches export |
+| DDEV `/?p=8386` | **301** → canonical → **403** (expected for draft) |
+
+**Migration mapping:** `df_articles` / `df_in_brief` map export `published`→`status=1` + `moderation_state=published`, `draft`→`0` + `draft`. **No mapping change required.**
+
+**Audit** (`drush df-migrate:audit-export-publish-status`):
+
+| Migration | Matched | Export pub / Drupal unpub | Export draft / Drupal pub |
+|-----------|---------|---------------------------|---------------------------|
+| df_articles | 439 | **0** | **0** |
+| df_in_brief | 323 | **0** | **0** |
+| **Total** | **762** | **0** | **0** |
 
 ---
 
@@ -59,14 +81,27 @@
 
 | Template | Before viewport D | After viewport D | Before chrome D | After chrome D |
 |----------|-------------------|------------------|-----------------|----------------|
-| **homepage** | 32.7% | **31.9%** | 14.3% | **5.1%** |
+| **homepage** | 32.7% | **31.8%** | 14.3% | **4.8%** |
 | **issue** | 68.2% | **67.4%** | 11.0% | **1.3%** |
 | article | 31.2% | **30.4%** | 14.1% | **5.0%** |
 | in_brief | 19.9% | **19.1%** | 14.1% | **5.1%** |
 | landing_page | 34.5% | **33.7%** | 14.2% | **5.0%** |
 | archive | 30.2% | **29.4%** | 14.4% | **4.9%** |
 
-**Before** = post–first integrator merge (~2:00 AM ET). **After** = post **`6876d0ed`** merge + backfills (`parity:compare-template`, `DRUPAL_BASE_URL=http://df-impact.ddev.site`). Chrome medians dropped ~14% → ~5% (header logo × fix).
+**Before** = post–first integrator merge (~2:00 AM ET). **After** = post **`6876d0ed`** + hero/banner parity tweaks (~2:55 AM ET; `parity:compare-template`, `DRUPAL_BASE_URL=http://df-impact.ddev.site`). Chrome medians ~14% → ~5% (header logo × fix). Homepage hero: no poster `<img>` (matches WP reference pack).
+
+### DDEV wp-images restore + full audit
+
+| Metric | Before restore | After restore / audit |
+|--------|----------------|------------------------|
+| Magic-byte HTML stubs in `wp-images/` | **137** / 1673 | **41** / 1673 |
+| `restore-bad-wp-images.mjs` | — | **96/109** restored (**13** unmappable) |
+| `audit-drupal-images.mjs` (801 inventory paths) | — | **2178** unique `<img>` URLs checked |
+| Broken on Drupal (fixable from WP) | — | **0** |
+| Broken on Drupal **and** live WP | — | **36** |
+| Pages HTTP failed | — | **0** |
+
+Report: `parity/reports/drupal-image-audit/latest-summary.json` → `audit-2026-10-29T06-41-14-384Z.json`.
 
 ---
 

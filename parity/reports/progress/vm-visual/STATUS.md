@@ -20,7 +20,32 @@
 
 **WP side for gates:** `PARITY_WP_SOURCE=refpack` (committed `parity/reference-pack/**/rendered.html`) in `computed-style-diff` + hover full runners — avoids SiteGround captcha on live WP.
 
-**Browse / PostX:** `/browse-issues` cover figures via season/year → WP uploads URLs when media fields empty (**15** `figure.issue-cover`); PostX row gap rules extended to `.ultp-block-items-wrap`.
+**Browse / PostX:** `/browse-issues` uses **`field_cover_image` only** (no render-time WP URL guessing). Idempotent seed: **`df_setup_post_update_seed_issue_covers`** in `df_setup.post_update.php` (schema **10034/10035** are PR **#24** search + home landing on phase4). Issue hero banners: **`df_setup_post_update_seed_issue_banners`**. PostX row gap rules extended to `.ultp-block-items-wrap`.
+
+### Pass 3 gates (`pass3-gates`, refpack WP)
+
+| Gate | Result | Artifact |
+|------|--------|----------|
+| `parity:smoke:200` | **0** HTTP fails (40 paths) | `smoke-1793270088627.json` |
+| `parity:head:refpack` | **18/37** meta pass (`HEAD_REFPACK_CHECK_WP=0`) | `compare-1793270089048.json` |
+| `parity:template-samples:http` | **19/19** all **200** | `check-1793270089236.json` |
+| `parity:computed-style-diff:full` | **60/60** jobs; **3** pending (wheeling article, no refpack HTML) | `full-cs-pass3-refpack/aggregate.json` |
+| `parity:computed-style-hover:full` | **20** desktop paths | `hover-pass3-refpack/aggregate.json` |
+
+**Desktop comparable Σ (refpack WP, `desktopMismatchSumByTemplate.comparableSum`):**
+
+| Template | Pass 2 after (live WP) | Pass 3 (refpack) |
+|----------|------------------------:|-----------------:|
+| homepage | 68 | **250** |
+| issue | 114 | **366** |
+| article | 67 | **193** |
+| in_brief | 90 | **309** |
+| landing_page | 94 | **416** |
+| archive | 179 | **612** |
+
+Refpack totals are **not** comparable to live-WP pass 2 (frozen HTML + full-page chrome deltas). Issue **spring/summer** desktop jobs: **122** mismatches each (PostX/layout still dominant). **`/browse-issues` desktop:** **92** (covers restored; layout/chrome vs frozen WP).
+
+**Hover mismatch Σ (refpack):** homepage **8**, issue **15**, article **10**, in_brief **9**, landing **14**, archive **15**.
 
 ---
 

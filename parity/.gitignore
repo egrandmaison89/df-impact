@@ -1,4 +1,5 @@
-parity/reports/playwright-results.json
-parity/reports/computed-style-diff/
-parity/reports/computed-style-hover/
+parity/reports/
+!parity/reports/progress/
+parity/reports/progress/**/*
+!parity/reports/progress/**/STATUS.md
 reports/progress/mac-visual/qa-evidence/**/*.png

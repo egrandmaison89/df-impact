@@ -794,8 +794,9 @@ function _df_setup_ensure_wp_upload_file(string $relative, string $mime): ?strin
   }
 
   $url = 'https://danafarberimpact.org/wp-content/uploads/' . $relative;
+  $timeout = (int) (getenv('DF_SETUP_WP_FETCH_TIMEOUT') ?: 45);
   $data = @file_get_contents($url, FALSE, stream_context_create([
-    'http' => ['timeout' => 120, 'user_agent' => 'Drupal/11 DFSetup/1.0'],
+    'http' => ['timeout' => $timeout, 'user_agent' => 'Drupal/11 DFSetup/1.0'],
   ]));
   if ($data !== FALSE && strlen($data) > 1024 && stripos($data, '<html') === FALSE) {
     return _df_setup_write_public_file($uri, $data, $mime);
@@ -849,39 +850,6 @@ function _df_setup_get_or_create_video_media(string $file_uri): ?int {
     'status' => 1,
     'name' => $file->getFilename(),
     'field_media_video_file' => ['target_id' => $file->id()],
-  ]);
-  $media->save();
-  return (int) $media->id();
-}
-
-/**
- * @return int|null Media entity ID for an image file URI.
- */
-function _df_setup_get_or_create_image_media(string $file_uri, string $alt = ''): ?int {
-  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $file_uri]);
-  $file = reset($files);
-  if (!$file) {
-    return NULL;
-  }
-  $existing = \Drupal::entityQuery('media')
-    ->condition('bundle', 'image')
-    ->condition('field_media_image.target_id', $file->id())
-    ->accessCheck(FALSE)
-    ->range(0, 1)
-    ->execute();
-  if ($existing) {
-    return (int) reset($existing);
-  }
-  /** @var \Drupal\media\Entity\Media $media */
-  $media = \Drupal\media\Entity\Media::create([
-    'bundle' => 'image',
-    'uid' => 1,
-    'status' => 1,
-    'name' => $file->getFilename(),
-    'field_media_image' => [
-      'target_id' => $file->id(),
-      'alt' => $alt,
-    ],
   ]);
   $media->save();
   return (int) $media->id();
@@ -1003,26 +971,52 @@ function df_setup_update_10026(): string {
 }
 
 /**
- * Sync About Impact staff block with WordPress reference (PR #23 content sweep).
+ * Sync About Impact staff block with WordPress reference (content sweep parity).
  */
 function df_setup_update_10028(): string {
-  $node = _df_setup_load_about_impact_node();
-  if ($node === NULL) {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if (!$nids) {
     return 'About Impact page not found.';
   }
-  $body = (string) $node->get('body')->value;
-  $synced = _df_setup_sync_about_impact_staff_body($body);
-  if ($synced === $body) {
-    return 'About Impact staff block already synced to WordPress reference.';
+  $node = $storage->load(reset($nids));
+  if (!$node instanceof Node) {
+    return 'About Impact page could not be loaded.';
   }
-  $node->set('body', ['value' => $synced, 'format' => 'full_html']);
+  $body = (string) $node->get('body')->value;
+  $expected_claudia = '<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>';
+  if (
+    !str_contains($body, 'Zuhirah Khaldun-Diarra')
+    && str_contains($body, $expected_claudia)
+  ) {
+    return 'About Impact staff block already matches WordPress reference (no-op).';
+  }
+  $body = preg_replace(
+    '/<p><strong>Vice President, Philanthropy Communications &amp; Marketing<\/strong><br>Zuhirah Khaldun-Diarra<\/p>\s*/',
+    '',
+    $body,
+  ) ?? $body;
+  $body = str_replace(
+    '<p><strong>Creative Director</strong><br>Claudia de Piante</p>',
+    $expected_claudia,
+    $body,
+  );
+  if ($body === (string) $node->get('body')->value) {
+    return 'About Impact staff block already matches WordPress reference (no-op).';
+  }
+  $node->set('body', ['value' => $body, 'format' => 'full_html']);
   $node->save();
   drupal_flush_all_caches();
   return 'About Impact staff block synced to WordPress reference.';
 }
 
 /**
- * About Impact: WordPress Gutenberg block body (after df_setup_update_10028 + visible h1).
+ * About Impact: WordPress Gutenberg block body (PR #25; after 10028 staff sync).
  */
 function df_setup_update_10029(): string {
   return _df_setup_apply_about_impact_gutenberg_body();
@@ -1045,6 +1039,40 @@ function df_setup_update_10030(): string {
   $node->set('body', ['value' => $synced, 'format' => 'full_html']);
   $node->save();
   return 'About Impact staff block synced on Gutenberg body.';
+}
+
+/**
+ * Search parity (PR #24): enable df_secondary and move Search API view off /search.
+ *
+ * Hook 10034+ so #23 can use 10031–10033 (merge #25 before #23).
+ */
+function df_setup_update_10034(): string {
+  $messages = [];
+  /** @var \Drupal\Core\Extension\ModuleInstallerInterface $installer */
+  $installer = \Drupal::service('module_installer');
+  if (!\Drupal::moduleHandler()->moduleExists('df_secondary')) {
+    $installer->install(['df_secondary']);
+    $messages[] = 'Enabled df_secondary.';
+  }
+  $view = \Drupal::entityTypeManager()->getStorage('view')->load('df_impact_search');
+  if ($view) {
+    $display = &$view->getDisplay('page_1');
+    if (($display['display_options']['path'] ?? '') !== 'search-legacy') {
+      $display['display_options']['path'] = 'search-legacy';
+      $view->save();
+      $messages[] = 'Set df_impact_search page path to search-legacy.';
+    }
+  }
+  drupal_flush_all_caches();
+  return $messages !== [] ? implode(' ', $messages) : 'Search parity already configured.';
+}
+
+/**
+ * Ensures Home landing exists when page.front points at a missing nid (local VM drift).
+ */
+function df_setup_update_10035(): string {
+  _df_setup_ensure_home_landing();
+  return 'Home landing verified; page.front set to /node/NID for Home page.';
 }
 
 /**

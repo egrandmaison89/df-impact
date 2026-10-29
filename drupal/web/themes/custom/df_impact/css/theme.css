@@ -1338,6 +1338,19 @@ article.post .wp-block-post-terms {
   contain: layout;
 }
 
+.issue-page > .issue-page-banner.wp-block-cover.alignfull {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+.issue-page > .issue-page-banner .wp-block-cover__image-background {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .issue-page .issue-page-banner .wp-block-cover__image-background {
   position: absolute;
   inset: 0;

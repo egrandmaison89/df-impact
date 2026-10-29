@@ -571,7 +571,7 @@ function df_impact_preprocess_node(&$variables) {
   }
 
   if ($node->bundle() === 'issue' && $variables['view_mode'] === 'teaser') {
-    $cover = df_impact_issue_banner_meta($node);
+    $cover = df_impact_issue_browse_cover_meta($node);
     $variables['issue_cover_url'] = $cover['url'] ?? NULL;
     $variables['issue_cover_alt'] = $cover['alt'] ?? $node->label();
   }
@@ -1003,7 +1003,10 @@ function df_impact_issue_banner_image_url(string $uri): string {
  */
 function df_impact_issue_browse_cover_meta(NodeInterface $issue): ?array {
   $file_system = \Drupal::service('file_system');
-  foreach (['field_cover_image', 'field_banner_image'] as $field_name) {
+  if (!$issue->hasField('field_cover_image') || $issue->get('field_cover_image')->isEmpty()) {
+    return NULL;
+  }
+  foreach (['field_cover_image'] as $field_name) {
     if (!$issue->hasField($field_name) || $issue->get($field_name)->isEmpty()) {
       continue;
     }
@@ -1037,74 +1040,6 @@ function df_impact_issue_browse_cover_meta(NodeInterface $issue): ?array {
       }
     }
   }
-  return df_impact_issue_browse_cover_from_season_year($issue);
-}
-
-/**
- * Guesses browse cover URL from season/year when media fields are empty (WXR gap).
- *
- * @return array{url: string, alt: string}|null
- */
-function df_impact_issue_browse_cover_from_season_year(NodeInterface $issue): ?array {
-  if (!$issue->hasField('field_year') || $issue->get('field_year')->isEmpty()) {
-    return NULL;
-  }
-  if (!$issue->hasField('field_season') || $issue->get('field_season')->isEmpty()) {
-    return NULL;
-  }
-  $year = (int) $issue->get('field_year')->value;
-  $season_raw = (string) $issue->get('field_season')->value;
-  if ($year < 2000 || $season_raw === '') {
-    return NULL;
-  }
-  $season = ucfirst(strtolower($season_raw));
-  $label = df_impact_format_issue_label($issue) ?? $issue->label();
-  $alt = sprintf('Cover of the %s issue of Impact', trim($label));
-  $season_key = strtolower($season_raw);
-  $month_by_season = [
-    'spring' => '03',
-    'summer' => '06',
-    'fall' => '08',
-    'winter' => '11',
-  ];
-  $upload_tails = [];
-  if (isset($month_by_season[$season_key])) {
-    $month = $month_by_season[$season_key];
-    $upload_tails[] = "{$year}/{$month}/{$season}{$year}-Cover.jpg";
-    $upload_tails[] = "{$year}/{$month}/{$season}{$year}_Cover_1500.jpg";
-    $upload_tails[] = "{$year}/{$month}/Impact_{$season}_{$year}_Cover_1500.jpg";
-  }
-  foreach ($upload_tails as $tail) {
-    $live = 'https://danafarberimpact.org/wp-content/uploads/' . $tail;
-    return [
-      'url' => $live,
-      'alt' => df_impact_decode_plain_text($alt),
-    ];
-  }
-  $candidates = [
-    "{$season}{$year}-Cover.jpg",
-    "{$season}{$year}_Cover_1500.jpg",
-    "Impact_{$season}_{$year}_Cover_1500.jpg",
-  ];
-  $file_system = \Drupal::service('file_system');
-  foreach ($candidates as $basename) {
-    $uri = 'public://wp-images/' . $basename;
-    $resolved = df_impact_resolve_wp_images_uri($uri) ?? $uri;
-    $real = $file_system->realpath($resolved);
-    if ($real !== FALSE && is_file($real)) {
-      return [
-        'url' => \Drupal::service('file_url_generator')->generateAbsoluteString($resolved),
-        'alt' => df_impact_decode_plain_text($alt),
-      ];
-    }
-    $live = df_impact_wp_live_url_for_missing_file_uri($resolved);
-    if ($live !== NULL) {
-      return [
-        'url' => $live,
-        'alt' => df_impact_decode_plain_text($alt),
-      ];
-    }
-  }
   return NULL;
 }
 
@@ -1133,7 +1068,7 @@ function df_impact_wp_live_url_for_missing_file_uri(string $uri): ?string {
 }
 
 function df_impact_issue_banner_meta(NodeInterface $node): ?array {
-  foreach (['field_banner_image', 'field_cover_image'] as $field_name) {
+  foreach (['field_banner_image'] as $field_name) {
     if (!$node->hasField($field_name) || $node->get($field_name)->isEmpty()) {
       continue;
     }

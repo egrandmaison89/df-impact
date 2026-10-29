@@ -1,35 +1,38 @@
 {#
 /**
  * @file
- * In Brief full view — WordPress entry-content parity (list-style body).
+ * In Brief full view — WordPress entry-content parity.
  */
 #}
-<article{{ attributes.addClass('wp-singular', 'in-brief-post') }}>
-  <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+<article{{ attributes.addClass('wp-singular', 'in-brief-post', 'post') }}>
+
+  <div class="wp-block-group alignfull is-content-justification-center is-layout-constrained wp-block-group-is-layout-constrained">
     {{ title_prefix }}
-    <h1 class="wp-block-post-title has-libre-baskerville-font-family">{{ label }}</h1>
+    <h1 class="alignwide wp-block-post-title has-libre-baskerville-font-family">{{ label }}</h1>
     {{ title_suffix }}
+  </div>
 
-    {% if in_brief_image_url %}
-      <figure class="wp-block-image alignwide size-large">
-        <a href="{{ in_brief_item_url }}"><img decoding="async" src="{{ in_brief_image_url }}" alt="{{ in_brief_image_alt }}" class="wp-post-image"></a>
-      </figure>
-    {% endif %}
+  <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+    <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
 
-    {% if in_brief_excerpt %}
-      <div class="wp-block-post-excerpt">
-        <p class="wp-block-post-excerpt__excerpt">{{ in_brief_excerpt }}</p>
-      </div>
-    {% elseif content.field_summary|render|trim %}
-      <div class="wp-block-post-excerpt">
+      {% if in_brief_issue_url %}
+        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
+          <a href="{{ in_brief_issue_url }}">{{ in_brief_issue_label }}</a>
+          {% if in_brief_byline %}<br>By {{ in_brief_byline }}{% endif %}
+        </p>
+      {% elseif in_brief_byline %}
+        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">By {{ in_brief_byline }}</p>
+      {% endif %}
+
+      {% if in_brief_image_url %}
+        <figure class="wp-block-image alignleft size-large is-resized no-caption-image">
+          <img decoding="async" src="{{ in_brief_image_url }}" alt="{{ in_brief_image_alt }}" class="wp-post-image">
+        </figure>
+      {% endif %}
+
+      {% if content.field_summary|render|trim %}
         {{ content.field_summary }}
-      </div>
-    {% endif %}
-
-    {% if in_brief_item_url %}
-      <p class="wp-block-paragraph">
-        <a href="{{ in_brief_item_url }}">{{ 'Continue Reading'|t }}</a>
-      </p>
-    {% endif %}
+      {% endif %}
+    </div>
   </div>
 </article>

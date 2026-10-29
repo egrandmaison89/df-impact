@@ -1,77 +1,61 @@
 # Mac visual parity — live status
 
-**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5** only). **PR #7** redundant — close.
+**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Mac** = pixels + gates; **VM** = computed-style/CSS rows; **Meta (#10)** / **Templates (#11)** merged via PR **#12**.
 
-**Updated:** 2026-10-28 11:45 PM ET (PR **#10** merge + DDEV gates)
+**Updated:** 2026-10-29 ~1:20 AM ET
 
----
-
-## DDEV parity gates (post PR #10 merge, `http://df-impact.ddev.site`)
-
-| Gate | Result | Report |
-|------|--------|--------|
-| **`parity:head:refpack`** | **21/21** metaPass (100%), 19/21 Drupal reachable | `parity/reports/head-meta/compare-1793244596979.json` |
-| **`parity:head:manifest`** | **773/773** metaPass (100%) of 773 with expected (801 manifest URLs) | `parity/reports/head-meta/manifest-1793244662018.json` |
-| **`parity:url:check`** (`URL_PARITY_CONCURRENCY=1`) | **801/801** pass (100%) | `parity/reports/url-parity/check-1793244664143.json` |
-
-Pipeline: `node parity/scripts/build-refpack-head-overrides.mjs` → `ddev drush updb -y && ddev drush cr` → npm scripts above.
-
-**Update hooks:** `df_setup_update_10025` PostX sort fields/backfill; `df_setup_update_10026` Pediatrics topic (slug check + optional Patient Care parent). No pending `updb` on DDEV after merge.
+**Stash:** `mac-wip` (local report PNG backup; not committed).
 
 ---
 
-## Score medians (Mac pack vs DDEV) — post PR #10 merge
+## DDEV gates (latest)
 
-| Template | Viewport D | Viewport T | Viewport M | Chrome D | Chrome T | Chrome M |
-|----------|----------:|-----------:|-----------:|---------:|---------:|---------:|
-| **homepage** | **33.0%** | 33.7% | 32.4% | **5.1%** | 16.1% | 17.7% |
-| **issue** | **67.8%** | 65.3% | 62.6% | **3.6%** | 12.8% | 13.0% |
-| **article** | **32.0%** | 35.2% | 26.7% | **5.0%** | 14.6% | 15.6% |
-| **in_brief** | **20.2%** | 12.3% | 14.9% | **~5%** | 15.1% | 15.8% |
-| **landing_page** | **34.8%** (`/about` D) | 39.1% | 36.0% | **5.1%** | 14.0% | 15.4% |
-| **archive** | **30.5%** | 54.8% | 35.6% | **~5%** | 14.0% | 15.3% |
+| Gate | Result | Report / run |
+|------|--------|----------------|
+| wp-port assets | **19/19** | `scripts/repro/verify-wp-port-assets.sh` |
+| `parity:head:refpack` | **21/21** | `parity/reports/head-meta/compare-1793251155492.json` |
+| `parity:head:manifest` | **773/773** (prior run) | `manifest-1793249838983.json` |
+| `parity:url:check` | **801/801** | `parity/reports/url-parity/check-1793251200598.json` |
+| `parity:behavior:smoke` | **pass** (3/3, lite mode) | `parity/reports/behavior/2026-10-29T05-10-49-041Z/` |
 
-Desktop chrome **≤~5.1%** on homepage, issue, article, landing (`/about`) after merge; PR #10 `.alignfull` negative margins omitted (they fight content-box and restore +144px logo offset).
+**Behavior smoke fix:** `gotoWithBoundedSettle` (`load` + capped fonts/settle), `PARITY_BEHAVIOR_LITE=1` on smoke (skip heavy hovers/mobile drawer/reduced-motion reload), abort analytics on live WP.
+
+**Template medians (2026-10-29):** homepage viewport D **33.0%** / chrome **5.1%**; issue viewport D **67.8%** / chrome **2.1%** (PostX cards now **i0.wp.com fit=768×551**, was `wp_card_870x570` on wp-images).
 
 Command: `DRUPAL_BASE_URL=http://df-impact.ddev.site PARITY_TEMPLATE=<name> npm run parity:compare-template`
 
----
-
-## Item log
-
-### PR #10 merge (`cursor/meta-head-behavior-0751`) — **done**
-
-Merged into PR #5 branch (`06f8ac94`). Brings meta head overrides, sticky header + mega-menu hover behavior, `WpUploadFile` wp-images copy into uploads path, Pediatrics + PostX update hooks.
-
-**CSS note:** PR #10 `.alignfull` negative margins are **not** combined with content-box chrome fix (restores 1584px bleed). Sticky/hover rules kept.
-
-### 1. Header chrome ≤5% desktop — **done (homepage / issue / article)**
-
-Content-box `.wp-site-blocks` + sticky header from PR #10.
-
-### 2. Issue template ~67% — **partial** (viewport **67.8%**)
-
-Card raster / promo excerpt / grid order still open.
-
-### 3. Article lead 1024×734 — **partial** (viewport **32.0%**)
-
-Body typography / drop-cap still open.
-
-### 4. `/about`, `/about-impact` — **in progress** (~34.8% landing median)
-
-### 5. Pediatrics + archive — **partial**
-
-`10026` on merge branch; `/category/pediatrics` **200**.
-
-### 6. Meta head (supersedes `b4e15df2` only) — **done**
-
-See DDEV gates table above.
+**QA screenshots:** `npm run parity:qa:capture` → `parity/reports/progress/mac-visual/qa-evidence/<id>/drupal|wp-{1440|768|375}.png` (PNGs gitignored; `qa-evidence/manifest.json` tracked).
 
 ---
 
-## Next
+## Manual QA checklist (owner report → agent ownership)
 
-1. Landing **`/about`**, **`/about-impact`**: Gutenberg block parity from reference pack.
-2. Issue viewport: vendored card JPEGs or photon on all grid images; promo excerpt text.
-3. Re-run chrome on in_brief / landing / archive after any global CSS change.
-4. Mobile/tablet chrome ≤5%.
+| # | Issue | Agent / PR | Status | Evidence |
+|---|--------|------------|--------|----------|
+| 1 | Header broken on scroll | Meta **#10** | **verify** | `qa-evidence/01-header-scroll/`; `wp-chrome-behaviors.js` toggles `scrolled` |
+| 2 | Two translate widgets | Meta **#10** | **likely OK** | DDEV probe: **1** gtranslate region on `/homepage` |
+| 3 | Vimeo embeds as plain URL | Meta **#10** | **open** | Article probe: no `player.vimeo.com` / vimeo block on Charlie Landers |
+| 4 | Pagination | Templates **#11** | **verify** | `qa-evidence/04-pagination/`; `/category/cancer-research/page/2` **200** |
+| 5 | Illegible In Brief band | Templates **#11** | **verify** | `qa-evidence/05-in-brief-band/` on `/fall-2026-issue` |
+| 6 | `/browse-issues` image sizes | Templates **#11** | **verify** | `qa-evidence/06-browse-issues-images/` |
+| 7 | HTML entities (`&#039;`) | Templates **#11** | **partial** | Issue promo excerpts decoded in theme; homepage **meta description** still encoded (meta module) |
+| 8 | Broken images | Templates **#11** | **verify** | `qa-evidence/08-broken-images/` |
+| 9 | Stray Home breadcrumb + edit pencils | VM **#12** | **partial** | Toolbar hidden in CSS; `/browse-issues` still shows breadcrumb text in HTML probe |
+| 10 | More Stories without images | VM **#12** | **verify** | `qa-evidence/10-more-stories/` |
+| 11 | Category spacing under articles | VM **#12** | **verify** | `qa-evidence/11-category-spacing/` |
+
+When agent branches push ahead of PR **#5**: merge → `ddev drush cr` → re-run gates + `parity:qa:capture` → update rows above.
+
+---
+
+## Mac agent queue (overnight)
+
+1. **Issue ~68%:** PostX card rasters + promo grid (`/fall-2026-issue` desktop **~59%** per-path); banner overlay h1 — stay in issue twig / card URL helpers.
+2. **Homepage ~33%:** hero + grid pixels (not VM offset CSS).
+3. **Defer:** article/in-brief +149px main, `/about`, archive row CSS (VM); vimeo/meta description (meta).
+
+---
+
+## Integrator reference
+
+PR **#12** merged at `76cea9ad`. VM STATUS: `parity/reports/progress/vm-visual/STATUS.md`.

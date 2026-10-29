@@ -228,11 +228,13 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
       $base_field = $view->storage->get('base_field');
       $base_alias = $query->ensureTable($base_table) ?: $base_table;
       df_setup_views_query_allow_archive_bundles($query, $base_alias);
-      $query->addWhere(0, "{$base_alias}.{$base_field}", $nids, 'IN');
-      $query->setLimit(count($nids));
+      $supplemental = df_setup_archive_supplemental_nids($path, $nids);
+      $display_nids = array_values(array_unique(array_merge($supplemental, $nids)));
+      $query->addWhere(0, "{$base_alias}.{$base_field}", $display_nids, 'IN');
+      $query->setLimit(count($display_nids));
       $query->setOffset(0);
       $query->pager = NULL;
-      $field_order = implode(', ', array_map('intval', $nids));
+      $field_order = implode(', ', array_map('intval', $display_nids));
       $query->addOrderBy(NULL, "FIELD({$base_alias}.{$base_field}, {$field_order})", 'ASC', 'archive_wp_order');
       return;
     }
@@ -434,6 +436,61 @@ function df_setup_archive_frozen_lookup_path(): string {
  *
  * @return int[]
  */
+/**
+ * Published articles in this category/tag not already in the frozen WP page list.
+ *
+ * Shown first (newest first) so web editors see new content in archive listings.
+ *
+ * @param int[] $frozen_nids
+ *
+ * @return int[]
+ */
+function df_setup_archive_supplemental_nids(string $path, array $frozen_nids): array {
+  if (!preg_match('#^/(?:category|tag)/([^/]+)(?:/page/\d+)?$#', $path, $matches)) {
+    return [];
+  }
+  $tids = df_setup_topic_term_tids_for_category_slug($matches[1]);
+  if ($tids === []) {
+    return [];
+  }
+  $query = \Drupal::entityQuery('node')
+    ->condition('status', 1)
+    ->condition('type', 'article')
+    ->condition('field_topics.target_id', $tids, 'IN')
+    ->accessCheck(FALSE)
+    ->sort('created', 'DESC');
+  if ($frozen_nids !== []) {
+    $query->condition('nid', $frozen_nids, 'NOT IN');
+  }
+  $migrated_nids = df_setup_migrated_article_nids();
+  if ($migrated_nids !== []) {
+    $query->condition('nid', $migrated_nids, 'NOT IN');
+  }
+  return array_values(array_map('intval', $query->execute()));
+}
+
+/**
+ * Node IDs created by WordPress migration (not editor-created net-new content).
+ *
+ * @return int[]
+ */
+function df_setup_migrated_article_nids(): array {
+  static $cache = NULL;
+  if (is_array($cache)) {
+    return $cache;
+  }
+  $cache = [];
+  $database = \Drupal::database();
+  if (!$database->schema()->tableExists('migrate_map_df_articles')) {
+    return $cache;
+  }
+  $cache = array_values(array_unique(array_map('intval', $database->select('migrate_map_df_articles', 'm')
+    ->fields('m', ['destid1'])
+    ->execute()
+    ->fetchCol())));
+  return $cache;
+}
+
 function df_setup_archive_nids_for_request_path(string $path): array {
   unset($path);
   $path = df_setup_archive_frozen_lookup_path();

@@ -66,17 +66,6 @@ const entries = (limit > 0 ? selected.slice(0, limit) : selected).map((entry) =>
   entry,
   path: publicPath(entry),
 }));
-if (entries.length < 10) {
-  console.error(
-    'content-sweep: unexpected URL count',
-    JSON.stringify({
-      entries: entries.length,
-      pathFilter,
-      limit,
-      contentSweepPaths: process.env.CONTENT_SWEEP_PATHS,
-    }),
-  );
-}
 
 async function fetchHtml(url, label) {
   let lastErr = null;

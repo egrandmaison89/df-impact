@@ -1040,3 +1040,84 @@ function df_setup_update_10028(): string {
   drupal_flush_all_caches();
   return 'About Impact staff block synced to WordPress reference.';
 }
+
+/**
+ * Seeds archive listing excerpts onto article field_excerpt (editable by editors).
+ */
+function df_setup_update_10031(): string {
+  $messages = [];
+  if (!FieldConfig::loadByName('node', 'in_brief', 'field_excerpt')) {
+    $storage = FieldStorageConfig::loadByName('node', 'field_excerpt');
+    if ($storage instanceof FieldStorageConfig) {
+      FieldConfig::create([
+        'field_storage' => $storage,
+        'bundle' => 'in_brief',
+        'label' => 'Listing excerpt',
+        'required' => FALSE,
+      ])->save();
+      $messages[] = 'Added field_excerpt to in_brief.';
+    }
+  }
+  $restore = __DIR__ . '/../df_migrate/scripts/restore_in_brief_summary_from_export.php';
+  if (is_readable($restore)) {
+    require_once $restore;
+    $fixed = df_migrate_restore_in_brief_summary_from_export();
+    $messages[] = sprintf('in_brief summary restore: %d updated.', (int) ($fixed['updated'] ?? 0));
+  }
+  $script = __DIR__ . '/../df_migrate/scripts/backfill_archive_row_excerpts.php';
+  if (!is_readable($script)) {
+    return 'backfill_archive_row_excerpts.php missing';
+  }
+  require_once $script;
+  $result = df_migrate_backfill_archive_row_excerpts();
+  if (!empty($result['error'])) {
+    return 'Archive excerpt backfill failed: ' . $result['error'];
+  }
+  $messages[] = sprintf(
+    'Article field_excerpt backfill: %d updated, %d already matched, %d unresolved.',
+    (int) ($result['updated'] ?? 0),
+    (int) ($result['skipped'] ?? 0),
+    (int) ($result['missing'] ?? 0),
+  );
+  return implode(' ', $messages);
+}
+
+/**
+ * in_brief listing excerpts on field_excerpt; restore full-page field_summary.
+ */
+function df_setup_update_10032(): string {
+  $messages = [];
+  $restore = __DIR__ . '/../df_migrate/scripts/restore_in_brief_summary_from_export.php';
+  if (is_readable($restore)) {
+    require_once $restore;
+    $fixed = df_migrate_restore_in_brief_summary_from_export();
+    $messages[] = sprintf('in_brief field_summary restore: %d.', (int) ($fixed['updated'] ?? 0));
+  }
+  $script = __DIR__ . '/../df_migrate/scripts/backfill_archive_row_excerpts.php';
+  if (is_readable($script)) {
+    require_once $script;
+    $result = df_migrate_backfill_archive_row_excerpts();
+    $messages[] = sprintf(
+      'Listing excerpt backfill: %d updated, %d matched, %d unresolved.',
+      (int) ($result['updated'] ?? 0),
+      (int) ($result['skipped'] ?? 0),
+      (int) ($result['missing'] ?? 0),
+    );
+  }
+  drupal_flush_all_caches();
+  return implode(' ', $messages);
+}
+
+/**
+ * Rebuild in_brief field_summary from body after listing excerpt seeding.
+ */
+function df_setup_update_10033(): string {
+  $restore = __DIR__ . '/../df_migrate/scripts/restore_in_brief_summary_from_export.php';
+  if (!is_readable($restore)) {
+    return 'restore_in_brief_summary_from_export.php missing';
+  }
+  require_once $restore;
+  $fixed = df_migrate_restore_in_brief_summary_from_export();
+  drupal_flush_all_caches();
+  return sprintf('in_brief field_summary restored from export body: %d updated.', (int) ($fixed['updated'] ?? 0));
+}

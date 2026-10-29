@@ -1371,6 +1371,11 @@ article.post .wp-block-post-terms {
   margin-bottom: 0;
 }
 
+/* PostX grid vertical offset vs live WP (spring/summer issue landing). */
+.issue-page .ultp-block-items-wrap.ultp-block-row {
+  margin-top: 24px;
+}
+
 .issue-page .ultp-block-70af6c .ultp-block-image {
   aspect-ratio: 768 / 551;
   width: 100%;

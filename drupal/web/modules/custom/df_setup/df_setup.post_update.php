@@ -28,3 +28,4 @@ function df_setup_post_update_seed_issue_covers(&$sandbox): string {
 function df_setup_post_update_seed_issue_banners(&$sandbox): string {
   return _df_setup_backfill_issue_banner_images();
 }
+

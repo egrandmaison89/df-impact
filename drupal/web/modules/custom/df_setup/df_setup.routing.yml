@@ -1,3 +1,11 @@
+df_setup.digital_exclusives_legacy:
+  path: '/digital-exclusives'
+  defaults:
+    _controller: '\Drupal\df_setup\Controller\DigitalExclusivesLegacyController::render'
+    _title: 'Digital Exclusives'
+  requirements:
+    _access: 'TRUE'
+
 df_setup.topics_index:
   path: '/topics'
   defaults:

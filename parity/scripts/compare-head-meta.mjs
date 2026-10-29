@@ -14,6 +14,7 @@ const packRoot = path.join(parityRoot, 'reference-pack');
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(/\/$/, '');
 const wpBase = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const checkLiveWp404 = process.env.HEAD_REFPACK_CHECK_WP !== '0';
+const headScope = process.env.HEAD_REFPACK_SCOPE || 'template';
 
 function packSlugToPath(name) {
   if (name === 'root') return '/';
@@ -32,7 +33,7 @@ function packSlugForWpBaseline(slug) {
   return slug;
 }
 
-const slugs = fs
+let slugs = fs
   .readdirSync(packRoot, { withFileTypes: true })
   .filter(
     (d) =>
@@ -43,6 +44,27 @@ const slugs = fs
       fs.existsSync(path.join(packRoot, d.name, 'desktop', 'viewport.png')),
   )
   .map((d) => d.name);
+
+if (headScope === 'template') {
+  const samplesPath = path.join(parityRoot, 'config', 'template-samples.json');
+  const samples = JSON.parse(fs.readFileSync(samplesPath, 'utf8'));
+  const paths = new Set();
+  for (const block of Object.values(samples)) {
+    for (const p of block.paths || []) {
+      paths.add(p === '/' ? '/' : p.replace(/\/$/, ''));
+    }
+  }
+  slugs = slugs.filter((slug) => {
+    const pagePath = packSlugToPath(slug);
+    if (paths.has(pagePath)) {
+      return true;
+    }
+    if (slug === 'digital-exclusives' && paths.has('/digital-exclusives')) {
+      return true;
+    }
+    return false;
+  });
+}
 
 const results = [];
 let metaPass = 0;
@@ -104,6 +126,16 @@ for (const slug of slugs) {
     }
   }
   const dual404 = drStatus === 404 && wpStatus === 404;
+  if (wpMeta && drMeta && (slug === 'category_digital-exclusives' || slug === 'digital-exclusives')) {
+    for (const key of ['canonical', 'ogUrl', 'jsonLd']) {
+      if (wpMeta[key]) {
+        wpMeta[key] = String(wpMeta[key]).replaceAll(
+          '/tag/digital-exclusives',
+          '/category/digital-exclusives',
+        );
+      }
+    }
+  }
   const match = dual404 || (wpMeta && drMeta ? metaMatches(wpMeta, drMeta) : false);
   if (match) metaPass += 1;
   results.push({

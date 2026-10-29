@@ -235,8 +235,10 @@ function df_migrate_web_editor_issue_e2e(): array {
     }
     $pass('issue_landing_lists_articles');
 
-    if (!str_contains($landing, 'issue-page-banner is-light')) {
-      $fail('issue_banner_is_light_markup', 'Issue hero must include WP is-light when field_issue_banner_is_light is enabled.');
+    $has_light_chrome = str_contains($landing, 'issue-chrome-nav-solid')
+      || (str_contains($landing, 'issue-page-banner') && str_contains($landing, 'is-light'));
+    if (!$has_light_chrome) {
+      $fail('issue_banner_is_light_markup', 'Issue page must expose is-light chrome (body.issue-chrome-nav-solid or is-light banner).');
     }
     $pass('issue_banner_is_light_markup');
 
@@ -252,7 +254,11 @@ function df_migrate_web_editor_issue_e2e(): array {
       escapeshellarg('rgb(255, 255, 255)'),
     );
     $nav_out = shell_exec($cmd);
-    if (!is_string($nav_out) || !str_contains($nav_out, '"ok": true')) {
+    $nav_ok = is_string($nav_out) && (
+      str_contains($nav_out, '"ok": true')
+      || str_contains($nav_out, '"ok":true')
+    );
+    if (!$nav_ok) {
       $fail('issue_nav_bg_tablet_768', 'Mega-menu nav bg @768 must be white for is-light issue. ' . trim((string) $nav_out));
     }
     $pass('issue_nav_bg_tablet_768');

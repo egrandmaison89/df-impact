@@ -2,45 +2,72 @@
   "component": "homepage",
   "drupalBase": "http://df-impact.ddev.site",
   "refRenderer": "mac-pack-viewport-png",
-  "pages": 1,
+  "pages": 2,
   "rectTolerancePx": 2,
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.06594838487851234,
-    "viewport_median_mac_desktop": 0.6109560185185186,
-    "chrome_median_tablet": 0.18743068469469543,
-    "viewport_median_mac_tablet": 0.4893041087962963,
-    "chrome_median_mobile": 0.21318092730280008,
-    "viewport_median_mac_mobile": 0.4746666666666667
+    "chrome_median_desktop": 0.12857103195974995,
+    "viewport_median_mac_desktop": 0.610824074074074,
+    "chrome_median_tablet": 0.18692673990835465,
+    "viewport_median_mac_tablet": 0.48985532407407406,
+    "chrome_median_mobile": 0.2132859007815594,
+    "viewport_median_mac_mobile": 0.4734962962962963
   },
   "summary": [
     {
       "path": "/",
       "bp": "desktop",
-      "pixelDiffRatio": 0.6109560185185186,
+      "pixelDiffRatio": 0.610824074074074,
       "headerPixelDiffRatio": 0.038413497390007455,
-      "footerPixelDiffRatio": 0.09348327236701723,
-      "chromePixelDiffRatio": 0.06594838487851234,
-      "viewportPixelDiffRatioMac": 0.6109560185185186
+      "footerPixelDiffRatio": 0.09350827808260936,
+      "chromePixelDiffRatio": 0.06596088773630841,
+      "viewportPixelDiffRatioMac": 0.610824074074074
     },
     {
       "path": "/",
       "bp": "tablet",
-      "pixelDiffRatio": 0.4893041087962963,
+      "pixelDiffRatio": 0.48941695601851853,
       "headerPixelDiffRatio": 0.21032395287958114,
-      "footerPixelDiffRatio": 0.1645374165098097,
-      "chromePixelDiffRatio": 0.18743068469469543,
-      "viewportPixelDiffRatioMac": 0.4893041087962963
+      "footerPixelDiffRatio": 0.16352952693712816,
+      "chromePixelDiffRatio": 0.18692673990835465,
+      "viewportPixelDiffRatioMac": 0.48941695601851853
     },
     {
       "path": "/",
       "bp": "mobile",
-      "pixelDiffRatio": 0.4746666666666667,
+      "pixelDiffRatio": 0.4734962962962963,
       "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.26606866088832265,
-      "chromePixelDiffRatio": 0.21318092730280008,
-      "viewportPixelDiffRatioMac": 0.4746666666666667
+      "footerPixelDiffRatio": 0.2662786078458413,
+      "chromePixelDiffRatio": 0.2132859007815594,
+      "viewportPixelDiffRatioMac": 0.4734962962962963
+    },
+    {
+      "path": "/homepage",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.6101782407407408,
+      "headerPixelDiffRatio": 0.038413497390007455,
+      "footerPixelDiffRatio": 0.21872856652949246,
+      "chromePixelDiffRatio": 0.12857103195974995,
+      "viewportPixelDiffRatioMac": 0.6101782407407408
+    },
+    {
+      "path": "/homepage",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.48985532407407406,
+      "headerPixelDiffRatio": 0.21032395287958114,
+      "footerPixelDiffRatio": 0.16352952693712816,
+      "chromePixelDiffRatio": 0.18692673990835465,
+      "viewportPixelDiffRatioMac": 0.48985532407407406
+    },
+    {
+      "path": "/homepage",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.47343407407407406,
+      "headerPixelDiffRatio": 0.1602931937172775,
+      "footerPixelDiffRatio": 0.2662786078458413,
+      "chromePixelDiffRatio": 0.2132859007815594,
+      "viewportPixelDiffRatioMac": 0.47343407407407406
     }
   ]
 }

@@ -7,9 +7,9 @@
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.12806921503758226,
+    "chrome_median_desktop": 0.1272823001921053,
     "viewport_median_mac_desktop": 0.3443819444444444,
-    "chrome_median_tablet": 0.16759517736250848,
+    "chrome_median_tablet": 0.16751613178772468,
     "viewport_median_mac_tablet": 0.40142216435185185,
     "chrome_median_mobile": 0.15798751881394474,
     "viewport_median_mac_mobile": 0.37550814814814815
@@ -72,29 +72,29 @@
     {
       "path": "/browse-issues",
       "bp": "desktop",
-      "pixelDiffRatio": 0.28622839506172837,
+      "pixelDiffRatio": 0.2862862654320988,
       "headerPixelDiffRatio": 0.15929809843400447,
-      "footerPixelDiffRatio": 0.098414161332114,
-      "chromePixelDiffRatio": 0.12885612988305922,
-      "viewportPixelDiffRatioMac": 0.28622839506172837
+      "footerPixelDiffRatio": 0.09468592821216278,
+      "chromePixelDiffRatio": 0.12699201332308363,
+      "viewportPixelDiffRatioMac": 0.2862862654320988
     },
     {
       "path": "/browse-issues",
       "bp": "tablet",
-      "pixelDiffRatio": 0.3227155671296296,
+      "pixelDiffRatio": 0.32262586805555554,
       "headerPixelDiffRatio": 0.21032395287958114,
-      "footerPixelDiffRatio": 0.12456580599766648,
-      "chromePixelDiffRatio": 0.1674448794386238,
-      "viewportPixelDiffRatioMac": 0.3227155671296296
+      "footerPixelDiffRatio": 0.1242496236985313,
+      "chromePixelDiffRatio": 0.16728678828905622,
+      "viewportPixelDiffRatioMac": 0.32262586805555554
     },
     {
       "path": "/browse-issues",
       "bp": "mobile",
-      "pixelDiffRatio": 0.3744148148148148,
+      "pixelDiffRatio": 0.3745837037037037,
       "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.1511643234648355,
-      "chromePixelDiffRatio": 0.1557287585910565,
-      "viewportPixelDiffRatioMac": 0.3744148148148148
+      "footerPixelDiffRatio": 0.15163392500381037,
+      "chromePixelDiffRatio": 0.15596355936054393,
+      "viewportPixelDiffRatioMac": 0.3745837037037037
     },
     {
       "path": "/past-issues",
@@ -108,11 +108,11 @@
     {
       "path": "/past-issues",
       "bp": "tablet",
-      "pixelDiffRatio": 0.5332798032407408,
+      "pixelDiffRatio": 0.5332783564814815,
       "headerPixelDiffRatio": 0.21032395287958114,
       "footerPixelDiffRatio": 0.1228846556043555,
       "chromePixelDiffRatio": 0.16660430424196832,
-      "viewportPixelDiffRatioMac": 0.5332798032407408
+      "viewportPixelDiffRatioMac": 0.5332783564814815
     },
     {
       "path": "/past-issues",

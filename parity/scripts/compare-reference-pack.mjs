@@ -80,12 +80,10 @@ const BPS = { desktop: 1440, tablet: 768, mobile: 375 };
 function pathToPackSlug(p) {
   if (p === '/' || p === '') return 'root';
   if (p === '/homepage') return 'homepage';
-  if (p.startsWith('/category/')) {
-    return `category_${p.slice('/category/'.length).replace(/-/g, '_')}`;
-  }
   const m = p.match(/^\/(\d{4})\/(\d{2})\/(.+?)\/?$/);
   if (m) return `${m[1]}_${m[2]}_${m[3]}`;
-  return p.replace(/^\//, '').replace(/\//g, '_');
+  // Must match capture-reference-pack.mjs: slashes → underscores, keep hyphens.
+  return p.replace(/^\/|\/$/g, '').replace(/\//g, '_');
 }
 
 function normalizeFontFamily(v) {

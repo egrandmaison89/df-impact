@@ -7,58 +7,94 @@
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.12863226919109155,
-    "viewport_median_mac_desktop": 0.4648935185185185,
-    "chrome_median_tablet": 0.16805161586896464,
-    "viewport_median_mac_tablet": 0.6830613425925925,
-    "chrome_median_mobile": 0.15537861912124945,
-    "viewport_median_mac_mobile": 0.42234666666666665
+    "chrome_median_desktop": 0.12865816796795482,
+    "viewport_median_mac_desktop": 0.30276890432098763,
+    "chrome_median_tablet": 0.16795505717710124,
+    "viewport_median_mac_tablet": 0.5599218749999999,
+    "chrome_median_mobile": 0.15625652444673704,
+    "viewport_median_mac_mobile": 0.3682251851851852
   },
   "summary": [
     {
       "path": "/category/cancer-research",
       "bp": "desktop",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.30409876543209874,
+      "headerPixelDiffRatio": 0.1593214019388516,
+      "footerPixelDiffRatio": 0.09844035779606768,
+      "chromePixelDiffRatio": 0.12888087986745964,
+      "viewportPixelDiffRatioMac": 0.30409876543209874
     },
     {
       "path": "/category/cancer-research",
       "bp": "tablet",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.5698828125,
+      "headerPixelDiffRatio": 0.21032395287958114,
+      "footerPixelDiffRatio": 0.12572365581349815,
+      "chromePixelDiffRatio": 0.16802380434653963,
+      "viewportPixelDiffRatioMac": 0.5698828125
     },
     {
       "path": "/category/cancer-research",
       "bp": "mobile",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.3734251851851852,
+      "headerPixelDiffRatio": 0.1602931937172775,
+      "footerPixelDiffRatio": 0.1507070798610968,
+      "chromePixelDiffRatio": 0.15550013678918714,
+      "viewportPixelDiffRatioMac": 0.3734251851851852
     },
     {
       "path": "/category/digital-exclusives",
       "bp": "desktop",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.3014390432098765,
+      "headerPixelDiffRatio": 0.15929809843400447,
+      "footerPixelDiffRatio": 0.09807003505563176,
+      "chromePixelDiffRatio": 0.1286840667448181,
+      "viewportPixelDiffRatioMac": 0.3014390432098765
     },
     {
       "path": "/category/digital-exclusives",
       "bp": "tablet",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.5315567129629629,
+      "headerPixelDiffRatio": 0.21032395287958114,
+      "footerPixelDiffRatio": 0.12544866713574462,
+      "chromePixelDiffRatio": 0.16788631000766288,
+      "viewportPixelDiffRatioMac": 0.5315567129629629
     },
     {
       "path": "/category/digital-exclusives",
       "bp": "mobile",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.3630251851851852,
+      "headerPixelDiffRatio": 0.1602931937172775,
+      "footerPixelDiffRatio": 0.15373263049129646,
+      "chromePixelDiffRatio": 0.15701291210428697,
+      "viewportPixelDiffRatioMac": 0.3630251851851852
     },
     {
       "path": "/category/access-and-equity",
       "bp": "desktop",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.28276003086419754,
+      "headerPixelDiffRatio": 0.1593214019388516,
+      "footerPixelDiffRatio": 0.09510030864197531,
+      "chromePixelDiffRatio": 0.12721085529041345,
+      "viewportPixelDiffRatioMac": 0.28276003086419754
     },
     {
       "path": "/category/access-and-equity",
       "bp": "tablet",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.5499609375,
+      "headerPixelDiffRatio": 0.21032395287958114,
+      "footerPixelDiffRatio": 0.12524752254958238,
+      "chromePixelDiffRatio": 0.16778573771458177,
+      "viewportPixelDiffRatioMac": 0.5499609375
     },
     {
       "path": "/category/access-and-equity",
       "bp": "mobile",
-      "error": "missing reference viewport"
+      "pixelDiffRatio": 0.3624474074074074,
+      "headerPixelDiffRatio": 0.1602931937172775,
+      "footerPixelDiffRatio": 0.15380467111397444,
+      "chromePixelDiffRatio": 0.15704893241562595,
+      "viewportPixelDiffRatioMac": 0.3624474074074074
     },
     {
       "path": "/issues",

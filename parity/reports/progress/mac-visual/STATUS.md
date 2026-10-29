@@ -3,7 +3,59 @@
 **Branch:** `cursor/phase4-chrome-behavior-0b67` (integration PR **#5**).  
 **PR #7** (`cursor/wp-assets-vendor-cdf8` → `main`) is **redundant** for this work: its commits are already on phase4; keep measuring and fixing here, not on #7.
 
-**Updated:** 2026-10-28 (ET, post–PR #9 DDEV verify)
+**Updated:** 2026-10-28 (ET, Mac visual pass — fresh template-sample capture + fixes)
+
+## URL parity — 9 failing paths (792/801 = 98.9%)
+
+| Path | Drupal | WordPress | Cause |
+|------|--------|-----------|--------|
+| `/category/drug-development/page/2` | 404 | 301 → …/page/2/ | No Drupal **topic archive pager** for drug-development (pages 2–4) |
+| `/category/drug-development/page/3` | 404 | 301 | Same |
+| `/category/drug-development/page/4` | 404 | 301 | Same |
+| `/category/pediatrics` | 404 | 301 | **Topic term / view route** not migrated (pediatrics category) |
+| `/stories` | 404 | 404 | Legacy slug; **intentionally unmigrated** (both sides 404) |
+| `/tag/digital-exclusives` | 404 | 301 | **Tag archives** not implemented in Drupal |
+| `/tag/late-fall-2022` | 404 | 301 | Tag archive |
+| `/tag/late-fall-2022/page/2` | 404 | 301 | Tag archive pager |
+| `/topics` | 404 | 404 | Legacy hub; **both 404** |
+
+Report: `parity/reports/url-parity/check-1793238507941.json`
+
+## Mac reference pack (21 slugs, meta agent)
+
+- **Pushed with branch:** full `parity/reference-pack/` (18 template-sample paths + head slugs), captured **2026-10-28** at 1440 / 768 / 375 via `npm run parity:capture-template-samples` + `stabilizeParityViewport()`.
+- Re-run: `cd parity && npm run parity:capture-template-samples` (owner Mac, live WP).
+
+## Template scores (DDEV vs fresh Mac pack, 2026-10-28 PM ET)
+
+| Template | Structural | Viewport median (D / T / M) | Chrome median (D / T / M) | Notes |
+|----------|------------|------------------------------:|----------------------------:|-------|
+| **homepage** | pass | **32.6%** / 34.8% / 33.5% | 12.9% / 18.7% / 19.3% | Hero + PostX grid/order |
+| **issue** | pass | **68.0%** / 66.1% / 62.9% | 11.6% / 14.9% / 19.4% | Banners backfilled; grid **order/set** vs WP PostX |
+| **article** | pass | **31.7%** / 36.3% / 27.5% | 12.7% / 17.3% / 15.9% | Lead image crop + body blocks |
+| **in_brief** | pass | **19.8%** / 13.2% / 15.3% | 12.7% / 17.8% / 16.6% | Best viewport template |
+| **archive** | pass | **30.3%** / 56.0% / 36.8% | 12.9% / 16.8% / 15.6% | Was **46.5%** D before **category slug** harness fix |
+| **landing_page** | pass | **34.4%** / 40.1% / 37.6% | 12.7% / 16.8% / 15.8% | Gutenberg block + image gaps |
+
+## Fixes this pass (visual)
+
+1. **`compare-reference-pack.mjs`:** `pathToPackSlug` for `/category/*` now matches capture slugs (`category_cancer-research`, not `category_cancer_research`) — archive scores trustworthy.
+2. **`capture-stabilize.mjs`:** hide Drupal homepage **poster** when video hidden (matches WP pack video-only hero).
+3. **`df_impact.theme`:** issue banner direct **1024×396** URLs (no `itok`); PostX cards use **i0.wp.com `fit=870×570`** via `media.json`; issue **banner backfill** from WP (`backfill_issue_page_from_wordpress.php`, 14 issues on DDEV).
+4. **`parity:capture-template-samples`** npm script for reproducible Mac captures.
+
+## Pixel diff autopsy (ranked causes)
+
+| Area | ~Viewport | Top bands (desktop) | Primary causes (impact order) |
+|------|----------:|---------------------|-------------------------------|
+| **Chrome** | ~13% | y 0–148px header | Footer **badge PNG** bytes; mega menu **metrics**; logo AA — not width |
+| **Homepage** | ~33% | y 0–110px then grids | **Item order/set** in latest-issue view; hero **blank vs poster** (stabilize aligned); card images now i0.wp.com |
+| **Issue** | ~68% | y 0–110px header; banner+grid | **Article list order** (sticky/created vs WP PostX); promo cards; banner crop after backfill |
+| **Archive** | ~30% D | listing body | **View row count** + card thumb crop (category compares fixed) |
+| **Landing** | ~34% | full page | **Missing/partial Gutenberg** blocks + lead images on `/about`, `/about-impact` |
+| **Article** | ~32% | hero + body | **1024×734 lead** derivative + drop-cap / block HTML |
+
+Use `node parity/scripts/analyze-diff-bands.mjs parity/reports/progress/<template>/<slug>_desktop`.
 
 ## PR #9 merge + DDEV gates (full content)
 
@@ -19,40 +71,7 @@
 
 Ref-pack **failures** (expected gaps, not harness): WP 404 slugs still in pack (`2022_03_in-brief…`, `digital-exclusives`); external canonical (Perer/Rosenberg → defycancer); category/archive **title** + simplified Drupal JSON-LD vs Yoast graph; some pages missing og:image on views.
 
-## Mac reference pack (template-samples)
-
-- Re-captured **all 20 paths** in `parity/config/template-samples.json` at **1440 / 768 / 375** via `capture-reference-pack.mjs` + `stabilizeParityViewport()` (live WP, no captcha).
-- New/ refreshed slugs include: `about`, `about-impact`, `spring-2026-issue`, `category_access-and-equity`, `category_digital-exclusives`, in-brief singles, etc.
-- **WP 404** (archive error pages, not Drupal): `/2022/03/in-brief-spring-2022-roundup`, `/digital-exclusives` — removed from `template-samples.json` (use `/category/digital-exclusives` and in-brief URLs that return 200 on WP).
-
-## Template scores (all samples, DDEV, fresh Mac pack)
-
-| Template | Structural | Viewport median (D / T / M) | Chrome median (D / T / M) |
-|----------|------------|------------------------------:|----------------------------:|
-| **homepage** | pass | **32.6%** / 34.8% / 33.5% | 13.0% / 18.7% / 19.2% |
-| **issue** | pass | **68.0%** / 66.1% / 62.9% | 11.8% / 14.8% / 19.2% |
-| **article** | pass | **31.7%** / 36.3% / 27.5% | 12.7% / 17.3% / 15.9% |
-| **in_brief** | pass | **19.8%** / 13.2% / 15.3% | 12.7% / 17.8% / 16.6% |
-| **archive** | pass | **46.5%** / 68.3% / 42.2% | 12.9% / 16.8% / 15.5% |
-| **landing_page** | pass | **34.4%** / 40.1% / 37.6% | 12.8% / 16.8% / 15.8% |
-
-Structural chrome rects pass; remaining gap is **content/rendering**, not layout width.
-
-## Pixel diff autopsy (top regions — not AA noise)
-
-From fresh compares + `parity/scripts/analyze-diff-bands.mjs` / `parity/docs/MEASUREMENT.md`:
-
-| Area | ~Viewport diff | Dominant regions | Likely cause (fix order) |
-|------|---------------:|------------------|-------------------------|
-| **Chrome** (~13% D) | Header/footer strips | Mega menu **font weight/size** vs WP; footer **badge PNG** bytes; minor logo AA | Fonts loaded (verify `document.fonts` / WP `@font-face` in theme); swap footer assets to pack bytes |
-| **Homepage** (~33% D) | Hero ~150–450px; grids below | **Hero poster** vs stabilized video frame; PostX cards **i0.wp.com resize** vs local full files; story **set/order** vs capture date | Hero poster URL parity; card `src`/`srcset` to WP resize params or vendored crops |
-| **Landing** (~34% D) | Full page | About/Impact **Gutenberg blocks** partial vs WP; missing **lead images**; font stack | Content parity + WP image URLs on blocks |
-| **Archive** (~47–68% D) | Listing grids | **Fewer/different nodes** in views vs WP listing at capture time; card thumbs **crop/size** | View row counts + featured image derivatives |
-| **Issue** (~68% D) | Banner + grids | Issue **banner/cover** sizing; PostX grids same as homepage pipeline | `wp_issue_banner_1024x396` + card 870×570 pipeline |
-
-Do **not** treat as anti-aliasing until a WP-vs-WP rerun noise floor is measured.
-
-## metaMatch (PR #6 + #9 + Mac fixes)
+## metaMatch (PR #6 + #9 — meta agent owns remaining head gaps)
 
 | Item | Status |
 |------|--------|
@@ -62,9 +81,9 @@ Do **not** treat as anti-aliasing until a WP-vs-WP rerun noise floor is measured
 | **`parity:head:refpack` (authoritative on DDEV)** | **57.1%** (12/21), `compare-1793238200437.json` — up from **19%** pre-#9 on same 21-slug pack |
 | Example head | `curl -s http://df-impact.ddev.site/2023/09/american-association-for-cancer-research` — title, canonical, og:* populated |
 
-## Next (chrome + content)
+## Next (chrome + content — this agent)
 
-1. Chrome ≤5% pixel: fonts + footer badges  
-2. Homepage/issue hero + PostX image pipeline (biggest viewport wins)  
-3. metaMatch: view defaults og:image/title for archives and landing views  
-4. Re-run `PARITY_TEMPLATE=* npm run parity:compare-template` after each fix; commit + push scores
+1. **Issue/homepage grid order** — match WP PostX article order per issue (largest issue/homepage viewport gap).  
+2. Chrome ≤5%: footer badge bytes + header micro-metrics.  
+3. Landing **about / about-impact** block + image parity.  
+4. Re-run `PARITY_TEMPLATE=* npm run parity:compare-template` after each fix.

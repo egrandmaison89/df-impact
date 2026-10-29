@@ -35,6 +35,8 @@
     "parity:content:sweep:issues": "node scripts/run-content-sweep-issues.mjs",
     "parity:content:sweep:status": "node scripts/generate-content-sweep-status.mjs",
     "parity:issue-live-text": "node scripts/issue-live-text-sweep.mjs",
+    "parity:issue-live:sweep": "node scripts/issue-live-text-sweep.mjs",
+    "parity:issue:compare-extract": "node scripts/compare-issue-sweep-extract.mjs",
     "parity:smoke:200": "node scripts/smoke-200.mjs",
     "parity:article-dom-blocks": "node scripts/compare-article-dom-blocks.mjs",
     "parity:search:fetch-wp": "node scripts/fetch-wp-search-fixtures.mjs",
@@ -57,7 +59,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
     "@playwright/test": "^1.51.0",
-    "cheerio": "^1.0.0",
+    "cheerio": "^1.2.0",
     "chrome-launcher": "^1.2.2",
     "lighthouse": "^12.8.2",
     "pixelmatch": "^7.1.0",

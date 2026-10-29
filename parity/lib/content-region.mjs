@@ -50,6 +50,8 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
   ];
 
   const CONTENT_SELECTORS = [
+    'article.issue-page',
+    'main article.issue-page',
     'main:has(.wp-block-query)',
     'main .wp-block-query',
     '.wp-block-query',

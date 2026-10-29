@@ -7,7 +7,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
-import { extractMainText, gotoWithBoundedSettle, preparePage, textSimilarity } from '../lib/page-utils.mjs';
+import { gotoWithBoundedSettle, preparePage } from '../lib/page-utils.mjs';
+import {
+  createIssueParityPage,
+  issueLandingTextSimilarity,
+} from '../lib/issue-playwright-text.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
@@ -64,40 +68,34 @@ async function fetchWpHtml(page, url) {
 }
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-await preparePage(page);
+const page = await createIssueParityPage(browser);
 
 const results = [];
 for (const p of issuePaths) {
   const wpUrl = `${wpBase}${p}${p.endsWith('/') ? '' : '/'}`;
   const drUrl = `${drupalBase}${p}`;
-  let wpText = '';
-  let drText = '';
   let error = null;
+  let sim = null;
   try {
-    const cached = loadCachedWpHtml(p);
-    if (cached) {
-      if (wpHtmlIsArchiveError(cached)) {
+    let wpHtml = loadCachedWpHtml(p);
+    if (wpHtml) {
+      if (wpHtmlIsArchiveError(wpHtml)) {
         results.push({ path: p, textSimilarity: null, error: 'wp_archive_error_non_comparable', skipped: true });
         continue;
       }
-      await page.setContent(cached, { waitUntil: 'domcontentloaded', timeout: 120000 });
     } else {
       await fetchWpHtml(page, wpUrl);
-      const liveHtml = await page.content();
-      if (wpHtmlIsArchiveError(liveHtml)) {
+      wpHtml = await page.content();
+      if (wpHtmlIsArchiveError(wpHtml)) {
         results.push({ path: p, textSimilarity: null, error: 'wp_archive_error_non_comparable', skipped: true });
         continue;
       }
     }
-    wpText = (await extractMainText(page)).text;
     await sleep(minDelay);
-    await gotoWithBoundedSettle(page, drUrl, { timeout: 120000 });
-    drText = (await extractMainText(page)).text;
+    sim = await issueLandingTextSimilarity(page, { wpHtml, drupalUrl: drUrl });
   } catch (e) {
     error = String(e.message || e);
   }
-  const sim = error ? null : textSimilarity(wpText, drText);
   results.push({ path: p, textSimilarity: sim, error });
 }
 

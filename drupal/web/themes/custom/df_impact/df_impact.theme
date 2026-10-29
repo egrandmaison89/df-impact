@@ -975,6 +975,16 @@ function df_impact_preprocess_homepage_article_card_fields(array &$variables): v
   $variables['article_card_image_srcset'] = $meta['srcset'] ?? NULL;
   $variables['article_card_image_sizes'] = $meta['sizes'] ?? '(max-width: 768px) 100vw, 768px';
   $variables['article_card_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
+  $variables['article_card_title'] = df_impact_issue_article_card_title($node);
+}
+
+/**
+ * Plain card title matching WP PostX innerText (decode entities, drop sup wrappers).
+ */
+function df_impact_issue_article_card_title(NodeInterface $node): string {
+  $title = html_entity_decode($node->getTitle(), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+  $title = strip_tags($title);
+  return trim((string) preg_replace('#</?sup>#i', '', $title));
 }
 
 /**

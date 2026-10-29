@@ -49,11 +49,19 @@ export async function computedStyleHover(page, selector) {
   if ((await loc.count()) === 0) return null;
   try {
     await loc.scrollIntoViewIfNeeded();
-    await loc.hover({ force: true, timeout: 8000 });
+    const box = await loc.boundingBox();
+    if (box) {
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 8 });
+    }
+    await loc.hover({ timeout: 8000 });
   } catch {
-    return null;
+    try {
+      await loc.hover({ force: true, timeout: 5000 });
+    } catch {
+      return null;
+    }
   }
-  await page.waitForTimeout(450);
+  await page.waitForTimeout(650);
   return loc.evaluate((el) => {
     const cs = getComputedStyle(el);
     return {

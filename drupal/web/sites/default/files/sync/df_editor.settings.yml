@@ -18,3 +18,8 @@ footer_copyright_html: 'Copyright © 2026 Dana-Farber Cancer Institute | <a href
 gtranslate_disclaimer_text: 'Please note that some translations using Google Translate may not be accurately represented and downloaded documents cannot be translated. Dana-Farber and the Jimmy Fund assume no liability for inaccuracies that may result from using this third-party tool, which is for website translation.'
 header_issues_see_all_title: 'See All Issues'
 donate_button_label: Donate
+homepage_hero_override_title: ''
+homepage_hero_override_link: ''
+footer_badge_us_news_media_id: 0
+footer_badge_us_news_children_media_id: 0
+footer_badge_charity_navigator_media_id: 0

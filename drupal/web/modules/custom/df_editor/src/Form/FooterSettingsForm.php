@@ -53,6 +53,29 @@ final class FooterSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('footer_disclaimer_html'),
       '#rows' => 4,
     ];
+    $form['badges'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Trust badge images'),
+      '#open' => FALSE,
+      '#description' => $this->t('Optional image media replacements for the three footer badges. Leave empty to keep the default migrated artwork.'),
+    ];
+    $badge_fields = [
+      'footer_badge_us_news_media_id' => $this->t('U.S. News badge'),
+      'footer_badge_us_news_children_media_id' => $this->t('U.S. News children’s badge'),
+      'footer_badge_charity_navigator_media_id' => $this->t('Charity Navigator badge'),
+    ];
+    foreach ($badge_fields as $key => $label) {
+      $default_mid = (int) $config->get($key);
+      $form['badges'][$key] = [
+        '#type' => 'entity_autocomplete',
+        '#title' => $label,
+        '#target_type' => 'media',
+        '#selection_settings' => ['target_bundles' => ['image']],
+        '#default_value' => $default_mid > 0
+          ? \Drupal::entityTypeManager()->getStorage('media')->load($default_mid)
+          : NULL,
+      ];
+    }
     $form['legal'] = [
       '#type' => 'details',
       '#title' => $this->t('Inclusion, equity, and legal bar'),
@@ -120,6 +143,9 @@ final class FooterSettingsForm extends ConfigFormBase {
       ->set('social_facebook_url', $form_state->getValue('social_facebook_url'))
       ->set('social_twitter_url', $form_state->getValue('social_twitter_url'))
       ->set('social_instagram_url', $form_state->getValue('social_instagram_url'))
+      ->set('footer_badge_us_news_media_id', (int) $form_state->getValue('footer_badge_us_news_media_id'))
+      ->set('footer_badge_us_news_children_media_id', (int) $form_state->getValue('footer_badge_us_news_children_media_id'))
+      ->set('footer_badge_charity_navigator_media_id', (int) $form_state->getValue('footer_badge_charity_navigator_media_id'))
       ->save();
     parent::submitForm($form, $form_state);
   }

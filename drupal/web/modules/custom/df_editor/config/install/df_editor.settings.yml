@@ -13,3 +13,8 @@ footer_disclaimer_html: '<strong>About Our Patient Stories</strong>: Dana-Farber
 social_facebook_url: 'https://www.facebook.com/thejimmyfund/'
 social_twitter_url: 'https://twitter.com/TheJimmyFund'
 social_instagram_url: 'https://www.instagram.com/thejimmyfund/?ref=badge'
+homepage_hero_override_title: ''
+homepage_hero_override_link: ''
+footer_badge_us_news_media_id: 0
+footer_badge_us_news_children_media_id: 0
+footer_badge_charity_navigator_media_id: 0

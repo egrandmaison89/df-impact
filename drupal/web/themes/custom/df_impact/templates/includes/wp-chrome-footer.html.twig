@@ -58,6 +58,13 @@
 
 
 <div class="wp-block-group is-nowrap is-layout-flex wp-container-core-group-is-layout-f56f613f wp-block-group-is-layout-flex">
+{% if footer_badges is defined and footer_badges %}
+{% for badge in footer_badges %}
+<figure class="wp-block-image size-full is-resized">{% if badge.link %}<a href="{{ badge.link }}" target="_blank" rel="noreferrer noopener">{% endif %}<img decoding="async" width="{{ badge.width }}" height="{{ badge.height }}" src="{{ badge.src }}" alt="{{ badge.alt }}" style="{{ badge.img_style }}">{% if badge.link %}</a>{% endif %}</figure>
+
+
+{% endfor %}
+{% else %}
 <figure class="wp-block-image size-full is-resized"><a href="https://health.usnews.com/best-hospitals/area/ma/dana-farber-cancer-institute-6140583" target="_blank" rel="noreferrer noopener"><img decoding="async" width="146" height="143" src="{{ wp_uploads_base }}USNewsBadge2627_146.png" alt="U.S. News &amp; World Report’s Best Hospital’s badge" class="wp-image-9790" style="width:73px;height:auto"></a></figure>
 
 
@@ -67,6 +74,7 @@
 
 
 <figure class="wp-block-image size-full is-resized"><a href="https://www.charitynavigator.org/ein/042263040" target="_blank" rel="noreferrer noopener"><img decoding="async" width="140" height="140" src="{{ wp_uploads_base }}Charity-Navigator-Logo-2024.png" alt="Charity Navigator Four-Star Hospital" class="wp-image-7045" style="width:70px;height:auto"></a></figure>
+{% endif %}
 </div>
 </div>
 </div>

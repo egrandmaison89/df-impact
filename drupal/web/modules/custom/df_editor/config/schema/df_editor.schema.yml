@@ -62,3 +62,18 @@ df_editor.settings:
     donate_button_label:
       type: label
       label: 'Donate button label'
+    homepage_hero_override_title:
+      type: string
+      label: 'Homepage hero override heading'
+    homepage_hero_override_link:
+      type: string
+      label: 'Homepage hero override link URL'
+    footer_badge_us_news_media_id:
+      type: integer
+      label: 'Footer U.S. News badge media ID'
+    footer_badge_us_news_children_media_id:
+      type: integer
+      label: 'Footer U.S. News children badge media ID'
+    footer_badge_charity_navigator_media_id:
+      type: integer
+      label: 'Footer Charity Navigator badge media ID'

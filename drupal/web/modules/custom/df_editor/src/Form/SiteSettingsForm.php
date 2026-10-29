@@ -80,7 +80,7 @@ final class SiteSettingsForm extends ConfigFormBase {
       '#type' => 'details',
       '#title' => $this->t('Homepage hero'),
       '#open' => TRUE,
-      '#description' => $this->t('The homepage cover video, poster, and heading come from the newest published issue (currently node @nid).', [
+      '#description' => $this->t('By default the homepage cover video, poster, and heading come from the newest published issue (currently node @nid). Use Homepage hero settings for an optional site-wide heading override.', [
         '@nid' => $latest_nid ?? $this->t('none'),
       ]),
     ];
@@ -89,7 +89,7 @@ final class SiteSettingsForm extends ConfigFormBase {
     ];
     $form['homepage_hero']['shortcut'] = [
       '#type' => 'link',
-      '#title' => $this->t('Open homepage hero fields'),
+      '#title' => $this->t('Homepage hero settings'),
       '#url' => Url::fromRoute('df_editor.homepage_hero'),
       '#attributes' => ['class' => ['button', 'button--primary']],
     ];

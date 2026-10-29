@@ -9,7 +9,7 @@ df_editor.site_settings:
 df_editor.homepage_hero:
   path: '/admin/config/df-impact/homepage-hero'
   defaults:
-    _controller: '\Drupal\df_editor\Controller\HomepageHeroController::editRedirect'
+    _form: '\Drupal\df_editor\Form\HomepageHeroSettingsForm'
     _title: 'Homepage hero'
   requirements:
     _permission: 'administer df site settings'

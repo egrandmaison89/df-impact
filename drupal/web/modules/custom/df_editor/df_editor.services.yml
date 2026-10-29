@@ -8,7 +8,7 @@ services:
     arguments: ['@entity_type.manager']
   df_editor.site_chrome:
     class: Drupal\df_editor\SiteChrome
-    arguments: ['@config.factory', '@entity_type.manager', '@menu.link_tree']
+    arguments: ['@config.factory', '@entity_type.manager', '@menu.link_tree', '@file_url_generator']
   df_editor.issue_publisher:
     class: Drupal\df_editor\IssuePublisher
     arguments: ['@entity_type.manager', '@datetime.time', '@cache_tags.invalidator']

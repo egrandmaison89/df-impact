@@ -188,17 +188,20 @@ function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $
 
   $group = [
     '#type' => 'details',
-    '#title' => t('Homepage hero video (site admins)'),
+    '#title' => t('Homepage hero (site admins)'),
     '#open' => TRUE,
     '#weight' => 15,
   ];
-  foreach (['field_hero_video', 'field_hero_poster'] as $field_name) {
+  if (isset($form['field_hero_heading']) && !\Drupal::currentUser()->hasPermission('administer df site settings')) {
+    $form['field_hero_heading']['#access'] = FALSE;
+  }
+  foreach (['field_hero_video', 'field_hero_poster', 'field_hero_heading'] as $field_name) {
     if (isset($form[$field_name])) {
       $group[$field_name] = $form[$field_name];
       unset($form[$field_name]);
     }
   }
-  if (isset($group['field_hero_video']) || isset($group['field_hero_poster'])) {
+  if (isset($group['field_hero_video']) || isset($group['field_hero_poster']) || isset($group['field_hero_heading'])) {
     $form['df_homepage_hero'] = $group;
     if (!\Drupal::currentUser()->hasPermission('administer df site settings')) {
       $form['df_homepage_hero']['#access'] = FALSE;

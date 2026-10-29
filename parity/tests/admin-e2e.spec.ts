@@ -19,6 +19,7 @@ const FOOTER_LINK_TITLE = `Jimmy Fund Events ${TOKEN}`;
 const SEE_ALL_LABEL = `All Issues ${TOKEN}`;
 const DONATE_URL_SUFFIX = `e2e=${TOKEN.replace(/[^a-zA-Z0-9]/g, '')}`;
 const HERO_HEADING = `Hero heading ${TOKEN}`;
+const HERO_OVERRIDE = `Hero override ${TOKEN}`;
 
 type ConfigSnapshot = Record<string, string>;
 
@@ -86,6 +87,18 @@ async function saveConfigForm(page: import('@playwright/test').Page) {
   await expect(page.locator('.messages--error')).toHaveCount(0);
 }
 
+async function saveIssueForm(page: import('@playwright/test').Page) {
+  const stickySave = page.locator(
+    '.region-sticky input[type="submit"][value="Save"], .region-sticky #edit-submit',
+  );
+  if (await stickySave.count()) {
+    await stickySave.first().click();
+  } else {
+    await page.locator('#edit-submit').click({ force: true });
+  }
+  await expect(page.locator('.messages--error')).toHaveCount(0);
+}
+
 test.describe('Site admin chrome editing (UI)', () => {
   test.describe.configure({ mode: 'serial' });
   test.setTimeout(600_000);
@@ -100,6 +113,8 @@ test.describe('Site admin chrome editing (UI)', () => {
       'footer_link_jimmy_fund_events_title',
       'donate_url',
       'header_issues_see_all_title',
+      'homepage_hero_override_title',
+      'homepage_hero_override_link',
     ]) {
       configBefore[key] = configGet(key);
     }
@@ -158,26 +173,33 @@ test.describe('Site admin chrome editing (UI)', () => {
     await page.locator('#edit-header-issues-see-all-title').fill(SEE_ALL_LABEL);
     await saveConfigForm(page);
 
+    configSet('homepage_hero_override_title', '');
+    configSet('homepage_hero_override_link', '');
+    drush('cr');
+
     await go(page, '/admin/config/df-impact/homepage-hero');
-    await expect(page).toHaveURL(/\/node\/\d+\/edit/);
-    const heroNidMatch = page.url().match(/\/node\/(\d+)\/edit/);
-    expect(heroNidMatch?.[1]).toBeTruthy();
-    latestIssueNid = Number(heroNidMatch![1]);
+    await expect(page.locator('#edit-homepage-hero-override-title')).toBeVisible();
+    await go(page, `/node/${latestIssueNid}/edit`);
     await page.locator('#edit-field-hero-heading-0-value').fill(HERO_HEADING, { force: true });
-    const stickySave = page.locator(
-      '.region-sticky input[type="submit"][value="Save"], .region-sticky #edit-submit',
-    );
-    if (await stickySave.count()) {
-      await stickySave.first().click();
-    } else {
-      await page.locator('#edit-submit').click({ force: true });
-    }
-    await expect(page.locator('.messages--error')).toHaveCount(0);
-    await screenshot(page, '02-admin-saved-forms');
+    await saveIssueForm(page);
+    drush('cr');
 
     await logout(page);
     await go(page, '/');
-    await expect(page.locator('body')).toContainText(HERO_HEADING);
+    await expect(page.locator('.homepage-banner h1')).toContainText(HERO_HEADING);
+    await expect(page.locator('.homepage-banner h1 a')).toHaveCount(0);
+
+    await login(page, SITE_ADMIN.name, SITE_ADMIN.pass);
+    await go(page, '/admin/config/df-impact/homepage-hero');
+    await page.locator('#edit-homepage-hero-override-title').fill(HERO_OVERRIDE);
+    await saveConfigForm(page);
+    drush('cr');
+
+    await logout(page);
+    await go(page, '/');
+    await expect(page.locator('.homepage-banner h1')).toContainText(HERO_OVERRIDE);
+    await expect(page.locator('.homepage-banner h1')).not.toContainText(HERO_HEADING);
+
     await expect(page.locator(`a[href*="donate"], a[href*="Donation"]`).first()).toHaveAttribute(
       'href',
       new RegExp(DONATE_URL_SUFFIX.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),

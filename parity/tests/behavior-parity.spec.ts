@@ -13,7 +13,11 @@ import {
   behaviorOutDir,
   computedStyle,
   computedStyleHover,
+  dropdownOpenOnHover,
+  elementPresent,
+  headerScrollState,
   prepareBehaviorPage,
+  revealState,
   videoState,
 } from '../lib/behavior-utils.mjs';
 import { resolveParityRoot } from '../lib/parity-root.mjs';
@@ -90,10 +94,22 @@ for (const pathNorm of paths) {
       report.drHero = drHero;
       report.drNavDefault = await computedStyle(drPage, '.header__nav-link');
       report.drNavHover = await computedStyleHover(drPage, '.header__nav-link');
+      report.drHeaderBeforeScroll = await headerScrollState(drPage, '.header');
+      report.drDonateDefault = await computedStyle(drPage, '.header__donate, .homepage-banner-button a');
+      report.drDonateHover = await computedStyleHover(drPage, '.header__donate, .homepage-banner-button a');
+      report.drIssuesDropdown = await dropdownOpenOnHover(
+        drPage,
+        '.header__nav-item--issues, .mega-menu-item-has-children',
+        '.header__dropdown, .mega-sub-menu',
+      );
+      report.drGtranslate = await elementPresent(drPage, '.gtranslate_wrapper, #gtranslate_selector');
+      report.drSearchToggle = await elementPresent(drPage, '.header__search-link, .header-search a, .is-search-icon');
+      report.drReveal = await revealState(drPage);
       await drPage.evaluate(() => window.scrollTo(0, 120));
       await drPage.waitForTimeout(200);
       await drPage.screenshot({ path: path.join(outBase, 'drupal-scroll.png'), fullPage: false });
       report.drHeaderScroll = await computedStyle(drPage, '.header');
+      report.drHeaderAfterScroll = await headerScrollState(drPage, '.header');
 
       if (bp.label === 'mobile') {
         const toggle = drPage.locator('.header__menu-toggle');
@@ -120,10 +136,32 @@ for (const pathNorm of paths) {
         expect(drHero?.muted).toBe(true);
         expect(drHero?.loop).toBe(true);
         expect(drHero?.playsInline).toBe(true);
+        expect(drHero?.autoplay).toBe(true);
         if (process.env.PARITY_BEHAVIOR_STRICT === '1') {
           expect(drHero?.currentTimeAdvanced, 'video should advance when not reduced-motion').toBe(true);
         }
       }
+
+      if (isHome) {
+        expect(report.drGtranslate, 'GTranslate widget mount point').toBeTruthy();
+        expect(report.drSearchToggle, 'Header search control').toBeTruthy();
+      }
+
+      expect(report.drHeaderBeforeScroll?.found, 'Header element').toBeTruthy();
+      expect(report.drHeaderAfterScroll?.scrolled, 'Header scrolled class after scrollY=120').toBe(true);
+
+      if (bp.label === 'desktop') {
+        expect(report.drIssuesDropdown?.found, 'Issues dropdown panel').toBeTruthy();
+      }
+
+      if (report.drHeroReducedMotion?.found) {
+        expect(
+          report.drHeroReducedMotion.paused || !report.drHeroReducedMotion.currentTimeAdvanced,
+          'Hero respects reduced motion',
+        ).toBeTruthy();
+      }
+
+      expect(report.drNavHover?.color, 'Nav hover color computed').toBeTruthy();
 
       await wpPage.close();
       await drPage.close();

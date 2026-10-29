@@ -11,6 +11,15 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 
 /**
+ * Publishes Home and sets page.front when 10035 ran before moderation fix.
+ */
+function df_setup_post_update_ensure_home_landing_published(): string {
+  require_once __DIR__ . '/df_setup.install';
+  _df_setup_ensure_home_landing();
+  return 'Home landing published; page.front verified.';
+}
+
+/**
  * Ensures in_brief has editable field_excerpt for archive listing teasers.
  */
 function df_setup_post_update_in_brief_excerpt(): string {

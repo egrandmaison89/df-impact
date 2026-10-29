@@ -3,5 +3,4 @@ Disallow: /wp-admin/
 Allow: /wp-admin/admin-ajax.php
 Disallow: /admin/
 Disallow: /user/login
-Disallow: /search-stax
 Sitemap: https://danafarberimpact.org/sitemap_index.xml

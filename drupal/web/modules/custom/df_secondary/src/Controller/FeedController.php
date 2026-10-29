@@ -19,6 +19,26 @@ final class FeedController extends ControllerBase {
   private const ORIGIN = 'https://danafarberimpact.org';
 
   /**
+   * Site-wide RSS (WordPress /feed and Drupal rss.xml parity).
+   */
+  public function siteFeed(): Response {
+    $nids = $this->entityTypeManager()->getStorage('node')->getQuery()
+      ->condition('status', 1)
+      ->condition('type', ['article', 'in_brief'], 'IN')
+      ->sort('created', 'DESC')
+      ->range(0, 10)
+      ->accessCheck(FALSE)
+      ->execute();
+    $items = [];
+    foreach (Node::loadMultiple($nids) as $node) {
+      if ($node instanceof NodeInterface) {
+        $items[] = $this->buildItemFromNode($node);
+      }
+    }
+    return $this->xmlResponse($this->buildRss('Impact Magazine', self::ORIGIN . '/', $items));
+  }
+
+  /**
    * Category topic archive feed.
    */
   public function categoryFeed(string $slug): Response {

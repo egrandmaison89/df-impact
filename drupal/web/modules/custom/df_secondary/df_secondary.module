@@ -64,8 +64,10 @@ function df_secondary_page_attachments(array &$attachments): void {
  */
 function df_secondary_preprocess_html(array &$variables): void {
   $route = \Drupal::routeMatch()->getRouteName();
-  if ($route === 'view.df_impact_search.page_1') {
+  $path = rtrim(\Drupal::request()->getPathInfo(), '/') ?: '/';
+  if ($route === 'view.df_impact_search.page_1' || $path === '/search') {
     $variables['attributes']['class'][] = 'search';
+    $variables['attributes']['class'][] = 'search-results';
     $variables['attributes']['class'][] = 'error404';
   }
   if ($route === 'system.404') {
@@ -172,10 +174,11 @@ function df_secondary_views_pre_render(ViewExecutable $view): void {
  */
 function df_secondary_metatags_alter(array &$tags, array &$context): void {
   $route = \Drupal::routeMatch()->getRouteName();
-  if ($route === 'view.df_impact_search.page_1') {
+  $path = rtrim(\Drupal::request()->getPathInfo(), '/') ?: '/';
+  if ($route === 'view.df_impact_search.page_1' || $path === '/search') {
     $term = (string) (\Drupal::request()->query->get('s') ?? '');
     $title = $term !== ''
-      ? t('Search Results for “@term” - Impact Magazine', ['@term' => $term])
+      ? t('You searched for @term - Impact Magazine', ['@term' => $term])
       : t('Page not found - Impact Magazine');
     $tags['title'] = (string) $title;
     $tags['og_title'] = (string) $title;

@@ -22,8 +22,28 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
 
   public static function getSubscribedEvents(): array {
     return [
-      KernelEvents::REQUEST => [['onRequest', 35]],
+      KernelEvents::REQUEST => [
+        ['onRequestPreserveTrailingSlash', 29],
+        ['onRequest', 35],
+      ],
     ];
+  }
+
+  /**
+   * Keep WordPress-style trailing slashes (before redirect module normalizer).
+   */
+  public function onRequestPreserveTrailingSlash(RequestEvent $event): void {
+    if (!$event->isMainRequest()) {
+      return;
+    }
+    $path_info = $event->getRequest()->getPathInfo();
+    if ($path_info === '/' || !str_ends_with($path_info, '/')) {
+      return;
+    }
+    $path = rtrim($path_info, '/') ?: '/';
+    if ($this->usesWordpressTrailingSlash($path)) {
+      $event->getRequest()->attributes->set('_disable_route_normalizer', TRUE);
+    }
   }
 
   public function onRequest(RequestEvent $event): void {
@@ -50,8 +70,8 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
       return;
     }
 
-    if ($path === '/feed' || $path === '/feed/') {
-      $this->rebuildRequest($request, '/rss.xml', []);
+    if ($path === '/feed' || $path === '/feed/' || $path === '/rss.xml') {
+      $this->rebuildRequest($request, '/df-secondary/site-rss', []);
       return;
     }
 
@@ -76,6 +96,12 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
       return;
     }
 
+    if ($this->shouldRedirectToTrailingSlash($request, $path) && $this->usesWordpressTrailingSlash($path)) {
+      // Internal rewrite preserves manifest same-path 200; canonical URLs use trailing slashes in metatags/RSS.
+      $this->rebuildRequest($request, $path . '/', $request->query->all());
+      return;
+    }
+
     $search_term = $request->query->get('s');
     if ($search_term !== NULL && $search_term !== '' && ($path === '/' || $path === '/homepage')) {
       $this->rebuildRequest($request, '/search', ['s' => $search_term]);
@@ -85,6 +111,46 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
   /**
    * @param array<string, mixed> $query
    */
+  private function shouldRedirectToTrailingSlash(Request $request, string $path): bool {
+    if ($request->getMethod() !== 'GET') {
+      return FALSE;
+    }
+    if ($path === '/' || str_ends_with($request->getPathInfo(), '/')) {
+      return FALSE;
+    }
+    if (str_contains(basename($path), '.')) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  private function usesWordpressTrailingSlash(string $path): bool {
+    static $skip_exact = [
+      '/search' => TRUE,
+      '/feed' => TRUE,
+      '/rss.xml' => TRUE,
+      '/robots.txt' => TRUE,
+      '/sitemap_index.xml' => TRUE,
+      '/wp-sitemap.xml' => TRUE,
+      '/homepage' => TRUE,
+      '/home' => TRUE,
+      '/issues' => TRUE,
+      '/in-brief' => TRUE,
+      '/stories' => TRUE,
+      '/about' => TRUE,
+    ];
+    if (isset($skip_exact[$path])) {
+      return FALSE;
+    }
+    if (preg_match('#^/(?:admin|user|node|sites|core|wp-admin|wp-content|sitemaps)(?:/|$)#i', $path)) {
+      return FALSE;
+    }
+    if (preg_match('#/feed/?$#i', $path)) {
+      return FALSE;
+    }
+    return (bool) preg_match('#^/(?:category/[a-z0-9-]+|\d{4}/\d{2}/|issue/)#i', $path);
+  }
+
   private function rebuildRequest(Request $request, string $path, array $query): void {
     $uri = $path . ($query !== [] ? '?' . http_build_query($query) : '');
     $new = Request::create(

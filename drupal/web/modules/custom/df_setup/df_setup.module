@@ -423,6 +423,12 @@ function df_setup_issue_season_weight(string $season): int {
  * Returns the newest published issue node ID (year desc, season weight desc).
  */
 function df_setup_get_latest_issue_nid(): ?int {
+  if (\Drupal::moduleHandler()->moduleExists('df_editor')) {
+    $preview = \Drupal::service('df_editor.issue_preview')->getPreviewIssueNid();
+    if ($preview !== NULL) {
+      return $preview;
+    }
+  }
   $issues = df_setup_load_published_issues_sorted();
   if ($issues === []) {
     return NULL;
@@ -473,7 +479,21 @@ function df_setup_load_published_issues_sorted(): array {
  */
 function df_setup_get_header_issue_links(int $limit = 4): array {
   $links = [];
-  foreach (array_slice(df_setup_load_published_issues_sorted(), 0, $limit) as $issue) {
+  $issues = df_setup_load_published_issues_sorted();
+  if (\Drupal::moduleHandler()->moduleExists('df_editor')) {
+    $preview_nid = \Drupal::service('df_editor.issue_preview')->getPreviewIssueNid();
+    if ($preview_nid !== NULL) {
+      $preview = \Drupal::entityTypeManager()->getStorage('node')->load($preview_nid);
+      if ($preview instanceof NodeInterface) {
+        $issues = array_values(array_filter(
+          $issues,
+          static fn (NodeInterface $issue): bool => (int) $issue->id() !== $preview_nid,
+        ));
+        array_unshift($issues, $preview);
+      }
+    }
+  }
+  foreach (array_slice($issues, 0, $limit) as $issue) {
     $links[] = [
       'title' => df_setup_format_issue_nav_label($issue),
       'url' => $issue->toUrl()->toString(),

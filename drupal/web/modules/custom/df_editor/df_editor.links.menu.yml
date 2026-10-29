@@ -1,3 +1,10 @@
+df_editor.issue_dashboard:
+  title: 'Issue dashboard'
+  description: 'Draft issue, attached articles, preview, and publish.'
+  parent: system.admin_content
+  route_name: df_editor.issue_dashboard
+  weight: 2
+
 df_editor.site_settings:
   title: 'Impact site settings'
   description: 'Header logo, donate button, and main navigation menu.'

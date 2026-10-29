@@ -14,6 +14,80 @@ use Drupal\node\NodeInterface;
 /**
  * Implements hook_form_FORM_ID_alter() for issue edit forms.
  */
+/**
+ * Implements hook_form_FORM_ID_alter() for article forms.
+ */
+function df_editor_form_node_article_form_alter(array &$form, FormStateInterface $form_state): void {
+  if (!isset($form['body']['widget'][0])) {
+    return;
+  }
+  if (\Drupal::currentUser()->hasPermission('use text format full_html')) {
+    $form['body']['widget'][0]['#format'] = 'full_html';
+    $form['body']['widget'][0]['#default_value']['format'] = 'full_html';
+  }
+  $form['body']['widget'][0]['#description'] = (string) t('Use the toolbar for headings, quotes, images, and media embeds (Vimeo/YouTube). For WordPress-style blocks (pull quote, spacer, buttons), switch to Source and paste the same markup used on migrated stories—see WEB_EDITOR_GUIDE.md.');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for media forms (require alt text).
+ */
+function df_editor_form_media_image_form_alter(array &$form, FormStateInterface $form_state): void {
+  df_editor_media_require_alt_text($form);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for media library edit.
+ */
+function df_editor_form_media_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!is_object($form_object) || !method_exists($form_object, 'getEntity')) {
+    return;
+  }
+  $media = $form_object->getEntity();
+  if ($media && $media->bundle() === 'image') {
+    df_editor_media_require_alt_text($form);
+  }
+}
+
+/**
+ * Marks image alt fields required for accessibility parity.
+ */
+function df_editor_media_require_alt_text(array &$form): void {
+  if (isset($form['field_media_image']['widget'][0]['#alt_field_required'])) {
+    $form['field_media_image']['widget'][0]['#alt_field_required'] = TRUE;
+  }
+  if (isset($form['field_media_image']['widget'][0]['alt'])) {
+    $form['field_media_image']['widget'][0]['alt']['#required'] = TRUE;
+    $form['field_media_image']['widget'][0]['alt']['#description'] = (string) t('Required. Describe the image for screen readers (WordPress alt parity).');
+  }
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function df_editor_page_attachments_alter(array &$attachments): void {
+  if (!\Drupal::moduleHandler()->moduleExists('df_editor')) {
+    return;
+  }
+  /** @var \Drupal\df_editor\IssuePreview $preview */
+  $preview = \Drupal::service('df_editor.issue_preview');
+  $nid = $preview->getPreviewIssueNid();
+  if ($nid === NULL) {
+    return;
+  }
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => ['name' => 'df-preview-issue', 'content' => (string) $nid],
+    ],
+    'df_editor_preview_issue',
+  ];
+  if (\Drupal::currentUser()->hasPermission('publish issue with articles') && \Drupal::service('path.matcher')->isFrontPage()) {
+    \Drupal::messenger()->addWarning(t('Homepage and Issues navigation preview: treating issue @nid as the current featured issue.', ['@nid' => $nid]));
+  }
+}
+
 function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $form_state): void {
   $form_object = $form_state->getFormObject();
   if (!$form_object instanceof NodeForm) {

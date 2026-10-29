@@ -1,4 +1,8 @@
 services:
+  df_editor.issue_preview:
+    class: Drupal\df_editor\IssuePreview
+    arguments: ['@request_stack', '@entity_type.manager', '@current_user']
+
   df_editor.current_issue_nav:
     class: Drupal\df_editor\CurrentIssueNav
     arguments: ['@entity_type.manager']

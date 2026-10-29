@@ -37,6 +37,8 @@ The **Issues** flyout is built automatically from **published issues** (newest f
 1. **Configuration → Impact site settings** (`/admin/config/df-impact/site-settings`)
 2. Open the **Homepage hero** section and click **Open homepage hero fields** (or use **Configuration → Impact site settings → Homepage hero**).
 
+![Site settings with Homepage hero section and shortcut button](screenshots/site-settings-homepage-hero.png)
+
 You land on the **current featured issue** edit form, scrolled to **Homepage hero (site admins)**:
 
 - Homepage hero video (MP4)
@@ -75,7 +77,9 @@ Trusted staff with **Administer site snippets** can add tracking or embed HTML a
 
 ## Publishing a new issue (admin view)
 
-See [WEB_EDITOR_GUIDE.md](./WEB_EDITOR_GUIDE.md) for the editorial workflow. Site admins may also use **Publish issue and all attached articles** on the issue edit form when helping with launch.
+See [WEB_EDITOR_GUIDE.md](./WEB_EDITOR_GUIDE.md) for the editorial workflow and **Issue dashboard**. Site admins may also use **Publish issue and all attached articles** on the issue edit form when helping with launch.
+
+Web editors use **Content → Issue dashboard** for draft status, homepage/nav preview, and one-click publish—they cannot access this site settings screen.
 
 ## Cache
 

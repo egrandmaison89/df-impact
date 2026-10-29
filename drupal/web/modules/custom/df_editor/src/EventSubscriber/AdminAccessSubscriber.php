@@ -20,8 +20,18 @@ final class AdminAccessSubscriber implements EventSubscriberInterface {
    *
    * @var string[]
    */
+  private const BLOCKED_ROUTES = [
+    'df_editor.site_settings',
+    'df_editor.footer_settings',
+    'df_editor.homepage_hero',
+  ];
+
+  /**
+   * Route name prefixes that are forbidden to web editors.
+   *
+   * @var string[]
+   */
   private const BLOCKED_ROUTE_PREFIXES = [
-    'df_editor.',
     'df_site_snippets.',
     'block.admin_display',
     'block.admin_library',
@@ -54,6 +64,9 @@ final class AdminAccessSubscriber implements EventSubscriberInterface {
     $route = $event->getRequest()->attributes->get('_route');
     if (!is_string($route)) {
       return;
+    }
+    if (in_array($route, self::BLOCKED_ROUTES, TRUE)) {
+      throw new AccessDeniedHttpException('This administration page is restricted to site administrators.');
     }
     foreach (self::BLOCKED_ROUTE_PREFIXES as $prefix) {
       if (str_starts_with($route, $prefix)) {

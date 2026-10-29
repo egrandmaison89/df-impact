@@ -2,37 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\df_editor\Functional;
+namespace Drupal\Tests\df_editor\ExistingSite;
 
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
-use Drupal\Tests\BrowserTestBase;
 use Drupal\user\Entity\User;
 use PHPUnit\Framework\Attributes\Group;
+use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * End-to-end editor workflow against a bootstrapped site (standard profile + sync).
- *
- * Run from Drupal root:
- * @code
- * SIMPLETEST_BASE_URL=http://127.0.0.1:8888 \
- *   ./vendor/bin/phpunit -c web/core web/modules/custom/df_editor/tests/src/Functional
- * @endcode
+ * End-to-end editor workflow on the bootstrapped site (DTT).
  *
  * @group df_editor
  */
 #[Group('df_editor')]
-final class IssuePublishWorkflowTest extends BrowserTestBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'gin';
-
-  /**
-   * {@inheritdoc}
-   */
-  protected static $modules = [];
+final class IssuePublishWorkflowTest extends ExistingSiteBase {
 
   /**
    * {@inheritdoc}
@@ -40,7 +24,7 @@ final class IssuePublishWorkflowTest extends BrowserTestBase {
   protected function setUp(): void {
     parent::setUp();
     if (!\Drupal::moduleHandler()->moduleExists('df_editor')) {
-      $this->markTestSkipped('df_editor must be enabled (use an installed site bootstrap).');
+      $this->markTestSkipped('df_editor must be enabled.');
     }
   }
 
@@ -59,6 +43,7 @@ final class IssuePublishWorkflowTest extends BrowserTestBase {
       'roles' => ['web_editor'],
     ]);
     $editor->save();
+    $this->markEntityForCleanup($editor);
 
     $issue = Node::create([
       'type' => 'issue',
@@ -70,6 +55,7 @@ final class IssuePublishWorkflowTest extends BrowserTestBase {
       'field_hero_heading' => 'Functional Hero Heading',
     ]);
     $issue->save();
+    $this->markEntityForCleanup($issue);
 
     $articles = [];
     for ($i = 1; $i <= 2; $i++) {
@@ -79,9 +65,10 @@ final class IssuePublishWorkflowTest extends BrowserTestBase {
         'field_issue' => ['target_id' => $issue->id()],
         'status' => 0,
         'moderation_state' => 'draft',
-        'body' => ['value' => 'Body', 'format' => 'basic_html'],
+        'body' => ['value' => 'Body', 'format' => 'full_html'],
       ]);
       $articles[$i - 1]->save();
+      $this->markEntityForCleanup($articles[$i - 1]);
     }
 
     $this->drupalLogin($editor);
@@ -95,10 +82,12 @@ final class IssuePublishWorkflowTest extends BrowserTestBase {
     $this->drupalGet(Url::fromRoute('df_editor.homepage_hero'));
     $this->assertSession()->statusCodeEquals(403);
 
+    $this->drupalGet(Url::fromRoute('df_editor.issue_dashboard'));
+    $this->assertSession()->statusCodeEquals(200);
+
     $this->drupalGet($issue->toUrl('edit-form'));
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->responseNotContains('id="edit-df-homepage-hero"');
-    $this->assertSession()->responseNotContains('name="field_hero_heading');
 
     $this->drupalLogout();
 
@@ -117,7 +106,7 @@ final class IssuePublishWorkflowTest extends BrowserTestBase {
     ]);
     $this->assertSame($issue->toUrl()->toString(), $primary[0]['url']);
 
-    $this->drupalGet('<front>');
+    $this->drupalGet(Url::fromRoute('<front>'));
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->responseContains('Functional Hero Heading');
 
@@ -131,11 +120,46 @@ final class IssuePublishWorkflowTest extends BrowserTestBase {
         $loaded->delete();
       }
     }
-    $editor->delete();
 
     if ($before_latest !== NULL) {
       $this->assertSame($before_latest, df_setup_get_latest_issue_nid());
     }
+  }
+
+  /**
+   * Web editors must not see homepage hero fields on the issue form.
+   */
+  public function testWebEditorIssueFormHidesHomepageHeroGroup(): void {
+    $editor = User::create([
+      'name' => 'kernel_style_web_editor_' . $this->randomMachineName(4),
+      'mail' => 'hero_access@example.com',
+      'status' => 1,
+      'roles' => ['web_editor'],
+    ]);
+    $editor->save();
+    $this->markEntityForCleanup($editor);
+
+    $issue = Node::create([
+      'type' => 'issue',
+      'title' => 'Hero access test issue',
+      'field_season' => 'spring',
+      'field_year' => 2098,
+      'status' => 0,
+      'moderation_state' => 'draft',
+    ]);
+    $issue->save();
+    $this->markEntityForCleanup($issue);
+
+    \Drupal::service('account_switcher')->switchTo($editor);
+    $form_object = \Drupal::entityTypeManager()
+      ->getFormObject('node', 'default')
+      ->setEntity($issue);
+    $form = \Drupal::formBuilder()->getForm($form_object);
+    \Drupal::service('account_switcher')->switchBack();
+
+    $this->assertArrayHasKey('df_homepage_hero', $form);
+    $this->assertFalse($form['df_homepage_hero']['#access'] ?? TRUE);
+    $this->assertArrayNotHasKey('field_hero_heading', $form);
   }
 
 }

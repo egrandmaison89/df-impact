@@ -27,6 +27,12 @@ const ARTICLE_TITLES = [
 let issueNid: number | null = null;
 const articleNids: number[] = [];
 
+function drush(cmd: string): string {
+  return execSync(`cd /workspace/drupal && ./vendor/bin/drush --uri=${drupalBase} ${cmd}`, {
+    encoding: 'utf8',
+  }).trim();
+}
+
 function ensureUsers() {
   execSync(
     'cd /workspace/drupal && ./vendor/bin/drush scr ../parity/scripts/ensure-editor-test-users.php',
@@ -36,9 +42,32 @@ function ensureUsers() {
 
 function cleanupPriorRunContent() {
   execSync(
-    `cd /workspace/drupal && ./vendor/bin/drush scr ../parity/scripts/cleanup-editor-e2e-nodes.php -- '${TITLE_PREFIX}' && ./vendor/bin/drush cr`,
+    `cd /workspace/drupal && ./vendor/bin/drush scr ../parity/scripts/cleanup-editor-e2e-nodes.php -- '${TITLE_PREFIX}' && ./vendor/bin/drush --uri=${drupalBase} cr`,
     { stdio: 'inherit' },
   );
+}
+
+/** After long sweeps or admin-e2e, warm PHP, cache, and common editor routes. */
+function warmEnvironmentAfterGate() {
+  drush('cr');
+  for (const path of ['/', '/user/login', '/node/add/issue', '/node/add/article']) {
+    execSync(`curl -sS -o /dev/null -w "" ${drupalBase}${path}`, { stdio: 'pipe' });
+  }
+}
+
+/** admin-e2e leaves override config restored, but verify so homepage hero assertions stay stable. */
+function ensureHomepageHeroOverrideClear() {
+  const override = drush('cget df_editor.settings homepage_hero_override_title --format=string');
+  if (override.trim() !== '') {
+    drush('cset df_editor.settings homepage_hero_override_title "" -y');
+    drush('cset df_editor.settings homepage_hero_override_link "" -y');
+    drush('cr');
+  }
+}
+
+function latestPublishedIssueNid(): number {
+  const id = drush("ev 'echo function_exists(\"df_setup_get_latest_issue_nid\") ? df_setup_get_latest_issue_nid() : 0;'");
+  return Number(id) || 0;
 }
 
 function nodeNidByTitle(title: string): number {
@@ -116,15 +145,16 @@ async function waitForFeaturedImage(page: import('@playwright/test').Page) {
 async function addMediaFromLibrary(page: import('@playwright/test').Page, openButtonId: string) {
   for (let attempt = 0; attempt < 3; attempt++) {
     const openBtn = page.locator(`#${openButtonId}`);
-    await openBtn.waitFor({ state: 'attached', timeout: 90_000 });
+    await openBtn.waitFor({ state: 'attached', timeout: 120_000 });
     await openBtn.scrollIntoViewIfNeeded();
     await openBtn.dispatchEvent('mousedown');
     const dialog = page.locator('.ui-dialog.media-library-widget-modal');
+    const dialogTimeout = attempt === 0 ? 45_000 : 20_000;
     try {
-      await dialog.waitFor({ state: 'visible', timeout: 15_000 });
+      await dialog.waitFor({ state: 'visible', timeout: dialogTimeout });
     } catch {
       await openBtn.click({ force: true });
-      await dialog.waitFor({ state: 'visible', timeout: 15_000 });
+      await dialog.waitFor({ state: 'visible', timeout: dialogTimeout });
     }
     await dialog.locator('.js-media-library-item').first().waitFor({ state: 'visible', timeout: 60_000 });
     const firstItem = dialog.locator('.js-media-library-item input[type="checkbox"]').first();
@@ -305,15 +335,76 @@ async function setTopicsReference(page: import('@playwright/test').Page, topicLa
   );
 }
 
-async function saveNodeForm(page: import('@playwright/test').Page) {
+async function saveNodeForm(page: import('@playwright/test').Page, opts?: { savedTitle?: string }) {
   const stickySave = page.locator(
     '.region-sticky input[type="submit"][value="Save"], .region-sticky #edit-submit',
   );
-  if (await stickySave.count()) {
-    await stickySave.first().click();
-    return;
+  const submit = (await stickySave.count()) ? stickySave.first() : page.locator('#edit-submit');
+  await submit.click();
+  await expect
+    .poll(
+      async () => {
+        if ((await page.locator('.messages--error').count()) > 0) {
+          return 'error';
+        }
+        if ((await page.locator('.messages--status').count()) > 0) {
+          return 'ok';
+        }
+        if (/\/node\/\d+/.test(page.url())) {
+          return 'ok';
+        }
+        if (opts?.savedTitle && nodeNidByTitle(opts.savedTitle) > 0) {
+          return 'ok';
+        }
+        return '';
+      },
+      { timeout: 120_000, intervals: [250, 500, 1000] },
+    )
+    .toBe('ok');
+  if ((await page.locator('.messages--error').count()) > 0) {
+    throw new Error(`Node save failed: ${await page.locator('.messages--error').innerText()}`);
   }
-  await page.locator('#edit-submit').click({ force: true });
+}
+
+async function waitForIssueAddForm(page: import('@playwright/test').Page) {
+  await page.locator('#edit-title-0-value').waitFor({ state: 'visible', timeout: 120_000 });
+  await page.locator('#edit-field-cover-image-open-button').waitFor({ state: 'attached', timeout: 120_000 });
+  await page.locator('#edit-field-banner-image-open-button').waitFor({ state: 'attached', timeout: 120_000 });
+}
+
+async function waitForArticleAddForm(page: import('@playwright/test').Page) {
+  await page.locator('body').waitFor({ state: 'visible', timeout: 120_000 });
+  await expect
+    .poll(
+      async () => {
+        await openFormTab(page, 'Content');
+        const btn = page.locator('#edit-field-featured-image-open-button');
+        return btn.isVisible();
+      },
+      { timeout: 120_000, intervals: [500, 1000, 2000] },
+    )
+    .toBe(true);
+}
+
+async function expectLatestIssueIs(nid: number) {
+  await expect
+    .poll(() => latestPublishedIssueNid(), { timeout: 120_000, intervals: [500, 1000, 2000] })
+    .toBe(nid);
+}
+
+async function expectPublicHomepageHero(page: import('@playwright/test').Page, heading: string) {
+  await expectLatestIssueIs(issueNid!);
+  drush('cr');
+  await page.goto(`${drupalBase}/?editor_e2e=${Date.now()}`, {
+    waitUntil: 'domcontentloaded',
+    timeout: 120_000,
+  });
+  await expect
+    .poll(async () => page.locator('.homepage-banner h1').innerText(), {
+      timeout: 120_000,
+      intervals: [500, 1000, 2000],
+    })
+    .toContain(heading);
 }
 
 test.describe('Web editor issue launch (UI)', () => {
@@ -323,7 +414,13 @@ test.describe('Web editor issue launch (UI)', () => {
   test.beforeAll(() => {
     ensureUsers();
     cleanupPriorRunContent();
+    ensureHomepageHeroOverrideClear();
+    warmEnvironmentAfterGate();
     fs.mkdirSync(shotDir, { recursive: true });
+  });
+
+  test.beforeEach(() => {
+    execSync(`curl -sS -o /dev/null ${drupalBase}/user/login`, { stdio: 'pipe' });
   });
 
   test.afterAll(() => {
@@ -361,6 +458,7 @@ test.describe('Web editor issue launch (UI)', () => {
 
     await go(page, '/node/add/issue');
     await expect(page.locator('body')).toContainText('Create Issue');
+    await waitForIssueAddForm(page);
     await page.locator('#edit-title-0-value').fill(ISSUE_TITLE);
     await page.locator('#edit-field-season').selectOption('winter');
     await page.locator('#edit-field-year-0-value').fill(String(YEAR));
@@ -370,10 +468,7 @@ test.describe('Web editor issue launch (UI)', () => {
     await addMediaFromLibrary(page, 'edit-field-cover-image-open-button');
     await addMediaFromLibrary(page, 'edit-field-banner-image-open-button');
     await screenshot(page, '03b-issue-media-selected');
-    await saveNodeForm(page);
-    if (await page.locator('.messages--error').count()) {
-      throw new Error(`Issue save failed: ${await page.locator('.messages--error').innerText()}`);
-    }
+    await saveNodeForm(page, { savedTitle: ISSUE_TITLE });
     let savedIssueNid = 0;
     await expect
       .poll(() => {
@@ -389,11 +484,7 @@ test.describe('Web editor issue launch (UI)', () => {
     for (const title of ARTICLE_TITLES) {
       await go(page, '/node/add/article');
       await expect(page.locator('body')).toContainText('Create Article');
-      await openFormTab(page, 'Content');
-      await page.locator('#edit-title-0-value').waitFor({ state: 'visible', timeout: 90_000 });
-      await page
-        .locator('#edit-field-featured-image-open-button')
-        .waitFor({ state: 'visible', timeout: 90_000 });
+      await waitForArticleAddForm(page);
       await page.locator('#edit-title-0-value').fill(title);
       await addMediaFromLibrary(page, 'edit-field-featured-image-open-button');
       await waitForFeaturedImage(page);
@@ -408,11 +499,8 @@ test.describe('Web editor issue launch (UI)', () => {
       await setIssueReference(page, ISSUE_TITLE, issueNid!);
       await setTopicsReference(page, topicLabel);
       await openFormTab(page, 'SEO & Summary');
-      await saveNodeForm(page);
+      await saveNodeForm(page, { savedTitle: title });
       await screenshot(page, `05-article-saved-${articleNids.length + 1}`);
-      if (await page.locator('.messages--error').count()) {
-        throw new Error(`Article save failed: ${await page.locator('.messages--error').innerText()}`);
-      }
       const inlineErrors = page.locator('.form-item--error-message');
       await expect(inlineErrors).toHaveCount(0);
       let articleNid = 0;
@@ -453,7 +541,8 @@ test.describe('Web editor issue launch (UI)', () => {
     expect(heroInDb).toBe(HERO_HEADING);
 
     await go(page, '/admin/content/issue-dashboard/clear-preview');
-    execSync('cd /workspace/drupal && ./vendor/bin/drush cr', { stdio: 'inherit' });
+    drush('cr');
+    await expectLatestIssueIs(issueNid!);
 
     const issuePath =
       execSync(
@@ -470,8 +559,7 @@ test.describe('Web editor issue launch (UI)', () => {
       )
       .toBe('200');
 
-    await go(page, '/');
-    await expect(page.locator('h1.wp-block-heading')).toContainText(HERO_HEADING, { timeout: 90_000 });
+    await expectPublicHomepageHero(page, HERO_HEADING);
     await expect(page.locator('body')).toContainText('Explore the Latest Issue');
     for (const t of ARTICLE_TITLES) {
       await expect(page.locator('body')).toContainText(t);

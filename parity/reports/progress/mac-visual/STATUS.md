@@ -4,7 +4,7 @@
 
 **Issue pixels:** integrator owns **layout/CSS only** (banner, band heights, PostX gaps/cards). **Content** (sections, views, article order) is on a separate templates PR — re-measure Mac medians after that lands.
 
-**Updated:** 2026-10-29 ~3:15 AM ET
+**Updated:** 2026-10-29 ~3:45 AM ET (integrator run: PR **#21** merge confirmed `a4df69ad`, `cim`/`cr`, full gates, region heatmaps refreshed)
 
 ---
 
@@ -70,18 +70,21 @@
 | Gate | Result | Report / run |
 |------|--------|----------------|
 | wp-port assets | **20/20** | `scripts/repro/verify-wp-port-assets.sh` |
-| `parity:head:refpack` | **21/21** | `compare-1793256215357.json` |
-| `parity:head:manifest` | **773/773** | `manifest-1793256253158.json` |
-| `parity:url:check` | **801/801** | `check-1793256254467.json` |
-| `parity:template-samples:http` | **19/19** @ **200** | `check-1793256254784.json` |
-| `parity:smoke:200` | **pass** (40 paths) | `smoke-1793256256004.json` |
-| `parity:behavior:smoke` (lite) | **pass** (3/3) | `behavior/2026-10-29T06-32-43-899Z/` |
+| `parity:head:refpack` | **21/21** | `compare-1793259462007.json` |
+| `parity:head:manifest` | **773/773** | `manifest-1793259498202.json` |
+| `parity:url:check` | **801/801** | `check-1793259504219.json` |
+| `parity:template-samples:http` | **19/19** @ **200** | `check-1793259502966.json` |
+| `parity:smoke:200` | **pass** (40 paths) | `smoke-1793259504941.json` |
+| `parity:behavior:smoke` (lite) | **pass** (3/3) | `behavior/2026-10-29T07-38-22-955Z/` |
+| `parity:launch:tags-test` | **5/5** PHPUnit | `df_launch` LaunchEnvironmentTest (DDEV) |
+
+**Config:** `ddev drush cim -y` imported **11** items (entity displays, editor roles, editor_html); `cr` OK.
 
 ---
 
 ## Template pixel medians (Mac pack viewport %)
 
-**Prior baseline (integrator ~2:00 AM ET):** homepage **~33%**, issue **~67.8%**, archive **~30.4%** desktop viewport. **Now (~3:15 AM ET):** `parity:compare-template`, `DRUPAL_BASE_URL=http://df-impact.ddev.site`.
+**Prior baseline (integrator ~2:00 AM ET):** homepage **~33%**, issue **~67.8%**, archive **~30.4%** desktop viewport. **Now (~3:45 AM ET):** `parity:compare-template`, `DRUPAL_BASE_URL=http://df-impact.ddev.site` (post–PR **#21** + issue PostX layout CSS).
 
 | Template | Desktop vp (was → now) | Tablet vp | Mobile vp | Chrome D |
 |----------|------------------------|-----------|-----------|----------|
@@ -115,32 +118,32 @@ Vs integrator **~2:00 AM ET** desktop viewport baselines (homepage ~33%, issue ~
 
 Tool: `npm run parity:analyze:regions` (`parity/scripts/analyze-template-region-bands.mjs`). Heatmaps: `qa-evidence/*/diff-heatmap.png`.
 
-**Issue desktop** (`/fall-2026-issue`, **60.1%** overall on this path; template median **~67%** on 3 issues) — **`per_element`** (vertical shift ≤8% improvement; not a height cascade):
+**Issue desktop** (`/fall-2026-issue`, **59.2%** overall on this path; template median **67.4%** on 3 issues) — **`per_element`** (`bestShiftPx` −4; not a height cascade). Heatmap: `qa-evidence/issue-desktop-fall26-regions/diff-heatmap.png` (local; PNG gitignored).
 
 | Band | Diff % | ~Share of 900px frame | ~Contribution |
 |------|--------|------------------------|---------------|
 | Hero / banner | 100 | 62% | **62%** |
-| In This Issue heading | 100 | 6% | 6% |
-| PostX card grid (in frame) | 99.5 | 12% | 12% |
-| Promo row | 99.5 | 12% | 12% |
+| In This Issue heading | 100 | 5.7% | 5.7% |
+| PostX card grid (in frame) | 100 | 11.8% | 11.8% |
+| Promo row (overlap w/ grid) | 100 | 11.8% | 11.8% |
 | In Brief / footer | 0 | — | — |
 
-Evidence: `qa-evidence/issue-desktop-fall26-regions/`.
+Evidence JSON: `region-report.json` **`2026-10-29T07:40:28.264Z`**.
 
-**Archive tablet** (`/category/cancer-research`, **55.8%**) — **`per_element`**: card/query block ~**71%** contribution (content + card images), header ~4%.
+**Archive tablet** (`/category/cancer-research`, **55.7%**) — **`per_element`**: filters/query + card rows ~**70.6%** contribution; archive header ~**3.9%**. Heatmap: `archive-tablet-cancer-regions/diff-heatmap.png`.
 
-Evidence: `qa-evidence/archive-tablet-cancer-regions/`.
+Evidence JSON: **`2026-10-29T07:40:28.739Z`**.
 
-**Landing tablet** (`/browse-issues`, **27.6%** this path; template median **39.1%**) — **`per_element`**. Horizontal fallback bands (DOM covers below fold in 900px capture):
+**Landing tablet** (`/browse-issues`, **31.0%** this path; template median **39.1%**) — **`per_element`**. Horizontal fallback bands (issue covers below fold in 900px capture):
 
 | Band | Diff % | ~Contribution |
 |------|--------|---------------|
-| Top 0–25% | 37.5 | 9% |
+| Top 0–25% | 33.2 | 8.3% |
 | 25–50% | 100 | 25% |
 | 50–75% | 100 | 25% |
-| 75–100% | 98.3 | 25% |
+| 75–100% | 99.9 | 25% |
 
-Evidence: `qa-evidence/landing-tablet-browse-regions/`.
+Heatmap: `landing-tablet-browse-regions/diff-heatmap.png`. Evidence JSON: **`2026-10-29T07:40:28.429Z`**.
 
 **Hold:** PR **#20** VM visual round 2 until user clearance.
 

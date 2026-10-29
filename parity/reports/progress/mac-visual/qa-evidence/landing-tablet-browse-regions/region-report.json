@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-10-29T07:30:09.021Z",
+  "generatedAt": "2026-10-29T07:40:28.429Z",
   "path": "/browse-issues",
   "breakpoint": "tablet",
   "width": 768,
   "viewportHeightPx": 900,
-  "overallDiffPercent": 27.57,
-  "progressDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/reports/progress/landing_page/browse-issues_tablet",
+  "overallDiffPercent": 31.04,
+  "progressDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/reports/progress/homepage/browse-issues_tablet",
   "qaEvidenceDir": "reports/progress/mac-visual/qa-evidence/landing-tablet-browse-regions",
   "cascade": {
     "mode": "per_element",
@@ -19,9 +19,9 @@
       "id": "top",
       "label": "Top band (0–25%)",
       "y": "0-225",
-      "diffPercent": 37.5,
+      "diffPercent": 33.2,
       "shareOfViewport": 25,
-      "contributionToOverallPercent": 9.4
+      "contributionToOverallPercent": 8.3
     },
     {
       "id": "upper_mid",
@@ -43,9 +43,9 @@
       "id": "bottom",
       "label": "Bottom (75–100%)",
       "y": "675-900",
-      "diffPercent": 98.3,
+      "diffPercent": 99.9,
       "shareOfViewport": 25,
-      "contributionToOverallPercent": 24.6
+      "contributionToOverallPercent": 25
     }
   ],
   "topScanBands": [

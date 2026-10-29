@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-10-29T07:29:32.407Z",
+  "generatedAt": "2026-10-29T07:40:28.264Z",
   "path": "/fall-2026-issue",
   "breakpoint": "desktop",
   "width": 1440,
   "viewportHeightPx": 900,
-  "overallDiffPercent": 60.1,
-  "progressDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/reports/progress/issue/fall-2026-issue_desktop",
+  "overallDiffPercent": 59.17,
+  "progressDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/reports/progress/homepage/fall-2026-issue_desktop",
   "qaEvidenceDir": "reports/progress/mac-visual/qa-evidence/issue-desktop-fall26-regions",
   "cascade": {
     "mode": "per_element",
-    "bestShiftPx": -92,
+    "bestShiftPx": -4,
     "diffImprovementIfAligned": 0,
     "hotBandCount": 40,
     "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
@@ -35,17 +35,17 @@
       "id": "card_grid",
       "label": "PostX card grid",
       "y": "794-900",
-      "diffPercent": 99.5,
+      "diffPercent": 100,
       "shareOfViewport": 11.8,
-      "contributionToOverallPercent": 11.7
+      "contributionToOverallPercent": 11.8
     },
     {
       "id": "promo_row",
       "label": "Promo row",
       "y": "794-900",
-      "diffPercent": 99.5,
+      "diffPercent": 100,
       "shareOfViewport": 11.8,
-      "contributionToOverallPercent": 11.7
+      "contributionToOverallPercent": 11.8
     },
     {
       "id": "in_brief_band",

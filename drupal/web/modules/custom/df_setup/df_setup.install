@@ -1118,9 +1118,35 @@ function df_setup_update_10028(): string {
 }
 
 /**
- * Search parity (PR #24): enable df_secondary and move Search API view off /search.
+ * About Impact: WordPress Gutenberg block body (PR #25; after 10028 staff sync).
  */
 function df_setup_update_10029(): string {
+  return _df_setup_apply_about_impact_gutenberg_body();
+}
+
+/**
+ * About Impact: idempotent staff sync on Gutenberg body (matches WP reference).
+ */
+function df_setup_update_10030(): string {
+  $node = _df_setup_load_about_impact_node();
+  if ($node === NULL) {
+    _df_setup_ensure_about_impact_page();
+    return 'Created About Impact page; run update 10029 for Gutenberg body.';
+  }
+  $body = (string) $node->get('body')->value;
+  $synced = _df_setup_sync_about_impact_staff_body($body);
+  if ($synced === $body) {
+    return 'About Impact staff block already synced.';
+  }
+  $node->set('body', ['value' => $synced, 'format' => 'full_html']);
+  $node->save();
+  return 'About Impact staff block synced on Gutenberg body.';
+}
+
+/**
+ * Search parity (PR #24): enable df_secondary and move Search API view off /search.
+ */
+function df_setup_update_10031(): string {
   $messages = [];
   /** @var \Drupal\Core\Extension\ModuleInstallerInterface $installer */
   $installer = \Drupal::service('module_installer');
@@ -1144,35 +1170,9 @@ function df_setup_update_10029(): string {
 /**
  * Ensures Home landing exists when page.front points at a missing nid (local VM drift).
  */
-function df_setup_update_10030(): string {
+function df_setup_update_10032(): string {
   _df_setup_ensure_home_landing();
   return 'Home landing verified; page.front set to /node/NID for Home page.';
-}
-
-/**
- * About Impact: WordPress Gutenberg block body (PR #25; after 10028 staff sync).
- */
-function df_setup_update_10031(): string {
-  return _df_setup_apply_about_impact_gutenberg_body();
-}
-
-/**
- * About Impact: idempotent staff sync on Gutenberg body (matches WP reference).
- */
-function df_setup_update_10032(): string {
-  $node = _df_setup_load_about_impact_node();
-  if ($node === NULL) {
-    _df_setup_ensure_about_impact_page();
-    return 'Created About Impact page; run update 10031 for Gutenberg body.';
-  }
-  $body = (string) $node->get('body')->value;
-  $synced = _df_setup_sync_about_impact_staff_body($body);
-  if ($synced === $body) {
-    return 'About Impact staff block already synced.';
-  }
-  $node->set('body', ['value' => $synced, 'format' => 'full_html']);
-  $node->save();
-  return 'About Impact staff block synced on Gutenberg body.';
 }
 
 /**

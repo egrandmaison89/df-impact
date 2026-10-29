@@ -14,8 +14,8 @@ PR: [#13](https://github.com/egrandmaison89/df-impact/pull/13)
 
 | Path | Drupal | Notes |
 | --- | ---: | --- |
-| `/home` | **200** | `df_setup_update_10027` restores `/home` → Home node (same as `/homepage`) |
-| `/category/pediatrics` | **200** | Pediatrics topic term (`10026`) |
+| `/home` | — | **PR #18** (secondary surfaces): internal rewrite to front route — do not add aliases/hooks here |
+| `/category/pediatrics` | **200** | Pediatrics topic term (`df_setup_update_10026`) — this branch |
 | `/browse-issues` | **200** | Issue grid order matches WP ref (custom season sort); covers backfilled |
 
 ## Text parity (desktop, linux ref HTML, 2026-10-29)

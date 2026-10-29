@@ -39,6 +39,8 @@ const REMOVE_SELECTORS = [
   'a.skip-link',
   '.skip-link',
   '#wp--skip-link--target',
+  '#is-popup-wrapper',
+  '.is-popup-search-form',
 ];
 
 export function isChallengeHtml(html, url = '') {

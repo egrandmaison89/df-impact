@@ -232,6 +232,30 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
     }
   }
 
+  if ($view_id === 'browse_issues') {
+    $year_alias = $query->ensureTable('node__field_year');
+    $season_alias = $query->ensureTable('node__field_season');
+    if ($year_alias && $season_alias) {
+      $query->orderby = [];
+      // WordPress /browse-issues/ order: Fall→Summer→Spring per year, then Winter
+      // (labeled Y) before Fall Y; Winter sorts as (Y+1)*10+1 vs season*10+weight.
+      $year_expr = "CAST({$year_alias}.field_year_value AS UNSIGNED)";
+      $formula = "CASE LOWER({$season_alias}.field_season_value) "
+        . "WHEN 'fall' THEN ({$year_expr} * 10 + 4) "
+        . "WHEN 'autumn' THEN ({$year_expr} * 10 + 4) "
+        . "WHEN 'summer' THEN ({$year_expr} * 10 + 3) "
+        . "WHEN 'spring' THEN ({$year_expr} * 10 + 2) "
+        . "WHEN 'winter' THEN (({$year_expr} + 1) * 10 + 1) "
+        . "ELSE 0 END";
+      $query->addOrderBy(NULL, $formula, 'DESC', 'issue_browse_sort');
+      $query->addWhereExpression(
+        0,
+        "LOWER({$season_alias}.field_season_value) NOT IN ('late fall')"
+      );
+    }
+    return;
+  }
+
   $ids = ['homepage_digital_exclusives', 'digital_exclusives_archive'];
   if (!in_array($view_id, $ids, TRUE)) {
     return;
@@ -254,6 +278,76 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
   $tid_sql = (int) $tid;
   $snippet = "{$base_alias}.{$base_field} IN (SELECT fc.entity_id FROM {node__field_channels} fc WHERE fc.bundle = 'article' AND fc.deleted = 0 AND fc.field_channels_target_id = {$tid_sql})";
   $query->addWhereExpression(0, $snippet);
+
+  if ($view_id === 'digital_exclusives_archive') {
+    $slugs = df_setup_digital_exclusive_archive_slugs();
+    if ($slugs === []) {
+      $query->addWhereExpression(0, '1 = 0');
+      return;
+    }
+    $connection = \Drupal::database();
+    $quoted = [];
+    foreach ($slugs as $slug) {
+      $quoted[] = $connection->quote($slug);
+    }
+    $in = implode(', ', $quoted);
+    $query->addWhereExpression(
+      0,
+      "EXISTS (SELECT 1 FROM {path_alias} pa WHERE pa.path = CONCAT('/node/', {$base_alias}.{$base_field}) AND pa.alias IN ({$in}))"
+    );
+  }
+}
+
+/**
+ * Path aliases for articles flagged is_digital_exclusive in migration export (WP category parity).
+ *
+ * @return list<string>
+ *   Alias paths with leading slash (e.g. /2026/03/foo).
+ */
+function df_setup_digital_exclusive_archive_slugs(): array {
+  static $cache = NULL;
+  if (is_array($cache)) {
+    return $cache;
+  }
+
+  $cache = [];
+  $candidates = [
+    DRUPAL_ROOT . '/modules/custom/df_migrate/data/articles.json',
+    dirname(DRUPAL_ROOT) . '/migration-data/articles.json',
+  ];
+  $raw = NULL;
+  foreach ($candidates as $path) {
+    if (is_readable($path)) {
+      $raw = file_get_contents($path);
+      break;
+    }
+  }
+  if ($raw === NULL || $raw === '') {
+    return $cache;
+  }
+
+  try {
+    $rows = json_decode($raw, TRUE, 512, JSON_THROW_ON_ERROR);
+  }
+  catch (\JsonException) {
+    return $cache;
+  }
+
+  if (!is_array($rows)) {
+    return $cache;
+  }
+
+  foreach ($rows as $row) {
+    if (empty($row['is_digital_exclusive']) || empty($row['drupal_alias'])) {
+      continue;
+    }
+    $alias = '/' . ltrim((string) $row['drupal_alias'], '/');
+    if ($alias !== '/') {
+      $cache[] = $alias;
+    }
+  }
+
+  return $cache;
 }
 
 /**

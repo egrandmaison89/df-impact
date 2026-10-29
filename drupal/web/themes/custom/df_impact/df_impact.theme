@@ -297,7 +297,8 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     $cover = df_impact_issue_browse_cover_meta($node);
     $variables['issue_cover_url'] = $cover['url'] ?? NULL;
     $variables['issue_cover_alt'] = $cover['alt'] ?? $node->label();
-    $variables['issue_title_plain'] = df_impact_decode_plain_text($node->label());
+    $variables['issue_title_plain'] = df_impact_format_issue_label($node)
+      ?? df_impact_decode_plain_text($node->label());
     return;
   }
   if ($view_id === 'issue_articles') {
@@ -811,9 +812,10 @@ function df_impact_format_issue_label(NodeInterface $issue): ?string {
     'summer' => 'Summer',
     'fall' => 'Fall',
     'winter' => 'Winter',
+    'late fall' => 'Late Fall',
   ];
-  $season_key = $issue->get('field_season')->value;
-  $season = $map[$season_key] ?? ($season_key ? ucfirst((string) $season_key) : '');
+  $season_key = mb_strtolower(trim((string) ($issue->get('field_season')->value ?? '')), 'UTF-8');
+  $season = $map[$season_key] ?? ($season_key !== '' ? ucwords($season_key) : '');
   $year = $issue->get('field_year')->value;
   if ($season !== '' && $year !== NULL && $year !== '') {
     return $season . ' ' . $year;

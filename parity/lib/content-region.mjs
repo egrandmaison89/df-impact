@@ -113,7 +113,9 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     }));
   // In Brief load-more: live innerText respects display:none on collapsed rows.
   const useLiveInnerText =
-    root.isConnected && root.querySelector('.ultp-block-item.is-collapsed');
+    root.isConnected &&
+    (root.querySelector('.ultp-block-item.is-collapsed') ||
+      root.querySelector('.in-brief-page__issue-section, .view-in-brief-listing'));
   const text = (useLiveInnerText ? root.innerText : cleaned.innerText || '')
     .replace(/\s+/g, ' ')
     .trim();

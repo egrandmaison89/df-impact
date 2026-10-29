@@ -972,6 +972,34 @@ function df_setup_update_10025(): string {
 /**
  * Ensures Pediatrics topic term exists for /category/pediatrics (WP footer category).
  */
+/**
+ * Restore /home path alias (same node as /homepage) for URL parity checks.
+ */
+function df_setup_update_10027(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $home_nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'Home')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if (!$home_nids) {
+    return 'Home page node missing; /home alias not created.';
+  }
+  $system_path = '/node/' . (int) reset($home_nids);
+  $alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $existing = $alias_storage->loadByProperties(['alias' => '/home']);
+  if ($existing) {
+    return '/home alias already present.';
+  }
+  $alias_storage->create([
+    'path' => $system_path,
+    'alias' => '/home',
+    'langcode' => 'en',
+  ])->save();
+  return 'Created /home alias pointing to Home page (WordPress parity with /homepage).';
+}
+
 function df_setup_update_10026(): string {
   if (df_setup_topic_term_load_by_category_slug('pediatrics') !== NULL) {
     return 'Pediatrics topic term already present.';

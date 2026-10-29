@@ -2,59 +2,69 @@
   "component": "templates-inbrief-archives",
   "drupalBase": "http://127.0.0.1:8888",
   "refRenderer": "linux-local-rendered-html",
-  "pages": 2,
+  "pages": 3,
   "rectTolerancePx": 2,
   "structuralPackPassAll": false,
   "structuralRefDrupalPassAll": false,
   "medians": {
-    "chrome_median_linux_desktop": 0.12937543442336197,
-    "viewport_median_mac_desktop": 0.2825262345679012,
-    "chrome_median_linux_tablet": 0.14977636415014345,
-    "viewport_median_mac_tablet": 0.26549913194444447,
-    "chrome_median_linux_mobile": 0.20257725694444445,
-    "viewport_median_mac_mobile": 0.2865185185185185
+    "chrome_median_linux_desktop": 0.14326430573073143,
+    "viewport_median_mac_desktop": 0.2903094135802469,
+    "chrome_median_linux_tablet": 0.1675096972548038,
+    "viewport_median_mac_tablet": 0.31441695601851855,
+    "chrome_median_linux_mobile": 0.22142711510134228,
+    "viewport_median_mac_mobile": 0.3554311111111111
   },
   "summary": [
     {
       "path": "/in-brief",
       "bp": "desktop",
       "structuralPackPass": false,
-      "structuralPackFailures": 4,
+      "structuralPackFailures": 6,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 21,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 52,
-      "headerPixelDiffRatioLinux": 0.12865398956002982,
-      "footerPixelDiffRatioLinux": 0.1300786608367627,
-      "chromePixelDiffRatioLinux": 0.12936632519839625,
-      "viewportPixelDiffRatioLinux": 0.24691743827160495,
-      "viewportPixelDiffRatioMac": 0.22232947530864197,
+      "structuralRefDrupalFailures": 55,
+      "textSimilarity": 0.9971181556195965,
+      "headerPixelDiffRatioLinux": 0.16427417350236143,
+      "footerPixelDiffRatioLinux": 0.1222803307422649,
+      "chromePixelDiffRatioLinux": 0.14327725212231315,
+      "viewportPixelDiffRatioLinux": 0.1692283950617284,
+      "viewportPixelDiffRatioMac": 0.23079166666666667,
       "structuralPackSample": [
         {
           "selector": "header",
+          "kind": "style",
+          "key": "max-width",
+          "expected": "1490px",
+          "actual": "100%"
+        },
+        {
+          "selector": ".desktop-header",
           "kind": "rect",
-          "dim": "w",
-          "expected": 1296,
-          "actual": 1440
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
         },
         {
           "selector": ".desktop-header",
           "kind": "rect",
           "dim": "w",
           "expected": 1440,
-          "actual": 1584
+          "actual": 1296
         },
         {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "y",
-          "expected": 16240.890625,
-          "actual": 3070.375
+          "selector": ".desktop-header",
+          "kind": "style",
+          "key": "margin",
+          "expected": "0px -72px",
+          "actual": "0px"
         },
         {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "w",
-          "expected": 1296,
-          "actual": 1440
+          "selector": ".desktop-header",
+          "kind": "style",
+          "key": "max-width",
+          "expected": "none",
+          "actual": "100%"
         }
       ],
       "structuralRefSample": [
@@ -68,30 +78,30 @@
         {
           "selector": "header",
           "kind": "rect",
-          "dim": "h",
-          "expected": 240.5,
-          "actual": 148.046875
-        },
-        {
-          "selector": ".desktop-header",
-          "kind": "rect",
           "dim": "w",
           "expected": 1440,
-          "actual": 1584
+          "actual": 1296
         },
         {
-          "selector": ".desktop-header",
+          "selector": "header",
           "kind": "rect",
           "dim": "h",
           "expected": 240.5,
           "actual": 148.046875
         },
         {
-          "selector": ".desktop-header",
+          "selector": "header",
           "kind": "ref_vs_drupal_style",
-          "key": "margin",
-          "expected": "0px",
-          "actual": "0px -72px"
+          "key": "max-width",
+          "expected": "1490px",
+          "actual": "100%"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
         }
       ]
     },
@@ -99,21 +109,31 @@
       "path": "/in-brief",
       "bp": "tablet",
       "structuralPackPass": false,
-      "structuralPackFailures": 5,
+      "structuralPackFailures": 7,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 25,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 18,
-      "headerPixelDiffRatioLinux": 0.18305799696180555,
-      "footerPixelDiffRatioLinux": 0.11087013352638353,
-      "chromePixelDiffRatioLinux": 0.14696406524409455,
-      "viewportPixelDiffRatioLinux": 0.12584056712962963,
-      "viewportPixelDiffRatioMac": 0.1317795138888889,
+      "structuralRefDrupalFailures": 26,
+      "textSimilarity": 0.9971181556195965,
+      "headerPixelDiffRatioLinux": 0.18980421029668412,
+      "footerPixelDiffRatioLinux": 0.14577829856654273,
+      "chromePixelDiffRatioLinux": 0.1677912544316134,
+      "viewportPixelDiffRatioLinux": 0.14369936342592593,
+      "viewportPixelDiffRatioMac": 0.1216724537037037,
       "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 38.390625,
+          "actual": 20
+        },
         {
           "selector": "header",
           "kind": "rect",
           "dim": "w",
           "expected": 691.21875,
-          "actual": 768
+          "actual": 728
         },
         {
           "selector": ".desktop-header",
@@ -122,23 +142,16 @@
         {
           "selector": "footer",
           "kind": "rect",
+          "dim": "x",
+          "expected": 38.390625,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
           "dim": "y",
-          "expected": 24081.46875,
-          "actual": 3972.390625
-        },
-        {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "w",
-          "expected": 691.21875,
-          "actual": 768
-        },
-        {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "h",
-          "expected": 1353.71875,
-          "actual": 1294.265625
+          "expected": 58749.484375,
+          "actual": 19249.6875
         }
       ],
       "structuralRefSample": [
@@ -147,35 +160,35 @@
           "kind": "rect",
           "dim": "x",
           "expected": 0,
-          "actual": 38.390625
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 768,
+          "actual": 728
         },
         {
           "selector": "header",
           "kind": "rect",
           "dim": "h",
           "expected": 269.5,
-          "actual": 191.28125
+          "actual": 190.828125
         },
         {
           "selector": "footer",
           "kind": "rect",
           "dim": "x",
           "expected": 0,
-          "actual": 38.390625
+          "actual": 20
         },
         {
           "selector": "footer",
           "kind": "rect",
           "dim": "y",
-          "expected": 35615.03125,
-          "actual": 3972.390625
-        },
-        {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "h",
-          "expected": 1301.765625,
-          "actual": 1294.265625
+          "expected": 36751.03125,
+          "actual": 19249.6875
         }
       ]
     },
@@ -183,28 +196,38 @@
       "path": "/in-brief",
       "bp": "mobile",
       "structuralPackPass": false,
-      "structuralPackFailures": 6,
+      "structuralPackFailures": 7,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 26,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 22,
-      "headerPixelDiffRatioLinux": 0.15891666666666668,
-      "footerPixelDiffRatioLinux": 0.24328819444444444,
-      "chromePixelDiffRatioLinux": 0.20110243055555554,
-      "viewportPixelDiffRatioLinux": 0.20784592592592593,
-      "viewportPixelDiffRatioMac": 0.1985925925925926,
+      "structuralRefDrupalFailures": 25,
+      "textSimilarity": 0.9971181556195965,
+      "headerPixelDiffRatioLinux": 0.17396160558464224,
+      "footerPixelDiffRatioLinux": 0.26877002665576905,
+      "chromePixelDiffRatioLinux": 0.22136581612020564,
+      "viewportPixelDiffRatioLinux": 0.18650074074074074,
+      "viewportPixelDiffRatioMac": 0.18302518518518518,
       "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 28,
+          "actual": 20
+        },
         {
           "selector": "header",
           "kind": "rect",
           "dim": "w",
           "expected": 319,
-          "actual": 375
+          "actual": 335
         },
         {
           "selector": "header",
           "kind": "rect",
           "dim": "h",
           "expected": 222.296875,
-          "actual": 191.28125
+          "actual": 190.828125
         },
         {
           "selector": ".desktop-header",
@@ -213,16 +236,9 @@
         {
           "selector": "footer",
           "kind": "rect",
-          "dim": "y",
-          "expected": 38327.234375,
-          "actual": 5914.78125
-        },
-        {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "w",
-          "expected": 319,
-          "actual": 375
+          "dim": "x",
+          "expected": 28,
+          "actual": 20
         }
       ],
       "structuralRefSample": [
@@ -231,35 +247,35 @@
           "kind": "rect",
           "dim": "x",
           "expected": 0,
-          "actual": 28
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 375,
+          "actual": 335
         },
         {
           "selector": "header",
           "kind": "rect",
           "dim": "h",
           "expected": 269.5,
-          "actual": 191.28125
+          "actual": 190.828125
         },
         {
           "selector": "footer",
           "kind": "rect",
           "dim": "x",
           "expected": 0,
-          "actual": 28
+          "actual": 20
         },
         {
           "selector": "footer",
           "kind": "rect",
           "dim": "y",
-          "expected": 39368.53125,
-          "actual": 5914.78125
-        },
-        {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "h",
-          "expected": 2002.125,
-          "actual": 1535.125
+          "expected": 42206.53125,
+          "actual": 33487.578125
         }
       ]
     },
@@ -267,42 +283,52 @@
       "path": "/browse-issues",
       "bp": "desktop",
       "structuralPackPass": false,
-      "structuralPackFailures": 4,
+      "structuralPackFailures": 6,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 8,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 52,
-      "headerPixelDiffRatioLinux": 0.12865398956002982,
-      "footerPixelDiffRatioLinux": 0.1300968792866941,
-      "chromePixelDiffRatioLinux": 0.12937543442336197,
-      "viewportPixelDiffRatioLinux": 0.24608333333333332,
-      "viewportPixelDiffRatioMac": 0.2825262345679012,
+      "structuralRefDrupalFailures": 55,
+      "textSimilarity": 1,
+      "headerPixelDiffRatioLinux": 0.16424828071919795,
+      "footerPixelDiffRatioLinux": 0.11897458578249538,
+      "chromePixelDiffRatioLinux": 0.14161143325084666,
+      "viewportPixelDiffRatioLinux": 0.1681327160493827,
+      "viewportPixelDiffRatioMac": 0.2903094135802469,
       "structuralPackSample": [
         {
           "selector": "header",
+          "kind": "style",
+          "key": "max-width",
+          "expected": "1490px",
+          "actual": "100%"
+        },
+        {
+          "selector": ".desktop-header",
           "kind": "rect",
-          "dim": "w",
-          "expected": 1296,
-          "actual": 1440
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
         },
         {
           "selector": ".desktop-header",
           "kind": "rect",
           "dim": "w",
           "expected": 1440,
-          "actual": 1584
+          "actual": 1296
         },
         {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "y",
-          "expected": 2394.1875,
-          "actual": 901.34375
+          "selector": ".desktop-header",
+          "kind": "style",
+          "key": "margin",
+          "expected": "0px -72px",
+          "actual": "0px"
         },
         {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "w",
-          "expected": 1296,
-          "actual": 1440
+          "selector": ".desktop-header",
+          "kind": "style",
+          "key": "max-width",
+          "expected": "none",
+          "actual": "100%"
         }
       ],
       "structuralRefSample": [
@@ -316,30 +342,30 @@
         {
           "selector": "header",
           "kind": "rect",
-          "dim": "h",
-          "expected": 240.5,
-          "actual": 148.046875
-        },
-        {
-          "selector": ".desktop-header",
-          "kind": "rect",
           "dim": "w",
           "expected": 1440,
-          "actual": 1584
+          "actual": 1296
         },
         {
-          "selector": ".desktop-header",
+          "selector": "header",
           "kind": "rect",
           "dim": "h",
           "expected": 240.5,
           "actual": 148.046875
         },
         {
-          "selector": ".desktop-header",
+          "selector": "header",
           "kind": "ref_vs_drupal_style",
-          "key": "margin",
-          "expected": "0px",
-          "actual": "0px -72px"
+          "key": "max-width",
+          "expected": "1490px",
+          "actual": "100%"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
         }
       ]
     },
@@ -347,21 +373,31 @@
       "path": "/browse-issues",
       "bp": "tablet",
       "structuralPackPass": false,
-      "structuralPackFailures": 5,
+      "structuralPackFailures": 7,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 15,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 18,
-      "headerPixelDiffRatioLinux": 0.18305799696180555,
-      "footerPixelDiffRatioLinux": 0.11649473133848134,
-      "chromePixelDiffRatioLinux": 0.14977636415014345,
-      "viewportPixelDiffRatioLinux": 0.12399305555555555,
-      "viewportPixelDiffRatioMac": 0.26549913194444447,
+      "structuralRefDrupalFailures": 26,
+      "textSimilarity": 1,
+      "headerPixelDiffRatioLinux": 0.18980421029668412,
+      "footerPixelDiffRatioLinux": 0.14521518421292348,
+      "chromePixelDiffRatioLinux": 0.1675096972548038,
+      "viewportPixelDiffRatioLinux": 0.1434982638888889,
+      "viewportPixelDiffRatioMac": 0.31441695601851855,
       "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 38.390625,
+          "actual": 20
+        },
         {
           "selector": "header",
           "kind": "rect",
           "dim": "w",
           "expected": 691.21875,
-          "actual": 768
+          "actual": 728
         },
         {
           "selector": ".desktop-header",
@@ -370,23 +406,16 @@
         {
           "selector": "footer",
           "kind": "rect",
+          "dim": "x",
+          "expected": 38.390625,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
           "dim": "y",
-          "expected": 3319.0625,
-          "actual": 879.140625
-        },
-        {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "w",
-          "expected": 691.21875,
-          "actual": 768
-        },
-        {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "h",
-          "expected": 1353.71875,
-          "actual": 1294.265625
+          "expected": 3613.484375,
+          "actual": 5785.328125
         }
       ],
       "structuralRefSample": [
@@ -395,35 +424,35 @@
           "kind": "rect",
           "dim": "x",
           "expected": 0,
-          "actual": 38.390625
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 768,
+          "actual": 728
         },
         {
           "selector": "header",
           "kind": "rect",
           "dim": "h",
           "expected": 269.5,
-          "actual": 191.28125
+          "actual": 190.828125
         },
         {
           "selector": "footer",
           "kind": "rect",
           "dim": "x",
           "expected": 0,
-          "actual": 38.390625
+          "actual": 20
         },
         {
           "selector": "footer",
           "kind": "rect",
           "dim": "y",
-          "expected": 1313.5,
-          "actual": 879.140625
-        },
-        {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "h",
-          "expected": 1301.765625,
-          "actual": 1294.265625
+          "expected": 1790.5,
+          "actual": 5785.328125
         }
       ]
     },
@@ -431,28 +460,38 @@
       "path": "/browse-issues",
       "bp": "mobile",
       "structuralPackPass": false,
-      "structuralPackFailures": 6,
+      "structuralPackFailures": 7,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 17,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 22,
-      "headerPixelDiffRatioLinux": 0.15891666666666668,
-      "footerPixelDiffRatioLinux": 0.24623784722222222,
-      "chromePixelDiffRatioLinux": 0.20257725694444445,
-      "viewportPixelDiffRatioLinux": 0.19400296296296296,
-      "viewportPixelDiffRatioMac": 0.2865185185185185,
+      "structuralRefDrupalFailures": 25,
+      "textSimilarity": 1,
+      "headerPixelDiffRatioLinux": 0.17396160558464224,
+      "footerPixelDiffRatioLinux": 0.2688926246180423,
+      "chromePixelDiffRatioLinux": 0.22142711510134228,
+      "viewportPixelDiffRatioLinux": 0.18613925925925925,
+      "viewportPixelDiffRatioMac": 0.364397037037037,
       "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 28,
+          "actual": 20
+        },
         {
           "selector": "header",
           "kind": "rect",
           "dim": "w",
           "expected": 319,
-          "actual": 375
+          "actual": 335
         },
         {
           "selector": "header",
           "kind": "rect",
           "dim": "h",
           "expected": 222.296875,
-          "actual": 191.28125
+          "actual": 190.828125
         },
         {
           "selector": ".desktop-header",
@@ -461,16 +500,9 @@
         {
           "selector": "footer",
           "kind": "rect",
-          "dim": "y",
-          "expected": 5432.421875,
-          "actual": 857.53125
-        },
-        {
-          "selector": "footer",
-          "kind": "rect",
-          "dim": "w",
-          "expected": 319,
-          "actual": 375
+          "dim": "x",
+          "expected": 28,
+          "actual": 20
         }
       ],
       "structuralRefSample": [
@@ -479,35 +511,299 @@
           "kind": "rect",
           "dim": "x",
           "expected": 0,
-          "actual": 28
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 375,
+          "actual": 335
         },
         {
           "selector": "header",
           "kind": "rect",
           "dim": "h",
           "expected": 269.5,
-          "actual": 191.28125
+          "actual": 190.828125
         },
         {
           "selector": "footer",
           "kind": "rect",
           "dim": "x",
           "expected": 0,
-          "actual": 28
+          "actual": 20
         },
         {
           "selector": "footer",
           "kind": "rect",
           "dim": "y",
-          "expected": 1900,
-          "actual": 857.53125
+          "expected": 2379,
+          "actual": 5763.71875
+        }
+      ]
+    },
+    {
+      "path": "/category/digital-exclusives",
+      "bp": "desktop",
+      "structuralPackPass": false,
+      "structuralPackFailures": 6,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 10,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 55,
+      "textSimilarity": 0.98989898989899,
+      "headerPixelDiffRatioLinux": 0.16424828071919795,
+      "footerPixelDiffRatioLinux": 0.1222803307422649,
+      "chromePixelDiffRatioLinux": 0.14326430573073143,
+      "viewportPixelDiffRatioLinux": 0.1692283950617284,
+      "viewportPixelDiffRatioMac": 0.3053587962962963,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "style",
+          "key": "max-width",
+          "expected": "1490px",
+          "actual": "100%"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1296
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "style",
+          "key": "margin",
+          "expected": "0px -72px",
+          "actual": "0px"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "style",
+          "key": "max-width",
+          "expected": "none",
+          "actual": "100%"
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 1440,
+          "actual": 1296
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
+        },
+        {
+          "selector": "header",
+          "kind": "ref_vs_drupal_style",
+          "key": "max-width",
+          "expected": "1490px",
+          "actual": "100%"
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 72
+        }
+      ]
+    },
+    {
+      "path": "/category/digital-exclusives",
+      "bp": "tablet",
+      "structuralPackPass": false,
+      "structuralPackFailures": 7,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 16,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 26,
+      "textSimilarity": 0.98989898989899,
+      "headerPixelDiffRatioLinux": 0.18980421029668412,
+      "footerPixelDiffRatioLinux": 0.14369830772545705,
+      "chromePixelDiffRatioLinux": 0.16675125901107057,
+      "viewportPixelDiffRatioLinux": 0.1440306712962963,
+      "viewportPixelDiffRatioMac": 0.5202690972222223,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 38.390625,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 691.21875,
+          "actual": 728
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
         },
         {
           "selector": "footer",
           "kind": "rect",
+          "dim": "x",
+          "expected": 38.390625,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 8602.671875,
+          "actual": 6053
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 768,
+          "actual": 728
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
           "dim": "h",
-          "expected": 2002.125,
-          "actual": 1535.125
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 3558.21875,
+          "actual": 6053
+        }
+      ]
+    },
+    {
+      "path": "/category/digital-exclusives",
+      "bp": "mobile",
+      "structuralPackPass": false,
+      "structuralPackFailures": 7,
+      "structuralContentPackPass": false,
+      "structuralContentPackFailures": 18,
+      "structuralRefDrupalPass": false,
+      "structuralRefDrupalFailures": 25,
+      "textSimilarity": 0.98989898989899,
+      "headerPixelDiffRatioLinux": 0.17396160558464224,
+      "footerPixelDiffRatioLinux": 0.269307261946804,
+      "chromePixelDiffRatioLinux": 0.22163443376572312,
+      "viewportPixelDiffRatioLinux": 0.18667851851851852,
+      "viewportPixelDiffRatioMac": 0.3554311111111111,
+      "structuralPackSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 28,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 319,
+          "actual": 335
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 222.296875,
+          "actual": 190.828125
+        },
+        {
+          "selector": ".desktop-header",
+          "kind": "missing_element"
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 28,
+          "actual": 20
+        }
+      ],
+      "structuralRefSample": [
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "w",
+          "expected": 375,
+          "actual": 335
+        },
+        {
+          "selector": "header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 269.5,
+          "actual": 190.828125
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "x",
+          "expected": 0,
+          "actual": 20
+        },
+        {
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 5083.421875,
+          "actual": 7182.21875
         }
       ]
     }

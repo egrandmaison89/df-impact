@@ -4,7 +4,7 @@
 **Drupal:** `http://127.0.0.1:8888` (MariaDB `dfimpact`, host Drush).  
 **Method:** `npm run parity:computed-style-diff` (live WP vs Drupal, desktop/tablet/mobile).
 
-**Updated:** 2026-10-29 (gate regression fix, main y/h progress, refpack 21/21)
+**Updated:** 2026-10-29 (smoke-200 guard, refpack about/archive, chrome tablet/mobile)
 
 ---
 
@@ -46,6 +46,10 @@ GitHub showed ~**256k deletions** because an earlier merge of PR **#10** dropped
 
 **Header scroll CSS:** Removed `.desktop-header.scrolled` / `.impact-header.scrolled` width overrides from `drupal-overrides.css` (reintroduced during meta merge). Shadow only on `.header--scrolled`; logo shrink stays on `.header-logo.scrolled` via `wp-chrome-behaviors.js` (meta **adde8d85** intent).
 
+### Pre-push guard — **`parity:smoke:200`** (required)
+
+`npm run parity:smoke:200` — **39 paths** (all `template-samples.json` + manifest sample inventory), **0** HTTP fails after `9acb109d`. Documented in `parity/docs/MEASUREMENT.md`; CI: `.github/workflows/parity-smoke-200.yml` on PRs to `cursor/phase4-chrome-behavior-0b67`.
+
 **Note:** Applied legacy aliases via `df_setup_update_10022()` + `/home` alias; extended `df_sync_static_page_aliases()` so future `df-migrate:sync-wordpress-paths` keeps `/about` and `/home`.
 
 ---
@@ -58,11 +62,11 @@ Report: `parity/reports/computed-style-diff/post-merge-pr11/summary.json`
 |----------|--------------------------------:|------------------------------|
 | **homepage** | **74** | Hero/grids vs short page when WP returns **202** captcha shell; chrome OK when both 200 |
 | **issue** | **120** | PostX card **y/h** + image **w/h** on `fall-2026-issue`; issue banner **h1 x** on overlay |
-| **article** | **69** → **40** (couple sample, WP 200) | **main y Δ≈6px** (`post-main-alignwide`); **main h Δ≈312px** (was inflated when sample hit **in_brief** at Charlie L path — now second sample is `/2026/09/american-association-for-cancer-research-2`) |
+| **article** | **69** → **40** (couple, WP 200) | **main y Δ≈6px**; **main h Δ≈312px** still (`post-clearfix-main`) — body/related block height vs WP, not float collapse |
 | **in_brief** | **98** | Same title/`<main>` split + spacer (re-measure pending) |
-| **landing_page** | **133** → TBD | `/about-impact` body now raw Gutenberg `entry-content` (dropped custom about layout shell) |
-| **archive** | **188** → **24** (DE category only run; WP `wpStatus:0` VM egress) | Templates merge: `archive_listings` CSS + row classes; full archive pass blocked on live WP fetch |
-| **homepage tablet** | — | **87** mismatches, WP comparable (`post-tablet-home`) — chrome/layout follow-up |
+| **landing_page** | refpack **`landing-about`** | `/about` desktop viewport Linux **16.7%**, Mac **34.8%**; text sim **96.2%**; chrome **Δx=72** (`.wp-site-blocks` padding) |
+| **archive** | refpack **`archive-refpack`** (3 categories × 3 BP) | Desktop viewport Mac median **30.3%**; archive row thumb CSS added; DE text sim **41%** (listing copy drift) |
+| **homepage tablet/mobile** | live WP **`post-tablet-home`** + refpack medians | Tablet **87** mismatches; refpack chrome median Linux **~17%** tablet / **~21%** mobile after **desktop/mobile header toggle** in `drupal-overrides.css` |
 
 **Baseline (pre-content, `/` desktop):** **31** mismatches → **50** after full homepage content (migrations complete).
 
@@ -110,6 +114,7 @@ Desktop `.desktop-header` **1440×148**, `.header-logo` **x=15** matches live WP
 ```bash
 cd drupal/web && ../vendor/bin/drush serve 127.0.0.1:8888
 cd parity && npm ci && npx playwright install chromium
+DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:smoke:200
 DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:computed-style-diff
 DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:head:refpack
 DRUPAL_BASE_URL=http://127.0.0.1:8888 URL_PARITY_DRUPAL_ONLY=1 npm run parity:url:check

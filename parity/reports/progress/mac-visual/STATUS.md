@@ -1,6 +1,6 @@
 # Mac visual parity — live status
 
-**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Merged:** PR **#18** `cursor/secondary-surfaces-ce7f` (`b6905482`). **Not merged:** PR #16 (superseded).
+**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Merged:** PR **#18** secondary (`b6905482`), PR **#19** launch (`d071765f`, `df_launch` prod-gated). **Not merged:** PR #16 (superseded).
 
 **Updated:** 2026-10-29 ~3:15 AM ET
 

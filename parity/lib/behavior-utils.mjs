@@ -47,21 +47,30 @@ export async function scrollSelectorIntoView(page, selector) {
 export async function computedStyleHover(page, selector) {
   const loc = page.locator(selector).first();
   if ((await loc.count()) === 0) return null;
-  try {
-    await loc.scrollIntoViewIfNeeded();
-    const box = await loc.boundingBox();
-    if (box) {
-      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 8 });
-    }
-    await loc.hover({ timeout: 8000 });
-  } catch {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      await loc.hover({ force: true, timeout: 5000 });
+      await page.mouse.move(8, 8);
+      await page.waitForTimeout(80);
+      await loc.scrollIntoViewIfNeeded();
+      const box = await loc.boundingBox();
+      if (box) {
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 10 });
+      }
+      await loc.hover({ timeout: 8000 });
+      await page.waitForTimeout(650);
+      const hovering = await loc.evaluate((el) => el.matches(':hover'));
+      if (hovering) break;
     } catch {
-      return null;
+      if (attempt === 2) {
+        try {
+          await loc.hover({ force: true, timeout: 5000 });
+          await page.waitForTimeout(650);
+        } catch {
+          return null;
+        }
+      }
     }
   }
-  await page.waitForTimeout(650);
   return loc.evaluate((el) => {
     const cs = getComputedStyle(el);
     return {

@@ -74,13 +74,13 @@ export async function captureSiteBehavior(page, profile, bp) {
 
   data.hero = await videoState(page, profile.heroVideo);
   data.navDefault = await computedStyle(page, s.navLink);
-  data.navHover = await computedStyleHover(page, s.navLink);
   data.headerBeforeScroll = await headerScrollState(page, s.header);
-  data.donateDefault = await computedStyle(page, s.donate);
-  data.donateHover = await computedStyleHover(page, s.donate);
   await scrollSelectorIntoView(page, s.footerLink);
   data.footerDefault = await computedStyle(page, s.footerLink);
   data.footerLinkHover = await computedStyleHover(page, s.footerLink);
+  data.navHover = await computedStyleHover(page, s.navLink);
+  data.donateDefault = await computedStyle(page, s.donate);
+  data.donateHover = await computedStyleHover(page, s.donate);
   if (s.bodyLink) {
     await scrollSelectorIntoView(page, s.bodyLink);
   }

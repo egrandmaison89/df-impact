@@ -3,6 +3,8 @@
  * HTTP gate: every path in parity/config/template-samples.json returns 200 on Drupal.
  */
 import fs from 'node:fs';
+import http from 'node:http';
+import https from 'node:https';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -15,15 +17,33 @@ const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://df-impact.ddev.site')
 
 const paths = [...new Set(Object.values(samples).flatMap((e) => e.paths || []))];
 
-async function checkOne(p) {
-  const url = `${drupalBase}${p.startsWith('/') ? p : `/${p}`}`;
-  try {
-    const r = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(45000) });
-    await r.arrayBuffer();
-    return { path: p, status: r.status, ok: r.status === 200 };
-  } catch (e) {
-    return { path: p, status: null, ok: false, error: String(e) };
-  }
+function checkOne(pathname) {
+  return new Promise((resolve) => {
+    const url = new URL(pathname.startsWith('/') ? pathname : `/${pathname}`, `${drupalBase}/`);
+    const lib = url.protocol === 'https:' ? https : http;
+    const req = lib.request(
+      url,
+      { method: 'GET', headers: { Accept: 'text/html' } },
+      (res) => {
+        res.resume();
+        res.on('end', () => {
+          const location = res.headers.location || null;
+          const ok = res.statusCode === 200 && !location;
+          resolve(
+            ok
+              ? { path: pathname, status: res.statusCode, ok: true }
+              : { path: pathname, status: res.statusCode, ok: false, location },
+          );
+        });
+      },
+    );
+    req.on('error', (e) => resolve({ path: pathname, status: null, ok: false, error: String(e) }));
+    req.setTimeout(45000, () => {
+      req.destroy();
+      resolve({ path: pathname, status: null, ok: false, error: 'timeout' });
+    });
+    req.end();
+  });
 }
 
 async function main() {
@@ -44,7 +64,9 @@ async function main() {
   fs.mkdirSync(path.dirname(out.outFile), { recursive: true });
   fs.writeFileSync(out.outFile, JSON.stringify({ ...out, results }, null, 2));
   console.log(JSON.stringify({ outFile: out.outFile, pathCount: paths.length, pass, all200: out.all200 }, null, 2));
-  if (!out.all200) process.exit(1);
+  if (!out.all200) {
+    process.exit(1);
+  }
 }
 
 main();

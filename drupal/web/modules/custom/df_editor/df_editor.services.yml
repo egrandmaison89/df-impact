@@ -1,4 +1,7 @@
 services:
+  df_editor.current_issue_nav:
+    class: Drupal\df_editor\CurrentIssueNav
+    arguments: ['@entity_type.manager']
   df_editor.site_chrome:
     class: Drupal\df_editor\SiteChrome
     arguments: ['@config.factory', '@entity_type.manager', '@menu.link_tree']

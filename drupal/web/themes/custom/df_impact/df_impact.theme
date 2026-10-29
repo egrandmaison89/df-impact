@@ -444,6 +444,11 @@ function df_impact_preprocess_page(&$variables) {
     ];
   }
 
+  if (\Drupal::moduleHandler()->moduleExists('df_editor') && !empty($variables['header_primary_links'])) {
+    $variables['header_primary_links'] = \Drupal::service('df_editor.current_issue_nav')
+      ->applyCurrentIssueUrl($variables['header_primary_links']);
+  }
+
   $topic_order = [
     'Cancer Research',
     'Total Patient Care',

@@ -1,0 +1,65 @@
+uuid: 7a1b2c3d-4e5f-6789-abcd-ef0011223344
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.article
+    - node.type.in_brief
+    - node.type.issue
+    - node.type.page
+    - workflows.workflow.editorial
+  module:
+    - block
+    - block_content
+    - coffee
+    - content_moderation
+    - df_editor
+    - df_site_snippets
+    - media
+    - menu_link_content
+    - node
+    - path
+    - scheduler
+    - system
+    - taxonomy
+    - toolbar
+id: site_admin
+label: 'Site admin'
+weight: 6
+is_admin: false
+permissions:
+  - 'access administration pages'
+  - 'access coffee'
+  - 'access content overview'
+  - 'access media overview'
+  - 'access toolbar'
+  - 'administer blocks'
+  - 'administer df site settings'
+  - 'administer df site snippets'
+  - 'administer menu'
+  - 'administer taxonomy'
+  - 'administer url aliases'
+  - 'administer site configuration'
+  - 'create article content'
+  - 'create in_brief content'
+  - 'create issue content'
+  - 'create media'
+  - 'create page content'
+  - 'create terms in topics'
+  - 'create url aliases'
+  - 'edit any article content'
+  - 'edit any in_brief content'
+  - 'edit any issue content'
+  - 'edit any page content'
+  - 'publish issue with articles'
+  - 'schedule publishing of nodes'
+  - 'update any media'
+  - 'use editorial transition archive'
+  - 'use editorial transition create_new_draft'
+  - 'use editorial transition publish'
+  - 'use editorial transition send_back'
+  - 'use editorial transition submit_for_review'
+  - 'view any unpublished content'
+  - 'view latest version'
+  - 'view scheduled content'
+  - 'view the administration theme'

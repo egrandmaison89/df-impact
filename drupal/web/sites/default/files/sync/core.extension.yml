@@ -22,6 +22,7 @@ module:
   df_migrate: 0
   df_searchstax: 0
   df_setup: 0
+  df_editor: 0
   df_site_snippets: 0
   dynamic_page_cache: 0
   editor: 0

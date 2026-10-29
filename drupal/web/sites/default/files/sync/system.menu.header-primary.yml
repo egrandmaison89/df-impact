@@ -1,0 +1,8 @@
+uuid: d0718293-a415-2345-0123-456677889900
+langcode: en
+status: true
+dependencies: {  }
+id: header-primary
+label: 'Header primary navigation'
+description: 'Top-level header links (Current Issue, Past Issues, About).'
+locked: false

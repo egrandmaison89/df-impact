@@ -1,0 +1,13 @@
+df_editor.site_settings:
+  title: 'Impact site settings'
+  description: 'Header logo, donate button, and main navigation menu.'
+  parent: system.admin_config
+  route_name: df_editor.site_settings
+  weight: 5
+
+df_editor.footer_settings:
+  title: 'Impact footer settings'
+  description: 'Footer about links, address, disclaimer, and social URLs.'
+  parent: df_editor.site_settings
+  route_name: df_editor.footer_settings
+  weight: 10

@@ -83,7 +83,11 @@ function df_metatag_metatags_alter(array &$tags, array &$context): void {
     }
   }
 
-  if ($path === '/search') {
+  $route_match = \Drupal::routeMatch();
+  $is_search_surface = in_array($path, ['/search', '/search-legacy'], TRUE)
+    || $route_match->getRouteName() === 'view.df_impact_search.page_1';
+  $search_query = \Drupal::request()->query->get('s');
+  if ($is_search_surface && ($search_query === NULL || $search_query === '')) {
     $tags['title'] = 'Page not found - Impact Magazine';
     $tags['description'] = '';
     $tags['og_title'] = 'Page not found - Impact Magazine';
@@ -91,7 +95,6 @@ function df_metatag_metatags_alter(array &$tags, array &$context): void {
     unset($tags['canonical_url'], $tags['shortlink'], $tags['twitter_cards_description']);
   }
 
-  $route_match = \Drupal::routeMatch();
   if ($route_match->getRouteName() === 'view.topic_archive.page_1') {
     $term = df_metatag_topic_archive_term();
     if ($term instanceof \Drupal\taxonomy\TermInterface) {

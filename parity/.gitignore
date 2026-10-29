@@ -1,5 +1,14 @@
+<<<<<<< HEAD
 parity/reports/
 !parity/reports/progress/
 parity/reports/progress/**/*
 !parity/reports/progress/**/STATUS.md
+=======
+reports/playwright-results.json
+reports/computed-style-diff/
+>>>>>>> af2034a1 (fix(parity): pass4 scoped issue layout, header DOM, untrack reports)
 reports/progress/mac-visual/qa-evidence/**/*.png
+
+# Generated run output — keep hand-maintained STATUS docs only.
+reports/**
+!reports/progress/issue-article-visual/STATUS.md

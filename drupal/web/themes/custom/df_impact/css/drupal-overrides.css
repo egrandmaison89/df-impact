@@ -20,7 +20,7 @@ body {
 }
 
 /* Mega flyout hover (Max Mega Menu). Sticky header comes from WP pack (`header { position: sticky }`). */
-@media (min-width: 768px) {
+@media (min-width: 769px) {
   #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link,
   .header__nav-link {
     background-color: rgb(255, 255, 255);
@@ -145,8 +145,8 @@ body {
  * not the 1296px padded column inside .wp-site-blocks alone.
  */
 @media (min-width: 769px) {
-  .wp-site-blocks > main#wp--skip-link--target,
-  .wp-site-blocks > footer {
+  .wp-site-blocks:has(main .issue-page) > main#wp--skip-link--target,
+  .wp-site-blocks:has(main .issue-page) > footer {
     box-sizing: border-box;
     max-width: 1400px;
     width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px) - 40px) !important;
@@ -156,8 +156,12 @@ body {
 }
 
 @media (max-width: 768px) {
-  .wp-site-blocks > main#wp--skip-link--target,
-  .wp-site-blocks > footer {
+  .mobile-header {
+    display: block !important;
+  }
+
+  .wp-site-blocks:has(main .issue-page) > main#wp--skip-link--target,
+  .wp-site-blocks:has(main .issue-page) > footer {
     box-sizing: border-box;
     width: 100% !important;
     max-width: none;

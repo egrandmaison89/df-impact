@@ -4,10 +4,10 @@
  * In Brief archive (/in-brief/) — WordPress PostX sections grouped by issue.
  */
 #}
-<h1 class="wp-block-heading alignwide blue-border-header has-text-color has-montserrat-font-family">{{ 'In Brief'|t }}</h1>
+<h1 class="wp-block-heading alignwide blue-border-header has-text-color has-montserrat-font-family" style="color:#003354;margin-top:40px;margin-bottom:40px;padding-top:0;padding-right:20px;padding-bottom:0;padding-left:15px;font-size:38px;font-style:normal;font-weight:600">{{ 'In Brief'|t }}</h1>
 
 {% for section in sections %}
-  <h2 class="wp-block-heading orange-border-header has-text-color has-montserrat-font-family">{{ section.issue_label }}</h2>
+  <h2 class="wp-block-heading orange-border-header has-text-color has-montserrat-font-family in-brief-page__issue-heading" style="color:#63666a;padding-top:2px;padding-right:20px;padding-bottom:2px;padding-left:15px;font-size:28px;font-style:normal;font-weight:600">{{ section.issue_label }}</h2>
 
   <div class="ultp-post-grid-block wp-block-ultimate-post-post-list-3 ultp-block-{{ section.ultp_block_id }} alignwide">
     <div class="ultp-block-wrapper">

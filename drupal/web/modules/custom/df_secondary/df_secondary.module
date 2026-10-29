@@ -126,6 +126,12 @@ function df_secondary_preprocess_node(array &$variables): void {
         'class' => 'ss-envelope-color',
         'href' => 'mailto:?body=' . $encoded_url . '&subject=' . $encoded_title,
       ],
+      [
+        'id' => 'copy',
+        'label' => 'Copy Link',
+        'class' => 'ss-copy-color',
+        'href' => $permalink,
+      ],
     ],
   ];
 }

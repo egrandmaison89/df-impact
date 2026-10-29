@@ -67,13 +67,18 @@ cd drupal
 ./vendor/bin/drush php:script web/modules/custom/df_migrate/scripts/test_issue_fixture_replay.php
 
 cd ../parity
-DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:content:sweep:issues
-DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:issue-live-text
+# Issue gates: committed cache + refpack only (no live WP) until #23 lands whole
+DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:issue-live-text:cache
+DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:content:sweep:issues:cache
 npm run parity:url:check    # must be 801/801 before merging #23
 npm run parity:smoke:200    # 0 fails
-# When rebaselining computed-style (optional; use live WP for integrator — see PR #25 hold):
-# PARITY_WP_SOURCE=live npm run parity:computed-style-diff:full
 ```
+
+**Issue WP sources:** `parity/cache/wp-issue-pages/*.html` (committed), then refpack desktop `rendered.html`. Env: `PARITY_ISSUE_WP_CACHE_ONLY=1` and/or `PARITY_CONTENT_SWEEP_NO_LIVE_WP=1`.
+
+**No more partial merges:** take **#25** whole → **#23** whole → **#28** whole once agents clear (order unchanged).
+
+**PR #25 pre-merge verify:** pass-2 **live-WP cache baseline** — issue gates use cache-only above; computed-style acceptance stays `npm run parity:computed-style-diff:full:live-wp` (not refpack/pass-3 totals).
 
 **Pass:** `verify_df_setup_schema` exit 0 (`schema === max_hook`, `update_10027_applied` when max ≥ 10027). Record **both** issue text metrics in merge notes (live-text vs content-sweep can diverge; bad **10027** collision → ~0.03 sweep vs ≥98.9% live-text).
 
@@ -108,12 +113,10 @@ Recovery if marker missing but schema ≥ 10027:
 
 `cursor/phase4-chrome-behavior-0b67` implements **10027–10030** and **10034–10035** (#24 search/home). Slots **10031–10033** remain for **#23** at merge time.
 
-### Latest VM snapshot
+### Latest VM snapshot (cache-only issue gates)
 
 | Gate | Result |
 |------|--------|
-| `verify_df_setup_schema` | schema=max_hook, `update_10027_applied` set |
-| `parity:url:check` | **801/801** |
-| `parity:smoke:200` | **0 fails** |
-| `parity:issue-live-text` | min **0.989** (14/16 comparable) |
-| `parity:content:sweep:issues` | min **~0.910** on comparable rows (log both) |
+| `df_setup` schema | **10035** (= max hook); **10027–10030** present; **10031–10033** reserved (#23); **10034–10035** (#24 search/home) |
+| `parity:issue-live-text:cache` | **15/15** compared (1 skipped archive), min **1.0** |
+| `parity:content:sweep:issues:cache` | **15/15** pass, text98 **15/15** |

@@ -1988,7 +1988,7 @@ function df_impact_article_fallback_image_src(string $url): ?string {
     }
   }
   $hostless = preg_replace('#^https?://[^/]+/#', '', $clean) ?? $clean;
-  if (preg_match('#^([^/?#]+)/?$#', $hostless, $slug_match)) {
+  if ($hostless !== '' && preg_match('~^([^/?#\\[\\]]+)/?$~', $hostless, $slug_match)) {
     $stem = strtolower(pathinfo($slug_match[1], PATHINFO_FILENAME));
     $index = df_impact_media_source_url_index();
     if (!empty($index[$stem]) && is_string($index[$stem])) {

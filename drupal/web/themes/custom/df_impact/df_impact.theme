@@ -1108,6 +1108,26 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
 /**
  * Card image URL aligned with WP PostX grid sizing (870×570 crop when possible).
  */
+/**
+ * PostX card URL with article export fallback when wp-images lacks uploads mapping.
+ */
+function df_impact_card_image_url_for_parity_node(NodeInterface $node, string $uri): string {
+  $photon = df_impact_wp_i0_postx_card_url($uri);
+  if ($photon !== NULL && df_impact_wp_uploads_path_from_uri($uri) !== NULL) {
+    return $photon;
+  }
+  $row = df_impact_article_export_row_for_node($node);
+  if (is_array($row)) {
+    foreach (df_impact_article_export_try_image_urls($row) as $candidate) {
+      $candidate = trim(html_entity_decode((string) $candidate, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+      if ($candidate !== '' && str_contains($candidate, 'wp-content/uploads')) {
+        return df_impact_card_image_url_for_parity_from_src($candidate);
+      }
+    }
+  }
+  return df_impact_card_image_url_for_parity($uri);
+}
+
 function df_impact_card_image_url_for_parity(string $uri): string {
   $photon = df_impact_wp_i0_postx_card_url($uri);
   if ($photon) {
@@ -1156,11 +1176,33 @@ function df_impact_wp_uploads_path_from_uri(string $uri): ?string {
   $basename = basename($relative);
   $stem = strtolower(pathinfo($basename, PATHINFO_FILENAME));
   $index = df_impact_media_source_url_index();
-  $source = $index[$stem] ?? NULL;
+  $candidates = array_values(array_unique(array_filter([
+    $stem,
+    preg_replace('/_1450$/', '', $stem),
+    preg_replace('/-\d+x\d+$/', '', $stem),
+  ])));
+  $source = NULL;
+  foreach ($candidates as $key) {
+    if ($key !== '' && isset($index[$key])) {
+      $source = $index[$key];
+      break;
+    }
+  }
   if (!is_string($source)) {
     $needle = strtolower($basename);
     foreach ($index as $candidate) {
       if (is_string($candidate) && str_contains(strtolower($candidate), $needle)) {
+        $source = $candidate;
+        break;
+      }
+    }
+  }
+  if (!is_string($source)) {
+    foreach ($index as $key => $candidate) {
+      if (!is_string($candidate)) {
+        continue;
+      }
+      if (str_contains($stem, $key) || str_contains($key, $stem)) {
         $source = $candidate;
         break;
       }
@@ -1309,7 +1351,7 @@ function df_impact_article_card_image_meta(NodeInterface $node): ?array {
           $alt = $node->label();
         }
         return [
-          'url' => df_impact_card_image_url_for_parity($file->getFileUri()),
+          'url' => df_impact_card_image_url_for_parity_node($node, $file->getFileUri()),
           'alt' => $alt,
           'width' => 768,
           'height' => 551,
@@ -1535,7 +1577,7 @@ function df_impact_article_export_try_image_urls(array $row): array {
   };
 
   $primary = (string) ($row['featured_image_url'] ?? '');
-  if ($primary !== '') {
+  if ($primary !== '' && str_contains($primary, 'wp-content/uploads')) {
     $push($primary);
   }
   $body = isset($row['body']) && is_string($row['body']) ? $row['body'] : '';

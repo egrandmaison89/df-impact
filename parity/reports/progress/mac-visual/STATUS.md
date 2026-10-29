@@ -1,75 +1,61 @@
 # Mac visual parity — live status
 
-**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Mac agent** = pixel/template gates; **VM agent** (PR **#12**) = computed-style + article/in-brief/landing/archive rows.
+**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Mac** = pixels + gates; **VM** = computed-style/CSS rows; **Meta (#10)** / **Templates (#11)** merged via PR **#12**.
 
-**Updated:** 2026-10-29 ~1:10 AM ET (PR **#12** merge + DDEV re-gate)
+**Updated:** 2026-10-29 ~1:20 AM ET
 
-**Local WIP:** `git stash list` → `mac-wip` (report PNG churn + any local overrides backup; not committed).
-
----
-
-## Integrator: PR #12 merged (`76cea9ad`)
-
-Merged `origin/cursor/vm-visual-parity-2b1b` (PR **#10** + **#11**, wp-images restore, `/about`+`/home` aliases, archive row `_1450` URLs, `computed-style-diff` harness). Large deletions = dropped ephemeral head/url JSON reports + gitignore (see VM `e11f080e` — wp-images **restored**, not lost).
-
-VM header note: desktop `.desktop-header` **1440×148**, `.header-logo` **x=15** (content-box shell; no PR #10 alignfull bleed).
+**Stash:** `mac-wip` (local report PNG backup; not committed).
 
 ---
 
-## DDEV gates (`http://df-impact.ddev.site`, post PR #12)
+## DDEV gates (latest)
 
-| Gate | Result | Report |
-|------|--------|--------|
-| **`verify-wp-port-assets.sh`** | **19/19 OK** | — |
-| **`parity:head:refpack`** | **21/21** metaPass | `parity/reports/head-meta/compare-1793249788015.json` |
-| **`parity:head:manifest`** | **773/773** metaPass | `parity/reports/head-meta/manifest-1793249838983.json` |
-| **`parity:url:check`** (`URL_PARITY_CONCURRENCY=1`) | **801/801** | `parity/reports/url-parity/check-1793249844205.json` |
-| **`parity:behavior:smoke`** | **fail** (3× `/homepage` Playwright **240s timeout** tablet/mobile; desktop **hero poster** mismatch) | `parity/reports/behavior/2026-10-29T04-56-23-515Z/` |
+| Gate | Result | Report / run |
+|------|--------|----------------|
+| wp-port assets | **19/19** | `scripts/repro/verify-wp-port-assets.sh` |
+| `parity:head:refpack` | **21/21** | `parity/reports/head-meta/compare-1793251155492.json` |
+| `parity:head:manifest` | **773/773** (prior run) | `manifest-1793249838983.json` |
+| `parity:url:check` | **801/801** | `parity/reports/url-parity/check-1793251200598.json` |
+| `parity:behavior:smoke` | **pass** (3/3, lite mode) | `parity/reports/behavior/2026-10-29T05-10-49-041Z/` |
 
-Pipeline: `ddev composer install` → `ddev drush updb -y && ddev drush cr` → npm scripts above.
+**Behavior smoke fix:** `gotoWithBoundedSettle` (`load` + capped fonts/settle), `PARITY_BEHAVIOR_LITE=1` on smoke (skip heavy hovers/mobile drawer/reduced-motion reload), abort analytics on live WP.
 
-**Behavior follow-up (Mac):** removed `poster=` on homepage hero `<video>` (WP `v.poster` empty); re-run smoke after `drush cr`.
-
----
-
-## Template medians — before / after PR #12 (Mac pack vs DDEV)
-
-| Template | Viewport D (before → after) | Chrome D (before → after) |
-|----------|---------------------------|---------------------------|
-| **homepage** | 33.0% → **33.0%** | 5.1% → **5.1%** |
-| **issue** | 67.8% → **67.8%** | 3.6% → **3.6%** |
-| **article** | 32.0% → **32.0%** | 5.0% → **5.1%** |
-| **in_brief** | 20.2% → **20.2%** | ~5% → **5.0%** |
-| **landing_page** | 34.8% → **34.8%** | 5.1% → **5.0%** |
-| **archive** | 30.5% → **30.4%** | ~5% → **5.2%** |
-
-Full D/T/M medians (after):
-
-| Template | Viewport D | Viewport T | Viewport M | Chrome D | Chrome T | Chrome M |
-|----------|----------:|-----------:|-----------:|---------:|---------:|---------:|
-| homepage | 33.0% | 33.7% | 32.4% | 5.1% | 16.1% | 17.8% |
-| issue | 67.8% | 65.3% | 62.6% | 3.6% | 12.8% | 13.0% |
-| article | 32.1% | 35.2% | 27.8% | 5.1% | 14.6% | 15.3% |
-| in_brief | 20.2% | 12.3% | 16.9% | 5.0% | 15.1% | 15.2% |
-| landing_page | 34.8% | 39.1% | 36.0% | 5.0% | 14.1% | 15.3% |
-| archive | 30.4% | 53.8% | 35.2% | 5.2% | 14.0% | 15.2% |
+**Template medians (2026-10-29):** homepage viewport D **33.0%** / chrome **5.1%**; issue viewport D **67.8%** / chrome **2.1%** (PostX cards now **i0.wp.com fit=768×551**, was `wp_card_870x570` on wp-images).
 
 Command: `DRUPAL_BASE_URL=http://df-impact.ddev.site PARITY_TEMPLATE=<name> npm run parity:compare-template`
 
----
-
-## Mac agent queue (do not collide with VM)
-
-1. **Issue ~68%:** PostX card raster / promo grid pixels (`df_impact.theme` card URLs, issue twig — **not** `drupal-overrides.css`).
-2. **Homepage:** hero behavior + viewport grids (VM owns offset/CSS elsewhere).
-3. **Defer to VM/templates agents:** article/in-brief **main y +149px**, `/about` Gutenberg, archive row layout, `theme.css` global tweaks.
+**QA screenshots:** `npm run parity:qa:capture` → `parity/reports/progress/mac-visual/qa-evidence/<id>/drupal|wp-{1440|768|375}.png` (PNGs gitignored; `qa-evidence/manifest.json` tracked).
 
 ---
 
-## Prior DDEV gates (pre PR #12, for diff)
+## Manual QA checklist (owner report → agent ownership)
 
-| Gate | Result |
-|------|--------|
-| head:refpack | 21/21 (`compare-1793244596979.json`) |
-| head:manifest | 773/773 (`manifest-1793244662018.json`) |
-| url:check | 801/801 (`check-1793244664143.json`) |
+| # | Issue | Agent / PR | Status | Evidence |
+|---|--------|------------|--------|----------|
+| 1 | Header broken on scroll | Meta **#10** | **verify** | `qa-evidence/01-header-scroll/`; `wp-chrome-behaviors.js` toggles `scrolled` |
+| 2 | Two translate widgets | Meta **#10** | **likely OK** | DDEV probe: **1** gtranslate region on `/homepage` |
+| 3 | Vimeo embeds as plain URL | Meta **#10** | **open** | Article probe: no `player.vimeo.com` / vimeo block on Charlie Landers |
+| 4 | Pagination | Templates **#11** | **verify** | `qa-evidence/04-pagination/`; `/category/cancer-research/page/2` **200** |
+| 5 | Illegible In Brief band | Templates **#11** | **verify** | `qa-evidence/05-in-brief-band/` on `/fall-2026-issue` |
+| 6 | `/browse-issues` image sizes | Templates **#11** | **verify** | `qa-evidence/06-browse-issues-images/` |
+| 7 | HTML entities (`&#039;`) | Templates **#11** | **partial** | Issue promo excerpts decoded in theme; homepage **meta description** still encoded (meta module) |
+| 8 | Broken images | Templates **#11** | **verify** | `qa-evidence/08-broken-images/` |
+| 9 | Stray Home breadcrumb + edit pencils | VM **#12** | **partial** | Toolbar hidden in CSS; `/browse-issues` still shows breadcrumb text in HTML probe |
+| 10 | More Stories without images | VM **#12** | **verify** | `qa-evidence/10-more-stories/` |
+| 11 | Category spacing under articles | VM **#12** | **verify** | `qa-evidence/11-category-spacing/` |
+
+When agent branches push ahead of PR **#5**: merge → `ddev drush cr` → re-run gates + `parity:qa:capture` → update rows above.
+
+---
+
+## Mac agent queue (overnight)
+
+1. **Issue ~68%:** PostX card rasters + promo grid (`/fall-2026-issue` desktop **~59%** per-path); banner overlay h1 — stay in issue twig / card URL helpers.
+2. **Homepage ~33%:** hero + grid pixels (not VM offset CSS).
+3. **Defer:** article/in-brief +149px main, `/about`, archive row CSS (VM); vimeo/meta description (meta).
+
+---
+
+## Integrator reference
+
+PR **#12** merged at `76cea9ad`. VM STATUS: `parity/reports/progress/vm-visual/STATUS.md`.

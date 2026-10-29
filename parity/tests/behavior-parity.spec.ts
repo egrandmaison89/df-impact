@@ -157,7 +157,7 @@ async function loadWpSnapshot(
   return null;
 }
 
-test.describe.configure({ mode: 'serial' });
+test.describe.configure({ mode: 'serial', retries: 0 });
 
 for (const pathNorm of paths) {
   for (const bp of BEHAVIOR_BREAKPOINTS) {

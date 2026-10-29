@@ -109,6 +109,39 @@ Issue viewport still dominated by **article roster / title drift** vs live WP (s
 
 Vs integrator **~2:00 AM ET** desktop viewport baselines (homepage ~33%, issue ~67.8%, archive ~30.4%): all six templates **same or better**; no Mac pack regression attributable to #18/#19 in this harness.
 
+### Region diff breakdown (Mac viewport bands)
+
+Tool: `npm run parity:analyze:regions` (`parity/scripts/analyze-template-region-bands.mjs`). Heatmaps: `qa-evidence/*/diff-heatmap.png`.
+
+**Issue desktop** (`/fall-2026-issue`, **60.1%** overall on this path; template median **~67%** on 3 issues) — **`per_element`** (vertical shift ≤8% improvement; not a height cascade):
+
+| Band | Diff % | ~Share of 900px frame | ~Contribution |
+|------|--------|------------------------|---------------|
+| Hero / banner | 100 | 62% | **62%** |
+| In This Issue heading | 100 | 6% | 6% |
+| PostX card grid (in frame) | 99.5 | 12% | 12% |
+| Promo row | 99.5 | 12% | 12% |
+| In Brief / footer | 0 | — | — |
+
+Evidence: `qa-evidence/issue-desktop-fall26-regions/`.
+
+**Archive tablet** (`/category/cancer-research`, **55.8%**) — **`per_element`**: card/query block ~**71%** contribution (content + card images), header ~4%.
+
+Evidence: `qa-evidence/archive-tablet-cancer-regions/`.
+
+**Landing tablet** (`/browse-issues`, **27.6%** this path; template median **39.1%**) — **`per_element`**. Horizontal fallback bands (DOM covers below fold in 900px capture):
+
+| Band | Diff % | ~Contribution |
+|------|--------|---------------|
+| Top 0–25% | 37.5 | 9% |
+| 25–50% | 100 | 25% |
+| 50–75% | 100 | 25% |
+| 75–100% | 98.3 | 25% |
+
+Evidence: `qa-evidence/landing-tablet-browse-regions/`.
+
+**Hold:** PR **#20** VM visual round 2 until user clearance.
+
 ### DDEV wp-images restore + full audit
 
 | Metric | Before restore | After restore / audit |

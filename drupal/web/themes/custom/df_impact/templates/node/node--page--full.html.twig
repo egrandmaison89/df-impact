@@ -5,15 +5,16 @@
  */
 #}
 {% if is_about_impact_node %}
-  <article{{ attributes.addClass('page-node', 'wp-singular', 'page', 'about-impact-page') }}>
-    {{ title_prefix }}
-    {{ title_suffix }}
-    <div class="entry-content wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
-      {{ content.body }}
-    </div>
-  </article>
+<div{{ attributes.addClass('page-node', 'wp-singular', 'page', 'about-impact-page', 'is-layout-flow', 'wp-block-group-is-layout-flow') }}>
+  {{ title_prefix }}
+  {{ title_suffix }}
+  <div class="wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+    {{ content.body }}
+  </div>
+</div>
 {% else %}
-<article{{ attributes.addClass('page-node', 'wp-singular', 'page') }}>
+{# Live WP landing pages (e.g. /about) use block groups in <main>, not <article>. #}
+<div{{ attributes.addClass('page-node', 'wp-singular', 'page', 'is-layout-flow', 'wp-block-group-is-layout-flow') }}>
   {% if content.field_banner_image|render|trim %}
     <figure class="wp-block-image alignwide size-large">
       {{ content.field_banner_image }}
@@ -24,7 +25,7 @@
   <h1 class="wp-block-heading blue-border-header has-text-color has-montserrat-font-family">{{ label }}</h1>
   {{ title_suffix }}
 
-  <div class="page-node__body wp-block-post-content">
+  <div class="wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
     {{ content.body }}
   </div>
 
@@ -33,5 +34,5 @@
       {{ content.field_content_sections }}
     </div>
   {% endif %}
-</article>
+</div>
 {% endif %}

@@ -11,6 +11,7 @@
  * - **#23** content-sweep: in_brief excerpts + home moderation fix.
  * - **#25** cover / media seed for issue parity.
  * - **#10** `is_light` field: config import + backfill post-update (stacked on #25).
+ * - **#30** internal links, inline images, featured media repair.
  */
 
 declare(strict_types=1);
@@ -154,5 +155,28 @@ function df_setup_post_update_converge_content_sweep_reference_bodies(): string 
     $about,
     (int) ($result['scanned'] ?? 0),
     (int) ($result['updated'] ?? 0),
+  );
+}
+
+/**
+ * Rewrites WP internal links, localizes inline images, fixes broken featured media.
+ */
+function df_setup_post_update_repair_internal_links_and_media(): string {
+  $script = __DIR__ . '/../df_migrate/scripts/df_setup_content_repair.php';
+  if (!is_readable($script)) {
+    return 'df_setup_content_repair.php missing';
+  }
+  require_once $script;
+  $result = df_setup_content_repair_run();
+  return sprintf(
+    'Content repair: link fields %d/%d, inline images %d/%d, featured %d updated / %d cleared (scanned %d), lead body resync %d.',
+    (int) ($result['link_fields_updated'] ?? 0),
+    (int) ($result['fields_scanned'] ?? 0),
+    (int) ($result['inline_nodes_updated'] ?? 0),
+    (int) ($result['inline_nodes_scanned'] ?? 0),
+    (int) ($result['featured_updated'] ?? 0),
+    (int) ($result['featured_cleared'] ?? 0),
+    (int) ($result['featured_scanned'] ?? 0),
+    (int) ($result['lead_body_resync'] ?? 0),
   );
 }

@@ -69,8 +69,10 @@ echo "==> Config import"
 "${DRUSH[@]}" cim -y
 "${DRUSH[@]}" updatedb -y
 "${DRUSH[@]}" pm:enable df_editor -y 2>/dev/null || true
+# Migration plugin config ships in df_migrate/config/install (not sync).
 "${DRUSH[@]}" pm:uninstall df_migrate -y || true
 "${DRUSH[@]}" pm:enable df_migrate -y
+"${DRUSH[@]}" updatedb -y
 
 mkdir -p web/sites/default/files/wp-content/uploads web/wp-content
 ln -sfn ../sites/default/files/wp-content/uploads web/wp-content/uploads

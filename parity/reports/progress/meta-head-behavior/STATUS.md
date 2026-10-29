@@ -24,7 +24,7 @@ Base: `cursor/phase4-chrome-behavior-0b67` | **Stacked on PR #25** `cursor/guten
 
 - **Assertion:** `cross.diff.zero_mismatch_rows` (includes `headerLayout600`, `headerLayout2000` on every chrome-header template path × 3 breakpoints).
 - **Capture gate:** WP timeouts → `cross.wp.snapshot` and `captured: false`; summarize exits **1** until `caseCount === expectedCases` (currently **51** = 17 paths × 3 BPs) and `incompleteCaseCount === 0`. Retry: `PARITY_BEHAVIOR_RUN_ID=<run> node scripts/retry-behavior-incomplete.mjs`.
-- **Nav `backgroundColor` @768/375:** Evidence `reports/behavior/wp-nav-bg-evidence/EVIDENCE.md`. WP solid nav follows **`is-light` issue hero** (+ `/browse-issues`). Drupal: `field_issue_banner_is_light` → hero class + `body.issue-chrome-nav-solid`; backfill from reference-pack. Check: `drush df-editor:test-issue-e2e` (nav @768) + `node parity/scripts/check-drupal-nav-bg.mjs`.
+- **Nav `backgroundColor` @768/375:** Evidence `reports/behavior/wp-nav-bg-evidence/EVIDENCE.md`. WP solid nav follows **`is-light` issue hero** (+ `/browse-issues`). Drupal: `field_issue_banner_is_light` in **df_setup config/install**; existing sites: **`drush updatedb`** runs `df_setup_post_update_issue_banner_is_light()`. Helper: `drush scr …/backfill_issue_banner_is_light.php`.
 - **Hover compare:** `hover.changed` parity + color/bg/transform when either side changes (~3/255 tolerance).
 - **Body link hover:** content paths only (`/YYYY/MM/`, `/in-brief`, `-issue`).
 

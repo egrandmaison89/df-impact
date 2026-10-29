@@ -1,0 +1,69 @@
+/**
+ * WordPress query-pagination parity (archives, categories, issues listings).
+ */
+.pager,
+.pager__items,
+nav.pager ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wp-block-query-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin: 2.5rem 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.wp-block-query-pagination-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.wp-block-query-pagination-numbers .page-numbers,
+.wp-block-query-pagination-next,
+.wp-block-query-pagination-previous {
+  display: inline-block;
+  font-family: var(--font-body, Montserrat, sans-serif);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-decoration: none;
+  color: #00629b;
+  border: 2px solid #00629b;
+  border-radius: 2px;
+  padding: 8px 14px;
+  background: transparent;
+}
+
+.wp-block-query-pagination-numbers .page-numbers.current {
+  color: #fff;
+  background: #00629b;
+}
+
+.wp-block-query-pagination-numbers .page-numbers:hover,
+.wp-block-query-pagination-numbers .page-numbers:focus,
+.wp-block-query-pagination-next:hover,
+.wp-block-query-pagination-previous:hover {
+  color: #fff;
+  background: #00629b;
+}
+
+.wp-block-query-pagination-numbers .page-numbers.dots {
+  border: 0;
+  padding: 8px 6px;
+  color: #00629b;
+  background: transparent;
+}
+
+.wp-block-query-pagination.is-content-justification-space-between > .wp-block-query-pagination-next:last-child,
+.wp-block-query-pagination.is-content-justification-space-between > .wp-block-query-pagination-next:last-of-type {
+  margin-inline-start: auto;
+}

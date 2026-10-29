@@ -238,8 +238,21 @@ function df_impact_preprocess_views_view(array &$variables): void {
   if ($view->id() === 'past_issues' && $view->current_display === 'page_1') {
     $variables['title'] = '';
   }
-  if ($view->id() === 'digital_exclusives_archive' && $view->current_display === 'page_1') {
+  if ($view->id() === 'stories_archive' && $view->current_display === 'page_1') {
     $variables['title'] = '';
+  }
+  if (in_array($view->id(), [
+    'digital_exclusives_archive',
+    'topic_archive',
+    'stories_archive',
+    'past_issues',
+    'in_brief_listing',
+    'browse_issues',
+  ], TRUE)) {
+    if ($view->id() === 'digital_exclusives_archive' && $view->current_display === 'page_1') {
+      $variables['title'] = '';
+    }
+    $variables['#attached']['library'][] = 'df_impact/archive_listings';
   }
 }
 
@@ -256,9 +269,8 @@ function df_impact_preprocess_views_view_unformatted(array &$variables): void {
     return;
   }
   $flex_rows = [];
-  $batch = array_chunk($rows, 4);
-  foreach ($batch as $group) {
-    $flex_rows[] = array_chunk($group, 2);
+  foreach (array_chunk($rows, 4) as $group) {
+    $flex_rows[] = $group;
   }
   $variables['browse_issue_flex_rows'] = $flex_rows;
 }
@@ -280,9 +292,10 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     }
     $variables['issue_url'] = $node->toUrl()->toString();
     $variables['issue_thumbnail'] = df_impact_build_issue_browse_thumbnail($node);
-    $cover = df_impact_issue_banner_meta($node);
+    $cover = df_impact_issue_browse_cover_meta($node);
     $variables['issue_cover_url'] = $cover['url'] ?? NULL;
     $variables['issue_cover_alt'] = $cover['alt'] ?? $node->label();
+    $variables['issue_title_plain'] = df_impact_decode_plain_text($node->label());
     return;
   }
   if ($view_id === 'issue_articles') {
@@ -293,7 +306,7 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     return;
   }
 
-  if ($view_id === 'topic_archive' || $view_id === 'digital_exclusives_archive') {
+  if (in_array($view_id, ['topic_archive', 'digital_exclusives_archive', 'stories_archive'], TRUE)) {
     $variables['article_url'] = NULL;
     $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
     if ($node instanceof NodeInterface) {
@@ -309,6 +322,7 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
       $variables['archive_featured_image_width'] = $meta['width'] ?? 1450;
       $variables['archive_featured_image_height'] = $meta['height'] ?? 1040;
       $variables['archive_excerpt'] = df_impact_archive_excerpt_for_node($node);
+      $variables['archive_title_plain'] = df_impact_decode_plain_text($node->label());
     }
     return;
   }
@@ -503,6 +517,7 @@ function df_impact_preprocess_node(&$variables) {
     $variables['in_brief_image_alt'] = $image['alt'] ?? $node->label();
     $variables['in_brief_excerpt'] = df_impact_in_brief_plain_excerpt($node);
     $variables['in_brief_byline'] = df_impact_in_brief_byline($node);
+    $variables['in_brief_listing_excerpt'] = df_impact_in_brief_listing_excerpt($node);
     $variables['in_brief_issue_url'] = NULL;
     $variables['in_brief_issue_label'] = NULL;
     if ($node->hasField('field_issue') && !$node->get('field_issue')->isEmpty()) {
@@ -727,6 +742,45 @@ function df_impact_theme_suggestions_views_view_alter(array &$suggestions, array
 }
 
 /**
+ * Implements hook_theme_suggestions_pager_alter().
+ */
+function df_impact_theme_suggestions_pager_alter(array &$suggestions, array $variables): void {
+  if (df_impact_route_uses_wp_query_pager()) {
+    $suggestions[] = 'pager__wp_query';
+  }
+}
+
+/**
+ * Whether the active route should render WordPress query-pagination markup.
+ */
+function df_impact_route_uses_wp_query_pager(): bool {
+  $route = \Drupal::routeMatch()->getRouteName();
+  if (!$route || !str_starts_with($route, 'view.')) {
+    return FALSE;
+  }
+  $parts = explode('.', $route);
+  $view_id = $parts[1] ?? '';
+  return in_array($view_id, [
+    'topic_archive',
+    'digital_exclusives_archive',
+    'stories_archive',
+    'past_issues',
+    'in_brief_listing',
+    'browse_issues',
+  ], TRUE);
+}
+
+/**
+ * Implements hook_preprocess_pager().
+ */
+function df_impact_preprocess_pager(array &$variables): void {
+  $variables['use_wp_query_pager'] = df_impact_route_uses_wp_query_pager();
+  if ($variables['use_wp_query_pager'] && !empty($variables['items']['next']['text'])) {
+    $variables['items']['next']['text'] = t('Next Page');
+  }
+}
+
+/**
  * Formats an issue node as "Spring 2026" for homepage labels.
  */
 function df_impact_format_issue_label(NodeInterface $issue): ?string {
@@ -859,6 +913,34 @@ function df_impact_issue_banner_image_url(string $uri): string {
     }
   }
   return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+}
+
+/**
+ * Issue magazine cover for /browse-issues/ (prefer cover art, local file URL).
+ *
+ * @return array{url: string, alt: string}|null
+ */
+function df_impact_issue_browse_cover_meta(NodeInterface $issue): ?array {
+  foreach (['field_cover_image', 'field_banner_image'] as $field_name) {
+    if (!$issue->hasField($field_name) || $issue->get($field_name)->isEmpty()) {
+      continue;
+    }
+    $media = $issue->get($field_name)->entity;
+    if ($media && $media->hasField('field_media_image') && !$media->get('field_media_image')->isEmpty()) {
+      $file = $media->get('field_media_image')->entity;
+      if ($file) {
+        $alt = (string) $media->get('field_media_image')->alt;
+        if ($alt === '') {
+          $alt = $issue->label();
+        }
+        return [
+          'url' => \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri()),
+          'alt' => df_impact_decode_plain_text($alt),
+        ];
+      }
+    }
+  }
+  return NULL;
 }
 
 function df_impact_issue_banner_meta(NodeInterface $node): ?array {
@@ -1102,6 +1184,13 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
  * Card image URL aligned with WP PostX grid sizing (870×570 crop when possible).
  */
 function df_impact_card_image_url_for_parity(string $uri): string {
+  $file_system = \Drupal::service('file_system');
+  if (!$file_system->realpath($uri)) {
+    $uri = df_impact_resolve_wp_images_uri($uri) ?? $uri;
+  }
+  if ($file_system->realpath($uri)) {
+    return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+  }
   $photon = df_impact_wp_i0_postx_card_url($uri);
   if ($photon) {
     return $photon;
@@ -1120,6 +1209,42 @@ function df_impact_card_image_url_for_parity(string $uri): string {
     }
   }
   return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+}
+
+/**
+ * Resolves public://wp-images/* URIs when files omit extensions or use WP stems.
+ */
+function df_impact_resolve_wp_images_uri(string $uri): ?string {
+  $relative = str_replace('public://', '', $uri);
+  if (!str_starts_with($relative, 'wp-images/')) {
+    if (str_starts_with($relative, 'wp-content/uploads/')) {
+      $basename = basename($relative);
+      $uri = 'public://wp-images/' . $basename;
+      $relative = 'wp-images/' . $basename;
+    }
+    else {
+      return NULL;
+    }
+  }
+  $stem = pathinfo($relative, PATHINFO_FILENAME);
+  $dir = DRUPAL_ROOT . '/sites/default/files/wp-images';
+  if (!is_dir($dir) || $stem === '') {
+    return NULL;
+  }
+  $exact = $dir . '/' . basename($relative);
+  if (is_file($exact)) {
+    return 'public://wp-images/' . basename($relative);
+  }
+  $glob = glob($dir . '/' . $stem . '*');
+  if (!is_array($glob)) {
+    return NULL;
+  }
+  foreach ($glob as $path) {
+    if (is_file($path) && preg_match('/\.(jpe?g|png|gif|webp)$/i', $path)) {
+      return 'public://wp-images/' . basename($path);
+    }
+  }
+  return NULL;
 }
 
 function df_impact_card_image_url_for_parity_from_src(string $src): string {
@@ -1720,11 +1845,51 @@ function df_impact_article_fallback_image_src(string $url): ?string {
     foreach (['public://wp-images/' . $basename, 'public://' . $relative_upload] as $uri) {
       $path = $file_system->realpath($uri);
       if ($path && is_file($path)) {
-        return $gen->generateString($uri);
+        return $gen->generateAbsoluteString($uri);
+      }
+    }
+  }
+  $hostless = preg_replace('#^https?://[^/]+/#', '', $clean) ?? $clean;
+  if (preg_match('#^([^/?#]+)/?$#', $hostless, $slug_match)) {
+    $stem = strtolower(pathinfo($slug_match[1], PATHINFO_FILENAME));
+    $index = df_impact_media_source_url_index();
+    if (!empty($index[$stem]) && is_string($index[$stem])) {
+      $resolved = df_impact_article_fallback_image_src($index[$stem]);
+      if ($resolved !== NULL && $resolved !== '') {
+        return $resolved;
+      }
+    }
+    foreach ($index as $key => $source) {
+      if (!is_string($source)) {
+        continue;
+      }
+      if ($key === $stem || str_starts_with($key, $stem) || str_starts_with($stem, $key)) {
+        $resolved = df_impact_article_fallback_image_src($source);
+        if ($resolved !== NULL && $resolved !== '') {
+          return $resolved;
+        }
+      }
+    }
+    $wp_images_dir = DRUPAL_ROOT . '/sites/default/files/wp-images';
+    if (is_dir($wp_images_dir)) {
+      $glob = glob($wp_images_dir . '/' . $stem . '*');
+      if (is_array($glob)) {
+        foreach ($glob as $file_path) {
+          if (!is_file($file_path)) {
+            continue;
+          }
+          if (!preg_match('/\.(jpe?g|png|gif|webp)$/i', $file_path)) {
+            continue;
+          }
+          return $gen->generateAbsoluteString('public://wp-images/' . basename($file_path));
+        }
       }
     }
   }
   if (preg_match('#^https?://#i', $clean) && df_impact_is_usable_article_image_src($clean)) {
+    return $clean;
+  }
+  if (preg_match('/\.(jpe?g|png|gif|webp)(\?|$)/i', $clean)) {
     return $clean;
   }
   return NULL;
@@ -1862,6 +2027,10 @@ function df_impact_in_brief_card_image_meta(NodeInterface $node): ?array {
  * Plain-text excerpt for In Brief cards (matches WP ultp-block-excerpt).
  */
 function df_impact_in_brief_plain_excerpt(NodeInterface $node): string {
+  $row = df_impact_in_brief_manifest_row($node);
+  if (!empty($row['excerpt'])) {
+    return df_impact_decode_plain_text(trim(strip_tags((string) $row['excerpt'])));
+  }
   if (!$node->hasField('field_summary') || $node->get('field_summary')->isEmpty()) {
     return '';
   }
@@ -1873,6 +2042,46 @@ function df_impact_in_brief_plain_excerpt(NodeInterface $node): string {
  * WordPress byline string for In Brief full pages (from migrate manifest).
  */
 function df_impact_in_brief_byline(NodeInterface $node): string {
+  $row = df_impact_in_brief_manifest_row($node);
+  return $row['byline'] ?? '';
+}
+
+/**
+ * WP listing/full excerpt text for an In Brief node (migrate manifest).
+ */
+function df_impact_in_brief_listing_excerpt(NodeInterface $node): string {
+  $row = df_impact_in_brief_manifest_row($node);
+  if (!empty($row['excerpt'])) {
+    return trim(strip_tags((string) $row['excerpt']));
+  }
+  return df_impact_in_brief_plain_excerpt($node);
+}
+
+/**
+ * @return array<string, mixed>
+ */
+function df_impact_article_manifest_row(NodeInterface $node): array {
+  static $by_alias = NULL;
+  if ($by_alias === NULL) {
+    $by_alias = [];
+    $module_path = \Drupal::service('extension.list.module')->getPath('df_migrate');
+    $json_path = DRUPAL_ROOT . '/' . $module_path . '/data/articles.json';
+    if (is_readable($json_path)) {
+      $items = json_decode((string) file_get_contents($json_path), TRUE);
+      if (is_array($items)) {
+        foreach ($items as $item) {
+          if (!empty($item['drupal_alias'])) {
+            $by_alias[$item['drupal_alias']] = $item;
+          }
+        }
+      }
+    }
+  }
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $node->id());
+  return $by_alias[$alias] ?? [];
+}
+
+function df_impact_in_brief_manifest_row(NodeInterface $node): array {
   static $by_alias = NULL;
   if ($by_alias === NULL) {
     $by_alias = [];
@@ -1882,21 +2091,35 @@ function df_impact_in_brief_byline(NodeInterface $node): string {
       $items = json_decode((string) file_get_contents($json_path), TRUE);
       if (is_array($items)) {
         foreach ($items as $item) {
-          if (!empty($item['drupal_alias']) && !empty($item['byline'])) {
-            $by_alias[$item['drupal_alias']] = (string) $item['byline'];
+          if (!empty($item['drupal_alias'])) {
+            $by_alias[$item['drupal_alias']] = $item;
           }
         }
       }
     }
   }
   $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $node->id());
-  return $by_alias[$alias] ?? '';
+  return $by_alias[$alias] ?? [];
 }
 
 /**
  * Archive listing excerpt for articles (field_excerpt or trimmed body).
  */
+/**
+ * Decodes HTML entities for plain-text fields (titles, excerpts, alts).
+ */
+function df_impact_decode_plain_text(?string $text): string {
+  if ($text === NULL || $text === '') {
+    return '';
+  }
+  return html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
 function df_impact_archive_excerpt_for_node(NodeInterface $node): string {
+  $manifest = df_impact_article_manifest_row($node);
+  if (!empty($manifest['excerpt'])) {
+    return df_impact_decode_plain_text(trim(strip_tags((string) $manifest['excerpt'])));
+  }
   if ($node->hasField('field_excerpt') && !$node->get('field_excerpt')->isEmpty()) {
     return trim(strip_tags($node->get('field_excerpt')->value ?? ''));
   }

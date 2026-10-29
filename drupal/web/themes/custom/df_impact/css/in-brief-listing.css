@@ -1,0 +1,5 @@
+.in-brief-page__item.is-collapsed,
+.ultp-block-items-wrap .ultp-block-item.is-collapsed,
+.ultp-block-item.ultp-block-media.is-collapsed {
+  display: none !important;
+}

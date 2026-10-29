@@ -4,15 +4,24 @@ gtranslate:
     js/gtranslate-init.js: {}
 
 in_brief_page:
-  version: 1.0
+  version: 1.1
+  css:
+    theme:
+      css/in-brief-listing.css: { weight: 450 }
   js:
     js/in-brief-page.js: {}
   dependencies:
     - core/drupal
     - core/once
 
+archive_listings:
+  version: 1.0
+  css:
+    theme:
+      css/wp-query-pagination.css: { weight: 420 }
+
 global:
-  version: 1.4
+  version: 1.5
   css:
     theme:
       css/theme.css: { weight: 400 }

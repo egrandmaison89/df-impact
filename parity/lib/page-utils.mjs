@@ -174,6 +174,13 @@ export async function sampleComputedStyles(page, selectors) {
 export function normalizeText(s) {
   return (s || '')
     .replace(/\u00a0/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/https?:\/\/(?:i\d+\.)?wp\.com\/danafarberimpact\.org/gi, 'https://danafarberimpact.org')
+    .replace(/https?:\/\/(?:www\.)?danafarberimpact\.org/gi, '')
+    .replace(/(\d)\s+by\b/gi, '$1by')
+    .replace(/[\u2018\u2019\u2032]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
     .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase();

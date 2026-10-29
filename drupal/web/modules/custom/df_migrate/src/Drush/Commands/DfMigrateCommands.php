@@ -215,11 +215,37 @@ final class DfMigrateCommands extends DrushCommands {
   public function syncWordpressPaths(): void {
     $inc = dirname(__DIR__, 3) . '/scripts/df_sync_wordpress_paths.inc';
     if (!is_readable($inc)) {
-      $this->logger()->error(dt('Missing @f', ['@f' => $inc]));
+      $this->logger()->error(dt('Missing @f', ['@f' => $inc));
       return;
     }
     require_once $inc;
     df_migrate_run_sync_wordpress_paths();
+  }
+
+  /**
+   * Decode HTML entities in node titles and plain-text fields (one-time fix).
+   */
+  #[Command(name: 'df-migrate:decode-text-entities')]
+  #[Bootstrap(level: DrupalBootLevels::FULL)]
+  #[Usage(name: 'drush df-migrate:decode-text-entities --dry-run', description: 'Report entity reference counts without saving.')]
+  #[Option(name: 'dry-run', description: 'Do not save node changes.')]
+  public function decodeTextEntities(array $options = ['dry-run' => FALSE]): void {
+    $inc = dirname(__DIR__, 3) . '/scripts/decode_text_entities.inc';
+    if (!is_readable($inc)) {
+      $this->logger()->error(dt('Missing @f', ['@f' => $inc));
+      return;
+    }
+    require_once $inc;
+    $result = df_migrate_decode_text_entities_run((bool) $options['dry-run']);
+    $this->io()->table(
+      ['Metric', 'Value'],
+      [
+        ['Nodes scanned', (string) $result['scanned']],
+        ['Nodes updated', (string) $result['updated']],
+        ['Entity refs (before)', (string) $result['entities_before']],
+        ['Entity refs (after)', (string) $result['entities_after']],
+      ],
+    );
   }
 
 }

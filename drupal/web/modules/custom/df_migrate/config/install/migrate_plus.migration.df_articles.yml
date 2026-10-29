@@ -74,7 +74,9 @@ source:
       type: integer
 
 process:
-  title: title
+  title:
+    plugin: df_decode_plain_text
+    source: title
   type:
     plugin: default_value
     default_value: article
@@ -117,7 +119,9 @@ process:
   field_byline: byline
   field_photo_credit: photo_credit
   field_photo_caption: photo_caption
-  field_excerpt: excerpt
+  field_excerpt:
+    plugin: df_decode_plain_text
+    source: excerpt
   field_meta_description: meta_description
 
   # Map homepage placement (featured / recent highlights only).

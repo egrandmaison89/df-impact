@@ -17,6 +17,7 @@
 declare(strict_types=1);
 
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 
@@ -52,6 +53,7 @@ function df_setup_post_update_in_brief_excerpt(): string {
   if (!$storage instanceof FieldStorageConfig) {
     return 'field_excerpt storage missing; sync field.storage.node.field_excerpt from config.';
   }
+  _df_setup_repair_link_default_view_formatters();
   FieldConfig::create([
     'field_storage' => $storage,
     'label' => 'Listing excerpt',
@@ -59,6 +61,41 @@ function df_setup_post_update_in_brief_excerpt(): string {
     'required' => FALSE,
   ])->save();
   return 'Added field_excerpt to in_brief.';
+}
+
+/**
+ * Stale view displays may use link widget id "link_default" as formatter (invalid).
+ *
+ * FieldConfig::save() validates all displays; repair before post_updates that add fields.
+ */
+function _df_setup_repair_link_default_view_formatters(): void {
+  if (!\Drupal::moduleHandler()->moduleExists('link')) {
+    \Drupal::service('module_installer')->install(['link'], TRUE);
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('entity_view_display');
+  foreach ($storage->loadMultiple() as $display) {
+    if (!$display instanceof EntityViewDisplayInterface) {
+      continue;
+    }
+    $content = $display->get('content');
+    if (!is_array($content)) {
+      continue;
+    }
+    $changed = FALSE;
+    foreach ($content as $field_name => $component) {
+      if (!is_array($component)) {
+        continue;
+      }
+      if (($component['type'] ?? '') === 'link_default') {
+        $content[$field_name]['type'] = 'link';
+        $changed = TRUE;
+      }
+    }
+    if ($changed) {
+      $display->set('content', $content);
+      $display->save();
+    }
+  }
 }
 
 /**

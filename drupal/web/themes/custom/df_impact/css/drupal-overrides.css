@@ -2,16 +2,13 @@
  * Minimal Drupal-only fixes on top of WordPress reference-pack CSS.
  * Shrink this file as Twig markup converges on WP DOM.
  */
-.toolbar,
-#toolbar-administration {
-  display: none !important;
-}
-
-/* WordPress parity: no Drupal breadcrumb, tabs, or contextual edit affordances on the public theme. */
-.contextual,
-.contextual-region .contextual,
-.block-local-tasks-block,
-nav.tabs {
+/* WordPress parity for anonymous visitors only — logged-in editors keep toolbar/tabs/contextual. */
+body:not(.user-logged-in) .toolbar,
+body:not(.user-logged-in) #toolbar-administration,
+body:not(.user-logged-in) .contextual,
+body:not(.user-logged-in) .contextual-region .contextual,
+body:not(.user-logged-in) .block-local-tasks-block,
+body:not(.user-logged-in) nav.tabs {
   display: none !important;
 }
 

@@ -75,6 +75,47 @@ function latestPublishedIssueNid(): number {
   return Number(id) || 0;
 }
 
+function samplePublishedArticlePath(): string {
+  const alias = drush(
+    `sqlq "SELECT pa.alias FROM node_field_data n INNER JOIN path_alias pa ON pa.path = CONCAT('/node/', n.nid) WHERE n.type='article' AND n.status=1 AND pa.alias LIKE '/20%' ORDER BY n.nid DESC LIMIT 1"`,
+  );
+  if (!alias) {
+    throw new Error('No published article alias for admin toolbar test');
+  }
+  return alias.startsWith('/') ? alias : `/${alias}`;
+}
+
+async function expectLoggedInToolbar(page: import('@playwright/test').Page) {
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => {
+          const body = document.body;
+          return (
+            body.classList.contains('user-logged-in') && !body.classList.contains('toolbar-loading')
+          );
+        }),
+      { timeout: 60_000, intervals: [200, 500, 1000] },
+    )
+    .toBe(true);
+
+  const toolbarBar = page.locator('#toolbar-administration .toolbar-bar');
+  await expect(toolbarBar).toHaveCount(1);
+  await expect
+    .poll(async () => toolbarBar.evaluate((el) => el.getBoundingClientRect().height), {
+      timeout: 30_000,
+      intervals: [200, 500, 1000],
+    })
+    .toBeGreaterThan(0);
+}
+
+async function expectLoggedInNodeTabs(page: import('@playwright/test').Page) {
+  await expectLoggedInToolbar(page);
+  await expect(
+    page.locator('.df-admin-local-tasks a, nav.tabs-wrapper a, nav.tabs a').filter({ hasText: /^Edit$/i }).first(),
+  ).toBeVisible();
+}
+
 /** Restore every setting admin-e2e may change so parity sweeps stay 801/801. */
 function restoreChromeSnapshot(): void {
   if (!snapshotReady) {
@@ -185,6 +226,27 @@ test.describe('Site admin chrome editing (UI)', () => {
 
   test.afterAll(() => {
     restoreChromeSnapshot();
+  });
+
+  test('site_admin front-end toolbar, tabs, and admin/content (anonymous stays clean)', async ({
+    page,
+  }) => {
+    const articlePath = samplePublishedArticlePath();
+    await withAnonymousPage(page, async (anon) => {
+      await go(anon, '/homepage');
+      await expect(anon.locator('#toolbar-administration')).toHaveCount(0);
+      await expect(anon.locator('.df-admin-local-tasks')).toHaveCount(0);
+    });
+
+    await login(page, SITE_ADMIN.name, SITE_ADMIN.pass);
+    await go(page, '/homepage');
+    await expectLoggedInToolbar(page);
+    await go(page, articlePath);
+    await expectLoggedInNodeTabs(page);
+    const adminContent = await go(page, '/admin/content');
+    expect(adminContent?.status()).toBe(200);
+    await screenshot(page, '00-admin-front-end-toolbar');
+    await logout(page);
   });
 
   test('web_editor cannot access site chrome admin', async ({ page }) => {

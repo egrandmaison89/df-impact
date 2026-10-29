@@ -18,7 +18,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
 final class WordpressLegacyPathSubscriber implements EventSubscriberInterface {
 
   public static function getSubscribedEvents(): array {
-    return [KernelEvents::REQUEST => [['onRequest', 40]]];
+    // Before RouterListener (32) so rewritten /category/* paths match Views routes.
+    return [KernelEvents::REQUEST => [['onRequest', 31]]];
   }
 
   public function onRequest(RequestEvent $event): void {
@@ -37,51 +38,16 @@ final class WordpressLegacyPathSubscriber implements EventSubscriberInterface {
       $this->rebuildRequest($request, '/issues', []);
       return;
     }
-    if ($path === '/digital-exclusives') {
-      $this->rebuildRequest($request, '/category/digital-exclusives', []);
-      return;
-    }
 
     if (preg_match('#^/category/([a-z0-9-]+)/page/(\d+)$#i', $path, $matches)) {
       $slug = $matches[1];
       $page = max(0, (int) $matches[2] - 1);
+      $wp_path = "/category/{$slug}/page/" . (int) $matches[2];
       $this->rebuildRequest($request, "/category/{$slug}", ['page' => (string) $page]);
+      $request->attributes->set('df_setup_wp_archive_path', $wp_path);
       return;
     }
 
-    if (preg_match('#^/tag/([a-z0-9-]+)(?:/page/(\d+))?$#i', $path, $matches)) {
-      $slug = $matches[1];
-      $page = isset($matches[2]) ? max(0, (int) $matches[2] - 1) : 0;
-      $issue_path = $this->issuePathForTag($slug);
-      $target = $issue_path ?? '/category/' . $slug;
-      $this->rebuildRequest(
-        $request,
-        $target,
-        $page > 0 ? ['page' => (string) $page] : [],
-      );
-    }
-  }
-
-  /**
-   * WordPress post tags that map to Drupal issue landing paths (issues.json).
-   */
-  private function issuePathForTag(string $tag_slug): ?string {
-    static $map = NULL;
-    if ($map === NULL) {
-      $map = [];
-      $file = \Drupal::root() . '/modules/custom/df_migrate/data/issues.json';
-      if (is_readable($file)) {
-        $rows = json_decode((string) file_get_contents($file), TRUE);
-        if (is_array($rows)) {
-          foreach ($rows as $row) {
-            if (!empty($row['slug']) && !empty($row['path_alias'])) {
-              $map[(string) $row['slug']] = (string) $row['path_alias'];
-            }
-          }
-        }
-      }
-    }
-    return $map[$tag_slug] ?? NULL;
   }
 
   private function rebuildRequest(Request $request, string $path, array $query): void {

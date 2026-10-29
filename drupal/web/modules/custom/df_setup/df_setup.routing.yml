@@ -5,3 +5,23 @@ df_setup.topics_index:
     _title: ''
   requirements:
     _access: 'TRUE'
+
+df_setup.wp_tag_archive:
+  path: '/tag/{slug}'
+  defaults:
+    _controller: '\Drupal\df_setup\Controller\WpTagArchiveController::render'
+    _title_callback: '\Drupal\df_setup\Controller\WpTagArchiveController::title'
+    page: ~
+  requirements:
+    _access: 'TRUE'
+    slug: '[a-z0-9-]+'
+
+df_setup.wp_tag_archive_page:
+  path: '/tag/{slug}/page/{page}'
+  defaults:
+    _controller: '\Drupal\df_setup\Controller\WpTagArchiveController::render'
+    _title_callback: '\Drupal\df_setup\Controller\WpTagArchiveController::title'
+  requirements:
+    _access: 'TRUE'
+    slug: '[a-z0-9-]+'
+    page: '\d+'

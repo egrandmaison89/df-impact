@@ -2251,9 +2251,19 @@ function df_impact_decode_plain_text(?string $text): string {
 }
 
 function df_impact_archive_excerpt_for_node(NodeInterface $node): string {
-  $manifest = df_impact_article_manifest_row($node);
+  $manifest = $node->bundle() === 'in_brief'
+    ? df_impact_in_brief_manifest_row($node)
+    : df_impact_article_manifest_row($node);
   if (!empty($manifest['excerpt'])) {
-    return df_impact_decode_plain_text(trim(strip_tags((string) $manifest['excerpt'])));
+    $text = df_impact_decode_plain_text(trim(strip_tags((string) $manifest['excerpt'])));
+    $text = preg_replace('/\s+/u', ' ', $text) ?? $text;
+    if (mb_strlen($text) > 320) {
+      $text = mb_substr($text, 0, 317) . '…';
+    }
+    return $text;
+  }
+  if ($node->bundle() === 'in_brief' && $node->hasField('field_summary') && !$node->get('field_summary')->isEmpty()) {
+    return df_impact_decode_plain_text(trim(strip_tags($node->get('field_summary')->value ?? '')));
   }
   if ($node->hasField('field_excerpt') && !$node->get('field_excerpt')->isEmpty()) {
     return trim(strip_tags($node->get('field_excerpt')->value ?? ''));

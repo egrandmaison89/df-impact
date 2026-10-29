@@ -996,8 +996,10 @@ function df_setup_update_10026(): string {
 
 /**
  * Sync About Impact staff block with WordPress reference (content sweep parity).
+ *
+ * Renumbered from 10027 — PR #22 owns hook_update_10027 (issue fixture backfill).
  */
-function df_setup_update_10027(): string {
+function df_setup_update_10028(): string {
   $storage = \Drupal::entityTypeManager()->getStorage('node');
   $nids = $storage->getQuery()
     ->condition('type', 'page')
@@ -1013,6 +1015,13 @@ function df_setup_update_10027(): string {
     return 'About Impact page could not be loaded.';
   }
   $body = (string) $node->get('body')->value;
+  $expected_claudia = '<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>';
+  if (
+    !str_contains($body, 'Zuhirah Khaldun-Diarra')
+    && str_contains($body, $expected_claudia)
+  ) {
+    return 'About Impact staff block already matches WordPress reference (no-op).';
+  }
   $body = preg_replace(
     '/<p><strong>Vice President, Philanthropy Communications &amp; Marketing<\/strong><br>Zuhirah Khaldun-Diarra<\/p>\s*/',
     '',
@@ -1020,9 +1029,12 @@ function df_setup_update_10027(): string {
   ) ?? $body;
   $body = str_replace(
     '<p><strong>Creative Director</strong><br>Claudia de Piante</p>',
-    '<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>',
+    $expected_claudia,
     $body,
   );
+  if ($body === (string) $node->get('body')->value) {
+    return 'About Impact staff block already matches WordPress reference (no-op).';
+  }
   $node->set('body', ['value' => $body, 'format' => 'full_html']);
   $node->save();
   drupal_flush_all_caches();

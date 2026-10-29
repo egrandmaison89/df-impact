@@ -56,9 +56,9 @@ function pathToPackSlug(p) {
 
 async function ensureRefPackServer() {
   if (refPackBase) return refPackBase;
-  const started = startRefPackServer(packRoot, { drupalBase });
-  refPackServer = started.server;
+  const started = await startRefPackServer(packRoot, { drupalBase });
   refPackBase = started.baseUrl;
+  refPackServer = { close: () => started.close() };
   return refPackBase;
 }
 

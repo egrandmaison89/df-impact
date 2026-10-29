@@ -30,13 +30,11 @@
       {{ content.body }}
     {% endif %}
 
-    {% include '@df_impact/includes/article-social-share.html.twig' %}
-
     {% if content.field_content_sections|render|trim %}
       {{ content.field_content_sections }}
     {% endif %}
 
-    {% include '@df_impact/includes/wp-article-socialsnap-share.html.twig' %}
+    {% include '@df_impact/includes/article-social-share.html.twig' %}
   </div>
 
   {% if article_post_term_links is defined and article_post_term_links|length %}

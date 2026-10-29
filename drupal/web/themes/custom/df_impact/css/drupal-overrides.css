@@ -74,6 +74,8 @@ body {
  */
 .wp-site-blocks {
   box-sizing: content-box !important;
+  /* Live WP global layout (--wp--custom--spacing--outer), not clamp(20px, 5vw, 72px). */
+  --wp--custom--spacing--outer: max(1.75rem, 5vw);
   width: calc(100vw - 2 * var(--wp--custom--spacing--outer, 72px)) !important;
   max-width: none;
   margin-left: auto;
@@ -83,12 +85,6 @@ body {
 }
 
 @media (max-width: 768px) {
-  .wp-site-blocks {
-    width: calc(100vw - 40px) !important;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
   .wp-site-blocks .desktop-header {
     display: none !important;
   }
@@ -100,18 +96,46 @@ body {
   }
 }
 
-/* Social Snap inline share — WP block layout stacks icon rows (flex row was ~96px vs ~304px). */
+/*
+ * Live WP: main/footer content column ~20px inset inside outer padding, max 1400px.
+ * Uses --wp--custom--spacing--outer (max(1.75rem, 5vw)) so tablet widths track WP.
+ */
+@media (min-width: 769px) {
+  .wp-site-blocks > main#wp--skip-link--target,
+  .wp-site-blocks > footer {
+    box-sizing: border-box;
+    max-width: 1400px;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px) - 40px) !important;
+    margin-left: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .wp-site-blocks > main#wp--skip-link--target,
+  .wp-site-blocks > footer {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* Social Snap inline share — horizontal icon row (WordPress Social Snap default). */
 .ss-inline-share-wrapper.ss-left-inline-content .ss-social-icons-container {
-  display: block !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .ss-inline-share-wrapper.ss-left-inline-content .ss-social-icons-container > li {
-  display: block;
-  margin: 0 0 16px;
-}
-
-.ss-inline-share-wrapper.ss-left-inline-content {
-  padding-bottom: 8px;
+  display: inline-block;
+  margin: 0;
 }
 
 /* Article/in-brief: floated lead images must expand <main> height (WP block layout). */
@@ -202,9 +226,9 @@ main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-image 
 
 @media (max-width: 768px) {
   .wp-site-blocks .mobile-header.alignfull {
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    width: calc(100% + 40px) !important;
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 20px)) !important;
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 20px)) !important;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 20px)) !important;
     max-width: none;
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -302,9 +326,9 @@ main .ultp-block-item a:hover {
 
 @media (max-width: 768px) {
   .wp-site-blocks > footer.wp-block-template-part {
-    width: calc(100% + 40px);
-    margin-left: -20px;
-    margin-right: -20px;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 20px));
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 20px));
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 20px));
     max-width: 100vw;
     box-sizing: border-box;
   }
@@ -342,6 +366,39 @@ main .ultp-block-item a:hover {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Tablet / medium desktop — header + homepage hero (WP blockmag breakpoints). */
+@media (min-width: 769px) and (max-width: 1280px) {
+  .wp-site-blocks .desktop-header .header-logo img,
+  .wp-site-blocks .desktop-header .header-logo .wp-image-4427 {
+    width: min(400px, 42vw) !important;
+    height: auto !important;
+  }
+
+  .wp-site-blocks .desktop-header .right-side-header {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .wp-site-blocks .desktop-header .is-content-justification-space-between.is-nowrap {
+    flex-wrap: wrap !important;
+    gap: 0.5rem;
+  }
+
+  #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link {
+    font-size: clamp(0.875rem, 1.6vw, 1rem);
+    white-space: nowrap;
+  }
+
+  .homepage-banner .wp-block-cover__inner-container h1,
+  .homepage-banner .homepage-header h1 {
+    max-width: 100%;
+    box-sizing: border-box;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
   }
 }
 

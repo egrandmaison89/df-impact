@@ -67,7 +67,6 @@ echo "==> Config import"
 # site:install seeds Basic page content that blocks a full config sync.
 "${DRUSH[@]}" sql:query "DELETE FROM node_field_data; DELETE FROM node_field_revision; DELETE FROM node; DELETE FROM node_revision;" 2>/dev/null || true
 # node.type.* must exist before field config that references bundles (issue, article, …).
-"${DRUSH[@]}" sql:query "DELETE FROM node_field_data; DELETE FROM node_field_revision; DELETE FROM node; DELETE FROM node_revision;" 2>/dev/null || true
 SYNC="${DRUPAL}/web/sites/default/files/sync"
 mkdir -p /tmp/cim-node-types
 cp "${SYNC}"/node.type.*.yml /tmp/cim-node-types/
@@ -92,6 +91,7 @@ done
 "${DRUSH[@]}" pm:enable df_secondary -y
 "${DRUSH[@]}" df-migrate:sync-wordpress-paths
 "${DRUSH[@]}" php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); echo _df_setup_run_post_migrate_integrator_convergence();"
+"${DRUSH[@]}" php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); _df_setup_ensure_home_landing();"
 "${DRUSH[@]}" search-api:index
 "${DRUSH[@]}" cr
 

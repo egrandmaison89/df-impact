@@ -104,14 +104,6 @@ function archiveExportHtmlForPath(publicPath) {
     return wrapArchiveListingHtml('Stories Archive', slice);
   }
 
-  if (basePath === '/topics') {
-    const topics = loadJson('topics.json')
-      .filter((t) => !t.is_parent && t.name)
-      .map((t) => ({ title: t.name, body: '' }))
-      .sort((a, b) => a.title.localeCompare(b.title));
-    return wrapArchiveListingHtml('Topics', topics, { titlesOnly: true });
-  }
-
   const catMatch = basePath.match(/^\/category\/([^/]+)$/i);
   if (catMatch) {
     const topic = topicNameForCategorySlug(catMatch[1]);

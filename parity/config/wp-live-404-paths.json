@@ -1,0 +1,7 @@
+{
+  "/topics": {
+    "reason": "Live WordPress serves HTTP 404 “Page not found - Impact Magazine” at /topics/ (no public topics index). Baseline: reference-pack/topics/desktop/rendered.html (captured WP 404 HTML).",
+    "liveUrl": "https://danafarberimpact.org/topics/",
+    "baseline": "reference-pack/topics/desktop/rendered.html"
+  }
+}

@@ -8,7 +8,9 @@
 declare(strict_types=1);
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\df_setup\ArchivePageWpOrder;
 use Drupal\df_setup\ArticleCreditLabels;
@@ -814,6 +816,7 @@ function df_setup_format_issue_nav_label(NodeInterface $issue): string {
   $year = trim((string) ($issue->get('field_year')->value ?? ''));
   return trim($season . ' ' . $year);
 }
+
 function _df_setup_get_or_create_image_media(string $file_uri, string $alt = ''): ?int {
   $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $file_uri]);
   $file = reset($files);
@@ -1160,4 +1163,69 @@ function _df_setup_backfill_issue_banner_images(): string {
     $updated++;
   }
   return "Issue banner media: updated={$updated} skipped={$skipped}.";
+}
+
+/**
+ * Tag slug for a legacy issue path (issues.json), e.g. /late-fall-2022-issue.
+ */
+function df_setup_issue_tag_slug_for_path_alias(string $alias): string {
+  static $by_alias = NULL;
+  if ($by_alias === NULL) {
+    $by_alias = [];
+    $path = DRUPAL_ROOT . '/modules/custom/df_migrate/data/issues.json';
+    if (is_readable($path)) {
+      $rows = json_decode((string) file_get_contents($path), TRUE);
+      if (is_array($rows)) {
+        foreach ($rows as $row) {
+          if (!empty($row['path_alias']) && !empty($row['slug'])) {
+            $key = '/' . trim((string) $row['path_alias'], '/') . '/';
+            $by_alias[$key] = (string) $row['slug'];
+          }
+        }
+      }
+    }
+  }
+  $norm = '/' . trim($alias, '/') . '/';
+  return $by_alias[$norm] ?? '';
+}
+
+/**
+ * When WP had no issue landing, map the issue URL to its tag archive slug.
+ */
+function df_setup_legacy_issue_tag_slug_for_request_path(string $path): string {
+  if (!\Drupal::moduleHandler()->moduleExists('df_migrate')) {
+    return '';
+  }
+  $fixture = \Drupal\df_migrate\IssuePageWpFixture::rowForPathAlias($path);
+  if (!is_array($fixture) || empty($fixture['wp_archive_error'])) {
+    return '';
+  }
+  return df_setup_issue_tag_slug_for_path_alias($path);
+}
+
+/**
+ * Implements hook_entity_view_alter().
+ *
+ * Legacy issues: embed the tag archive grid at the issue URL (same articles).
+ */
+function df_setup_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display): void {
+  if ($display->getMode() !== 'full' || !$entity instanceof NodeInterface || $entity->bundle() !== 'issue') {
+    return;
+  }
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $entity->id());
+  $slug = df_setup_legacy_issue_tag_slug_for_request_path($alias);
+  if ($slug === '') {
+    return;
+  }
+  $tag_path = '/tag/' . $slug;
+  \Drupal::request()->attributes->set('df_setup_wp_archive_path', $tag_path);
+  $view_build = views_embed_view('topic_archive', 'page_1', 'all');
+  if (!is_array($view_build)) {
+    return;
+  }
+  $view_build['#cache']['tags'] = Cache::mergeTags(
+    $view_build['#cache']['tags'] ?? [],
+    $entity->getCacheTags(),
+  );
+  $build = $view_build;
 }

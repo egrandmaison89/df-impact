@@ -101,3 +101,11 @@ function df_setup_post_update_seed_issue_covers(&$sandbox): string {
 function df_setup_post_update_seed_issue_banners(&$sandbox): string {
   return _df_setup_backfill_issue_banner_images();
 }
+
+/**
+ * Applies full About Impact Gutenberg body + staff block (#25 on phase4).
+ */
+function df_setup_post_update_ensure_about_impact_body(): string {
+  require_once __DIR__ . '/df_setup.install';
+  return _df_setup_apply_about_impact_gutenberg_body();
+}

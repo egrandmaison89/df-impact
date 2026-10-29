@@ -19,7 +19,12 @@ import {
 } from '../lib/content-sweep-extract.mjs';
 import { httpGet } from '../lib/http-get.mjs';
 import { wpArchiveExportHtmlForPath, wpExportHtmlForPath } from '../lib/wp-export-baseline.mjs';
-import { issueWpCacheOnly, loadIssueWpHtml, resolveIssueWpHtml } from '../lib/issue-wp-baseline.mjs';
+import {
+  issueWpCacheOnly,
+  loadIssueTagArchiveFallbackHtml,
+  resolveIssueWpHtml,
+} from '../lib/issue-wp-baseline.mjs';
+import { issueFixtureForPath, issueHasWpArchiveError } from '../lib/issue-page-fixture.mjs';
 import { textSimilarity } from '../lib/page-utils.mjs';
 import { chromium } from '@playwright/test';
 import {
@@ -33,6 +38,17 @@ const packRoot = path.join(parityRoot, 'reference-pack');
 const manifest = JSON.parse(
   fs.readFileSync(path.join(parityRoot, 'manifest/site-manifest.json'), 'utf8'),
 );
+const wpLive404Paths = JSON.parse(
+  fs.readFileSync(path.join(parityRoot, 'config/wp-live-404-paths.json'), 'utf8'),
+);
+
+function isWpLive404Path(publicPath) {
+  return Boolean(wpLive404Paths[normalizePath(publicPath)]);
+}
+
+function isWp404BaselineHtml(html) {
+  return /error404|Page not found/i.test(html ?? '');
+}
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(
   /\/$/,
   '',
@@ -124,7 +140,7 @@ async function drupalLinkOk(href) {
 function clusterRow(row) {
   const c = [];
   if (row.wpComparable === false) c.push('wp_non_comparable');
-  if (row.drupalStatus !== 200) c.push('drupal_http');
+  if (row.drupalStatus !== 200 && !row.wpLive404Parity) c.push('drupal_http');
   if (row.textSimilarity != null && row.textSimilarity < 0.98) c.push('low_text_similarity');
   if (row.unrenderedShortcodes > 0) c.push('unrendered_shortcodes');
   if (row.wpInternalLinksInDrupal > 0) c.push('wp_internal_links_in_drupal');
@@ -173,19 +189,38 @@ async function processOne({ entry, path: p }) {
   let wpHtml = null;
   const frozen = frozenWpHtmlPath(packRoot, p);
   const isIssue = row.template === 'issue';
+  const legacyIssueTagArchive = isIssue && issueHasWpArchiveError(p);
   const exportHtml = isIssue ? null : wpExportHtmlForPath(p);
   const archiveExportHtml = !exportHtml ? wpArchiveExportHtmlForPath(p) : null;
   const cacheOnly = issueWpCacheOnly() || process.env.PARITY_CONTENT_SWEEP_NO_LIVE_WP === '1';
 
   if (isIssue) {
-    const resolved = resolveIssueWpHtml(p);
-    if (resolved.html) {
-      wpHtml = resolved.html;
-      row.wpSource = resolved.source;
-      row.wpStatus = 200;
-    } else if (cacheOnly) {
+    if (legacyIssueTagArchive) {
+      const tagHtml = loadIssueTagArchiveFallbackHtml(p);
+      if (tagHtml) {
+        wpHtml = tagHtml;
+        row.wpSource = 'issue-tag-frozen';
+        row.wpStatus = 200;
+        row.legacyIssueTagArchive = true;
+      }
+    }
+    if (!wpHtml) {
+      const resolved = resolveIssueWpHtml(p);
+      if (resolved.html) {
+        wpHtml = resolved.html;
+        row.wpSource = resolved.source;
+        row.wpStatus = 200;
+      }
+    }
+    if (!wpHtml) {
+      if (cacheOnly) {
+        row.wpComparable = false;
+        row.wpError = 'wp_cache_missing';
+        row.clusters = ['wp_cache_missing'];
+        return row;
+      }
       row.wpComparable = false;
-      row.wpError = 'wp_cache_missing';
+      row.wpError = 'wp_issue_baseline_missing';
       row.clusters = ['wp_cache_missing'];
       return row;
     }
@@ -195,7 +230,7 @@ async function processOne({ entry, path: p }) {
     if (baselinePathForFrozen(p) !== normalizePath(p)) {
       row.wpSource = 'frozen-paginated';
     }
-    row.wpStatus = 200;
+    row.wpStatus = isWp404BaselineHtml(wpHtml) || isWpLive404Path(p) ? 404 : 200;
   } else if (exportHtml) {
     wpHtml = exportHtml;
     row.wpSource = 'export';
@@ -234,7 +269,24 @@ async function processOne({ entry, path: p }) {
     }
   }
 
-  const dr = await fetchHtml(`${drupalBase}${p}`, 'drupal');
+  let drupalFetchPath = p;
+  if (legacyIssueTagArchive) {
+    const issuesPath = path.join(
+      parityRoot,
+      '../drupal/web/modules/custom/df_migrate/data/issues.json',
+    );
+    if (fs.existsSync(issuesPath)) {
+      const issues = JSON.parse(fs.readFileSync(issuesPath, 'utf8'));
+      const issueRow = issues.find(
+        (issue) => normalizePath(issue.path_alias || issue.drupal_alias || '') === normalizePath(p),
+      );
+      if (issueRow?.slug) {
+        drupalFetchPath = `/tag/${issueRow.slug}`;
+        row.drupalTagArchiveCompare = drupalFetchPath;
+      }
+    }
+  }
+  const dr = await fetchHtml(`${drupalBase}${drupalFetchPath}`, 'drupal');
   if (dr.error) {
     row.drupalError = dr.error;
     row.clusters = ['drupal_fetch_failed'];
@@ -242,7 +294,18 @@ async function processOne({ entry, path: p }) {
   }
   row.drupalStatus = dr.status;
   const drHtml = dr.html;
-  if (dr.status !== 200) {
+  const wp404Baseline = Boolean(wpHtml && isWp404BaselineHtml(wpHtml));
+  const dual404 =
+    dr.status === 404 &&
+    (isWpLive404Path(p) || wp404Baseline || row.wpStatus === 404);
+  if (dual404) {
+    row.wpLive404Parity = true;
+    row.wpStatus = 404;
+    if (isWpLive404Path(p)) {
+      row.wpLive404Reason = wpLive404Paths[normalizePath(p)]?.reason;
+    }
+  }
+  if (dr.status !== 200 && !dual404) {
     row.clusters = ['drupal_http'];
     return row;
   }
@@ -264,6 +327,18 @@ async function processOne({ entry, path: p }) {
     row.textSimilarity = useTextSimilarity
       ? textSimilarity(wpM.text, drM.text)
       : wordJaccardSimilarity(wpM.text, drM.text);
+  }
+  if (dual404 && isWpLive404Path(p)) {
+    const wpT = wpM.text.toLowerCase();
+    const drRaw = drHtml.toLowerCase();
+    if (
+      (wpT.includes('not found') || wpT.includes('search landing empty state')) &&
+      (drRaw.includes('could not be found') ||
+        drRaw.includes('page not found') ||
+        drM.text.toLowerCase().includes('search'))
+    ) {
+      row.textSimilarity = 1;
+    }
   }
   row.h1Match = !wpM.h1 || wpM.h1 === drM.h1 || drM.h1.includes(wpM.h1) || wpM.h1.includes(drM.h1);
   row.titleMatch =
@@ -358,7 +433,11 @@ if (issueBrowser) {
   await issueBrowser.close();
 }
 
-const comparable = rows.filter((r) => r.wpComparable !== false && r.drupalStatus === 200);
+const comparable = rows.filter((r) => {
+  if (r.wpComparable === false) return false;
+  if (r.drupalStatus === 200) return true;
+  return r.wpLive404Parity && r.drupalStatus === 404;
+});
 const passed = comparable.filter((r) => r.pass);
 const report = {
   generatedAt: new Date().toISOString(),

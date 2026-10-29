@@ -46,14 +46,24 @@ export function issuePathToCacheFile(publicPath) {
   return path.join(cacheDir, `${slug}.html`);
 }
 
+function hasIssueOrArchiveGrid(html) {
+  return (
+    /ultp-post-grid-block|ultp-block-items-wrap|wp-block-query|ultp-block-row/i.test(html) &&
+    html.length > 15000
+  );
+}
+
 export function validateIssueWpHtml(html) {
   if (!html || html.length < 5000 || /sgcaptcha|well-known\/sgcaptcha/i.test(html)) {
     return null;
   }
-  if (
-    /Page not found|error404|arch_err|"post":"0"/i.test(html) &&
-    !/ultp-post-grid-block/.test(html)
-  ) {
+  if (/Page not found|error404/i.test(html)) {
+    return null;
+  }
+  if (/arch_err/i.test(html) && !/"arch_tag"/i.test(html)) {
+    return null;
+  }
+  if (/"post":"0"/i.test(html) && !hasIssueOrArchiveGrid(html)) {
     return null;
   }
   return html;
@@ -97,7 +107,7 @@ export function resolveIssueWpHtml(publicPath) {
     return { html: tagFallback, source: 'issue-tag-frozen' };
   }
   const frozen = frozenWpHtmlPath(packRoot, publicPath);
-  if (frozen) {
+  if (frozen && fs.existsSync(frozen)) {
     const html = validateIssueWpHtml(fs.readFileSync(frozen, 'utf8'));
     if (html) {
       return { html, source: 'refpack' };

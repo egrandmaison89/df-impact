@@ -930,16 +930,6 @@ main nav.pager .pager__item a:focus-visible,
   color: #00629b !important;
 }
 
-main .wp-block-button a.wp-block-button__link.has-background {
-  transition: all 0.3s ease-in-out;
-}
-
-main .wp-block-button a.wp-block-button__link.has-background:hover,
-main .wp-block-button a.wp-block-button__link.has-background:focus-visible {
-  color: #00629b;
-  background-color: transparent !important;
-}
-
 @media (max-width: 767px) {
   .de-archive-card {
     grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);

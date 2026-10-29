@@ -19,6 +19,14 @@ body {
   margin: 0;
 }
 
+/* PR #25 / live WP: desktop mega nav link default background at tablet+ (768px). */
+@media (min-width: 768px) {
+  #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link,
+  .header__nav-link {
+    background-color: rgb(255, 255, 255);
+  }
+}
+
 /* Mega flyout hover (Max Mega Menu). Sticky header comes from WP pack (`header { position: sticky }`). */
 @media (min-width: 769px) {
   #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children:hover > ul.mega-sub-menu,
@@ -33,6 +41,13 @@ body {
 .desktop-header.header--scrolled,
 .impact-header.header--scrolled {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* WP `.desktop-header .scrolled` targets logo only; never shrink the header shell. */
+.impact-header.scrolled,
+.desktop-header.scrolled {
+  max-width: none !important;
+  width: 100% !important;
 }
 
 /* Full viewport width on scroll (wp-chrome-behaviors toggles `.header--scrolled`, not `.scrolled`). */

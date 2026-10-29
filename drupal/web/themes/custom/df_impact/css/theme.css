@@ -1335,9 +1335,62 @@ article.post .wp-block-post-terms {
   object-fit: cover;
 }
 
-/* PostX “In This Issue” grid — reserve card image space before lazy load (CLS). */
+/* PostX “In This Issue” grid — WP style4 crop (768×551), layout-only parity. */
+.issue-page .ultp-block-70af6c .ultp-block-row {
+  column-gap: 40px;
+  row-gap: 40px;
+}
+
+.issue-page .ultp-block-70af6c .ultp-block-image {
+  aspect-ratio: 768 / 551;
+  width: 100%;
+  overflow: hidden;
+  contain: layout;
+  margin-bottom: 10px !important;
+}
+
+.issue-page .ultp-block-70af6c .ultp-block-content {
+  padding: 10px 40px 20px;
+  text-align: left;
+}
+
+.issue-page .ultp-block-70af6c .ultp-block-title {
+  padding: 10px 0 5px;
+}
+
+.issue-page .ultp-block-70af6c .ultp-block-title a {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+.issue-page .ultp-block-dd35a6 .ultp-block-row {
+  column-gap: 60px;
+  row-gap: 40px;
+}
+
+.issue-page .ultp-block-dd35a6 .ultp-block-content-wrap {
+  padding: 0 60px;
+}
+
+.issue-page .ultp-block-dd35a6 .ultp-block-image {
+  aspect-ratio: 768 / 551;
+  margin-bottom: 10px !important;
+}
+
+.issue-page .ultp-block-dd35a6 .ultp-block-excerpt,
+.issue-page .ultp-block-dd35a6 .ultp-block-excerpt p {
+  font-size: 18px;
+  line-height: 26px;
+  padding: 10px 0 0;
+}
+
+.issue-page h2.orange-border-header#IN_THIS_ISSUE {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .ultp-block-70af6c .ultp-block-image {
-  aspect-ratio: 1024 / 734;
+  aspect-ratio: 768 / 551;
   width: 100%;
   overflow: hidden;
   contain: layout;

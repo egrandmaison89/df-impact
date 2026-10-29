@@ -27,30 +27,6 @@ body {
     visibility: visible !important;
     opacity: 1 !important;
   }
-
-  /*
-   * WP blockmag applies -outer margins to every .alignfull under .wp-site-blocks.
-   * Header chrome nests several .wp-block-group.alignfull; only .desktop-header
-   * should bleed once (Mac pack: 1440px wide at 1440 viewport, not 1584px).
-   */
-  .wp-site-blocks .desktop-header.alignfull {
-    margin-left: calc(-1 * var(--wp--custom--spacing--outer)) !important;
-    margin-right: calc(-1 * var(--wp--custom--spacing--outer)) !important;
-    width: unset;
-  }
-
-  .wp-site-blocks .desktop-header .alignfull,
-  .wp-site-blocks .desktop-header .impact-header.alignfull {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: auto;
-  }
-
-  .wp-site-blocks > header.wp-block-template-part {
-    margin-left: 0;
-    margin-right: 0;
-    max-width: 100%;
-  }
 }
 
 .desktop-header.scrolled,

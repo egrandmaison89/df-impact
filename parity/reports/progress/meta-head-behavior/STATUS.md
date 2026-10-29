@@ -52,7 +52,7 @@ Base: `cursor/phase4-chrome-behavior-0b67` | **Stacked on PR #25** `cursor/guten
 | --- | --- |
 | `parity:head:manifest` | **773/773** |
 | `parity:url:check` | **801/801** |
-| `parity:behavior:templates` | **Active:** `2026-10-29T12-cross18-final` (tmux `behavior-cross18`, field-driven nav bg). |
+| `parity:behavior:templates` | **PASS** `2026-10-29T12-cross18-final`: **51/51** cases, **0** incomplete, **0** mismatch rows (17 paths × 3 BPs). Nav bg keyed off `field_issue_banner_is_light` / `is-light` hero. |
 | `parity:smoke:200` | **40 paths, 0 fails** (`reports/smoke-200/smoke-1793267221975.json`) |
 | Embeds backfill | VM run 2026-10-29: **before** 16 fields (15 article, 1 in_brief) with vimeo/youtube markers; **after** 1 in_brief field updated (articles already iframe-backed). Script: `drush php:script modules/custom/df_migrate/scripts/df_backfill_all_embeds.php` |
 
@@ -61,4 +61,4 @@ Base: `cursor/phase4-chrome-behavior-0b67` | **Stacked on PR #25** `cursor/guten
 - Harness: `pagerHover`, `categoryLinkHover`, `inBriefButtonHover`, `cardHover` in cross-site diff (optional when DOM missing).
 - Theme: `theme.css` — In Brief band + banner CTA hover/focus; ultp card title link hover; archive pager/category `:focus-visible`.
 
-Updated: 2026-10-29T12:20Z
+Updated: 2026-10-29T16:35Z

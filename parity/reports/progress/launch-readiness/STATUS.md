@@ -1,79 +1,62 @@
 # Launch readiness (non-visual parity)
 
-Branch: `cursor/launch-readiness-ce7f` (stack on [PR #18](https://github.com/egrandmaison89/df-impact/pull/18)). Docs: [`docs/deploy/ACQUIA_RUNBOOK.md`](../../../../docs/deploy/ACQUIA_RUNBOOK.md).
+Branch: `cursor/launch-readiness-ce7f` · [PR #19](https://github.com/egrandmaison89/df-impact/pull/19). Docs: [`docs/deploy/ACQUIA_RUNBOOK.md`](../../../../docs/deploy/ACQUIA_RUNBOOK.md).
 
 ## Performance (Lighthouse)
 
-**Templates:** homepage, issue, article, archive — mobile + desktop (`parity/config/launch-templates.json`).
+**Command:** `LAUNCH_WP_SOURCE=live WP_BASE_URL=https://danafarberimpact.org DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:launch:lighthouse` (retries via `LAUNCH_LIGHTHOUSE_RETRIES`, default 5).
 
-| Template | Form factor | Drupal (VM) | WP baseline | Notes |
-| --- | --- | --- | --- | --- |
-| homepage | mobile | perf 0.54 · LCP 35.6s · CLS 0.008 · TBT 113ms · 6126 KB · 73 req | ref-pack static N/A | |
-| homepage | desktop | perf 0.55 · LCP 33.7s · CLS 0.001 · TBT 54ms · 6126 KB · 73 req | ref-pack static N/A | Hero video dominates LCP locally |
-| issue | mobile | perf 0.35 · CLS **0.47** · 6280 KB · 76 req | ref-pack N/A | CLS from cover/banner layout (match WP ref layout) |
-| issue | desktop | perf 0.40 · CLS 0.28 · 6187 KB · 76 req | ref-pack N/A | |
-| article | mobile | perf 0.55 · LCP 33.6s · CLS 0.021 · 6112 KB · 70 req | ref-pack N/A | |
-| article | desktop | perf 0.55 · LCP ~33s · CLS ~0.02 · ~6112 KB · 70 req | ref-pack N/A | |
-| archive | mobile/desktop | perf ~0.54 · LCP ~35s · CLS ~0.003 · ~6150 KB | ref-pack N/A | |
+**Artifact:** `lighthouse-1793258053079.json` · Live WP + local Drupal VM.
 
-**Artifact:** `lighthouse-1793256935494.json`
+| Template | FF | Drupal perf | Drupal LCP | Drupal CLS | Drupal TBT | Drupal KB / req | WP perf | WP LCP | WP CLS | WP TBT | WP KB / req |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| homepage | mobile | 0.55 | 31.0s | 0.008 | 19ms | 5614 / 51 | 0.91* | 1.7s* | 0.19* | 0* | 9 / 12* |
+| homepage | desktop | 0.55 | 31.0s | 0.001 | 20ms | 5614 / 51 | 0.90* | 1.7s* | 0.10* | 0* | 9 / 12* |
+| issue | mobile | 0.55 | 31.4s | **0.001** | 17ms | 5674 / 54 | 0.68 | 10.5s | 0.007 | 44ms | 1538 / 87 |
+| issue | desktop | 0.55 | 31.2s | 0.001 | 19ms | 5674 / 54 | 0.54 | 8.9s | 0.039 | 128ms | 1600 / 89 |
+| article | mobile | 0.55 | 30.6s | 0.021 | 19ms | 5600 / 48 | 0.91* | 1.7s* | 0.19* | 0* | 9 / 12* |
+| article | desktop | 0.55 | 30.6s | 0.018 | 21ms | 5600 / 48 | 0.90* | 1.7s* | 0.10* | 0* | 9 / 12* |
+| archive | mobile | 0.55 | 31.0s | 0.002 | 18ms | 5638 / 56 | 0.73 | 5.7s | 0.001 | 31ms | 2003 / 74 |
+| archive | desktop | 0.55 | 32.5s | 0.003 | 21ms | 5817 / 60 | 0.59 | 5.6s | 0.005 | 46ms | 2003 / 74 |
 
-**WP comparison note:** Reference-pack `rendered.html` files are static snapshots; Lighthouse cannot score them as navigable origins (metrics null). For launch sign-off, re-run with `LAUNCH_WP_SOURCE=live` and `WP_BASE_URL=https://danafarberimpact.org` when bot wall allows, or use Chrome DevTools on paired URLs.
+\* **WP egress / bot wall:** Some live URLs return a minimal challenge document (~9 KB, ~12 requests). Treat **issue** and **archive** WP rows as the reliable live baseline; re-run from a network that receives full HTML for homepage/article before cutover sign-off.
 
-**Drupal mitigations shipped this workstream:**
+**Local VM LCP** is dominated by hero video and throttling; compare trends on Acquia prod, not absolute seconds.
 
-| Area | Change |
-| --- | --- |
-| Images | PostX cards: `loading="lazy"`, Photon **srcset** (350w + 768w) via `postx-card-image.html.twig` |
-| Hero video | `preload="metadata"` on homepage cover video |
-| CSS/JS | `system.performance` preprocess + gzip enabled (full aggregation on Acquia prod) |
-| Fonts | Google Fonts URL already uses `display=swap` (`css/base.css`) |
-| Markup | Removed duplicate `<title>` in `html.html.twig` |
-| PHP | Fixed `preg_match` delimiter in article image fallback (smoke watchdog clean) |
+### Issue mobile CLS (before / after)
+
+| Stage | CLS (issue mobile) | Change |
+| --- | --- | --- |
+| Before PostX reserve (`lighthouse-1793257578383.json`) | **0.475** | — |
+| After aspect-ratio on `.ultp-block-70af6c .ultp-block-image` + banner reserve | **0.001** | PostX lazy cards were collapsing before load (axe target: `ultp-block-content`) |
 
 ## Accessibility (axe)
 
-| Template | Drupal violations | WP (ref-pack) violations | Δ |
+| Template | Drupal | WP (ref-pack) | Δ |
 | --- | --- | --- | --- |
-| homepage | 2 (`aria-allowed-attr`, `link-name`) | 2 (`document-title`, `html-has-lang`) | 0 |
-| issue | 2 (`aria-allowed-attr`, `link-name`) | 2 | 0 |
-| article | 2 | 2 | 0 |
-| archive | 2 | 2 | 0 |
+| homepage / issue / article / archive | 2 each | 2 each | 0 |
 
-**Artifact:** `axe-1793256663981.json` · Script: `npm run parity:launch:axe`
+**Artifact:** `axe-1793257756047.json`
 
-Fixes: pager ellipsis `role="presentation"` removed (axe `list` on issue view). Shared chrome violations match mega-menu/social patterns from WP vendored assets; ref-pack HTML lacks `<html lang>` so WP counts differ.
-
-## Analytics & tracking
-
-WP does **not** expose a standalone GTM container on homepage reference HTML; primary tag management is **Adobe Launch** (includes GA/Adobe Analytics rules).
+## Analytics & tracking (`df_launch`)
 
 | Tag | WordPress (reference-pack) | Drupal (`df_launch`) | Fires |
 | --- | --- | --- | --- |
-| Adobe Launch | `launch-90664c3f0ed7.min.js` | Same URL in `df_launch.settings` | Page load + `_satellite` rules (container-managed) |
-| OneTrust | `otSDKStub.js` + domain `e2254d3c-…` | Matched in `df_launch` | Consent banner |
-| Meta Pixel | ID **340424612793527** | `fbq('init')` + `PageView` | Page view |
-| Bing UET | `bat.bing.com/bat.js` | Optional script include | Container / UET |
-| Jetpack stats | `pixel.wp.com/g.gif` blog **212495365** | `_wpStats` bootstrap | Page metrics (legacy WP parity) |
-| appEventData / link tracking | Inline `_satellite` + click listener | Via Adobe Launch + theme behaviors | Outbound / CTA clicks (Launch-managed) |
+| Adobe Launch | `launch-90664c3f0ed7.min.js` | Same URL in config | Page load (prod only) |
+| OneTrust | `otSDKStub.js` + domain `e2254d3c-…` | Matched | Consent (prod only) |
+| Meta Pixel | **340424612793527** | `fbq` bootstrap | PageView (prod only) |
+| Bing UET | `bat.bing.com/bat.js` | Optional include | UET (prod only) |
+| Jetpack stats | blog **212495365** | `_wpStats` bootstrap | Legacy parity (prod only) |
 
-**Not duplicated in Drupal core:** standalone `google_tag` / `google_analytics` modules (account empty) — use Launch + `df_site_snippets` for any extra containers.
+**Production gate:** `LaunchEnvironment` requires `df_launch.settings:enabled` **and** (`AH_SITE_ENVIRONMENT=prod` or `$settings['df_launch_tags_enabled'] = TRUE`, default **off**). Sync ships `enabled: false`; Acquia prod sets enabled via settings include (see runbook). **Unit tests:** `npm run parity:launch:tags-test` or PHPUnit path in runbook.
 
-## Gates (before push)
+## Gates
 
 | Gate | Result | Artifact |
 | --- | --- | --- |
-| `parity:smoke:200` | pass (39 paths, 0×5xx, 0 new PHP watchdog) | `smoke-1793256585884.json` |
-| `parity:head:refpack` | pass 21/21 | `compare-1793256596728.json` |
-| `parity:url:check` | pass 801/801 | `check-1793256653931.json` |
-| `parity:launch:axe` | pass (0 regressions) | `axe-1793256663981.json` |
-| `parity:launch:lighthouse` | captured (Drupal only vs ref-pack) | `lighthouse-1793256935494.json` |
-
-```bash
-cd parity
-DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:smoke:200
-DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:head:refpack
-DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:url:check
-npm run parity:launch:axe
-npm run parity:launch:lighthouse
-```
+| `parity:smoke:200` | pass | `smoke-1793257134209.json` |
+| `parity:head:refpack` | 21/21 | `compare-1793257134869.json` |
+| `parity:url:check` | 801/801 | `check-1793257196450.json` |
+| `parity:launch:axe` | 0 regressions | `axe-1793257756047.json` |
+| `parity:launch:lighthouse` | live WP + Drupal | `lighthouse-1793258053079.json` |
+| `parity:launch:tags-test` | 5/5 PHPUnit | `df_launch` unit tests |

@@ -1,4 +1,4 @@
-enabled: true
+enabled: false
 adobe_launch_url: 'https://assets.adobedtm.com/2d25784907ce/f7a3b9b89ce6/launch-90664c3f0ed7.min.js'
 onetrust_stub_url: 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js'
 onetrust_domain_script: 'e2254d3c-f546-4ecf-961e-84e7196e0f83'

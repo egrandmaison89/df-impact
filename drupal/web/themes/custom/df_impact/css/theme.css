@@ -1321,6 +1321,40 @@ article.post .wp-block-post-terms {
 }
 
 /* --- Issue Page --- */
+.issue-page .issue-page-banner.wp-block-cover {
+  width: 100%;
+  min-height: 481px;
+  contain: layout;
+}
+
+.issue-page .issue-page-banner .wp-block-cover__image-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* PostX “In This Issue” grid — reserve card image space before lazy load (CLS). */
+.ultp-block-70af6c .ultp-block-image {
+  aspect-ratio: 1024 / 734;
+  width: 100%;
+  overflow: hidden;
+  contain: layout;
+}
+
+.ultp-block-70af6c .ultp-block-image a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ultp-block-70af6c .ultp-block-image img.ultp-block-image-content {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .issue-page__banner {
   position: relative;
 }

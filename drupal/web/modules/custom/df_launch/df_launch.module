@@ -13,14 +13,16 @@ use Drupal\Core\Render\Markup;
  * Implements hook_page_attachments().
  */
 function df_launch_page_attachments(array &$attachments): void {
-  $config = \Drupal::config('df_launch.settings');
-  if (!$config->get('enabled')) {
+  /** @var \Drupal\df_launch\LaunchEnvironment $environment */
+  $environment = \Drupal::service('df_launch.environment');
+  if (!$environment->shouldInjectTags()) {
     return;
   }
   if (\Drupal::service('router.admin_context')->isAdminRoute()) {
     return;
   }
 
+  $config = \Drupal::config('df_launch.settings');
   $onetrust_url = (string) $config->get('onetrust_stub_url');
   $domain_script = (string) $config->get('onetrust_domain_script');
   if ($onetrust_url !== '' && $domain_script !== '') {

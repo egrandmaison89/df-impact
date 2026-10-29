@@ -29,6 +29,7 @@
     "parity:url:check": "node scripts/check-url-parity.mjs",
     "parity:launch:lighthouse": "node scripts/run-launch-lighthouse.mjs",
     "parity:launch:axe": "node scripts/run-launch-axe.mjs",
+    "parity:launch:tags-test": "cd ../drupal && ./vendor/bin/phpunit --bootstrap web/modules/custom/df_launch/tests/bootstrap.php web/modules/custom/df_launch/tests/src/Unit/LaunchEnvironmentTest.php",
     "parity:smoke:200": "node scripts/smoke-200.mjs",
     "parity:full": "PARITY_SAMPLE=0 node scripts/run-parity.mjs",
     "report": "node scripts/generate-html-report.mjs",

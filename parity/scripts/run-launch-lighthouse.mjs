@@ -47,9 +47,44 @@ async function runOne(url, formFactor) {
     };
     const result = await lighthouse(url, options);
     return pickMetrics(result.lhr);
+  } catch (e) {
+    return {
+      error: String(e),
+      performance: null,
+      lcp: null,
+      cls: null,
+      tbt: null,
+      weightKb: null,
+      requests: null,
+    };
   } finally {
     await chrome.kill();
   }
+}
+
+const maxAttempts = Number(process.env.LAUNCH_LIGHTHOUSE_RETRIES || 5);
+const retryDelayMs = Number(process.env.LAUNCH_LIGHTHOUSE_RETRY_MS || 3000);
+
+function metricsUsable(metrics) {
+  return metrics && !metrics.error && metrics.performance !== null && metrics.lcp !== null;
+}
+
+async function runOneWithRetry(url, formFactor) {
+  let last = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      last = await runOne(url, formFactor);
+      if (metricsUsable(last)) {
+        return { ...last, attempts: attempt };
+      }
+    } catch (e) {
+      last = { error: String(e) };
+    }
+    if (attempt < maxAttempts) {
+      await new Promise((resolve) => setTimeout(resolve, retryDelayMs * attempt));
+    }
+  }
+  return { ...(last || {}), attempts: maxAttempts };
 }
 
 fs.mkdirSync(outDir, { recursive: true });
@@ -65,12 +100,14 @@ for (const [key, cfg] of Object.entries(templates)) {
     wpUrl = `${refServer.baseUrl}/${cfg.refSlug}/desktop/rendered.html`;
   }
   for (const formFactor of ['mobile', 'desktop']) {
-    const dr = await runOne(drUrl, formFactor);
-    let wp = null;
+    let dr;
+    let wp;
     try {
-      wp = await runOne(wpUrl, formFactor);
+      dr = await runOneWithRetry(drUrl, formFactor);
+      wp = await runOneWithRetry(wpUrl, formFactor);
     } catch (e) {
-      wp = { error: String(e) };
+      dr = dr ?? { error: String(e) };
+      wp = wp ?? { error: String(e) };
     }
     rows.push({ template: key, formFactor, drupal: dr, wordpress: wp, drUrl, wpUrl });
   }

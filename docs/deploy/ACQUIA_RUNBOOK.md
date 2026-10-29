@@ -9,11 +9,30 @@ Documentation only. Does not perform deploys.
 | **Canonical config** | `drupal/web/sites/default/files/sync/` | Export with `drush cex -y` from staging after QA. Import on Acquia with `drush cim -y`. |
 | **Secrets / overrides** | Acquia `$AH_SITE_ENVIRONMENT` settings include or `settings.php` `$config` overrides | SearchStax keys, SMTP, API keys — never commit. |
 | **Site snippets** | `df_site_snippets.settings` | Optional extra header/footer HTML; prefer `df_launch.settings` for standard tags. |
-| **Launch tags** | `df_launch.settings` | Adobe Launch, OneTrust, Meta pixel, Bing UET — enable only on prod-like envs. |
+| **Launch tags** | `df_launch.settings` + `LaunchEnvironment` | Tag URLs in sync; **`enabled: false`** in repo. Tags inject only when config is enabled **and** the request is a production context (see below). |
 | **Front page** | `system.site:page.front` | Must be `/node/{Home}` internal path (see `df_setup`); aliases `/homepage`, `/` served via subscribers. |
 | **Performance** | `system.performance` | `css.preprocess` + `js.preprocess` **true** on Acquia (aggregated assets). |
 
 **Pre-cutover checklist:** `drush updatedb -y`, `drush cim -y`, `drush cr`, `drush simple-sitemap:generate`, `drush search-api:index df_impact_content`.
+
+### Analytics tags (`df_launch`) — production only
+
+Third-party tags (Adobe Launch, OneTrust, Meta pixel, Bing UET, Jetpack stats) **must not** load on DDEV, cloud-agent VMs, or Acquia **dev/test/stage**. Injection requires **both**:
+
+1. `df_launch.settings:enabled` is `TRUE`, and  
+2. **Production context** — `getenv('AH_SITE_ENVIRONMENT') === 'prod'` **or** (non-Acquia prod only) `$settings['df_launch_tags_enabled'] = TRUE` in `settings.php` (defaults to **off**).
+
+**Acquia production** (recommended in `sites/g`/prod `settings.php` or Acquia include):
+
+```php
+if (getenv('AH_SITE_ENVIRONMENT') === 'prod') {
+  $config['df_launch.settings']['enabled'] = TRUE;
+}
+```
+
+**Verify on non-prod:** View source — no `launch-90664c3f0ed7.min.js`, `otSDKStub.js`, `fbevents.js`, or `bat.bing.com/bat.js`.
+
+**Automated test:** `cd drupal && ./vendor/bin/phpunit -c web/modules/custom/df_launch/phpunit.xml.dist`
 
 ## Files sync (`wp-images`)
 
@@ -55,7 +74,7 @@ Acquia cron should invoke Drupal cron (`drush cron` or `/cron/{key}`):
 4. **Lower TTL** on `danafarberimpact.org` DNS (24h → 300s) 48h before cutover.  
 5. **Point** apex/`www` A/AAAA or CNAME to Acquia edge per hosting doc.  
 6. **Verify** HTTPS cert, `robots.txt`, `sitemap_index.xml`, redirects (`?p=`, feeds).  
-7. **Tags** — confirm Adobe Launch + OneTrust load (`df_launch` enabled).  
+7. **Tags** — on prod only, confirm Adobe Launch + OneTrust load; re-check dev/stage still have **no** tags.  
 8. **Monitor** 404 rate, origin 5xx, Search Console, analytics dashboards (24–72h).  
 
 ## Rollback

@@ -214,5 +214,31 @@ function df_migrate_run_sync_wordpress_paths(): void {
   }
   echo "Redirects created or already present (this run attempted): $redirect_count\n";
 
+  df_sync_static_page_aliases();
+
   echo "Done.\n";
+}
+
+/**
+ * Ensures WordPress basic-page paths resolve (not imported via migrate).
+ */
+function df_sync_static_page_aliases(): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $pathauto_skip = PathautoState::SKIP;
+  $pairs = [
+    '/about-impact' => '/node/2',
+  ];
+  foreach ($pairs as $alias => $internal) {
+    $existing = $storage->loadByProperties(['alias' => $alias]);
+    if ($existing) {
+      continue;
+    }
+    $storage->create([
+      'path' => $internal,
+      'alias' => $alias,
+      'langcode' => 'en',
+      'status' => TRUE,
+    ])->save();
+    echo "Path alias created: $alias -> $internal\n";
+  }
 }

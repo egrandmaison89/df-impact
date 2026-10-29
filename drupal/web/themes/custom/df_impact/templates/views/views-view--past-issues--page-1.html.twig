@@ -8,11 +8,7 @@
 
 {% if rows %}
   <div class="wp-block-group is-content-justification-left is-layout-flex wp-block-group-is-layout-flex" style="margin-top:40px">
-    {% for row in rows %}
-      <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained" style="padding-left:20px">
-        {{ row.content }}
-      </div>
-    {% endfor %}
+    {{ rows }}
   </div>
 {% elseif empty %}
   {{ empty }}

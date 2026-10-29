@@ -1832,8 +1832,9 @@
 }
 
 .in-brief-page__item.is-collapsed,
-.ultp-block-item.is-collapsed {
-  display: none;
+.ultp-block-items-wrap .ultp-block-item.is-collapsed,
+.ultp-block-item.ultp-block-media.is-collapsed {
+  display: none !important;
 }
 
 .in-brief-page__load-more {

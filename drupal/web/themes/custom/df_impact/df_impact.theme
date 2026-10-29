@@ -492,6 +492,16 @@ function df_impact_preprocess_node(&$variables) {
     $variables['in_brief_image_url'] = $image['url'] ?? NULL;
     $variables['in_brief_image_alt'] = $image['alt'] ?? $node->label();
     $variables['in_brief_excerpt'] = df_impact_in_brief_plain_excerpt($node);
+    $variables['in_brief_byline'] = df_impact_in_brief_byline($node);
+    $variables['in_brief_issue_url'] = NULL;
+    $variables['in_brief_issue_label'] = NULL;
+    if ($node->hasField('field_issue') && !$node->get('field_issue')->isEmpty()) {
+      $issue = $node->get('field_issue')->entity;
+      if ($issue instanceof NodeInterface) {
+        $variables['in_brief_issue_url'] = $issue->toUrl()->toString();
+        $variables['in_brief_issue_label'] = $issue->label();
+      }
+    }
   }
 
   if ($node->bundle() === 'issue' && $variables['view_mode'] === 'teaser') {
@@ -657,7 +667,7 @@ function df_impact_preprocess_breadcrumb(array &$variables): void {
   }
   // WordPress issue landings have no breadcrumb trail.
   $node = \Drupal::routeMatch()->getParameter('node');
-  if ($node instanceof NodeInterface && $node->bundle() === 'issue') {
+  if ($node instanceof NodeInterface && in_array($node->bundle(), ['issue', 'in_brief'], TRUE)) {
     $variables['breadcrumb'] = [];
   }
 }
@@ -1627,6 +1637,30 @@ function df_impact_in_brief_plain_excerpt(NodeInterface $node): string {
   }
   $value = $node->get('field_summary')->value ?? '';
   return trim(strip_tags($value));
+}
+
+/**
+ * WordPress byline string for In Brief full pages (from migrate manifest).
+ */
+function df_impact_in_brief_byline(NodeInterface $node): string {
+  static $by_alias = NULL;
+  if ($by_alias === NULL) {
+    $by_alias = [];
+    $module_path = \Drupal::service('extension.list.module')->getPath('df_migrate');
+    $json_path = DRUPAL_ROOT . '/' . $module_path . '/data/in_brief.json';
+    if (is_readable($json_path)) {
+      $items = json_decode((string) file_get_contents($json_path), TRUE);
+      if (is_array($items)) {
+        foreach ($items as $item) {
+          if (!empty($item['drupal_alias']) && !empty($item['byline'])) {
+            $by_alias[$item['drupal_alias']] = (string) $item['byline'];
+          }
+        }
+      }
+    }
+  }
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $node->id());
+  return $by_alias[$alias] ?? '';
 }
 
 /**

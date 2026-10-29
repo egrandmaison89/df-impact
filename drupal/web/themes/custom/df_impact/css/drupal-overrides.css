@@ -35,6 +35,16 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+/* Full viewport width on scroll (wp-chrome-behaviors toggles `.header--scrolled`, not `.scrolled`). */
+@media (min-width: 769px) {
+  .wp-site-blocks .desktop-header.alignfull.header--scrolled {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+  }
+}
+
 .gtranslate_wrapper select:not(.gt_selector) {
   display: none !important;
 }

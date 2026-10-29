@@ -6,6 +6,7 @@
   <testsuites>
     <testsuite name="df_editor">
       <directory>tests/src/ExistingSite</directory>
+      <directory>tests/src/Unit</directory>
     </testsuite>
   </testsuites>
 </phpunit>

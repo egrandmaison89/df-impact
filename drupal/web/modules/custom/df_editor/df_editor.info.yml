@@ -5,7 +5,10 @@ core_version_requirement: ^10 || ^11
 package: 'DF Impact'
 dependencies:
   - df_setup:df_setup
+  - drupal:ckeditor5
   - drupal:content_moderation
+  - drupal:editor
+  - drupal:filter
   - drupal:menu_link_content
   - drupal:menu_ui
   - drupal:node

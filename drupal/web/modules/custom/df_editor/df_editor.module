@@ -7,7 +7,11 @@
 
 declare(strict_types=1);
 
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\filter\FilterFormatInterface;
 use Drupal\node\Form\NodeForm;
 use Drupal\node\NodeInterface;
 
@@ -21,11 +25,74 @@ function df_editor_form_node_article_form_alter(array &$form, FormStateInterface
   if (!isset($form['body']['widget'][0])) {
     return;
   }
-  if (\Drupal::currentUser()->hasPermission('use text format full_html')) {
-    $form['body']['widget'][0]['#format'] = 'full_html';
-    $form['body']['widget'][0]['#default_value']['format'] = 'full_html';
+  $account = \Drupal::currentUser();
+  $widget = &$form['body']['widget'][0];
+  $stored_format = $widget['#default_value']['format'] ?? $widget['#format'] ?? NULL;
+
+  if ($account->hasPermission('use text format full_html')) {
+    $widget['#format'] = 'full_html';
+    $widget['#default_value']['format'] = $stored_format === 'full_html' ? 'full_html' : ($widget['#default_value']['format'] ?? 'full_html');
+    $widget['#allowed_formats'] = ['full_html', 'editor_html'];
   }
-  $form['body']['widget'][0]['#description'] = (string) t('Use the toolbar for headings, quotes, images, and media embeds (Vimeo/YouTube). For WordPress-style blocks (pull quote, spacer, buttons), switch to Source and paste the same markup used on migrated stories—see WEB_EDITOR_GUIDE.md.');
+  elseif ($account->hasPermission('use text format editor_html')) {
+    if ($stored_format === 'full_html' && $account->hasPermission('use legacy full html on stored content')) {
+      $widget['#format'] = 'full_html';
+      $widget['#default_value']['format'] = 'full_html';
+      $widget['#allowed_formats'] = ['full_html'];
+    }
+    else {
+      $widget['#format'] = 'editor_html';
+      $widget['#default_value']['format'] = 'editor_html';
+      $widget['#allowed_formats'] = ['editor_html'];
+    }
+  }
+
+  $widget['#description'] = (string) t('Use the toolbar for headings, quotes, images, and media embeds (Vimeo/YouTube). For WordPress-style blocks (pull quote, spacer, buttons), switch to Source and paste the same markup used on migrated stories—see WEB_EDITOR_GUIDE.md.');
+}
+
+/**
+ * Implements hook_entity_access() for legacy Full HTML on migrated bodies.
+ */
+function df_editor_entity_access(EntityInterface $entity, $operation, AccountInterface $account): AccessResult {
+  if ($operation !== 'use' || !$entity instanceof FilterFormatInterface || $entity->id() !== 'full_html') {
+    return AccessResult::neutral();
+  }
+  if ($account->hasPermission('use text format full_html')) {
+    return AccessResult::neutral();
+  }
+  if ($account->hasPermission('use legacy full html on stored content')) {
+    return AccessResult::allowed()->cachePerPermissions();
+  }
+  return AccessResult::neutral();
+}
+
+/**
+ * Implements hook_node_presave().
+ *
+ * Web editors with legacy Full HTML may only keep that format on existing nodes.
+ */
+function df_editor_node_presave(NodeInterface $node): void {
+  if ($node->bundle() !== 'article' || !$node->hasField('body') || $node->get('body')->isEmpty()) {
+    return;
+  }
+  $format = $node->get('body')->format;
+  if ($format !== 'full_html') {
+    return;
+  }
+  $account = \Drupal::currentUser();
+  if ($account->hasPermission('use text format full_html')) {
+    return;
+  }
+  if (!$account->hasPermission('use legacy full html on stored content')) {
+    return;
+  }
+  $original = $node->original ?? NULL;
+  if (!$original instanceof NodeInterface || $original->get('body')->format !== 'full_html') {
+    $node->set('body', [
+      'value' => $node->get('body')->value,
+      'format' => 'editor_html',
+    ]);
+  }
 }
 
 /**

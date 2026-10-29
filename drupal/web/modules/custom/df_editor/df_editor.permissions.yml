@@ -9,3 +9,7 @@ publish issue with articles:
 access editorial dashboard:
   title: 'Access editorial dashboard'
   description: 'View the moderated content dashboard intended for web editors.'
+
+use legacy full html on stored content:
+  title: 'Use Full HTML on existing stored body text'
+  description: 'Allows web editors to keep editing article body fields that were saved as Full HTML during migration. Does not allow choosing Full HTML for new content.'

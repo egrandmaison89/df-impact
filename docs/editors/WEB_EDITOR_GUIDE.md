@@ -36,9 +36,9 @@ Use **Open homepage preview** to review the cover band and Issues flyout before 
 For each story in the issue:
 
 1. **Content → Add content → Article**
-2. Write the story in the **Content** tab using the **Full HTML** editor (same patterns as migrated WordPress stories):
+2. Write the story in the **Content** tab using the **Editor HTML** text format (CKEditor 5). It supports the same WordPress block patterns as migrated stories—scripts and arbitrary iframes are stripped; Vimeo and YouTube embeds are allowed.
 
-   ![Article body editor with Full HTML toolbar](screenshots/article-body-editor.png)
+   ![Article body editor with Editor HTML toolbar](screenshots/article-body-editor.png)
 
    - **Pull quote:** Blockquote toolbar button, or Source view with `wp-block-pullquote` markup
    - **Image + caption:** Image button or `<figure class="wp-block-image">` with `<figcaption class="wp-element-caption">`

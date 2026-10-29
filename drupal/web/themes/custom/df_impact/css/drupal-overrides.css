@@ -11,16 +11,8 @@ body {
   margin: 0;
 }
 
-/* Live behavior parity: sticky header + mega flyout hover (Max Mega Menu). */
+/* Mega flyout hover (Max Mega Menu). Sticky header from WP pack (`header { position: sticky }`). */
 @media (min-width: 769px) {
-  .desktop-header,
-  .impact-header,
-  .header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
   #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children:hover > ul.mega-sub-menu,
   #mega-menu-max_mega_menu_1 li.mega-menu-flyout.mega-menu-item-has-children:hover > ul.mega-sub-menu {
     display: block !important;
@@ -34,6 +26,17 @@ body {
 .impact-header.scrolled,
 .impact-header.header--scrolled {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* `.desktop-header .scrolled` in WP CSS is for `.header-logo.scrolled` only (PR #10). */
+.impact-header.scrolled,
+.desktop-header.scrolled {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+.gtranslate_wrapper select:not(.gt_selector) {
+  display: none !important;
 }
 
 /*
@@ -55,6 +58,31 @@ body {
     width: calc(100vw - 40px) !important;
     padding-left: 20px;
     padding-right: 20px;
+  }
+}
+
+/*
+ * alignfull under .wp-site-blocks: desktop header fills shell without double-bleed.
+ */
+@media (min-width: 769px) {
+  .wp-site-blocks .desktop-header.alignfull {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+  .wp-site-blocks .desktop-header .alignfull,
+  .wp-site-blocks .desktop-header .impact-header.alignfull {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: auto;
+  }
+
+  .wp-site-blocks > header.wp-block-template-part {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
   }
 }
 

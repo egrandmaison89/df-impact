@@ -6,6 +6,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { expectedBehaviorCaseCount } from '../lib/behavior-paths.mjs';
 import { resolveParityRoot } from '../lib/parity-root.mjs';
 
 const parityRoot = resolveParityRoot();
@@ -22,17 +23,40 @@ const runId =
     return dirs[0];
   })();
 
-const compareRoot = path.join(parityRoot, 'reports/behavior', runId, 'compare');
+const runDir = path.join(parityRoot, 'reports/behavior', runId);
+const compareRoot = path.join(runDir, 'compare');
 if (!fs.existsSync(compareRoot)) {
   console.error('No compare dir for run', runId);
   process.exit(1);
 }
 
+const metaPath = path.join(runDir, 'run-meta.json');
+const meta = fs.existsSync(metaPath) ? JSON.parse(fs.readFileSync(metaPath, 'utf8')) : {};
+const expectedCases =
+  meta.expectedCases ??
+  (Array.isArray(meta.paths) ? expectedBehaviorCaseCount(meta.paths) : null);
+
 const cases = [];
+const incomplete = [];
+
 for (const slug of fs.readdirSync(compareRoot)) {
-  const diffFile = path.join(compareRoot, slug, 'wp-drupal-behavior-diff.json');
-  if (!fs.existsSync(diffFile)) continue;
-  cases.push(JSON.parse(fs.readFileSync(diffFile, 'utf8')));
+  const caseDir = path.join(compareRoot, slug);
+  const diffFile = path.join(caseDir, 'wp-drupal-behavior-diff.json');
+  const behaviorFile = path.join(caseDir, 'behavior.json');
+  if (fs.existsSync(diffFile)) {
+    cases.push(JSON.parse(fs.readFileSync(diffFile, 'utf8')));
+    continue;
+  }
+  if (fs.existsSync(behaviorFile)) {
+    const b = JSON.parse(fs.readFileSync(behaviorFile, 'utf8'));
+    incomplete.push({
+      slug,
+      path: b.path,
+      breakpoint: b.breakpoint,
+      reason: b.captured === false ? 'cross.wp.snapshot' : 'missing_diff',
+      wpError: b.wpError,
+    });
+  }
 }
 
 const failing = cases.filter((c) => !c.match);
@@ -57,7 +81,10 @@ for (const c of cases) {
 const out = {
   runId,
   generatedAt: new Date().toISOString(),
+  expectedCases,
   caseCount: cases.length,
+  capturedCaseCount: cases.length,
+  incompleteCaseCount: incomplete.length,
   passCount: cases.filter((c) => c.match).length,
   failCount: failing.length,
   totalMismatchRows: cases.reduce((n, c) => n + (c.mismatchCount || 0), 0),
@@ -66,6 +93,7 @@ const out = {
   mismatchRowsByTemplate: Object.fromEntries(
     Object.entries(byTemplate).map(([k, v]) => [k, v.mismatchRows]),
   ),
+  incompleteCases: incomplete,
   failures: failing.map((c) => ({
     path: c.path,
     breakpoint: c.breakpoint,
@@ -74,14 +102,16 @@ const out = {
   })),
 };
 
-const outFile = path.join(parityRoot, 'reports/behavior', runId, 'wp-drupal-behavior-summary.json');
+const outFile = path.join(runDir, 'wp-drupal-behavior-summary.json');
 fs.writeFileSync(outFile, JSON.stringify(out, null, 2));
 console.log(
   JSON.stringify(
     {
       outFile,
       runId,
+      expectedCases: out.expectedCases,
       caseCount: out.caseCount,
+      incompleteCaseCount: out.incompleteCaseCount,
       totalMismatchRows: out.totalMismatchRows,
       failCount: out.failCount,
       mismatchRowsByTemplate: out.mismatchRowsByTemplate,
@@ -91,4 +121,6 @@ console.log(
   ),
 );
 
-process.exit(out.totalMismatchRows > 0 ? 1 : 0);
+const incompleteGate =
+  expectedCases != null && (out.caseCount + out.incompleteCaseCount < expectedCases || out.incompleteCaseCount > 0);
+process.exit(out.totalMismatchRows > 0 || incompleteGate ? 1 : 0);

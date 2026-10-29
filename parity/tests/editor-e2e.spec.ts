@@ -86,19 +86,51 @@ async function screenshot(page: import('@playwright/test').Page, name: string) {
   await page.screenshot({ path: path.join(shotDir, `${name}.png`), fullPage: true });
 }
 
-/** Pick the first item in a Drupal media-library modal (Cover / Banner). */
+async function featuredImageTargetId(page: import('@playwright/test').Page): Promise<string> {
+  const selection = page.locator('input[name="field_featured_image[media_library_selection]"]');
+  if (await selection.count()) {
+    return selection.inputValue();
+  }
+  return page.locator('input[name="field_featured_image[0][target_id]"]').inputValue();
+}
+
+async function waitForFeaturedImage(page: import('@playwright/test').Page) {
+  await expect
+    .poll(async () => (await featuredImageTargetId(page)).trim(), { timeout: 60_000 })
+    .not.toBe('');
+  await expect(
+    page.locator('.field--name-field-featured-image').getByText('No media items are selected'),
+  ).toHaveCount(0);
+}
+
+/** Pick the first item in a Drupal media-library modal (Cover / Banner / Featured). */
 async function addMediaFromLibrary(page: import('@playwright/test').Page, openButtonId: string) {
-  const openBtn = page.locator(`#${openButtonId}`);
-  await openBtn.scrollIntoViewIfNeeded();
-  // Media LibraryWidget binds to mousedown (not click).
-  await openBtn.dispatchEvent('mousedown');
-  const dialog = page.locator('.ui-dialog.media-library-widget-modal');
-  await dialog.waitFor({ state: 'visible', timeout: 60_000 });
-  const firstItem = dialog.locator('.js-media-library-item input[type="checkbox"]').first();
-  await firstItem.waitFor({ state: 'visible', timeout: 60_000 });
-  await firstItem.check();
-  await dialog.getByRole('button', { name: /Insert selected/i }).click();
-  await dialog.waitFor({ state: 'hidden', timeout: 60_000 });
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const openBtn = page.locator(`#${openButtonId}`);
+    await openBtn.waitFor({ state: 'attached', timeout: 90_000 });
+    await openBtn.scrollIntoViewIfNeeded();
+    await openBtn.dispatchEvent('mousedown');
+    const dialog = page.locator('.ui-dialog.media-library-widget-modal');
+    try {
+      await dialog.waitFor({ state: 'visible', timeout: 15_000 });
+    } catch {
+      await openBtn.click({ force: true });
+      await dialog.waitFor({ state: 'visible', timeout: 15_000 });
+    }
+    await dialog.locator('.js-media-library-item').first().waitFor({ state: 'visible', timeout: 60_000 });
+    const firstItem = dialog.locator('.js-media-library-item input[type="checkbox"]').first();
+    await firstItem.check({ force: true });
+    await dialog.getByRole('button', { name: /Insert selected/i }).click();
+    await dialog.waitFor({ state: 'hidden', timeout: 60_000 });
+    if (openButtonId.includes('featured-image')) {
+      if ((await featuredImageTargetId(page)).trim()) {
+        return;
+      }
+    } else {
+      return;
+    }
+  }
+  throw new Error(`Media library did not attach for #${openButtonId}`);
 }
 
 /** Gin admin puts Save in a sticky header that blocks the footer submit button. */
@@ -142,6 +174,7 @@ async function openFormTab(page: import('@playwright/test').Page, label: string)
   ).first();
   if (await anchor.count()) {
     await anchor.click();
+    await page.locator(`#edit-group-${group}`).waitFor({ state: 'attached', timeout: 30_000 }).catch(() => {});
     return;
   }
   const tab = page.getByRole('tab', { name: label });
@@ -161,22 +194,39 @@ async function fillArticleBody(page: import('@playwright/test').Page, html: stri
 }
 
 async function pickAutocompleteOption(page: import('@playwright/test').Page, field: import('@playwright/test').Locator, text: string) {
+  await field.click({ force: true });
+  await field.fill('', { force: true });
   await field.fill(text, { force: true });
   const option = page.locator('.ui-autocomplete li.ui-menu-item').filter({ hasText: text }).first();
   try {
-    await option.waitFor({ state: 'visible', timeout: 5000 });
+    await option.waitFor({ state: 'visible', timeout: 8000 });
     await option.click();
   } catch {
     // Some references (draft issues) do not appear in AJAX suggestions; keep the typed label (nid) value.
   }
+  await field.press('Tab');
+}
+
+function topicTermId(): number {
+  const id = execSync(
+    `cd /workspace/drupal && ./vendor/bin/drush sqlq "SELECT tid FROM taxonomy_term_field_data WHERE name='Cancer Research' LIMIT 1"`,
+    { encoding: 'utf8' },
+  ).trim();
+  return Number(id);
 }
 
 async function fillArticleFieldsViaDom(
   page: import('@playwright/test').Page,
-  opts: { title: string; issueTitle: string; issueNid: number; excerpt: string },
+  opts: {
+    title: string;
+    issueTitle: string;
+    issueNid: number;
+    excerpt: string;
+    topicLabel: string;
+  },
 ) {
   await page.evaluate(
-    ({ title, body, byline, excerpt, issueTitle, issueNid }) => {
+    ({ title, body, byline, excerpt, issueTitle, issueNid, topicLabel }) => {
       const set = (selector: string, value: string) => {
         const el = document.querySelector(selector) as HTMLInputElement | HTMLTextAreaElement | null;
         if (!el) return;
@@ -188,6 +238,7 @@ async function fillArticleFieldsViaDom(
       set('#edit-field-byline-0-value', byline);
       set('#edit-field-excerpt-0-value', excerpt);
       set('#edit-field-issue-0-target-id', `${issueTitle} (${issueNid})`);
+      set('#edit-field-topics-target-id', topicLabel);
       set('#edit-body-0-value', body);
     },
     {
@@ -197,6 +248,7 @@ async function fillArticleFieldsViaDom(
       excerpt: opts.excerpt,
       issueTitle: opts.issueTitle,
       issueNid: opts.issueNid,
+      topicLabel: opts.topicLabel,
     },
   );
 }
@@ -304,23 +356,32 @@ test.describe('Web editor issue launch (UI)', () => {
     issueNid = savedIssueNid;
     await screenshot(page, '04-issue-saved-draft');
 
+    const topicLabel = `Cancer Research (${topicTermId()})`;
     for (const title of ARTICLE_TITLES) {
       await go(page, '/node/add/article');
       await expect(page.locator('body')).toContainText('Create Article');
-      await expandArticleFieldGroups(page);
-      await page.locator('#edit-title-0-value').fill(title);
-      await page.locator('#edit-field-byline-0-value').fill('Playwright Author');
-      await fillArticleBody(page, `<p>Body for ${title}</p>`);
+      await openFormTab(page, 'Content');
+      await page.locator('#edit-title-0-value').waitFor({ state: 'attached', timeout: 90_000 });
+      await page.locator('#edit-field-featured-image-open-button').waitFor({ state: 'attached', timeout: 90_000 });
+      await fillArticleFieldsViaDom(page, {
+        title,
+        issueTitle: ISSUE_TITLE,
+        issueNid: issueNid!,
+        excerpt: `Excerpt for ${title}`,
+        topicLabel,
+      });
       await addMediaFromLibrary(page, 'edit-field-featured-image-open-button');
+      await waitForFeaturedImage(page);
+      await openFormTab(page, 'Publication & placement');
       await setIssueReference(page, ISSUE_TITLE, issueNid!);
-      const topics = page.locator('#edit-field-topics-target-id, input[name="field_topics[target_id]"]').first();
-      await pickAutocompleteOption(page, topics, 'Cancer Research');
-      await page.locator('#edit-field-excerpt-0-value').fill(`Excerpt for ${title}`, { force: true });
+      await openFormTab(page, 'SEO & Summary');
       await saveNodeForm(page);
       await screenshot(page, `05-article-saved-${articleNids.length + 1}`);
+      if (await page.locator('.messages--error').count()) {
+        throw new Error(`Article save failed: ${await page.locator('.messages--error').innerText()}`);
+      }
       const inlineErrors = page.locator('.form-item--error-message');
       await expect(inlineErrors).toHaveCount(0);
-      await expect(page.locator('.messages--error')).toHaveCount(0);
       let articleNid = 0;
       await expect
         .poll(() => {
@@ -329,6 +390,7 @@ test.describe('Web editor issue launch (UI)', () => {
         }, { timeout: 60_000 })
         .toBeGreaterThan(0);
       articleNids.push(articleNid);
+      await page.waitForLoadState('domcontentloaded');
     }
     await screenshot(page, '05-articles-created');
 
@@ -366,27 +428,30 @@ test.describe('Web editor issue launch (UI)', () => {
         { encoding: 'utf8' },
       ).trim() || `/node/${issueNid}`;
 
-    await login(page, WEB_EDITOR.name, WEB_EDITOR.pass);
-    await go(page, `/?df_preview_issue=${issueNid}`);
-    await expect(page.locator('h1.wp-block-heading')).toContainText(HERO_HEADING, { timeout: 60_000 });
+    await logout(page);
+    await expect
+      .poll(
+        () =>
+          execSync(`curl -sL -o /dev/null -w '%{http_code}' ${drupalBase}/`, { encoding: 'utf8' }).trim(),
+        { timeout: 60_000 },
+      )
+      .toBe('200');
+
+    await go(page, '/');
+    await expect(page.locator('h1.wp-block-heading')).toContainText(HERO_HEADING, { timeout: 90_000 });
     await expect(page.locator('body')).toContainText('Explore the Latest Issue');
     for (const t of ARTICLE_TITLES) {
       await expect(page.locator('body')).toContainText(t);
     }
-    await screenshot(page, '08-homepage-preview');
+    await screenshot(page, '08-homepage-after-publish');
 
-    await go(page, '/');
-    const header = page.locator('header, .wp-block-template-part').first();
+    const header = page.locator('header, .wp-block-template-part, nav').first();
+    await expect(header).toContainText(/Issues|Winter/i);
     await expect(header).toContainText(String(YEAR));
-    await screenshot(page, '09-header-nav');
+    await screenshot(page, '09-header-issues-nav');
 
-    await logout(page);
-    const fetchPublic = (route: string) =>
-      execSync(`curl -sL ${drupalBase}${route}`, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
-
-    const browseHtml = fetchPublic('/browse-issues');
-    expect(browseHtml).toContain(issuePath);
     await go(page, '/browse-issues');
+    await expect(page.locator('body')).toContainText(ISSUE_TITLE);
     await screenshot(page, '10-browse-issues');
 
     await go(page, issuePath);

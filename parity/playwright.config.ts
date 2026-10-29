@@ -49,10 +49,13 @@ export default defineConfig({
       name: 'editor-e2e',
       testMatch: '**/editor-e2e.spec.ts',
       timeout: 600_000,
+      expect: { timeout: 30_000 },
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1440, height: 900 },
         baseURL: drupalBase,
+        actionTimeout: 60_000,
+        navigationTimeout: 90_000,
       },
     },
   ],

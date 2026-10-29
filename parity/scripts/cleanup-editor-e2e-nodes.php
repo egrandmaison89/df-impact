@@ -24,7 +24,7 @@ foreach ($nids as $nid) {
   $node?->delete();
 }
 
-$extraTitles = ['DF Test Issue Workflow', 'Debug'];
+$extraTitles = ['DF Test Issue Workflow', 'Debug', 'D'];
 $extraNids = $storage->getQuery()
   ->accessCheck(FALSE)
   ->condition('title', $extraTitles, 'IN')

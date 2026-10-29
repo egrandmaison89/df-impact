@@ -11,7 +11,7 @@
 | PR | Branch | Head | In PR #5 |
 |----|--------|------|----------|
 | #10 Meta | `cursor/meta-head-behavior-0751` | `2778e304` | yes |
-| #13 Templates | `cursor/templates-inbrief-archives-185b` | `f8f94029` | yes |
+| #13 Templates | `cursor/templates-inbrief-archives-185b` | **`f1593b50`** (≥ `9cf106ab`) | yes |
 | #14 VM | `cursor/vm-visual-parity-2b1b` | **`6876d0ed`** (header logo × fix, Social Snap) | yes |
 | #17 Editor | `cursor/editor-followups-ce7f` | `5efc6901` | yes |
 

@@ -51,7 +51,7 @@ export const DRUPAL_PROFILE = {
     issuesPanel: '#mega-menu-item-599 > ul.mega-sub-menu, .header__nav-item--issues .header__dropdown',
     donate: '.desktop-header .wp-block-button a[data-analytics-text="donate"]',
     footerLink: 'footer .copyright a, p.copyright a',
-    bodyLink: 'main .entry-content a, main .wp-block-post-content a, main a.has-underline-text-decoration',
+    bodyLink: 'main .entry-content a, main .wp-block-post-content a, main a',
     search: '.header__search-link, .header-search a, .is-search-icon, .astm-search-menu a',
     menuToggle: '.mobile-header .mega-toggle-label, .header__menu-toggle, .mega-menu-toggle',
     drawer: '.header__drawer, .mobile-header .mega-menu-wrap, #mega-menu-max_mega_menu_1',

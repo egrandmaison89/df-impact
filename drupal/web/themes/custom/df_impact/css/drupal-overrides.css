@@ -310,6 +310,11 @@ main .ultp-block-item a:hover {
   opacity: 0.92;
 }
 
+main .entry-content a:hover,
+main .wp-block-post-content a:hover {
+  color: rgb(104, 160, 193);
+}
+
 /*
  * Footer chrome: mirror desktop-header bleed on .footer-dark (not template-part — that pushed footer x=0 vs WP x=72).
  */

@@ -31,46 +31,69 @@ If **content-sweep’s hook ran as 10027 before #22’s 10027**, Drupal marks **
 
 - Merge **#22 before #23 and #25**.
 - On `df_setup.module` conflicts, **keep #22’s side** (issue landing / fixture replay helpers).
-- After **every** merge: `drush updb -y`, then verify schema (below), then issue replay (below).
+- After **every** merge: `drush updb -y`, then verify schema (below), then **both** issue text gates (below).
+
+## PR #23 merge blocker
+
+**`npm run parity:url:check` must be 801/801** on the content-sweep branch before merging #23 onto PR #5. (Reported baseline on #23: **800/801** — do not merge until green.)
 
 ## Post-merge verification (required)
 
-### Schema version
+### Schema + `df_setup_update_10027` via updb
 
-Highest executed hook must match the highest defined hook in `df_setup.install`:
+`10027` must run during **`drush updb`**, not only via the replay script. If a wrong hook occupied **10027**, Drupal marks the schema complete and **#22’s backfill never runs** (replay can still fix data, but schema looks “fine”).
+
+`df_setup_update_10027()` sets key-value marker `update_10027_applied` when it runs.
 
 ```bash
 cd drupal
-./vendor/bin/drush php:eval '
-  require_once DRUPAL_ROOT . "/modules/custom/df_setup/df_setup.install";
-  $max = 0;
-  foreach (get_defined_functions()["user"] as $fn) {
-    if (preg_match("/^df_setup_update_(\\d+)$/", $fn, $m)) {
-      $max = max($max, (int) $m[1]);
-    }
-  }
-  $schema = (int) \Drupal::keyValue("system.schema")->get("df_setup");
-  print "df_setup schema={$schema} max_hook={$max} " . ($schema === $max ? "OK\n" : "MISMATCH\n");
-'
+./vendor/bin/drush updb -y
+./vendor/bin/drush php:script web/modules/custom/df_setup/scripts/verify_df_setup_schema.php
 ```
 
-### Issue fixture replay (#22)
+**Pass:** exit 0 — `schema === max_hook` and `update_10027_applied` present when `max_hook >= 10027`.
 
-After **every** subsequent merge:
+**Recovery** if marker missing but schema ≥ 10027:
+
+```bash
+./vendor/bin/drush php:eval '\Drupal::keyValue("system.schema")->set("df_setup", 10026);'
+./vendor/bin/drush updb -y
+./vendor/bin/drush php:script web/modules/custom/df_setup/scripts/verify_df_setup_schema.php
+```
+
+### Issue gates (#22 and every merge after)
+
+Run **all three** after each merge:
 
 ```bash
 cd drupal
 ./vendor/bin/drush php:script web/modules/custom/df_migrate/scripts/test_issue_fixture_replay.php
+
+cd ../parity
+DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:issue-live-text
+DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:content:sweep:issues
 ```
 
-Then score issue landing text (PR #22 gate):
+| Gate | Tool | What it measures |
+|------|------|------------------|
+| **#22 replay** | `test_issue_fixture_replay.php` | Fixture backfill scripts (DB fields / promos) |
+| **#22 live text** | `parity:issue-live-text` | Playwright main text vs **cached/live WP HTML** (PR #22 scorer) |
+| **#23 content sweep (issues)** | `parity:content:sweep:issues` | PR #23 **`run-content-sweep.mjs`** on **16 manifest issue URLs** |
 
-```bash
-cd parity
-DRUPAL_BASE_URL=http://127.0.0.1:8888 node scripts/issue-live-text-sweep.mjs
+**Known discrepancy:** On a bad merge, **live-text can report ≥98.9%** while **content-sweep shows ~0.03 text similarity** on the same issue URLs (different extractors / WP source / DOM). Until that is explained, **record both metrics** in every merge report — do not treat one green gate as proof the other passed.
+
+**Target ( #22 live-text):** 15/15 comparable issues **≥ 98.9%** where the sweep reports comparable rows.
+
+### Merge report snippet (copy into PR #5 notes)
+
+```markdown
+### Issue landing gates
+- `verify_df_setup_schema`: schema=___ max_hook=___ update_10027_applied=___
+- Replay script: exit ___
+- `parity:issue-live-text`: min=___ p50=___ pass≥98.9%=___/16
+- `parity:content:sweep:issues`: text98=___/16 minTextSim=___ p50=___
+- **Discrepancy note:** (if live-text high and content-sweep low, cite hook collision / 10027 marker)
 ```
-
-**Pass:** replay exit 0; **15/15** issues with text parity **≥ 98.9%** vs WP reference (see sweep summary).
 
 ### Home after config import
 

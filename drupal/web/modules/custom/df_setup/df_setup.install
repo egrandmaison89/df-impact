@@ -1069,6 +1069,7 @@ function df_setup_update_10027(): string {
     }
   }
   drupal_flush_all_caches();
+  \Drupal::keyValue('df_setup')->set('update_10027_applied', \Drupal::time()->getRequestTime());
   return implode('; ', $parts);
 }
 

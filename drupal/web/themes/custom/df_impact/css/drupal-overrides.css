@@ -12,6 +12,13 @@ body {
 }
 
 /* Mega flyout hover (Max Mega Menu). Sticky header comes from WP pack (`header { position: sticky }`). */
+@media (min-width: 768px) {
+  #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link,
+  .header__nav-link {
+    background-color: rgb(255, 255, 255);
+  }
+}
+
 @media (min-width: 769px) {
 
   #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children:hover > ul.mega-sub-menu,

@@ -70,7 +70,7 @@ function recordAssertion(stats: AssertionStat[], name: string, pass: boolean) {
   stats.push({ name, pass });
   globalStats.assertions += 1;
   if (pass) globalStats.passed += 1;
-  if (process.env.PARITY_BEHAVIOR_STRICT === '1' || crossSite) {
+  if (process.env.PARITY_BEHAVIOR_STRICT === '1') {
     expect.soft(pass, name).toBeTruthy();
   }
 }

@@ -23,7 +23,7 @@ if (!entry?.paths?.length) {
 const env = {
   ...process.env,
   PACK_COMPARE_PATHS: entry.paths.join(','),
-  PROGRESS_COMPONENT: template,
+  PROGRESS_COMPONENT: process.env.PROGRESS_COMPONENT || template,
 };
 const r = spawnSync('node', ['scripts/compare-reference-pack.mjs'], {
   cwd: parityRoot,

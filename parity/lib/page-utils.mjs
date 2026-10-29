@@ -34,10 +34,19 @@ export async function preparePage(page) {
   });
 }
 
+const CONSENT_ROOT_IDS = [
+  'onetrust-banner-sdk',
+  'onetrust-pc-sdk',
+  'onetrust-consent-sdk',
+  'CybotCookiebotDialog',
+  'cookiebanner',
+];
+
 export async function dismissOverlays(page) {
   const selectors = [
     'button:has-text("Accept")',
     'button:has-text("I Accept")',
+    'button:has-text("Accept All")',
     'button:has-text("Got it")',
     '#onetrust-accept-btn-handler',
     '.cc-dismiss',
@@ -47,6 +56,32 @@ export async function dismissOverlays(page) {
     if (await el.isVisible().catch(() => false)) {
       await el.click({ timeout: 2000 }).catch(() => {});
     }
+  }
+  await page.waitForTimeout(200);
+  await page.evaluate((ids) => {
+    for (const id of ids) {
+      document.getElementById(id)?.remove();
+    }
+    document.querySelectorAll('[id^="onetrust-"], .cookiebot, #CybotCookiebotDialog').forEach((el) => {
+      el.remove();
+    });
+  }, CONSENT_ROOT_IDS);
+}
+
+/** Remove consent layers that block pointer events on footer links (live WP). */
+export async function ensurePointerClearForSelector(page, selector) {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await dismissOverlays(page);
+    const blocked = await page.evaluate((sel) => {
+      const el = document.querySelector(sel.split(',')[0].trim());
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      if (!top || top === el || el.contains(top)) return false;
+      return Boolean(top.closest('#onetrust-banner-sdk, #onetrust-pc-sdk, [id^="onetrust-"], .cookiebot'));
+    }, selector);
+    if (!blocked) return;
+    await page.waitForTimeout(300);
   }
 }
 

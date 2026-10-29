@@ -1,63 +1,63 @@
 # Meta / head / behavior / URL agent status
 
-Branch: `cursor/meta-head-behavior-0751`  
-PR: https://github.com/egrandmaison89/df-impact/pull/10  
-Base: `cursor/phase4-chrome-behavior-0b67` (PR #9 merged; watch open **PR #5** on same base for WXR chrome commits)
+Branch: `cursor/meta-head-behavior-0751` | PR: https://github.com/egrandmaison89/df-impact/pull/10  
+Base: `cursor/phase4-chrome-behavior-0b67`
 
-Drupal (VM): `http://127.0.0.1:8888`
+## Resume here
 
-## Resume checklist (after context summarization)
+1. `git pull origin cursor/meta-head-behavior-0751 && cd drupal/web && ../vendor/bin/drush cr`
+2. Strict cross-site smoke: `cd parity && DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:behavior:smoke`
+3. Full templates: `npm run parity:behavior:templates` then `npm run parity:behavior:report-diff` (exits 1 if any mismatch rows)
+4. Head manifest: `DRUPAL_BASE_URL=... npm run parity:head:manifest` → **773/773** expected
+5. Read `reports/behavior/<runId>/wp-drupal-behavior-summary.json` → `mismatchRowsByTemplate`, `totalMismatchRows`
 
-1. `git pull origin cursor/meta-head-behavior-0751`
-2. `cd drupal/web && ../vendor/bin/drush cr`
-3. Head: `cd parity && DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:head:manifest` → expect **773/773**
-4. Cross-site behavior: `npm run parity:behavior:smoke` then `npm run parity:behavior:templates`
-5. Aggregate diff: `npm run parity:behavior:report-diff` → `reports/behavior/<runId>/wp-drupal-behavior-summary.json`
-6. Fix remaining mismatches in `drupal/web/themes/custom/df_impact/js/wp-chrome-behaviors.js`, `css/drupal-overrides.css`, `js/scroll-reveal.js`
+## Strict cross-site behavior gate
 
-## Gates (VM)
+- **Assertion:** `cross.diff.zero_mismatch_rows` — fails if `buildCrossSiteReport()` has any section mismatch (not loose inventory-only checks).
+- **Report:** `compare/<slug>_<bp>/wp-drupal-behavior-diff.json` + roll-up `wp-drupal-behavior-summary.json` (includes per-template mismatch row counts).
+- **WP load:** 3× retry on goto; `wpSnapshotReady()` requires hero (homepage) + `navDefault` before diffing.
+- **Hover compare:** `compareHoverStyles()` — `hover.changed` must match; when either side changes, compare **color**, **backgroundColor**, and **transform** (~3/255 color tolerance). No “only compare when both changed” shortcut.
 
-| Gate | Result | Notes |
-| --- | --- | --- |
-| `parity:head:manifest` | **773/773 (100%)** | Latest `head-meta/manifest-1793243108644.json` |
-| `parity:head:refpack` (21) | **21/21** | `compare-1793242022721.json` |
-| `parity:url:check` | **801/801** | Use `URL_PARITY_CONCURRENCY=1` on Mac if undici crashes |
-| Migrations | **439 / 323 / 853** | media map rows |
-| `parity:behavior:templates` (Drupal-only, prior) | 48/48, 588 assertions | `2026-10-29T02-48-56-280Z` |
-| **WP ↔ Drupal behavior (new)** | In progress | Live WP + Drupal Playwright; see below |
+## Compare exclusions (intentional — not gate loosening)
 
-## WP vs Drupal dynamic behavior parity (overnight work)
+| Area | Rule |
+| --- | --- |
+| `hero` | Compared only on `/homepage` |
+| `bodyLinkHover` | Compared only on content paths: `/YYYY/MM/…`, `/in-brief`, paths containing `-issue` |
+| `issuesDropdown` | Desktop breakpoint only |
+| `mobileMenu` | Mobile breakpoint only |
+| Widget inventory (`widgets.*`) | Counts scoped to `main` / `.wp-site-blocks`; nodes under consent roots excluded |
 
-**Goal:** Same measurements on live WordPress and Drupal, diff report, fix theme JS/CSS.
+## Nondeterminism handling (network / DOM)
 
-**Harness**
+- **Route abort:** cookie/consent vendor scripts (`cookiebot`, `onetrust`, `osano`, `trustarc`, `quantcast`, `iubenda`) blocked in `prepareBehaviorPage()` so banner DOM does not affect widget counts.
+- **Consent DOM removal:** after accept/dismiss clicks, `dismissOverlays()` removes `#onetrust-*`, Cookiebot, and similar roots so they do not block pointer hover on footer/links during capture (widgets already exclude consent nodes).
+- **WP live load:** intermittent timeouts or incomplete hero/nav → `cross.wp.snapshot` (no diff for that case); not counted as a behavior mismatch row.
 
-- `parity/lib/behavior-profiles.mjs` — per-site selectors + `captureSiteBehavior()`
-- `parity/lib/behavior-compare.mjs` — video/style/dropdown/scroll diffs + `buildCrossSiteReport()`
-- `parity/tests/behavior-parity.spec.ts` — cross-site when `PARITY_BEHAVIOR_CROSS_SITE=1`
-- `parity/scripts/summarize-behavior-wp-diff.mjs` — roll up `wp-drupal-behavior-diff.json`
-- Per case: `reports/behavior/<runId>/compare/<slug>_<bp>/wp-drupal-behavior-diff.json`
+## Gates
 
-**npm scripts**
+| Gate | VM status |
+| --- | --- |
+| `parity:head:manifest` | **773/773** (`manifest-1793243108644.json`) |
+| `parity:head:refpack` (21) | **21/21** |
+| `parity:url:check` | **801/801** (`URL_PARITY_CONCURRENCY=1`) |
+| `parity:behavior:smoke` (strict cross-site) | Iterating — homepage desktop **0** mismatch rows when WP snapshot complete |
+| `parity:behavior:templates` (strict) | In progress (~48 cases × live WP) |
+
+## Theme / harness fixes (recent)
+
+- Sticky header, mega flyout `:hover`, scroll `.scrolled` / `.header--scrolled`, hero `play()`.
+- Footer copyright link: scroll-into-view before capture; selector `footer .copyright a, p.copyright a`.
+- Hover capture reads styles from the hovered locator (not a separate `querySelector`).
+- `run-behavior-parity.mjs` always writes summary JSON after cross-site run (even when tests fail).
+
+## npm
 
 ```bash
-npm run parity:behavior:smoke          # /homepage, cross-site
-npm run parity:behavior:templates      # auto paths, cross-site (hits live WP)
+npm run parity:behavior:smoke          # strict cross-site
+npm run parity:behavior:templates
+npm run parity:behavior:report-diff    # non-zero exit if mismatch rows
 npm run parity:behavior:templates:drupal-only
-npm run parity:behavior:report-diff
 ```
 
-**Measured:** hero video attrs/src, header scroll class, nav/donate/footer/body/card/button hover computed styles, mega-menu dropdown on hover, mobile menu toggle, scroll-reveal counts, carousel/accordion inventory.
-
-**Theme fixes this pass**
-
-- `wp-chrome-behaviors.js`: hero `play()` when autoplay blocked; scroll → `.scrolled` + `.header--scrolled`; removed inline `mega-sub-menu { display:none }`
-- `drupal-overrides.css`: sticky header, mega flyout `:hover`, footer link hover color, scrolled shadow
-
-**Mac DDEV:** Point `DRUPAL_BASE_URL` at DDEV; WP stays `https://danafarberimpact.org`. Full template run is slow (~25min+ VM) due to live WP loads.
-
-## Manifest head method
-
-`articles.json` / `in_brief.json` / `wp_head_overrides.json` / ref-pack HTML → `parity:head:manifest`. Mac 738-URL run was ~14.5% before overrides + metatag fixes; VM now **100%** on 773 with expectations.
-
-Updated: 2026-10-29T03:08Z
+Updated: 2026-10-29T03:35Z

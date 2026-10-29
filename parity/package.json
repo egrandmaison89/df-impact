@@ -13,6 +13,7 @@
     "parity:capture-template-samples": "node scripts/capture-template-samples.mjs",
     "parity:compare-ref-pack": "node scripts/compare-reference-pack.mjs",
     "parity:compare-template": "node scripts/compare-template-samples.mjs",
+    "parity:computed-style-diff": "node scripts/computed-style-diff.mjs",
     "parity:capture-baseline": "node scripts/capture-wp-baseline.mjs",
     "parity:capture-baseline:smoke": "PARITY_SAMPLE=1 node scripts/capture-wp-baseline.mjs",
     "parity:package-baseline-lite": "node scripts/package-baseline-lite.mjs",

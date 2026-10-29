@@ -8,6 +8,15 @@ export const BEHAVIOR_BREAKPOINTS = [
 
 export async function prepareBehaviorPage(page, { reducedMotion = false } = {}) {
   await page.emulateMedia({ reducedMotion: reducedMotion ? 'reduce' : 'no-preference' });
+  await page.addInitScript(() => {
+    const purgeConsent = () => {
+      document
+        .querySelectorAll('#onetrust-banner-sdk, #onetrust-pc-sdk, [id^="onetrust-"], .cookiebot, #CybotCookiebotDialog')
+        .forEach((el) => el.remove());
+    };
+    purgeConsent();
+    new MutationObserver(purgeConsent).observe(document.documentElement, { childList: true, subtree: true });
+  });
   await page.route('**/*', async (route) => {
     const url = route.request().url();
     if (/cookiebot|onetrust|osano|trustarc|quantcast|iubenda/i.test(url)) {
@@ -36,19 +45,50 @@ export async function computedStyle(page, selector) {
   }, selector);
 }
 
+export async function scrollSelectorIntoView(page, selector) {
+  const first = selector.split(',')[0].trim();
+  await page.evaluate((sel) => {
+    document.querySelector(sel)?.scrollIntoView({ block: 'center', inline: 'nearest' });
+  }, first);
+  await page.waitForTimeout(250);
+}
+
 export async function computedStyleHover(page, selector) {
   const loc = page.locator(selector).first();
-  if (!(await loc.count())) return null;
-  try {
-    await loc.scrollIntoViewIfNeeded();
-    await loc.hover({ force: true, timeout: 8000 });
-  } catch {
-    return null;
+  if ((await loc.count()) === 0) return null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      await page.mouse.move(8, 8);
+      await page.waitForTimeout(80);
+      await loc.scrollIntoViewIfNeeded();
+      const box = await loc.boundingBox();
+      if (box) {
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 10 });
+      }
+      await loc.hover({ timeout: 8000 });
+      await page.waitForTimeout(650);
+      let hovering = await loc.evaluate((el) => el.matches(':hover'));
+      if (!hovering && box) {
+        const cdp = await page.context().newCDPSession(page);
+        const x = box.x + box.width / 2;
+        const y = box.y + box.height / 2;
+        await cdp.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
+        await page.waitForTimeout(700);
+        hovering = await loc.evaluate((el) => el.matches(':hover'));
+      }
+      if (hovering) break;
+    } catch {
+      if (attempt === 2) {
+        try {
+          await loc.hover({ force: true, timeout: 5000 });
+          await page.waitForTimeout(650);
+        } catch {
+          return null;
+        }
+      }
+    }
   }
-  await page.waitForTimeout(350);
-  return page.evaluate((sel) => {
-    const el = document.querySelector(sel);
-    if (!el) return null;
+  return loc.evaluate((el) => {
     const cs = getComputedStyle(el);
     return {
       color: cs.color,
@@ -60,7 +100,7 @@ export async function computedStyleHover(page, selector) {
       position: cs.position,
       boxShadow: cs.boxShadow,
     };
-  }, selector.split(',')[0].trim());
+  });
 }
 
 export async function videoState(page, selector) {

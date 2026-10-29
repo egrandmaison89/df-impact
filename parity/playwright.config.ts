@@ -9,6 +9,7 @@ export default defineConfig({
   expect: { timeout: 15_000 },
   fullyParallel: false,
   workers: 1,
+  maxFailures: undefined,
   reporter: [['list'], ['json', { outputFile: 'reports/playwright-results.json' }]],
   use: {
     trace: 'off',

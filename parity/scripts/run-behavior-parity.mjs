@@ -24,11 +24,12 @@ const pw = spawnSync(
   { cwd: parityRoot, stdio: 'inherit', env: { ...process.env, PARITY_ROOT: parityRoot } },
 );
 
-if ((pw.status ?? 1) === 0 && process.env.PARITY_BEHAVIOR_CROSS_SITE === '1') {
-  spawnSync('node', ['scripts/summarize-behavior-wp-diff.mjs', process.env.PARITY_BEHAVIOR_RUN_ID], {
+if (process.env.PARITY_BEHAVIOR_CROSS_SITE === '1') {
+  const sum = spawnSync('node', ['scripts/summarize-behavior-wp-diff.mjs', process.env.PARITY_BEHAVIOR_RUN_ID], {
     cwd: parityRoot,
     stdio: 'inherit',
   });
+  process.exit(Math.max(pw.status ?? 1, sum.status ?? 0));
 }
 
 process.exit(pw.status ?? 1);

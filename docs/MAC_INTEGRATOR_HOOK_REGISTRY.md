@@ -1,122 +1,89 @@
 # Mac integrator — `df_setup` hook registry (binding)
 
-This document is the **authoritative numbering** for merging feature branches onto `cursor/phase4-chrome-behavior-0b67` (PR #5). **Refuse to merge any branch whose `df_setup_update_*` numbers collide** with an already-assigned hook or a lower hook on the same branch.
+Authoritative numbering for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5). **Refuse any branch whose `df_setup_update_*` numbers collide** with this table.
 
 ## Assigned hooks (10027+)
 
-| Hook | PR / source | Purpose |
-|------|-------------|---------|
-| **10027** | **#22** issue-landing | Issue fixture backfill: PostX sort + `backfill_issue_page_from_wordpress.php` (fixture-first). **Must run before content-sweep / Gutenberg About hooks.** |
-| **10028** | **#23** content-sweep | `/about` staff block sync (WordPress reference). Renumbered from conflicting **10027** on #23. |
-| **10029** | **#25** gutenberg-hover-archive | `/about` WordPress Gutenberg body. Renumbered from **10027** on #25. |
-| **10030** | **#25** gutenberg-hover-archive | Idempotent staff sync on Gutenberg body. Renumbered from **10028** on #25. |
-| **10031+** | **#24** article-variants-parity | Search parity (`df_secondary`, `search-legacy` view path) → **10031**. Home landing / `page.front` → **10032**. Any additional #24 hooks continue at **10033+**. |
+| Hook | PR | Purpose |
+|------|-----|---------|
+| **10027** | **#22** | Issue fixture backfill (`backfill_postx_sort_weights.php`, `backfill_issue_page_from_wordpress.php`). |
+| **10028** | **#23** | Content-sweep: `/about` staff sync (renumbered off 10027). |
+| **10029** | **#25** | `/about` Gutenberg body (renumbered off 10027). |
+| **10030** | **#25** | Staff sync on Gutenberg body (renumbered off 10028). |
+| **10031** | **#23** | Content-sweep (reserved on #23 branch). |
+| **10032** | **#23** | Content-sweep (reserved on #23 branch). |
+| **10033** | **#23** | Content-sweep (reserved on #23 branch). |
+| **10034+** | **#24** | Search parity → **10034**; home landing → **10035**; further #24 hooks → **10036+**. |
 
-Hooks **10025** (PostX fields), **10026** (Pediatrics term), and earlier remain unchanged.
+Hooks **10025–10026** unchanged (PostX fields, Pediatrics term).
 
-## Merge order (queue)
+## Merge order (hard)
 
-1. **#22** issue-landing — establishes **10027** and `df_setup.module` issue helpers.
-2. **#23** content-sweep — only after #22; uses **10028** (not 10027).
-3. **#25** Gutenberg / archive / hover — after #22 and #23; uses **10029–10030** (not 10027–10028).
-4. **#24** — after the above; hooks **10031+** only.
+Drupal **never runs a hook numbered below the current schema**. If **#23** merges before **#25**, schema can reach **10033** while **10029/10030** were never registered → Gutenberg About hooks **never run**.
 
-Do **not** merge #23 or #25 until their branches are renumbered on GitHub to match this table.
+**Required order:**
 
-## Root cause: scratch merge (content-sweep + #22)
+1. **#22** issue-landing (**10027**)
+2. **#25** Gutenberg / archive / hover (**10029–10030** on branch; **10028** may already exist from integrator)
+3. **#23** content-sweep (**10028**, **10031–10033**) — **hold #23** if #25 is not merged and renumbered yet
+4. **#24** article variants (**10034+**)
 
-If **content-sweep’s hook ran as 10027 before #22’s 10027**, Drupal marks **10027** complete and **#22’s backfill never runs**. Symptom: **~16 issue landings drop to ~0.04 text parity** (empty/minimal body). A **`df_setup.module` merge conflict** that dropped #22-side code makes replay fail even after fixing hooks.
+On `df_setup.module` conflicts with #22, **keep #22’s side**.
 
-**Prevention:**
-
-- Merge **#22 before #23 and #25**.
-- On `df_setup.module` conflicts, **keep #22’s side** (issue landing / fixture replay helpers).
-- After **every** merge: `drush updb -y`, then verify schema (below), then **both** issue text gates (below).
-
-## PR #23 merge blocker
-
-**`npm run parity:url:check` must be 801/801** on the content-sweep branch before merging #23 onto PR #5. (Reported baseline on #23: **800/801** — do not merge until green.)
-
-## Post-merge verification (required)
-
-### Schema + `df_setup_update_10027` via updb
-
-`10027` must run during **`drush updb`**, not only via the replay script. If a wrong hook occupied **10027**, Drupal marks the schema complete and **#22’s backfill never runs** (replay can still fix data, but schema looks “fine”).
-
-`df_setup_update_10027()` sets key-value marker `update_10027_applied` when it runs.
+## Post-merge checklist (every merge)
 
 ```bash
 cd drupal
 ./vendor/bin/drush updb -y
 ./vendor/bin/drush php:script web/modules/custom/df_setup/scripts/verify_df_setup_schema.php
+./vendor/bin/drush php:script web/modules/custom/df_migrate/scripts/test_issue_fixture_replay.php
+
+cd ../parity
+DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:content:sweep:issues
+DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:issue-live-text
+npm run parity:url:check    # must be 801/801 before merging #23
+npm run parity:smoke:200    # 0 fails
 ```
 
-**Pass:** exit 0 — `schema === max_hook` and `update_10027_applied` present when `max_hook >= 10027`.
+**Pass:** `verify_df_setup_schema` exit 0 (`schema === max_hook`, `update_10027_applied` when max ≥ 10027). Record **both** issue text metrics in merge notes (live-text vs content-sweep can diverge; bad **10027** collision → ~0.03 sweep vs ≥98.9% live-text).
 
-**Recovery** if marker missing but schema ≥ 10027:
+### PR #23 merge blockers
+
+- **`parity:url:check` = 801/801** on the content-sweep branch (#23 reported **800/801** — do not merge until green).
+- **#25 merged first** (see merge order above).
+
+### Schema + `df_setup_update_10027`
+
+`10027` must run via **`drush updb`**, not replay-only. Sets `update_10027_applied`.
+
+Recovery if marker missing but schema ≥ 10027:
 
 ```bash
 ./vendor/bin/drush php:eval '\Drupal::keyValue("system.schema")->set("df_setup", 10026);'
 ./vendor/bin/drush updb -y
-./vendor/bin/drush php:script web/modules/custom/df_setup/scripts/verify_df_setup_schema.php
 ```
 
-### Issue gates (#22 and every merge after)
-
-Run **all three** after each merge:
-
-```bash
-cd drupal
-./vendor/bin/drush php:script web/modules/custom/df_migrate/scripts/test_issue_fixture_replay.php
-
-cd ../parity
-DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:issue-live-text
-DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:content:sweep:issues
-```
-
-| Gate | Tool | What it measures |
-|------|------|------------------|
-| **#22 replay** | `test_issue_fixture_replay.php` | Fixture backfill scripts (DB fields / promos) |
-| **#22 live text** | `parity:issue-live-text` | Playwright main text vs **cached/live WP HTML** (PR #22 scorer) |
-| **#23 content sweep (issues)** | `parity:content:sweep:issues` | PR #23 **`run-content-sweep.mjs`** on **16 manifest issue URLs** |
-
-**Known discrepancy:** On a bad merge, **live-text can report ≥98.9%** while **content-sweep shows ~0.03 text similarity** on the same issue URLs (different extractors / WP source / DOM). Until that is explained, **record both metrics** in every merge report — do not treat one green gate as proof the other passed.
-
-**Target ( #22 live-text):** 15/15 comparable issues **≥ 98.9%** where the sweep reports comparable rows.
-
-### Merge report snippet (copy into PR #5 notes)
-
-```markdown
-### Issue landing gates
-- `verify_df_setup_schema`: schema=___ max_hook=___ update_10027_applied=___
-- Replay script: exit ___
-- `parity:issue-live-text`: min=___ p50=___ pass≥98.9%=___/16
-- `parity:content:sweep:issues`: text98=___/16 minTextSim=___ p50=___
-- **Discrepancy note:** (if live-text high and content-sweep low, cite hook collision / 10027 marker)
-```
-
-### Home after config import
-
-If `drush cim` runs, re-point front page:
+### Home after `cim`
 
 ```bash
 ./vendor/bin/drush php:eval 'require_once DRUPAL_ROOT . "/modules/custom/df_setup/df_setup.install"; _df_setup_ensure_home_landing();'
 ```
 
-## `/about` — #23 vs #25
+## `/about` (#23 vs #25)
 
-Both touch About Impact. On integrator:
+- **10029–10030** (#25) must be **present in `df_setup.install` before schema passes 10031** (merge **#25 before #23**).
+- Pick About body/CSS that wins **text parity + computed-style vs WP** without losing visible **About Impact** h1.
 
-1. **10028** staff sync (content-sweep) runs before **10029–10030** Gutenberg.
-2. Keep the branch/version that wins **combined text parity + computed-style vs WP**, without removing the **visible “About Impact” h1** (page title / template), even when body moves to Gutenberg blocks.
+## PR #5 integrator reference
 
-## Collision policy
+`cursor/phase4-chrome-behavior-0b67` implements **10027–10030** and **10034–10035** (#24 search/home). Slots **10031–10033** remain for **#23** at merge time.
 
-Before merging branch `B`:
+### Latest VM snapshot
 
-1. List `df_setup_update_*` on `B` and on the integrator branch.
-2. If any number is reused for **different** behavior, **stop** — renumber on `B` first, then merge.
-
-## PR #5 integrator branch (reference)
-
-As of the registry commit, `df_setup.install` on `cursor/phase4-chrome-behavior-0b67` implements **10027–10032** exactly as in the table above.
+| Gate | Result |
+|------|--------|
+| `verify_df_setup_schema` | schema=max_hook, `update_10027_applied` set |
+| `parity:url:check` | **801/801** |
+| `parity:smoke:200` | **0 fails** |
+| `parity:issue-live-text` | min **0.989** (14/16 comparable) |
+| `parity:content:sweep:issues` | min **~0.910** on comparable rows (log both) |

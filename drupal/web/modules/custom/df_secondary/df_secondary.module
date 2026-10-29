@@ -1,0 +1,189 @@
+<?php
+
+/**
+ * @file
+ * Secondary WordPress surface parity (search, feeds, icons, share).
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\node\NodeInterface;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_page_attachments().
+ */
+function df_secondary_page_attachments(array &$attachments): void {
+  $origin = 'https://danafarberimpact.org';
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'link',
+      '#attributes' => [
+        'rel' => 'alternate',
+        'type' => 'application/rss+xml',
+        'title' => 'Impact Magazine » Feed',
+        'href' => $origin . '/feed/',
+      ],
+    ],
+    'df_secondary_rss_feed',
+  ];
+
+  $icon_base = 'https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/01/JimmyFund_logoicon.png';
+  $icons = [
+    ['rel' => 'icon', 'sizes' => '32x32', 'href' => $icon_base . '?fit=32%2C29&ssl=1'],
+    ['rel' => 'icon', 'sizes' => '192x192', 'href' => $icon_base . '?fit=192%2C177&ssl=1'],
+    ['rel' => 'apple-touch-icon', 'href' => $icon_base . '?fit=180%2C166&ssl=1'],
+  ];
+  foreach ($icons as $icon) {
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#type' => 'html_tag',
+        '#tag' => 'link',
+        '#attributes' => $icon,
+      ],
+      'df_secondary_' . $icon['rel'] . ($icon['sizes'] ?? ''),
+    ];
+  }
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => [
+        'name' => 'msapplication-TileImage',
+        'content' => $icon_base . '?fit=270%2C249&ssl=1',
+      ],
+    ],
+    'df_secondary_tile_image',
+  ];
+}
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function df_secondary_preprocess_html(array &$variables): void {
+  $route = \Drupal::routeMatch()->getRouteName();
+  if ($route === 'view.df_impact_search.page_1') {
+    $variables['attributes']['class'][] = 'search';
+    $variables['attributes']['class'][] = 'error404';
+  }
+  if ($route === 'system.404') {
+    $variables['attributes']['class'][] = 'error404';
+  }
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function df_secondary_preprocess_node(array &$variables): void {
+  $node = $variables['node'] ?? NULL;
+  if (!$node instanceof NodeInterface || $node->bundle() !== 'article') {
+    return;
+  }
+  if (($variables['view_mode'] ?? '') !== 'full') {
+    return;
+  }
+  $origin = 'https://danafarberimpact.org';
+  $permalink = $origin . $node->toUrl()->toString();
+  if (!str_ends_with($permalink, '/')) {
+    $permalink .= '/';
+  }
+  $title = $node->label();
+  $encoded_title = rawurlencode($title);
+  $encoded_url = rawurlencode($permalink);
+  /** @var \Drupal\df_secondary\WordPressIdMap $wp_map */
+  $wp_map = \Drupal::service('df_secondary.wp_id_map');
+  $wp_post_id = $wp_map->postIdForPath($node->toUrl()->toString()) ?? $node->id();
+
+  $variables['article_share_links'] = [
+    'permalink' => $permalink,
+    'post_id' => $wp_post_id,
+    'networks' => [
+      [
+        'id' => 'facebook',
+        'label' => 'Facebook',
+        'class' => 'ss-facebook-color',
+        'href' => 'https://www.facebook.com/sharer.php?t=' . $encoded_title . '&u=' . $encoded_url,
+      ],
+      [
+        'id' => 'twitter',
+        'label' => 'Twitter',
+        'class' => 'ss-twitter-color',
+        'href' => 'https://twitter.com/intent/tweet?text=' . $encoded_title . '&url=' . $encoded_url,
+      ],
+      [
+        'id' => 'linkedin',
+        'label' => 'LinkedIn',
+        'class' => 'ss-linkedin-color',
+        'href' => 'https://www.linkedin.com/shareArticle?title=' . $encoded_title . '&url=' . $encoded_url . '&mini=true',
+      ],
+      [
+        'id' => 'envelope',
+        'label' => 'Email',
+        'class' => 'ss-envelope-color',
+        'href' => 'mailto:?body=' . $encoded_url . '&subject=' . $encoded_title,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_views_view().
+ */
+function df_secondary_preprocess_views_view(array &$variables): void {
+  $view = $variables['view'] ?? NULL;
+  if (!$view instanceof ViewExecutable || $view->id() !== 'df_impact_search') {
+    return;
+  }
+  $term = (string) (\Drupal::request()->query->get('s') ?? '');
+  $variables['search_query'] = $term;
+  $variables['search_has_query'] = $term !== '';
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function df_secondary_views_pre_render(ViewExecutable $view): void {
+  if ($view->id() !== 'df_impact_search') {
+    return;
+  }
+  if ($view->total_rows === 0 && !empty($view->empty['area_text_custom'])) {
+    return;
+  }
+  if ($view->total_rows === 0) {
+    $view->empty['area_text_custom'] = [
+      'id' => 'area_text_custom',
+      'table' => 'views',
+      'field' => 'area_text_custom',
+      'relationship' => 'none',
+      'group_type' => 'group',
+      'admin_label' => '',
+      'plugin_id' => 'text_custom',
+      'empty' => TRUE,
+      'content' => '<p class="wp-block-paragraph">' . t('Sorry, but nothing matched your search terms. Please try again with some different keywords.') . '</p>',
+      'tokenize' => FALSE,
+    ];
+  }
+}
+
+/**
+ * Implements hook_metatags_alter().
+ */
+function df_secondary_metatags_alter(array &$tags, array &$context): void {
+  $route = \Drupal::routeMatch()->getRouteName();
+  if ($route === 'view.df_impact_search.page_1') {
+    $term = (string) (\Drupal::request()->query->get('s') ?? '');
+    $title = $term !== ''
+      ? t('Search Results for “@term” - Impact Magazine', ['@term' => $term])
+      : t('Page not found - Impact Magazine');
+    $tags['title'] = (string) $title;
+    $tags['og_title'] = (string) $title;
+    $tags['robots'] = 'noindex, follow';
+  }
+  if ($route === 'system.404') {
+    $title = 'Page not found - Impact Magazine';
+    $tags['title'] = $title;
+    $tags['og_title'] = $title;
+  }
+}

@@ -1,5 +1,5 @@
 df_searchstax.page:
-  path: '/search'
+  path: '/search-stax'
   defaults:
     _controller: '\Drupal\df_searchstax\Controller\SearchPageController::content'
     _title: 'Search'

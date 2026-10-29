@@ -26,6 +26,8 @@
           {{ content.body }}
         {% endif %}
 
+        {% include '@df_impact/includes/article-social-share.html.twig' %}
+
         {% if content.field_content_sections|render|trim %}
           {{ content.field_content_sections }}
         {% endif %}

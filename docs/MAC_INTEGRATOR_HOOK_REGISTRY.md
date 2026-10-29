@@ -21,12 +21,15 @@ Hooks **10025–10026** unchanged (PostX fields, Pediatrics term).
 
 Drupal **never runs a hook numbered below the current schema**. If **#23** merges before **#25**, schema can reach **10033** while **10029/10030** were never registered → Gutenberg About hooks **never run**.
 
-**Required order:**
+**Required order (integrator queue):**
 
-1. **#22** issue-landing (**10027**)
-2. **#25** Gutenberg / archive / hover — see **hold criteria** below (do **not** full-merge the +483k / 762-file PR until green)
-3. **#23** content-sweep — **after #25**, and only **#23’s later commits** (hooks **10031–10033**). **#25 already merges `cursor/content-sweep-ce7f` (PR #23)** and carries **10028** plus **10029/10030**; do **not** re-apply the overlapping content-sweep body when landing standalone #23.
-4. **#24** article variants (**10034+**)
+1. **#22** issue-landing (**10027**) — landed on PR #5 via **#27** (replaces re-merge of `issue-landing-parity-185b`).
+2. **#27** issue pagination + shared issue text scorer (**cherry-pick `fcf27bd2` + `f97587d4` PostX pager in `.ultp-pagination`**) — **merge next** after #22 hook is on branch.
+3. **#25** Gutenberg / archive / hover — see **hold criteria** below (do **not** full-merge the +483k / 762-file PR until green).
+4. **#23** content-sweep — **after #25**; tail hooks **10031–10033** only (overlap already in #25).
+5. **#28** article variants (**replaces #24 slot at end**) — **do not double-merge #24** (GitHub **#24 merged**); merge **#28** for follow-up variant parity (**16/16**, template-samples **19/19**). Hooks stay **10034+** on integrator.
+
+Legacy note: **#24** (`1c5c4c5d`) is already on PR #5 as `7c27d051`; treat **#28** as the article-variant gate at queue end.
 
 If **#25 is not ready**, **hold #23** as well (schema / hook ordering).
 

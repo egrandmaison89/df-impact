@@ -40,18 +40,20 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 7. **#35** whole — **merged** (`caf402c2` ← `cursor/editor-e2e-stable-ce7f`); issue-nav **Dynamic Page Cache** tags + publish invalidation; editor/admin e2e without `drush cr`; integrator follow-up: unpublish/archive nav bust + admin-e2e hero restore via entity save
 8. **#30** whole — **merged** (`4f8ca897` ← `cursor/fall-2026-links-media-header-5b82`); Fall 2026 link/media repair, FA solid webfont (GTranslate icon), lead figcaption + In Brief photography credits, `parity:audit:drupal-links`; bootstrap runs `_df_setup_run_post_migrate_integrator_convergence()` (fresh-VM category archive sweep fix)
 9. **#31** whole — **merged** (`b435badd` ← `cursor/visual-chrome-pagination-d748`); share/pagination/In Brief/tablet chrome; single **main/footer inset** in `drupal-overrides.css`; In Brief photo credit via `df_impact_in_brief_photo_credit_display()` (`field_photo_credit` then manifest)
-10. **#28** whole — article variants — **rebase after #31**; drop duplicate main/footer inset CSS — when agent ready
-11. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
+10. **#10** whole — **merged** (`46dfef49` ← `cursor/meta-head-behavior-0751`); `field_issue_banner_is_light` config + post_update backfill; browse-issues cover inline styles; behavior/nav `is-light` parity
+11. **#28** whole — article variants — **parked** (rebase after #31; agent archived)
 
-**Next:** **#28 → #10** only (whole merge when that PR’s agent reports ready with a **green gate table**). **Integrator stays idle between merges** — no speculative work.
+**Next:** **#28** only when rebased and a **green gate table** is available. **Integrator idle** — no speculative work.
 
 **#33 dropped** (agent stopped; cost cut). **Do not merge #33.** Optional later (**Eric must ask first**, after **#31**): cherry-pick three small pieces from PR #33 only — (1) digital exclusives **GivingTuesday-first** order + refreshed refpack, (2) **`/digital-exclusives` 404** + baseline, (3) idempotent **About** body. Until then, no #33 work.
 
-**Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`), **#35** (`caf402c2` + integrator gate follow-up), **#30** (`4f8ca897`), **#31** (`b435badd`).
+**Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`), **#35** (`caf402c2` + integrator gate follow-up), **#30** (`4f8ca897`), **#31** (`b435badd`), **#10** (`46dfef49`).
+
+**Registry tip (integrator):** **`46dfef49`** on `cursor/phase4-chrome-behavior-0b67`.
 
 **Generated parity gate output** (`parity/reports/content-sweep/`, smoke, url-parity, etc.) is **gitignored** — do not commit sweep JSON/CSV from PR branches.
 
-**Post_updates (combined on phase4):** #23 four + #25 `seed_issue_covers`, `seed_issue_banners` + **#30** `repair_internal_links_and_media`, `ensure_df_secondary_search` (+ #10 `is_light` when merged).
+**Post_updates (combined on phase4):** #23 four + #25 `seed_issue_covers`, `seed_issue_banners` + **#30** `repair_internal_links_and_media`, `ensure_df_secondary_search` + **#10** `issue_banner_is_light`.
 
 On `df_setup.module` conflicts with #22, **keep #22’s side**.
 

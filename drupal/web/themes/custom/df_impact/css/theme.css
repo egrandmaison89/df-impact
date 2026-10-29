@@ -897,6 +897,8 @@
   text-underline-offset: 2px;
 }
 
+main nav.pager .pager__item a,
+main nav.pager .pager__item span,
 .de-archive .pager__item a,
 .de-archive .pager__item span {
   display: inline-flex;
@@ -914,10 +916,18 @@
   transition: all 0.5s ease;
 }
 
+main nav.pager .pager__item a:hover,
+main nav.pager .pager__item a:focus-visible,
 .de-archive .pager__item a:hover,
 .de-archive .pager__item a:focus-visible {
-  background: transparent;
-  color: #00629b;
+  background: transparent !important;
+  color: #00629b !important;
+}
+
+.issue-page__articles .pager__item a:hover,
+.issue-page__articles .pager__item a:focus-visible {
+  background: transparent !important;
+  color: #00629b !important;
 }
 
 main .wp-block-button a.wp-block-button__link.has-background {

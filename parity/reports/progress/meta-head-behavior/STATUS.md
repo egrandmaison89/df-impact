@@ -36,6 +36,7 @@ Base: `cursor/phase4-chrome-behavior-0b67` | Integration: PR #12 flow
 | `pagerHover`, `categoryLinkHover`, `inBriefButtonHover` | Optional (`optionalHoverCompare` — no mismatch when selectors absent) |
 | `bodyLinkHover` | Content paths only |
 | `issuesDropdown` | Desktop only |
+| `navDefault` | Desktop: full style fields; tablet/mobile: color + transform only |
 | `mobileMenu` | Mobile only |
 | Widget inventory | Scoped to `main`; consent roots excluded |
 
@@ -50,7 +51,7 @@ Base: `cursor/phase4-chrome-behavior-0b67` | Integration: PR #12 flow
 | --- | --- |
 | `parity:head:manifest` | **773/773** |
 | `parity:url:check` | **801/801** |
-| `parity:behavior:templates` | Run `2026-10-29T07-cross11` (3 breakpoint passes); re-run failures after CSS/twig fixes |
+| `parity:behavior:templates` | **Active:** `2026-10-29T07-cross11` (mobile pass in tmux `behavior-cross11`). **Superseded:** `2026-10-29T05-30-00-cross7` (stopped at 4/48). After cross11: `PARITY_BEHAVIOR_RUN_ID=2026-10-29T07-cross11 node scripts/retry-behavior-incomplete.mjs` then re-run failing paths. |
 | Embeds backfill | VM run 2026-10-29: **before** 16 fields (15 article, 1 in_brief) with vimeo/youtube markers; **after** 1 in_brief field updated (articles already iframe-backed). Script: `drush php:script modules/custom/df_migrate/scripts/df_backfill_all_embeds.php` |
 
 ## Hover/focus (More Stories, pager, category, In Brief band)
@@ -58,4 +59,4 @@ Base: `cursor/phase4-chrome-behavior-0b67` | Integration: PR #12 flow
 - Harness: `pagerHover`, `categoryLinkHover`, `inBriefButtonHover`, `cardHover` in cross-site diff (optional when DOM missing).
 - Theme: `theme.css` — In Brief band + banner CTA hover/focus; ultp card title link hover; archive pager/category `:focus-visible`.
 
-Updated: 2026-10-29T05:35Z
+Updated: 2026-10-29T09:50Z

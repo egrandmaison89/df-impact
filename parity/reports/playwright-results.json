@@ -181,12 +181,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 5939,
+                  "duration": 6276,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:19:22.235Z",
+                  "startTime": "2026-10-29T02:48:57.354Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -233,12 +233,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 5132,
+                  "duration": 5209,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:19:28.239Z",
+                  "startTime": "2026-10-29T02:49:03.721Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -285,12 +285,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 33554,
+                  "duration": 4995,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:19:33.377Z",
+                  "startTime": "2026-10-29T02:49:08.935Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -337,12 +337,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32895,
+                  "duration": 4109,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:20:06.938Z",
+                  "startTime": "2026-10-29T02:49:13.935Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -389,12 +389,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3274,
+                  "duration": 31910,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:20:39.840Z",
+                  "startTime": "2026-10-29T02:49:18.052Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -441,12 +441,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32108,
+                  "duration": 32308,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:20:43.120Z",
+                  "startTime": "2026-10-29T02:49:49.970Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -493,12 +493,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32732,
+                  "duration": 3986,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:21:15.236Z",
+                  "startTime": "2026-10-29T02:50:22.283Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -545,12 +545,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 31803,
+                  "duration": 3203,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:21:47.975Z",
+                  "startTime": "2026-10-29T02:50:26.275Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -597,12 +597,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3647,
+                  "duration": 3442,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:22:19.784Z",
+                  "startTime": "2026-10-29T02:50:29.486Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -649,12 +649,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32711,
+                  "duration": 5867,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:22:23.437Z",
+                  "startTime": "2026-10-29T02:50:32.935Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -701,12 +701,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3300,
+                  "duration": 31875,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:22:56.153Z",
+                  "startTime": "2026-10-29T02:50:38.807Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -753,12 +753,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3710,
+                  "duration": 3569,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:22:59.460Z",
+                  "startTime": "2026-10-29T02:51:10.688Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -776,162 +776,6 @@
             }
           ],
           "id": "79008d2b98d0c0e30b34-2bf9e5af91b394429f73",
-          "file": "behavior-parity.spec.ts",
-          "line": 76,
-          "column": 9
-        },
-        {
-          "title": "behavior /2026/09/more-than-a-building-name @ desktop",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 120000,
-              "annotations": [
-                {
-                  "type": "serial",
-                  "location": {
-                    "file": "/workspace/parity/tests/behavior-parity.spec.ts",
-                    "line": 0,
-                    "column": 0
-                  }
-                }
-              ],
-              "expectedStatus": "passed",
-              "projectId": "behavior",
-              "projectName": "behavior",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 32749,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-10-29T02:23:03.175Z",
-                  "annotations": [
-                    {
-                      "type": "serial",
-                      "location": {
-                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
-                        "line": 0,
-                        "column": 0
-                      }
-                    }
-                  ],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "79008d2b98d0c0e30b34-5a816d2649a4de27a08c",
-          "file": "behavior-parity.spec.ts",
-          "line": 76,
-          "column": 9
-        },
-        {
-          "title": "behavior /2026/09/more-than-a-building-name @ tablet",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 120000,
-              "annotations": [
-                {
-                  "type": "serial",
-                  "location": {
-                    "file": "/workspace/parity/tests/behavior-parity.spec.ts",
-                    "line": 0,
-                    "column": 0
-                  }
-                }
-              ],
-              "expectedStatus": "passed",
-              "projectId": "behavior",
-              "projectName": "behavior",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 3052,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-10-29T02:23:35.931Z",
-                  "annotations": [
-                    {
-                      "type": "serial",
-                      "location": {
-                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
-                        "line": 0,
-                        "column": 0
-                      }
-                    }
-                  ],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "79008d2b98d0c0e30b34-2160845ca75f93b6c654",
-          "file": "behavior-parity.spec.ts",
-          "line": 76,
-          "column": 9
-        },
-        {
-          "title": "behavior /2026/09/more-than-a-building-name @ mobile",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 120000,
-              "annotations": [
-                {
-                  "type": "serial",
-                  "location": {
-                    "file": "/workspace/parity/tests/behavior-parity.spec.ts",
-                    "line": 0,
-                    "column": 0
-                  }
-                }
-              ],
-              "expectedStatus": "passed",
-              "projectId": "behavior",
-              "projectName": "behavior",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 32173,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-10-29T02:23:38.988Z",
-                  "annotations": [
-                    {
-                      "type": "serial",
-                      "location": {
-                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
-                        "line": 0,
-                        "column": 0
-                      }
-                    }
-                  ],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "79008d2b98d0c0e30b34-617e588ae8d7b6a94f6c",
           "file": "behavior-parity.spec.ts",
           "line": 76,
           "column": 9
@@ -961,12 +805,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32635,
+                  "duration": 4449,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:24:11.166Z",
+                  "startTime": "2026-10-29T02:51:14.264Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1013,12 +857,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3077,
+                  "duration": 31798,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:24:43.807Z",
+                  "startTime": "2026-10-29T02:51:18.722Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1065,12 +909,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32217,
+                  "duration": 32311,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:24:46.893Z",
+                  "startTime": "2026-10-29T02:51:50.528Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1117,12 +961,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32678,
+                  "duration": 4194,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:25:19.116Z",
+                  "startTime": "2026-10-29T02:52:22.845Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1169,12 +1013,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3275,
+                  "duration": 31842,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:25:51.799Z",
+                  "startTime": "2026-10-29T02:52:27.045Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1221,12 +1065,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32184,
+                  "duration": 3619,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:25:55.079Z",
+                  "startTime": "2026-10-29T02:52:58.897Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1273,12 +1117,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 35914,
+                  "duration": 6453,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:26:27.269Z",
+                  "startTime": "2026-10-29T02:53:02.522Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1325,12 +1169,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3927,
+                  "duration": 3855,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:27:03.189Z",
+                  "startTime": "2026-10-29T02:53:08.982Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1377,12 +1221,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 5033,
+                  "duration": 32628,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:27:07.121Z",
+                  "startTime": "2026-10-29T02:53:12.845Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1405,7 +1249,7 @@
           "column": 9
         },
         {
-          "title": "behavior /2026/09/a-new-era-in-cancer-care-lavine-bekenstein-cancer-hospital-at-dana-farber @ desktop",
+          "title": "behavior /2026/09/american-association-for-cancer-research-2 @ desktop",
           "ok": true,
           "tags": [],
           "tests": [
@@ -1429,12 +1273,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4448,
+                  "duration": 4071,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:27:12.161Z",
+                  "startTime": "2026-10-29T02:53:45.480Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1451,13 +1295,13 @@
               "status": "expected"
             }
           ],
-          "id": "79008d2b98d0c0e30b34-e1b9272f81f170cd4425",
+          "id": "79008d2b98d0c0e30b34-805712fde7ba0d574c1f",
           "file": "behavior-parity.spec.ts",
           "line": 76,
           "column": 9
         },
         {
-          "title": "behavior /2026/09/a-new-era-in-cancer-care-lavine-bekenstein-cancer-hospital-at-dana-farber @ tablet",
+          "title": "behavior /2026/09/american-association-for-cancer-research-2 @ tablet",
           "ok": true,
           "tags": [],
           "tests": [
@@ -1481,12 +1325,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3199,
+                  "duration": 3350,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:27:16.615Z",
+                  "startTime": "2026-10-29T02:53:49.556Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1503,13 +1347,13 @@
               "status": "expected"
             }
           ],
-          "id": "79008d2b98d0c0e30b34-fae7b7086407ba523784",
+          "id": "79008d2b98d0c0e30b34-7dd5ecdc6b2fa5f2a222",
           "file": "behavior-parity.spec.ts",
           "line": 76,
           "column": 9
         },
         {
-          "title": "behavior /2026/09/a-new-era-in-cancer-care-lavine-bekenstein-cancer-hospital-at-dana-farber @ mobile",
+          "title": "behavior /2026/09/american-association-for-cancer-research-2 @ mobile",
           "ok": true,
           "tags": [],
           "tests": [
@@ -1533,12 +1377,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32316,
+                  "duration": 3438,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:27:19.819Z",
+                  "startTime": "2026-10-29T02:53:52.913Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1555,7 +1399,163 @@
               "status": "expected"
             }
           ],
-          "id": "79008d2b98d0c0e30b34-bc2668cd62e1858b80ac",
+          "id": "79008d2b98d0c0e30b34-764669010eb31a2b106d",
+          "file": "behavior-parity.spec.ts",
+          "line": 76,
+          "column": 9
+        },
+        {
+          "title": "behavior /2023/09/american-association-for-cancer-research @ desktop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "behavior",
+              "projectName": "behavior",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4041,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T02:53:56.358Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "79008d2b98d0c0e30b34-931e9da6a69303e39f51",
+          "file": "behavior-parity.spec.ts",
+          "line": 76,
+          "column": 9
+        },
+        {
+          "title": "behavior /2023/09/american-association-for-cancer-research @ tablet",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "behavior",
+              "projectName": "behavior",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3276,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T02:54:00.403Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "79008d2b98d0c0e30b34-69f6ce4f8e0c421acb1e",
+          "file": "behavior-parity.spec.ts",
+          "line": 76,
+          "column": 9
+        },
+        {
+          "title": "behavior /2023/09/american-association-for-cancer-research @ mobile",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "behavior",
+              "projectName": "behavior",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 32257,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T02:54:03.685Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "79008d2b98d0c0e30b34-97cfd7e60dcbc8db029d",
           "file": "behavior-parity.spec.ts",
           "line": 76,
           "column": 9
@@ -1585,12 +1585,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32664,
+                  "duration": 32593,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:27:52.140Z",
+                  "startTime": "2026-10-29T02:54:35.948Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1637,12 +1637,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 31870,
+                  "duration": 3412,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:28:24.809Z",
+                  "startTime": "2026-10-29T02:55:08.547Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1689,12 +1689,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32290,
+                  "duration": 32235,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:28:56.685Z",
+                  "startTime": "2026-10-29T02:55:11.964Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1741,12 +1741,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4875,
+                  "duration": 32713,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:29:28.981Z",
+                  "startTime": "2026-10-29T02:55:44.208Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1793,12 +1793,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 31831,
+                  "duration": 3187,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:29:33.868Z",
+                  "startTime": "2026-10-29T02:56:16.928Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1845,12 +1845,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3983,
+                  "duration": 3564,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:30:05.709Z",
+                  "startTime": "2026-10-29T02:56:20.121Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1897,12 +1897,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4462,
+                  "duration": 32743,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:30:09.698Z",
+                  "startTime": "2026-10-29T02:56:23.693Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -1949,12 +1949,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3671,
+                  "duration": 31844,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:30:14.167Z",
+                  "startTime": "2026-10-29T02:56:56.442Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2001,12 +2001,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32289,
+                  "duration": 32238,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:30:17.845Z",
+                  "startTime": "2026-10-29T02:57:28.293Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2053,12 +2053,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32775,
+                  "duration": 4422,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:30:50.143Z",
+                  "startTime": "2026-10-29T02:58:00.535Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2105,12 +2105,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3410,
+                  "duration": 31863,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:31:22.922Z",
+                  "startTime": "2026-10-29T02:58:04.963Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2157,12 +2157,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32336,
+                  "duration": 32382,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:31:26.340Z",
+                  "startTime": "2026-10-29T02:58:36.835Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2209,12 +2209,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 32729,
+                  "duration": 4503,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:31:58.684Z",
+                  "startTime": "2026-10-29T02:59:09.222Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2261,12 +2261,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 31821,
+                  "duration": 3022,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:32:31.421Z",
+                  "startTime": "2026-10-29T02:59:13.731Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2313,12 +2313,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3903,
+                  "duration": 32327,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:33:03.252Z",
+                  "startTime": "2026-10-29T02:59:16.757Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2341,7 +2341,7 @@
           "column": 9
         },
         {
-          "title": "behavior /digital-exclusives @ desktop",
+          "title": "behavior /category/access-and-equity @ desktop",
           "ok": true,
           "tags": [],
           "tests": [
@@ -2365,12 +2365,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4025,
+                  "duration": 4222,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:33:07.163Z",
+                  "startTime": "2026-10-29T02:59:49.088Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2387,13 +2387,13 @@
               "status": "expected"
             }
           ],
-          "id": "79008d2b98d0c0e30b34-9aa5d3b15fd910108e4d",
+          "id": "79008d2b98d0c0e30b34-a28847e87346310efd16",
           "file": "behavior-parity.spec.ts",
           "line": 76,
           "column": 9
         },
         {
-          "title": "behavior /digital-exclusives @ tablet",
+          "title": "behavior /category/access-and-equity @ tablet",
           "ok": true,
           "tags": [],
           "tests": [
@@ -2417,12 +2417,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3002,
+                  "duration": 32000,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:33:11.193Z",
+                  "startTime": "2026-10-29T02:59:53.318Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2439,13 +2439,13 @@
               "status": "expected"
             }
           ],
-          "id": "79008d2b98d0c0e30b34-9a481c04e826c2ccd0fb",
+          "id": "79008d2b98d0c0e30b34-6e4d8e6b9b6414d51f41",
           "file": "behavior-parity.spec.ts",
           "line": 76,
           "column": 9
         },
         {
-          "title": "behavior /digital-exclusives @ mobile",
+          "title": "behavior /category/access-and-equity @ mobile",
           "ok": true,
           "tags": [],
           "tests": [
@@ -2469,12 +2469,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3281,
+                  "duration": 3949,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T02:33:14.205Z",
+                  "startTime": "2026-10-29T03:00:25.331Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -2491,7 +2491,163 @@
               "status": "expected"
             }
           ],
-          "id": "79008d2b98d0c0e30b34-b3efa8c70b5cacb3defe",
+          "id": "79008d2b98d0c0e30b34-90461223bc3cd2508d84",
+          "file": "behavior-parity.spec.ts",
+          "line": 76,
+          "column": 9
+        },
+        {
+          "title": "behavior /issues @ desktop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "behavior",
+              "projectName": "behavior",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 32852,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T03:00:29.287Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "79008d2b98d0c0e30b34-649f95daed52fec08fcc",
+          "file": "behavior-parity.spec.ts",
+          "line": 76,
+          "column": 9
+        },
+        {
+          "title": "behavior /issues @ tablet",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "behavior",
+              "projectName": "behavior",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3159,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T03:01:02.146Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "79008d2b98d0c0e30b34-870a5a32fa6f983a6621",
+          "file": "behavior-parity.spec.ts",
+          "line": 76,
+          "column": 9
+        },
+        {
+          "title": "behavior /issues @ mobile",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "behavior",
+              "projectName": "behavior",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 32306,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T03:01:05.311Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "79008d2b98d0c0e30b34-79922f79cdd7e1ade09f",
           "file": "behavior-parity.spec.ts",
           "line": 76,
           "column": 9
@@ -2501,9 +2657,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-10-29T02:19:21.864Z",
-    "duration": 835707.475,
-    "expected": 45,
+    "startTime": "2026-10-29T02:48:56.876Z",
+    "duration": 760813.0819999999,
+    "expected": 48,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

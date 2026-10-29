@@ -1,0 +1,31 @@
+{
+  "runId": "2026-10-29T02-48-56-280Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "baselineId": null,
+  "paths": [
+    "/homepage",
+    "/fall-2026-issue",
+    "/summer-2025-issue",
+    "/spring-2026-issue",
+    "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+    "/2024/06/the-charlie-landers-foundation",
+    "/in-brief",
+    "/2026/09/american-association-for-cancer-research-2",
+    "/2023/09/american-association-for-cancer-research",
+    "/about-impact",
+    "/browse-issues",
+    "/past-issues",
+    "/category/cancer-research",
+    "/category/digital-exclusives",
+    "/category/access-and-equity",
+    "/issues"
+  ],
+  "assertionSummary": {
+    "tests": 48,
+    "assertions": 588,
+    "passed": 588,
+    "passRate": 1
+  },
+  "note": "See behavior.json per case for per-inventory assertion names."
+}

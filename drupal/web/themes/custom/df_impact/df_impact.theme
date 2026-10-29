@@ -381,15 +381,23 @@ function df_impact_preprocess_page(&$variables) {
   $origin = $request->getSchemeAndHttpHost() . $request->getBasePath();
   // Migrated media lives under public://wp-images (not WP uploads path segments).
   $variables['wp_uploads_base'] = rtrim($origin, '/') . '/sites/default/files/wp-images/';
-  // Match Mac reference-pack header logo (i0.wp.com derivatives, not local theme stub).
-  $logo_base = 'https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png';
-  $variables['wp_logo_url'] = $logo_base . '?ssl=1';
-  $variables['wp_logo_srcset'] = implode(', ', [
-    $logo_base . '?w=878&ssl=1 878w',
-    $logo_base . '?resize=300%2C80&ssl=1 300w',
-    $logo_base . '?resize=150%2C40&ssl=1 150w',
-    $logo_base . '?resize=768%2C206&ssl=1 768w',
-  ]);
+  $logo_uri = 'public://wp-images/ImpactDFJF_HeaderLogo_878.png';
+  $logo_real = \Drupal::service('file_system')->realpath($logo_uri);
+  if ($logo_real !== FALSE && is_file($logo_real)) {
+    $local_logo = \Drupal::service('file_url_generator')->generateAbsoluteString($logo_uri);
+    $variables['wp_logo_url'] = $local_logo;
+    $variables['wp_logo_srcset'] = '';
+  }
+  else {
+    $logo_base = 'https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png';
+    $variables['wp_logo_url'] = $logo_base . '?ssl=1';
+    $variables['wp_logo_srcset'] = implode(', ', [
+      $logo_base . '?w=878&ssl=1 878w',
+      $logo_base . '?resize=300%2C80&ssl=1 300w',
+      $logo_base . '?resize=150%2C40&ssl=1 150w',
+      $logo_base . '?resize=768%2C206&ssl=1 768w',
+    ]);
+  }
 
   // Add the current year for copyright.
   $variables['current_year'] = date('Y');
@@ -1292,6 +1300,14 @@ function df_impact_wp_vendored_derivative_url(string $uri, string $suffix): ?str
  * Styled URL for article lead images (1024×734 WP large derivative).
  */
 function df_impact_article_lead_image_url(string $uri): string {
+  $resolved = df_impact_resolve_wp_images_uri($uri);
+  if ($resolved !== NULL) {
+    $uri = $resolved;
+  }
+  $real = \Drupal::service('file_system')->realpath($uri);
+  if ($real !== FALSE && is_file($real)) {
+    return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+  }
   $photon = df_impact_wp_i0_derivative_url($uri, '1024', '734');
   if ($photon) {
     return $photon;

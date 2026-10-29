@@ -24,7 +24,33 @@ body {
   #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link,
   .header__nav-link {
     background-color: rgb(255, 255, 255);
+    box-sizing: border-box;
   }
+
+  #mega-menu-wrap-max_mega_menu_1 {
+    box-sizing: border-box;
+  }
+
+  #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 117px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+/* Header stack height — WP cache ~143px vs prior Drupal ~148px. */
+@media (min-width: 769px) {
+  .wp-site-blocks .desktop-header .impact-header.alignfull {
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+  }
+}
+
+.wp-site-blocks .wp-block-main-header.wp-block-main-header-logo-center:empty {
+  display: none;
 }
 
 @media (min-width: 769px) {
@@ -112,6 +138,32 @@ body {
 
 .ss-inline-share-wrapper.ss-left-inline-content {
   padding-bottom: 8px;
+}
+
+/*
+ * Pass-2 WP cache baseline: main/footer sit at ~20px inset, max ~1400px wide (global WP inline CSS),
+ * not the 1296px padded column inside .wp-site-blocks alone.
+ */
+@media (min-width: 769px) {
+  .wp-site-blocks > main#wp--skip-link--target,
+  .wp-site-blocks > footer {
+    box-sizing: border-box;
+    max-width: 1400px;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px) - 40px) !important;
+    margin-left: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .wp-site-blocks > main#wp--skip-link--target,
+  .wp-site-blocks > footer {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }
 
 /* Article/in-brief: floated lead images must expand <main> height (WP block layout). */

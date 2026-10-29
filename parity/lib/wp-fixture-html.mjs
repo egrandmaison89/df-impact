@@ -92,7 +92,10 @@ export async function waitForWpFixtureReady(page) {
   await page
     .waitForFunction(
       () => {
-        const imgs = Array.from(document.images);
+        const priority = document.querySelector('.header-logo img, .desktop-header img, header img');
+        const imgs = priority
+          ? [priority, ...Array.from(document.images).filter((img) => img !== priority)]
+          : Array.from(document.images);
         if (imgs.length === 0) {
           return true;
         }

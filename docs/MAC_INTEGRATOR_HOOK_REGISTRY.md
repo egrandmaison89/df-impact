@@ -37,13 +37,13 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 4. **DB convergence** — **merged** on phase4 (`e0a4f1f4`); `_df_setup_run_post_migrate_integrator_convergence()` + About canonical body
 5. **#32** whole — **merged** (`ef3e2714` ← `cursor/admin-chrome-e2e-ce7f`); site-admin header/footer/hero + `admin-e2e` Playwright
 6. **#34** whole — **merged** (`91b165bf`); admin-e2e teardown + `system.site:page.front: /homepage` + `FixHomeFrontPageConfigSubscriber` (cim-safe `/` 200)
-7. **#28** whole — article variants — when agent ready
-8. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
-9. **#30** — Eric QA (links / images / translate icon) — when agent ready
-10. **#31** — Eric QA (share / pagination / In Brief / tablet spacing) — when agent ready
+7. **#31** whole — Eric QA (share / pagination / In Brief / tablet spacing) — **owns** the single **main/footer inset** block in `drupal-overrides.css` — when agent ready (green gate table)
+8. **#28** whole — article variants — **rebase after #31**; drop duplicate main/footer inset CSS — when agent ready
+9. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
+10. **#30** — Eric QA (links / images / translate icon) — when agent ready
 11. **#33** — not ready (agent will report)
 
-**Next:** **#28 → #10 → #30 → #31 → #33** (whole merge once each when ready).
+**Next:** **#31 → #28 → #10 → #30 → #33** (whole merge once each only when that PR’s agent reports ready with a **green gate table**).
 
 **Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`).
 
@@ -71,7 +71,14 @@ Whole merge at **`83f35352`** from **`cursor/sweep-801-followup-ce7f`** @ **`efe
 
 ## Post-merge checklist (DB at schema 10035)
 
-Run after **every** whole merge onto phase4 (#29, #28, #10, Eric QA PRs, etc.).
+Run after **every** whole merge onto phase4 (#29, #31, #28, #10, Eric QA PRs, etc.).
+
+**After #31 merge:** exactly one main/footer inset block in overrides (`#28` must not re-add its copy when rebased):
+
+```bash
+grep -c 'main/footer sit at' drupal/web/themes/custom/df_impact/css/drupal-overrides.css
+# expect: 1
+```
 
 ```bash
 cd drupal

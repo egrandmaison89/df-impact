@@ -1,0 +1,306 @@
+{
+  "generatedAt": "2026-10-29T15:16:42.926Z",
+  "outRoot": "/opt/cursor/artifacts/pr31-visual-parity",
+  "files": [
+    {
+      "scenario": "article-share",
+      "width": 1440,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/article-share-w1440-drupal.png"
+    },
+    {
+      "scenario": "article-share",
+      "width": 1440,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/article-share-w1440-wp.png"
+    },
+    {
+      "scenario": "article-share",
+      "width": 1024,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/article-share-w1024-drupal.png"
+    },
+    {
+      "scenario": "article-share",
+      "width": 1024,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/article-share-w1024-wp.png"
+    },
+    {
+      "scenario": "article-share",
+      "width": 820,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/article-share-w820-drupal.png"
+    },
+    {
+      "scenario": "article-share",
+      "width": 820,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/article-share-w820-wp.png"
+    },
+    {
+      "scenario": "article-share",
+      "width": 768,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/article-share-w768-drupal.png"
+    },
+    {
+      "scenario": "article-share",
+      "width": 768,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/article-share-w768-wp.png"
+    },
+    {
+      "scenario": "article-share",
+      "width": 390,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/article-share-w390-drupal.png"
+    },
+    {
+      "scenario": "article-share",
+      "width": 390,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/article-share-w390-wp.png"
+    },
+    {
+      "scenario": "issue-pager",
+      "width": 1440,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/issue-pager-w1440-drupal.png"
+    },
+    {
+      "scenario": "issue-pager",
+      "width": 1440,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/issue-pager-w1440-wp.png"
+    },
+    {
+      "scenario": "issue-pager",
+      "width": 1024,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/issue-pager-w1024-drupal.png"
+    },
+    {
+      "scenario": "issue-pager",
+      "width": 1024,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/issue-pager-w1024-wp.png"
+    },
+    {
+      "scenario": "issue-pager",
+      "width": 820,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/issue-pager-w820-drupal.png"
+    },
+    {
+      "scenario": "issue-pager",
+      "width": 820,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/issue-pager-w820-wp.png"
+    },
+    {
+      "scenario": "issue-pager",
+      "width": 768,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/issue-pager-w768-drupal.png"
+    },
+    {
+      "scenario": "issue-pager",
+      "width": 768,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/issue-pager-w768-wp.png"
+    },
+    {
+      "scenario": "issue-pager",
+      "width": 390,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/issue-pager-w390-drupal.png"
+    },
+    {
+      "scenario": "issue-pager",
+      "width": 390,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/issue-pager-w390-wp.png"
+    },
+    {
+      "scenario": "stories-pager",
+      "width": 1440,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/stories-pager-w1440-drupal.png"
+    },
+    {
+      "scenario": "stories-pager",
+      "width": 1440,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/stories-pager-w1440-wp.png"
+    },
+    {
+      "scenario": "stories-pager",
+      "width": 1024,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/stories-pager-w1024-drupal.png"
+    },
+    {
+      "scenario": "stories-pager",
+      "width": 1024,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/stories-pager-w1024-wp.png"
+    },
+    {
+      "scenario": "stories-pager",
+      "width": 820,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/stories-pager-w820-drupal.png"
+    },
+    {
+      "scenario": "stories-pager",
+      "width": 820,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/stories-pager-w820-wp.png"
+    },
+    {
+      "scenario": "stories-pager",
+      "width": 768,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/stories-pager-w768-drupal.png"
+    },
+    {
+      "scenario": "stories-pager",
+      "width": 768,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/stories-pager-w768-wp.png"
+    },
+    {
+      "scenario": "stories-pager",
+      "width": 390,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/stories-pager-w390-drupal.png"
+    },
+    {
+      "scenario": "stories-pager",
+      "width": 390,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/stories-pager-w390-wp.png"
+    },
+    {
+      "scenario": "in-brief",
+      "width": 1440,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/in-brief-w1440-drupal.png"
+    },
+    {
+      "scenario": "in-brief",
+      "width": 1440,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/in-brief-w1440-wp.png"
+    },
+    {
+      "scenario": "in-brief",
+      "width": 1024,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/in-brief-w1024-drupal.png"
+    },
+    {
+      "scenario": "in-brief",
+      "width": 1024,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/in-brief-w1024-wp.png"
+    },
+    {
+      "scenario": "in-brief",
+      "width": 820,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/in-brief-w820-drupal.png"
+    },
+    {
+      "scenario": "in-brief",
+      "width": 820,
+      "side": "wp",
+      "error": "Error: page.evaluate: Execution context was destroyed, most likely because of a navigation"
+    },
+    {
+      "scenario": "in-brief",
+      "width": 768,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/in-brief-w768-drupal.png"
+    },
+    {
+      "scenario": "in-brief",
+      "width": 768,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/in-brief-w768-wp.png"
+    },
+    {
+      "scenario": "in-brief",
+      "width": 390,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/in-brief-w390-drupal.png"
+    },
+    {
+      "scenario": "in-brief",
+      "width": 390,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/in-brief-w390-wp.png"
+    },
+    {
+      "scenario": "homepage",
+      "width": 1440,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/homepage-w1440-drupal.png"
+    },
+    {
+      "scenario": "homepage",
+      "width": 1440,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/homepage-w1440-wp.png"
+    },
+    {
+      "scenario": "homepage",
+      "width": 1024,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/homepage-w1024-drupal.png"
+    },
+    {
+      "scenario": "homepage",
+      "width": 1024,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/homepage-w1024-wp.png"
+    },
+    {
+      "scenario": "homepage",
+      "width": 820,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/homepage-w820-drupal.png"
+    },
+    {
+      "scenario": "homepage",
+      "width": 820,
+      "side": "wp",
+      "error": "Error: page.goto: net::ERR_TIMED_OUT at https://danafarberimpact.org/\nCall log:\n  - navigating to \"https://danafarberimpact.org/\", waiting until \"load\"\n"
+    },
+    {
+      "scenario": "homepage",
+      "width": 768,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/homepage-w768-drupal.png"
+    },
+    {
+      "scenario": "homepage",
+      "width": 768,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/homepage-w768-wp.png"
+    },
+    {
+      "scenario": "homepage",
+      "width": 390,
+      "side": "drupal",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/homepage-w390-drupal.png"
+    },
+    {
+      "scenario": "homepage",
+      "width": 390,
+      "side": "wp",
+      "file": "/opt/cursor/artifacts/pr31-visual-parity/homepage-w390-wp.png"
+    }
+  ]
+}

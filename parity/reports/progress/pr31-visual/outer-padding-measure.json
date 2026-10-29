@@ -1,0 +1,812 @@
+{
+  "generatedAt": "2026-10-29T15:15:25.198Z",
+  "drupalBase": "http://127.0.0.1:8888",
+  "wpBase": "https://danafarberimpact.org",
+  "rows": [
+    {
+      "width": 1440,
+      "path": "/",
+      "wp": {
+        "siteBlocks": null,
+        "main": null,
+        "footer": null,
+        "outerVar": ""
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "72px",
+          "paddingRight": "72px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "1296px",
+          "rectX": 0,
+          "rectW": 1440
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-52px",
+          "marginRight": "-52px",
+          "width": "1400px",
+          "rectX": 20,
+          "rectW": 1400
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-52px",
+          "marginRight": "-52px",
+          "width": "1400px",
+          "rectX": 20,
+          "rectW": 1400
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 1440,
+      "path": "/stories",
+      "wp": {
+        "siteBlocks": {
+          "paddingLeft": "72px",
+          "paddingRight": "72px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "1296px",
+          "rectX": 0,
+          "rectW": 1440
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "1296px",
+          "rectX": 72,
+          "rectW": 1296
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "1296px",
+          "rectX": 72,
+          "rectW": 1296
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "72px",
+          "paddingRight": "72px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "1296px",
+          "rectX": 0,
+          "rectW": 1440
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-52px",
+          "marginRight": "-52px",
+          "width": "1400px",
+          "rectX": 20,
+          "rectW": 1400
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-52px",
+          "marginRight": "-52px",
+          "width": "1400px",
+          "rectX": 20,
+          "rectW": 1400
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 1440,
+      "path": "/in-brief",
+      "wp": {
+        "siteBlocks": {
+          "paddingLeft": "72px",
+          "paddingRight": "72px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "1296px",
+          "rectX": 0,
+          "rectW": 1440
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "1296px",
+          "rectX": 72,
+          "rectW": 1296
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "1296px",
+          "rectX": 72,
+          "rectW": 1296
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "72px",
+          "paddingRight": "72px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "1296px",
+          "rectX": 0,
+          "rectW": 1440
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-52px",
+          "marginRight": "-52px",
+          "width": "1400px",
+          "rectX": 20,
+          "rectW": 1400
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-52px",
+          "marginRight": "-52px",
+          "width": "1400px",
+          "rectX": 20,
+          "rectW": 1400
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 1024,
+      "path": "/",
+      "wp": {
+        "siteBlocks": {
+          "paddingLeft": "51.2px",
+          "paddingRight": "51.2px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "921.625px",
+          "rectX": 0,
+          "rectW": 1024
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "921.625px",
+          "rectX": 51,
+          "rectW": 922
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "921.625px",
+          "rectX": 51,
+          "rectW": 922
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "51.2px",
+          "paddingRight": "51.2px",
+          "marginLeft": "0.015625px",
+          "marginRight": "0.015625px",
+          "width": "921.594px",
+          "rectX": 0,
+          "rectW": 1024
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-31.2px",
+          "marginRight": "-31.2px",
+          "width": "983.984px",
+          "rectX": 20,
+          "rectW": 984
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-31.2px",
+          "marginRight": "-31.2px",
+          "width": "983.984px",
+          "rectX": 20,
+          "rectW": 984
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 1024,
+      "path": "/stories",
+      "wp": {
+        "siteBlocks": {
+          "paddingLeft": "51.2px",
+          "paddingRight": "51.2px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "921.625px",
+          "rectX": 0,
+          "rectW": 1024
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "921.625px",
+          "rectX": 51,
+          "rectW": 922
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "921.625px",
+          "rectX": 51,
+          "rectW": 922
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "51.2px",
+          "paddingRight": "51.2px",
+          "marginLeft": "0.015625px",
+          "marginRight": "0.015625px",
+          "width": "921.594px",
+          "rectX": 0,
+          "rectW": 1024
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-31.2px",
+          "marginRight": "-31.2px",
+          "width": "983.984px",
+          "rectX": 20,
+          "rectW": 984
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-31.2px",
+          "marginRight": "-31.2px",
+          "width": "983.984px",
+          "rectX": 20,
+          "rectW": 984
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 1024,
+      "path": "/in-brief",
+      "error": "Error: page.evaluate: Execution context was destroyed, most likely because of a navigation"
+    },
+    {
+      "width": 820,
+      "path": "/",
+      "wp": {
+        "siteBlocks": {
+          "paddingLeft": "41px",
+          "paddingRight": "41px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "738px",
+          "rectX": 0,
+          "rectW": 820
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "738px",
+          "rectX": 41,
+          "rectW": 738
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "738px",
+          "rectX": 41,
+          "rectW": 738
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "41px",
+          "paddingRight": "41px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "738px",
+          "rectX": 0,
+          "rectW": 820
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-21px",
+          "marginRight": "-21px",
+          "width": "780px",
+          "rectX": 20,
+          "rectW": 780
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-21px",
+          "marginRight": "-21px",
+          "width": "780px",
+          "rectX": 20,
+          "rectW": 780
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 820,
+      "path": "/stories",
+      "wp": {
+        "siteBlocks": null,
+        "main": null,
+        "footer": null,
+        "outerVar": ""
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "41px",
+          "paddingRight": "41px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "738px",
+          "rectX": 0,
+          "rectW": 820
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-21px",
+          "marginRight": "-21px",
+          "width": "780px",
+          "rectX": 20,
+          "rectW": 780
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-21px",
+          "marginRight": "-21px",
+          "width": "780px",
+          "rectX": 20,
+          "rectW": 780
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 820,
+      "path": "/in-brief",
+      "wp": {
+        "siteBlocks": {
+          "paddingLeft": "41px",
+          "paddingRight": "41px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "738px",
+          "rectX": 0,
+          "rectW": 820
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "738px",
+          "rectX": 41,
+          "rectW": 738
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "738px",
+          "rectX": 41,
+          "rectW": 738
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "41px",
+          "paddingRight": "41px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "738px",
+          "rectX": 0,
+          "rectW": 820
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-21px",
+          "marginRight": "-21px",
+          "width": "780px",
+          "rectX": 20,
+          "rectW": 780
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "-21px",
+          "marginRight": "-21px",
+          "width": "780px",
+          "rectX": 20,
+          "rectW": 780
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 768,
+      "path": "/",
+      "wp": {
+        "siteBlocks": null,
+        "main": null,
+        "footer": null,
+        "outerVar": ""
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "38.4px",
+          "paddingRight": "38.4px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.188px",
+          "rectX": 0,
+          "rectW": 768
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.188px",
+          "rectX": 38,
+          "rectW": 691
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.188px",
+          "rectX": 38,
+          "rectW": 691
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 768,
+      "path": "/stories",
+      "wp": {
+        "siteBlocks": {
+          "paddingLeft": "38.4px",
+          "paddingRight": "38.4px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.219px",
+          "rectX": 0,
+          "rectW": 768
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.219px",
+          "rectX": 38,
+          "rectW": 691
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.219px",
+          "rectX": 38,
+          "rectW": 691
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "38.4px",
+          "paddingRight": "38.4px",
+          "marginLeft": "0.015625px",
+          "marginRight": "0.015625px",
+          "width": "691.188px",
+          "rectX": 0,
+          "rectW": 768
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.188px",
+          "rectX": 38,
+          "rectW": 691
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.188px",
+          "rectX": 38,
+          "rectW": 691
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 768,
+      "path": "/in-brief",
+      "wp": {
+        "siteBlocks": {
+          "paddingLeft": "38.4px",
+          "paddingRight": "38.4px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.219px",
+          "rectX": 0,
+          "rectW": 768
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.219px",
+          "rectX": 38,
+          "rectW": 691
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.219px",
+          "rectX": 38,
+          "rectW": 691
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "38.4px",
+          "paddingRight": "38.4px",
+          "marginLeft": "0.015625px",
+          "marginRight": "0.015625px",
+          "width": "691.188px",
+          "rectX": 0,
+          "rectW": 768
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.188px",
+          "rectX": 38,
+          "rectW": 691
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "691.188px",
+          "rectX": 38,
+          "rectW": 691
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 390,
+      "path": "/",
+      "wp": {
+        "siteBlocks": {
+          "paddingLeft": "28px",
+          "paddingRight": "28px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 0,
+          "rectW": 390
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 28,
+          "rectW": 334
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 28,
+          "rectW": 334
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "28px",
+          "paddingRight": "28px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 0,
+          "rectW": 390
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 28,
+          "rectW": 334
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 28,
+          "rectW": 334
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 390,
+      "path": "/stories",
+      "wp": {
+        "siteBlocks": null,
+        "main": null,
+        "footer": null,
+        "outerVar": ""
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "28px",
+          "paddingRight": "28px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 0,
+          "rectW": 390
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 28,
+          "rectW": 334
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 28,
+          "rectW": 334
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    },
+    {
+      "width": 390,
+      "path": "/in-brief",
+      "wp": {
+        "siteBlocks": {
+          "paddingLeft": "28px",
+          "paddingRight": "28px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 0,
+          "rectW": 390
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 28,
+          "rectW": 334
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 28,
+          "rectW": 334
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      },
+      "drupal": {
+        "siteBlocks": {
+          "paddingLeft": "28px",
+          "paddingRight": "28px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 0,
+          "rectW": 390
+        },
+        "main": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 28,
+          "rectW": 334
+        },
+        "footer": {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "width": "334px",
+          "rectX": 28,
+          "rectW": 334
+        },
+        "outerVar": "max(1.75rem, 5vw)"
+      }
+    }
+  ]
+}

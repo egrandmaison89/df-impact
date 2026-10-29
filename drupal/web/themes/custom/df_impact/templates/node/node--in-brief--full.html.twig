@@ -16,9 +16,9 @@
       {% endif %}
 
       {% if in_brief_issue_url %}
-        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500"><a href="{{ in_brief_issue_url }}">{{ in_brief_issue_label }}</a>{% if in_brief_byline %}<br>By {{ in_brief_byline }}{% endif %}</p>
-      {% elseif in_brief_byline %}
-        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">By {{ in_brief_byline }}</p>
+        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500"><a href="{{ in_brief_issue_url }}">{{ in_brief_issue_label }}</a>{% if in_brief_byline %}<br>By {{ in_brief_byline }}{% endif %}{% if in_brief_photo_credit_display %}<br>{{ in_brief_photo_credit_display }}{% endif %}</p>
+      {% elseif in_brief_byline or in_brief_photo_credit_display %}
+        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">{% if in_brief_byline %}By {{ in_brief_byline }}{% endif %}{% if in_brief_photo_credit_display %}{% if in_brief_byline %}<br>{% endif %}{{ in_brief_photo_credit_display }}{% endif %}</p>
       {% endif %}
 
       {% if content.body|render|trim %}

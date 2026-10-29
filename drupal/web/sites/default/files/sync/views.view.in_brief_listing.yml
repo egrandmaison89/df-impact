@@ -9,6 +9,7 @@ dependencies:
     - node.type.in_brief
   module:
     - image
+    - metatag_views
     - node
     - text
 id: in_brief_listing
@@ -98,43 +99,12 @@ display:
         - 'config:field.storage.node.field_image'
         - 'config:field.storage.node.field_issue'
         - 'config:field.storage.node.field_summary'
-  page_1:
-    id: page_1
-    display_title: Page
-    display_plugin: page
-    position: 1
-    display_options:
-      path: in-brief
-      css_class: in-brief-page
-      defaults:
-        pager: false
-      pager:
-        type: none
-        options: {  }
-      display_extenders: {  }
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - 'user.node_grants:view'
-      tags:
-        - 'config:field.storage.node.field_image'
-        - 'config:field.storage.node.field_issue'
-        - 'config:field.storage.node.field_summary'
   issue_teasers:
     id: issue_teasers
     display_title: 'Issue page teasers'
     display_plugin: block
     position: 2
     display_options:
-      display_extenders: {  }
-      block_description: 'In Brief items for the current issue (no pager)'
-      defaults:
-        title: false
-        pager: false
-        arguments: false
-        fields: false
       title: ''
       fields:
         title:
@@ -161,8 +131,8 @@ display:
       pager:
         type: some
         options:
-          items_per_page: 6
           offset: 0
+          items_per_page: 6
       arguments:
         field_issue_target_id:
           id: field_issue_target_id
@@ -176,12 +146,50 @@ display:
         type: default
       row:
         type: fields
+      defaults:
+        title: false
+        pager: false
+        fields: false
+        arguments: false
+      display_extenders: {  }
+      block_description: 'In Brief items for the current issue (no pager)'
     cache_metadata:
       max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
+        - 'user.node_grants:view'
+      tags:
+        - 'config:field.storage.node.field_image'
+        - 'config:field.storage.node.field_issue'
+        - 'config:field.storage.node.field_summary'
+  page_1:
+    id: page_1
+    display_title: Page
+    display_plugin: page
+    position: 1
+    display_options:
+      pager:
+        type: none
+        options: {  }
+      defaults:
+        pager: false
+      css_class: in-brief-page
+      display_extenders:
+        metatag_display_extender:
+          metatags:
+            title: 'In Brief | [site:name]'
+            description: 'Short updates from Dana-Farber Impact Magazine.'
+            og_title: 'In Brief'
+            og_type: website
+          tokenize: false
+      path: in-brief
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
         - 'user.node_grants:view'
       tags:
         - 'config:field.storage.node.field_image'

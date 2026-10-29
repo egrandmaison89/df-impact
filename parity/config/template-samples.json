@@ -1,0 +1,23 @@
+{
+  "homepage": {
+    "paths": ["/", "/homepage"]
+  },
+  "issue": {
+    "paths": ["/fall-2026-issue", "/summer-2025-issue", "/spring-2026-issue"]
+  },
+  "article": {
+    "paths": [
+      "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+      "/2024/06/the-charlie-landers-foundation"
+    ]
+  },
+  "in_brief": {
+    "paths": ["/in-brief", "/2026/09/a-new-era-in-cancer-care-lavine-bekenstein-cancer-hospital-at-dana-farber"]
+  },
+  "landing_page": {
+    "paths": ["/about", "/browse-issues", "/past-issues"]
+  },
+  "archive": {
+    "paths": ["/category/cancer-research", "/category/digital-exclusives", "/digital-exclusives"]
+  }
+}

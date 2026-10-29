@@ -1,17 +1,13 @@
 {#
-/**
- * @file
- * Views unformatted template for homepage highlights.
- * Renders as a 3-column grid.
- */
+  PostX grid — Recent Highlights (4 columns).
 #}
-{% if title %}
-  <h3>{{ title }}</h3>
-{% endif %}
-<div class="homepage-card-grid homepage-card-grid--highlights">
-  {% for row in rows %}
-    <div{{ row.attributes }}>
-      {{ row.content }}
+<div class="ultp-post-grid-block wp-block-ultimate-post-post-grid-1 ultp-block-6fa0c3 alignwide">
+  <div class="ultp-block-wrapper">
+    <div class="ultp-block-items-wrap ultp-block-row ultp-pg1a-style1 ultp-grid1-responsive ultp-block-column-4 ultp-sm-column-2 ultp-xs-column-1 ultp-layout1">
+      {% for row in rows %}
+        {{ row.content }}
+      {% endfor %}
     </div>
-  {% endfor %}
+  </div>
+  <div class="pagination-block-html" aria-hidden="true" style="display: none;"></div>
 </div>

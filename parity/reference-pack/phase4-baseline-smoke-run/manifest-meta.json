@@ -1,0 +1,8 @@
+{
+  "runId": "2026-10-28T19-46-44-858Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://df-impact.ddev.site",
+  "urlCount": 25,
+  "sampleMode": true,
+  "wpBaseline": "df-impact-2026-10-28"
+}

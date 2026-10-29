@@ -1,20 +1,17 @@
 {#
-/**
- * @file
- * Homepage current issue story card with image-overlay title.
- */
+  PostX overlay card — latest issue homepage row.
 #}
-<article class="home-issue-card">
-  {% if fields.field_featured_image is defined and fields.field_featured_image.content|render|trim %}
-    <div class="home-issue-card__image">
-      {{ fields.field_featured_image.content }}
+<div class="ultp-block-item post-id-{{ article_nid }}">
+  <div class="ultp-block-content-wrap ultp-block-content-overlay">
+    {% if article_card_image_url %}
+      <div class="ultp-block-image ultp-block-image-zoomIn">
+        <a href="{{ article_url }}"><img decoding="async" src="{{ article_card_image_url }}" width="{{ article_card_image_width }}" height="{{ article_card_image_height }}" class="lazyloaded" alt="{{ article_card_image_alt }}" style="width:100%;height:100%;object-fit:cover"></a>
+      </div>
+    {% endif %}
+    <div class="ultp-block-content ultp-block-content-bottomPosition">
+      <div class="ultp-block-content-inner">
+        <h2 class="ultp-block-title"><a href="{{ article_url }}">{{ fields.title.content|render|striptags|trim }}</a></h2>
+      </div>
     </div>
-  {% elseif article_card_image_fallback is defined and article_card_image_fallback %}
-    <div class="home-issue-card__image">
-      {{ article_card_image_fallback }}
-    </div>
-  {% endif %}
-  {% if fields.title is defined %}
-    <h3 class="home-issue-card__title">{{ fields.title.content }}</h3>
-  {% endif %}
-</article>
+  </div>
+</div>

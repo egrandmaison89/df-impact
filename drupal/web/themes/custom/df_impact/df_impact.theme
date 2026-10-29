@@ -205,6 +205,23 @@ function df_impact_views_result_row_node($row): ?NodeInterface {
 }
 
 /**
+ * Implements hook_preprocess_views_view().
+ */
+function df_impact_preprocess_views_view(array &$variables): void {
+  $view = $variables['view'] ?? NULL;
+  if (!$view) {
+    return;
+  }
+  $homepage_views = ['homepage_digital_exclusives', 'homepage_highlights', 'issue_articles'];
+  if ($view->id() === 'issue_articles') {
+    $variables['title'] = '';
+  }
+  if (in_array($view->id(), $homepage_views, TRUE)) {
+    $variables['title'] = '';
+  }
+}
+
+/**
  * Implements hook_preprocess_views_view_fields().
  */
 function df_impact_preprocess_views_view_fields(&$variables): void {
@@ -222,10 +239,10 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     $variables['issue_thumbnail'] = df_impact_build_issue_browse_thumbnail($node);
     return;
   }
-  if ($view_id === 'issue_articles' && ($view->current_display ?? '') === 'homepage_latest') {
-    $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
-    if ($node instanceof NodeInterface && $node->bundle() === 'article') {
-      $variables['article_card_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
+  if ($view_id === 'issue_articles') {
+    $display = $view->current_display ?? '';
+    if ($display === 'homepage_latest' || $display === 'block_1') {
+      df_impact_preprocess_homepage_article_card_fields($variables);
     }
     return;
   }
@@ -249,10 +266,10 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     'homepage_highlights',
     'homepage_digital_exclusives',
   ];
-  if (in_array($view_id, $homepage_card_views, TRUE) && ($view->current_display ?? '') === 'default') {
-    $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
-    if ($node instanceof NodeInterface && $node->bundle() === 'article') {
-      $variables['article_card_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
+  if (in_array($view_id, $homepage_card_views, TRUE)) {
+    $display = $view->current_display ?? '';
+    if ($display === 'default' || $display === 'block_1') {
+      df_impact_preprocess_homepage_article_card_fields($variables);
     }
   }
 }
@@ -282,6 +299,21 @@ function df_impact_preprocess_html(array &$variables): void {
  * Implements hook_preprocess_page().
  */
 function df_impact_preprocess_page(&$variables) {
+  $front = Url::fromRoute('<front>')->toString();
+  $variables['wp_home_url'] = str_ends_with($front, '/') ? $front : $front . '/';
+  $request = \Drupal::request();
+  $origin = $request->getSchemeAndHttpHost() . $request->getBasePath();
+  $variables['wp_uploads_base'] = rtrim($origin, '/') . '/wp-content/uploads/';
+  $theme_path = \Drupal::service('extension.list.theme')->getPath('df_impact');
+  $variables['wp_logo_url'] = '/' . $theme_path . '/wp-assets/ImpactDFJF_HeaderLogo_878.png';
+  $logo_abs = rtrim($origin, '/') . $variables['wp_logo_url'];
+  $variables['wp_logo_srcset'] = implode(', ', [
+    $logo_abs . ' 878w',
+    $logo_abs . ' 300w',
+    $logo_abs . ' 150w',
+    $logo_abs . ' 768w',
+  ]);
+
   // Add the current year for copyright.
   $variables['current_year'] = date('Y');
 
@@ -299,10 +331,34 @@ function df_impact_preprocess_page(&$variables) {
     $variables['search_page_url'] = Url::fromRoute('view.df_impact_search.page_1')->toString();
   }
 
-  $variables['about_impact_url'] = Url::fromUri('internal:/about-impact')->toString();
+  $variables['about_impact_url'] = Url::fromUri('internal:/about')->toString();
 
   // Header Issues dropdown — recent published issues (WordPress chrome).
   $variables['header_issue_links'] = df_impact_get_header_issue_links(4);
+
+  // WXR wp_navigation "Main Nav" + dropdown-menu (Issues submenu items as top links).
+  $latest_issue_url = NULL;
+  $latest_nid = df_impact_get_latest_issue_nid();
+  if ($latest_nid !== NULL) {
+    $latest_issue = \Drupal::entityTypeManager()->getStorage('node')->load($latest_nid);
+    if ($latest_issue instanceof NodeInterface) {
+      $latest_issue_url = $latest_issue->toUrl()->toString();
+    }
+  }
+  $variables['header_primary_links'] = [
+    [
+      'title' => t('Current Issue'),
+      'url' => $latest_issue_url ?: Url::fromRoute('view.browse_issues.page_1')->toString(),
+    ],
+    [
+      'title' => t('Past Issues'),
+      'url' => Url::fromRoute('view.past_issues.page_1')->toString(),
+    ],
+    [
+      'title' => t('About'),
+      'url' => $variables['about_impact_url'],
+    ],
+  ];
 
   $topic_order = [
     'Cancer Research',
@@ -332,6 +388,7 @@ function df_impact_preprocess_page(&$variables) {
     }
   }
   $variables['footer_topic_links'] = $footer_topic_links;
+  $variables['homepage_digital_exclusives_url'] = Url::fromUri('internal:/category/digital-exclusives')->toString();
 
   // Front page: stories from the newest issue (WordPress "Explore" band).
   $variables['latest_issue_articles'] = NULL;
@@ -372,6 +429,9 @@ function df_impact_preprocess_node(&$variables) {
 
   // Issue full: promo cards below In Brief (WordPress layout).
   if ($node->bundle() === 'issue' && $variables['view_mode'] === 'full') {
+    $banner = df_impact_issue_banner_meta($node);
+    $variables['issue_banner_url'] = $banner['url'] ?? NULL;
+    $variables['issue_banner_alt'] = $banner['alt'] ?? $node->label();
     $variables['issue_promo_cards'] = [];
     $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
     foreach (['field_leadership_message', 'field_issue_promo_2'] as $field_name) {
@@ -382,6 +442,17 @@ function df_impact_preprocess_node(&$variables) {
       if ($referenced instanceof NodeInterface) {
         $variables['issue_promo_cards'][] = $view_builder->view($referenced, 'issue_promo');
       }
+    }
+  }
+
+  if ($node->bundle() === 'page' && $variables['view_mode'] === 'issue_promo') {
+    $banner = df_impact_issue_banner_meta($node);
+    $variables['issue_promo_image_url'] = $banner['url'] ?? NULL;
+    $variables['issue_promo_image_alt'] = $banner['alt'] ?? $node->label();
+    $variables['issue_promo_excerpt'] = '';
+    if ($node->hasField('body') && !$node->get('body')->isEmpty()) {
+      $text = strip_tags($node->get('body')->value ?? '');
+      $variables['issue_promo_excerpt'] = text_summary($text, NULL, 280);
     }
   }
 
@@ -409,9 +480,23 @@ function df_impact_preprocess_node(&$variables) {
       $variables['article_photo_caption_display'] = trim((string) $node->get('field_photo_caption')->value);
     }
 
-    $variables['article_lead_image_fallback'] = NULL;
-    if ($node->hasField('field_featured_image') && $node->get('field_featured_image')->isEmpty()) {
-      $variables['article_lead_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
+    if (isset($variables['content']['field_featured_image'])) {
+      $variables['content']['field_featured_image']['#access'] = FALSE;
+    }
+    $variables['article_lead_figure'] = df_impact_article_lead_figure_build($node);
+    if ($variables['article_lead_figure'] && $node->hasField('body') && !$node->get('body')->isEmpty()) {
+      $stripped = df_impact_article_strip_leading_wp_image_block((string) $node->get('body')->value);
+      if ($stripped !== (string) $node->get('body')->value) {
+        if (isset($variables['content']['body'])) {
+          $variables['content']['body']['#access'] = FALSE;
+        }
+        $variables['article_body'] = [
+          '#type' => 'processed_text',
+          '#text' => $stripped,
+          '#format' => $node->get('body')->format,
+          '#langcode' => $node->language()->getId(),
+        ];
+      }
     }
 
     if ($node->hasField('field_related_articles') && $node->get('field_related_articles')->isEmpty()) {
@@ -579,7 +664,7 @@ function df_impact_is_about_impact_page(?NodeInterface $node = NULL): bool {
   }
 
   try {
-    if ($node->toUrl()->toString() === '/about-impact') {
+    if (in_array($node->toUrl()->toString(), ['/about', '/about-impact'], TRUE)) {
       return TRUE;
     }
   }
@@ -631,6 +716,313 @@ function df_impact_build_issue_browse_thumbnail(NodeInterface $issue): array {
 }
 
 /**
+ * Populates PostX card variables for homepage view rows.
+ */
+function df_impact_preprocess_homepage_article_card_fields(array &$variables): void {
+  $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
+  if (!$node instanceof NodeInterface || $node->bundle() !== 'article') {
+    return;
+  }
+  $variables['article_nid'] = $node->id();
+  $variables['article_url'] = $node->toUrl()->toString();
+  $meta = df_impact_article_card_image_meta($node);
+  $variables['article_card_image_url'] = $meta['url'] ?? NULL;
+  $variables['article_card_image_alt'] = $meta['alt'] ?? $node->label();
+  $variables['article_card_image_width'] = $meta['width'] ?? 870;
+  $variables['article_card_image_height'] = $meta['height'] ?? 570;
+  $variables['article_card_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
+}
+
+/**
+ * Image URL + alt for PostX-style homepage cards.
+ *
+ * @return array{url: string, alt: string}|null
+ */
+/**
+ * Banner image for issue / promo page nodes.
+ *
+ * @return array{url: string, alt: string}|null
+ */
+function df_impact_issue_banner_meta(NodeInterface $node): ?array {
+  foreach (['field_banner_image', 'field_cover_image'] as $field_name) {
+    if (!$node->hasField($field_name) || $node->get($field_name)->isEmpty()) {
+      continue;
+    }
+    $media = $node->get($field_name)->entity;
+    if ($media && $media->hasField('field_media_image') && !$media->get('field_media_image')->isEmpty()) {
+      $file = $media->get('field_media_image')->entity;
+      if ($file) {
+        $alt = (string) $media->get('field_media_image')->alt;
+        if ($alt === '') {
+          $alt = $node->label();
+        }
+        return [
+          'url' => \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri()),
+          'alt' => $alt,
+        ];
+      }
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Removes the first Gutenberg lead image block when rendered separately as featured media.
+ */
+function df_impact_article_strip_leading_wp_image_block(string $body): string {
+  $stripped = preg_replace('/\s*<!-- wp:image\b.*?<!-- \/wp:image -->\s*/s', '', $body, 1);
+  return is_string($stripped) ? $stripped : $body;
+}
+
+/**
+ * Lead figcaption from export body when the Drupal caption field is empty.
+ */
+function df_impact_article_wp_lead_figcaption_from_export(NodeInterface $node): string {
+  $row = df_impact_article_export_row_for_node($node);
+  if (!is_array($row)) {
+    return '';
+  }
+  $body = (string) ($row['body'] ?? '');
+  if (preg_match('/<figcaption class="wp-element-caption">(.*?)<\/figcaption>/s', $body, $match)) {
+    return trim(html_entity_decode(strip_tags($match[1]), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+  }
+  return '';
+}
+
+/**
+ * WordPress lead-image block metadata from the migrated body (align, display size).
+ *
+ * @return array{align: string, width: int|null, height: int|null, size_slug: string, style_width: string|null}
+ */
+function df_impact_article_wp_lead_block_meta(NodeInterface $node): array {
+  $defaults = [
+    'align' => 'right',
+    'width' => 725,
+    'height' => 520,
+    'size_slug' => 'large',
+    'style_width' => NULL,
+  ];
+  $row = df_impact_article_export_row_for_node($node);
+  if (!is_array($row)) {
+    return $defaults;
+  }
+  $body = (string) ($row['body'] ?? '');
+  if (!preg_match('/<!-- wp:image (\{.*?\}) -->/s', $body, $match)) {
+    return $defaults;
+  }
+  $json = json_decode($match[1], TRUE);
+  if (!is_array($json)) {
+    return $defaults;
+  }
+  $align = (string) ($json['align'] ?? $defaults['align']);
+  $size_slug = (string) ($json['sizeSlug'] ?? $defaults['size_slug']);
+  $width = $json['width'] ?? NULL;
+  $height = $json['height'] ?? NULL;
+  if (is_string($width)) {
+    $width = (int) preg_replace('/[^0-9]/', '', $width);
+  }
+  if (is_string($height)) {
+    $height = (int) preg_replace('/[^0-9]/', '', $height);
+  }
+  $style_width = NULL;
+  if (isset($json['style']['width']) && is_string($json['style']['width'])) {
+    $style_width = $json['style']['width'];
+  }
+  elseif ($align === 'left' && ($width === NULL || $width === 0)) {
+    $style_width = '363px';
+  }
+  return [
+    'align' => $align === 'left' ? 'left' : 'right',
+    'width' => is_int($width) && $width > 0 ? $width : ($align === 'left' ? 1024 : 725),
+    'height' => is_int($height) && $height > 0 ? $height : ($align === 'left' ? 734 : 520),
+    'size_slug' => $size_slug !== '' ? $size_slug : 'large',
+    'style_width' => $style_width,
+  ];
+}
+
+/**
+ * Prefer vendored WP intermediate files (e.g. *-1024x734.jpg) for pixel parity.
+ */
+function df_impact_path_basename_key(string $path): string {
+  $base = pathinfo($path, PATHINFO_FILENAME);
+  return strtolower(preg_replace('/[^a-z0-9]+/i', '', $base));
+}
+
+function df_impact_wp_vendored_derivative_url(string $uri, string $suffix): ?string {
+  $path = \Drupal::service('file_system')->realpath($uri);
+  if (!$path) {
+    return NULL;
+  }
+  $dir = is_dir($path) ? $path : dirname($path);
+  $source_key = df_impact_path_basename_key($path);
+  foreach (glob($dir . '/*-' . $suffix . '.jpg') ?: [] as $candidate) {
+    if (!is_file($candidate)) {
+      continue;
+    }
+    $candidate_base = pathinfo($candidate, PATHINFO_FILENAME);
+    $candidate_base = preg_replace('/-' . preg_quote($suffix, '/') . '$/i', '', $candidate_base);
+    $candidate_key = df_impact_path_basename_key($candidate_base ?? $candidate);
+    if ($candidate_key === $source_key) {
+      $relative = str_replace(\Drupal::root() . '/sites/default/files/', '', $candidate);
+      return \Drupal::service('file_url_generator')->generateAbsoluteString('public://' . $relative);
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Styled URL for article lead images (1024×734 WP large derivative).
+ */
+function df_impact_article_lead_image_url(string $uri): string {
+  $vendored = df_impact_wp_vendored_derivative_url($uri, '1024x734');
+  if ($vendored) {
+    return $vendored;
+  }
+  foreach (['wp_article_lead_1024x734', 'article_featured'] as $style_id) {
+    $style = \Drupal::entityTypeManager()->getStorage('image_style')->load($style_id);
+    if ($style) {
+      return $style->buildUrl($uri);
+    }
+  }
+  return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+}
+
+/**
+ * Build WP-like lead figure (align, dimensions, figcaption) for article full view.
+ */
+function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
+  if ($node->bundle() !== 'article') {
+    return NULL;
+  }
+  $layout = df_impact_article_wp_lead_block_meta($node);
+  $align_class = $layout['align'] === 'left' ? 'alignleft' : 'alignright';
+  $size_class = $layout['size_slug'] === 'full' ? 'size-full' : 'size-large';
+  $caption = '';
+  if ($node->hasField('field_photo_caption') && !$node->get('field_photo_caption')->isEmpty()) {
+    $caption = trim((string) $node->get('field_photo_caption')->value);
+  }
+  if ($caption === '') {
+    $caption = df_impact_article_wp_lead_figcaption_from_export($node);
+  }
+
+  $src = NULL;
+  $alt = $node->label();
+  if ($node->hasField('field_featured_image') && !$node->get('field_featured_image')->isEmpty()) {
+    $media = $node->get('field_featured_image')->entity;
+    if ($media && $media->hasField('field_media_image') && !$media->get('field_media_image')->isEmpty()) {
+      $file = $media->get('field_media_image')->entity;
+      if ($file) {
+        $src = df_impact_article_lead_image_url($file->getFileUri());
+        $alt_field = $media->get('field_media_image')->first();
+        if ($alt_field && $alt_field->alt) {
+          $alt = $alt_field->alt;
+        }
+      }
+    }
+  }
+  if ($src === NULL) {
+    $fallback = df_impact_article_lead_image_fallback_build($node);
+    if ($fallback === NULL) {
+      return NULL;
+    }
+    $fallback['#attributes']['width'] = (string) $layout['width'];
+    $fallback['#attributes']['height'] = (string) $layout['height'];
+    if ($layout['style_width']) {
+      $fallback['#attributes']['style'] = 'width:' . $layout['style_width'];
+    }
+    return [
+      '#type' => 'inline_template',
+      '#template' => '<figure class="wp-block-image {{ align_class }} {{ size_class }} is-resized">{{ img|render }}{% if caption %}<figcaption class="wp-element-caption">{{ caption }}</figcaption>{% endif %}</figure>',
+      '#context' => [
+        'align_class' => $align_class,
+        'size_class' => $size_class,
+        'img' => $fallback,
+        'caption' => $caption,
+      ],
+    ];
+  }
+
+  return [
+    '#type' => 'inline_template',
+    '#template' => '<figure class="wp-block-image {{ align_class }} {{ size_class }} is-resized"><img decoding="async" loading="lazy" class="wp-image-lead" src="{{ src }}" alt="{{ alt }}" width="{{ width }}" height="{{ height }}"{% if style_width %} style="width:{{ style_width }}"{% endif %}>{% if caption %}<figcaption class="wp-element-caption">{{ caption }}</figcaption>{% endif %}</figure>',
+    '#context' => [
+      'align_class' => $align_class,
+      'size_class' => $size_class,
+      'src' => $src,
+      'alt' => $alt,
+      'width' => $layout['width'],
+      'height' => $layout['height'],
+      'style_width' => $layout['style_width'],
+      'caption' => $caption,
+    ],
+  ];
+}
+
+/**
+ * Card image URL aligned with WP PostX grid sizing (870×570 crop when possible).
+ */
+function df_impact_card_image_url_for_parity(string $uri): string {
+  foreach (['wp_card_870x570', 'card_large'] as $style_id) {
+    $style = \Drupal::entityTypeManager()->getStorage('image_style')->load($style_id);
+    if ($style) {
+      return $style->buildUrl($uri);
+    }
+  }
+  return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+}
+
+function df_impact_card_image_url_for_parity_from_src(string $src): string {
+  if (preg_match('#/wp-content/uploads/(.+)$#', $src, $m)) {
+    $uri = 'public://wp-content/uploads/' . $m[1];
+    if (\Drupal::service('file_system')->realpath($uri)) {
+      return df_impact_card_image_url_for_parity($uri);
+    }
+  }
+  return $src;
+}
+
+function df_impact_article_card_image_meta(NodeInterface $node): ?array {
+  if ($node->bundle() !== 'article') {
+    return NULL;
+  }
+  if ($node->hasField('field_featured_image') && !$node->get('field_featured_image')->isEmpty()) {
+    $media = $node->get('field_featured_image')->entity;
+    if ($media && $media->hasField('field_media_image') && !$media->get('field_media_image')->isEmpty()) {
+      $file = $media->get('field_media_image')->entity;
+      if ($file) {
+        $alt = (string) $media->get('field_media_image')->alt;
+        if ($alt === '') {
+          $alt = $node->label();
+        }
+        return [
+          'url' => df_impact_card_image_url_for_parity($file->getFileUri()),
+          'alt' => $alt,
+          'width' => 870,
+          'height' => 570,
+        ];
+      }
+    }
+  }
+  $row = df_impact_article_export_row_for_node($node);
+  if (!is_array($row)) {
+    return NULL;
+  }
+  foreach (df_impact_article_export_try_image_urls($row) as $candidate) {
+    $src = df_impact_article_fallback_image_src($candidate);
+    if ($src === NULL || $src === '') {
+      continue;
+    }
+    return [
+      'url' => df_impact_card_image_url_for_parity_from_src($src),
+      'alt' => df_impact_article_export_lead_alt($row, $node) ?: $node->label(),
+      'width' => 870,
+      'height' => 570,
+    ];
+  }
+  return NULL;
+}
+
+/**
  * Builds homepage hero video variables from the featured issue node.
  *
  * @return array{video_url: string, poster_url: string|null, title: \Drupal\Core\StringTranslation\TranslatableMarkup}|null
@@ -673,18 +1065,10 @@ function df_impact_media_file_url(NodeInterface $node, string $field_name, strin
  * Returns the newest published issue node ID (year desc, season desc).
  */
 function df_impact_get_latest_issue_nid(): ?int {
-  $nids = \Drupal::entityQuery('node')
-    ->condition('type', 'issue')
-    ->condition('status', 1)
-    ->sort('field_year', 'DESC')
-    ->sort('field_season', 'DESC')
-    ->range(0, 1)
-    ->accessCheck()
-    ->execute();
-  if (!$nids) {
-    return NULL;
+  if (function_exists('df_setup_get_latest_issue_nid')) {
+    return df_setup_get_latest_issue_nid();
   }
-  return (int) reset($nids);
+  return NULL;
 }
 
 /**
@@ -964,33 +1348,19 @@ function df_impact_topic_archive_term_label(): ?string {
  * @return array<int, array{title: string, url: string}>
  */
 function df_impact_get_header_issue_links(int $limit = 4): array {
-  $nids = \Drupal::entityQuery('node')
-    ->condition('type', 'issue')
-    ->condition('status', 1)
-    ->sort('field_year', 'DESC')
-    ->sort('field_season', 'DESC')
-    ->range(0, $limit)
-    ->accessCheck()
-    ->execute();
-  if (!$nids) {
-    return [];
-  }
-  $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadMultiple($nids);
+  // Match WordPress Max Mega Menu order/labels from reference-pack chrome.
+  $canonical = [
+    ['path' => '/fall-2026-issue', 'title' => 'Fall 2026'],
+    ['path' => '/summer-2026-issue', 'title' => 'Summer 2026'],
+    ['path' => '/spring-2026-issue', 'title' => 'Spring 2026'],
+    ['path' => '/winter-2025-issue', 'title' => 'Winter 2025'],
+  ];
   $links = [];
-  foreach ($nodes as $node) {
-    if (!$node instanceof NodeInterface) {
-      continue;
-    }
-    $label = df_impact_format_issue_label($node) ?? $node->label();
-    try {
-      $links[] = [
-        'title' => $label,
-        'url' => $node->toUrl()->toString(),
-      ];
-    }
-    catch (\Exception) {
-      // Skip unroutable nodes.
-    }
+  foreach (array_slice($canonical, 0, $limit) as $item) {
+    $links[] = [
+      'title' => $item['title'],
+      'url' => Url::fromUri('internal:' . $item['path'])->toString(),
+    ];
   }
   return $links;
 }

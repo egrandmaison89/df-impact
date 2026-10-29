@@ -1,0 +1,26 @@
+/**
+ * Minimal Drupal-only fixes on top of WordPress reference-pack CSS.
+ * Shrink this file as Twig markup converges on WP DOM.
+ */
+.toolbar,
+#toolbar-administration {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+}
+
+.wp-site-blocks {
+  width: 100%;
+  max-width: none;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px;
+  word-wrap: normal;
+}

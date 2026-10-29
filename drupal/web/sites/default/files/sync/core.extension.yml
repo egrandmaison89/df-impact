@@ -13,7 +13,6 @@ module:
   coffee: 0
   comment: 0
   config: 0
-  config_split: 0
   content_moderation: 0
   contextual: 0
   crop: 0
@@ -47,6 +46,7 @@ module:
   menu_link_content: 0
   menu_ui: 0
   metatag: 0
+  metatag_views: 0
   migrate: 0
   migrate_plus: 0
   migrate_tools: 0

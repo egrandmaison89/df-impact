@@ -104,8 +104,17 @@ def main() -> None:
         p = p.rstrip("/") or "/"
         return p if p.startswith("/") else "/" + p
 
+    in_brief_paths = {
+        path_from_wp_url(row.get("wp_url") or "") or row.get("drupal_alias") or ""
+        for row in in_brief
+    }
+    in_brief_paths.discard("")
+    in_brief_paths.discard("/")
+
     for row in articles:
         path = path_from_wp_url(row.get("wp_url") or "") or row.get("drupal_alias") or f"/stories/{row.get('slug', '')}"
+        if path in in_brief_paths:
+            continue
         add_entry(
             by_path,
             path=path,
@@ -145,7 +154,8 @@ def main() -> None:
     static_paths = [
         ("/homepage/", "homepage", "Homepage"),
         ("/home", "homepage", "Home (Drupal front)"),
-        ("/about", "landing_page", "About"),
+        ("/about-impact", "landing_page", "About Impact"),
+        ("/about", "landing_page", "About (legacy)"),
         ("/search", "search", "Search"),
         ("/topics", "archive", "Topics archive"),
         ("/in-brief", "archive", "In Brief archive"),

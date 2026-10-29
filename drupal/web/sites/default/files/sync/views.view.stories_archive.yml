@@ -6,6 +6,7 @@ dependencies:
     - core.entity_view_display.node.article.teaser
     - node.type.article
   module:
+    - metatag_views
     - node
     - user
 id: stories_archive
@@ -27,8 +28,12 @@ display:
       pager:
         type: full
         options:
-          items_per_page: 12
           offset: 0
+          items_per_page: 12
+      access:
+        type: perm
+        options:
+          perm: 'access content'
       sorts:
         created:
           id: created
@@ -56,10 +61,6 @@ display:
         type: 'entity:node'
         options:
           view_mode: teaser
-      access:
-        type: perm
-        options:
-          perm: 'access content'
       display_extenders: {  }
     cache_metadata:
       max-age: -1
@@ -74,7 +75,14 @@ display:
     display_plugin: page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender:
+          metatags:
+            title: 'Stories Archive | [site:name]'
+            description: 'Stories from Dana-Farber Impact Magazine.'
+            og_title: 'Stories Archive'
+            og_type: website
+          tokenize: false
       path: issues
     cache_metadata:
       max-age: -1

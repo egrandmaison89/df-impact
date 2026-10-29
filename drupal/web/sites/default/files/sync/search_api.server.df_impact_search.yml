@@ -9,10 +9,10 @@ name: 'Dana-Farber Impact Search'
 description: 'Full-text search using the Database backend.'
 backend: search_api_db
 backend_config:
-  min_chars: 3
-  partial_matches: false
-  matching: words
   database: 'default:default'
+  min_chars: 3
+  matching: words
   autocomplete:
     suggest_suffix: true
     suggest_words: true
+  partial_matches: false

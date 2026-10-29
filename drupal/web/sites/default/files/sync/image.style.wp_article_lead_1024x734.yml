@@ -1,0 +1,18 @@
+uuid: 496b1da3-b819-429b-b35a-8f821289fc9b
+langcode: en
+status: true
+dependencies:
+  module:
+    - focal_point
+name: wp_article_lead_1024x734
+label: 'WP article lead (1024×734)'
+effects:
+  6138c427-59d7-4ad7-9bf8-512577f787c8:
+    uuid: 6138c427-59d7-4ad7-9bf8-512577f787c8
+    id: focal_point_scale_and_crop
+    weight: 0
+    data:
+      width: 1024
+      height: 734
+      crop_type: focal_point
+pipeline: __default__

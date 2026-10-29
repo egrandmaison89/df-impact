@@ -70,12 +70,12 @@ display:
         type: full
         options:
           items_per_page: 10
-          quantity: 3
           tags:
             next: 'Next Page'
-            previous: '‹'
+            previous: ‹
             first: ''
             last: ''
+          quantity: 3
       sorts:
         sticky:
           id: sticky
@@ -124,8 +124,8 @@ display:
           validate_options:
             bundles:
               topics: topics
-            operation: view
             access: true
+            operation: view
             multiple: 1
           break_phrase: true
           add_table: false

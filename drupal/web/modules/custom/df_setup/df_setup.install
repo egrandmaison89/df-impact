@@ -162,7 +162,7 @@ HTML;
     }
   }
 
-  $node->set('path', ['alias' => '/about-impact', 'pathauto' => $pathauto_skip]);
+  $node->set('path', ['alias' => '/about', 'pathauto' => $pathauto_skip]);
   if ($node->hasField('moderation_state')) {
     $node->set('moderation_state', 'published');
   }
@@ -654,4 +654,277 @@ function df_setup_update_10014(): string {
     }
   }
   return sprintf('Published %d issue node(s).', $updated);
+}
+
+/**
+ * Backfill homepage hero video + poster on the latest issue (WordPress uploads).
+ */
+function df_setup_update_10021(): string {
+  return _df_setup_backfill_latest_issue_hero_media();
+}
+
+/**
+ * Adds /about path alias (WordPress legacy) for the About Impact page.
+ */
+function df_setup_update_10023(): string {
+  return _df_setup_backfill_latest_issue_hero_media(TRUE);
+}
+
+/**
+ * Same-path URL parity: /about, /home, /category/digital-exclusives (no 301 redirects).
+ */
+function df_setup_update_10024(): string {
+  return _df_setup_apply_wordpress_manifest_paths();
+}
+
+/**
+ * Adds /about path alias (WordPress legacy) for the About Impact page.
+ */
+function df_setup_update_10022(): string {
+  _df_setup_ensure_about_impact_page();
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if (!$nids) {
+    return 'About Impact page missing.';
+  }
+  $node = $storage->load(reset($nids));
+  if (!$node instanceof Node) {
+    return 'Could not load About Impact page.';
+  }
+  $alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $existing = $alias_storage->loadByProperties(['alias' => '/about']);
+  if ($existing) {
+    return 'Path alias /about already exists.';
+  }
+  $alias_storage->create([
+    'path' => '/node/' . $node->id(),
+    'alias' => '/about',
+    'langcode' => 'en',
+  ])->save();
+  return 'Created /about alias for About Impact page.';
+}
+
+/**
+ * Copies WP uploads, creates media entities, sets issue hero fields when empty.
+ */
+function _df_setup_backfill_latest_issue_hero_media(bool $force = FALSE): string {
+  $latest_nid = df_setup_get_latest_issue_nid();
+  if ($latest_nid === NULL) {
+    return 'No published issue node for hero backfill.';
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  /** @var \Drupal\node\NodeInterface|null $issue */
+  $issue = $storage->load($latest_nid);
+  if (!$issue) {
+    return 'Could not load latest issue.';
+  }
+
+  $video_uri = _df_setup_ensure_wp_upload_file('2026/09/Impact_Ambient.mp4', 'video/mp4');
+  $poster_uri = _df_setup_ensure_wp_upload_file('2026/08/Fall2026-Cover.jpg', 'image/jpeg');
+  if ($video_uri === NULL) {
+    return 'Hero video file missing (Impact_Ambient.mp4).';
+  }
+
+  $changed = FALSE;
+  if ($issue->hasField('field_hero_video') && ($force || $issue->get('field_hero_video')->isEmpty())) {
+    $video_mid = _df_setup_get_or_create_video_media($video_uri);
+    if ($video_mid !== NULL) {
+      $issue->set('field_hero_video', ['target_id' => $video_mid]);
+      $changed = TRUE;
+    }
+  }
+  if ($poster_uri !== NULL && $issue->hasField('field_hero_poster') && ($force || $issue->get('field_hero_poster')->isEmpty())) {
+    $poster_mid = _df_setup_get_or_create_image_media($poster_uri, 'Cover of the Fall 2026 issue of Impact');
+    if ($poster_mid !== NULL) {
+      $issue->set('field_hero_poster', ['target_id' => $poster_mid]);
+      $changed = TRUE;
+    }
+  }
+  if ($changed) {
+    $issue->save();
+  }
+  return sprintf(
+    'Hero backfill on issue %d (%s): video=%s poster=%s fields_updated=%s',
+    $issue->id(),
+    $issue->label(),
+    $video_uri,
+    $poster_uri ?? 'missing',
+    $changed ? 'yes' : 'no (already set)'
+  );
+}
+
+/**
+ * Ensures a file exists at public://wp-content/uploads/{relative}.
+ */
+function _df_setup_ensure_wp_upload_file(string $relative, string $mime): ?string {
+  $relative = ltrim(str_replace('\\', '/', $relative), '/');
+  $uri = 'public://wp-content/uploads/' . $relative;
+  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $uri]);
+  if ($files) {
+    return $uri;
+  }
+
+  $candidates = [
+    DRUPAL_ROOT . '/wp-content/uploads/' . $relative,
+    dirname(DRUPAL_ROOT) . '/migration-data/private/wp-uploads/' . $relative,
+  ];
+  foreach ($candidates as $path) {
+    if (!is_readable($path)) {
+      continue;
+    }
+    $data = file_get_contents($path);
+    if ($data === FALSE) {
+      continue;
+    }
+    return _df_setup_write_public_file($uri, $data, $mime);
+  }
+
+  $url = 'https://danafarberimpact.org/wp-content/uploads/' . $relative;
+  $data = @file_get_contents($url, FALSE, stream_context_create([
+    'http' => ['timeout' => 120, 'user_agent' => 'Drupal/11 DFSetup/1.0'],
+  ]));
+  if ($data !== FALSE && strlen($data) > 1024 && stripos($data, '<html') === FALSE) {
+    return _df_setup_write_public_file($uri, $data, $mime);
+  }
+
+  return NULL;
+}
+
+/**
+ * Writes bytes to a public file URI.
+ */
+function _df_setup_write_public_file(string $uri, string $data, string $mime): ?string {
+  /** @var \Drupal\Core\File\FileSystemInterface $fs */
+  $fs = \Drupal::service('file_system');
+  $dir = $fs->dirname($uri);
+  $fs->prepareDirectory($dir, \Drupal\Core\File\FileSystemInterface::CREATE_DIRECTORY | \Drupal\Core\File\FileSystemInterface::MODIFY_PERMISSIONS);
+  /** @var \Drupal\file\FileRepositoryInterface $repo */
+  $repo = \Drupal::service('file.repository');
+  $file = $repo->writeData($data, $uri, \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE);
+  if ($file) {
+    $file->setPermanent();
+    $file->setMimeType($mime);
+    $file->save();
+    return $uri;
+  }
+  return NULL;
+}
+
+/**
+ * @return int|null Media entity ID for a video file URI.
+ */
+function _df_setup_get_or_create_video_media(string $file_uri): ?int {
+  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $file_uri]);
+  $file = reset($files);
+  if (!$file) {
+    return NULL;
+  }
+  $existing = \Drupal::entityQuery('media')
+    ->condition('bundle', 'video')
+    ->condition('field_media_video_file.target_id', $file->id())
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if ($existing) {
+    return (int) reset($existing);
+  }
+  /** @var \Drupal\media\Entity\Media $media */
+  $media = \Drupal\media\Entity\Media::create([
+    'bundle' => 'video',
+    'uid' => 1,
+    'status' => 1,
+    'name' => $file->getFilename(),
+    'field_media_video_file' => ['target_id' => $file->id()],
+  ]);
+  $media->save();
+  return (int) $media->id();
+}
+
+/**
+ * @return int|null Media entity ID for an image file URI.
+ */
+function _df_setup_get_or_create_image_media(string $file_uri, string $alt = ''): ?int {
+  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $file_uri]);
+  $file = reset($files);
+  if (!$file) {
+    return NULL;
+  }
+  $existing = \Drupal::entityQuery('media')
+    ->condition('bundle', 'image')
+    ->condition('field_media_image.target_id', $file->id())
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if ($existing) {
+    return (int) reset($existing);
+  }
+  /** @var \Drupal\media\Entity\Media $media */
+  $media = \Drupal\media\Entity\Media::create([
+    'bundle' => 'image',
+    'uid' => 1,
+    'status' => 1,
+    'name' => $file->getFilename(),
+    'field_media_image' => [
+      'target_id' => $file->id(),
+      'alt' => $alt,
+    ],
+  ]);
+  $media->save();
+  return (int) $media->id();
+}
+
+/**
+ * Applies WordPress manifest paths (200 at same URL, no redirects).
+ */
+function _df_setup_apply_wordpress_manifest_paths(): string {
+  _df_setup_ensure_about_impact_page();
+  $alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+
+  $about_nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if ($about_nids) {
+    $about = $storage->load(reset($about_nids));
+    if ($about instanceof Node) {
+      $about->set('path', ['alias' => '/about', 'pathauto' => PathautoState::SKIP]);
+      $about->save();
+    }
+  }
+
+  $home_nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'Home')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  $home_alias_added = FALSE;
+  if ($home_nids) {
+    $home_nid = (int) reset($home_nids);
+    $system_path = '/node/' . $home_nid;
+    foreach (['/home', '/homepage'] as $alias) {
+      $existing = $alias_storage->loadByProperties(['alias' => $alias]);
+      if (!$existing) {
+        $alias_storage->create([
+          'path' => $system_path,
+          'alias' => $alias,
+          'langcode' => 'en',
+        ])->save();
+        $home_alias_added = TRUE;
+      }
+    }
+  }
+
+  return sprintf(
+    'Manifest paths: About -> /about; home aliases ensured=%s',
+    $home_alias_added ? 'yes' : 'already present'
+  );
 }

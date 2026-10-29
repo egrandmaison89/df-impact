@@ -14,6 +14,20 @@ PR: [#13](https://github.com/egrandmaison89/df-impact/pull/13)
 | 4 | `&#039;` in titles | `TextEntityHelper`, migrate `df_decode_plain_text`, drush/php script decode; **titles with entities: 7 → 0** |
 | 5 | Broken archive thumbnails | Resolve WP attachment-page URLs → `media.json` / `wp-images/` stems; local file URLs preferred over photon; image audit in `parity/reports/drupal-image-audit/` |
 
+## Image audit (801 paths, 2026-10-29)
+
+| Metric | Before | After |
+| --- | ---: | ---: |
+| Broken `<img src>` / pages | 33 | 2 (page 404 only: `/home`, `/category/pediatrics`) |
+| Broken on live WP too | 15 | **0** |
+| WP-fixable image failures | 18 | **0** |
+
+See `parity/reports/drupal-image-audit/README.md`.
+
+## Entity decoding
+
+Extended to body, excerpt, alt/caption, menu, taxonomy, meta. `audit_entity_leftovers.php` → **0** leftovers.
+
 ## Text parity (desktop, harness; after entity + excerpt tuning)
 
 | Path | Text |

@@ -132,6 +132,32 @@ export const WP_HERO_VIDEO = '.homepage-banner video, .wp-block-cover__video-bac
 export const DRUPAL_HERO_VIDEO =
   '.hero__cover-video, .homepage-banner video, .wp-block-cover__video-background';
 
+export async function headerLayoutBox(page, selector = '.desktop-header, .impact-header, .header') {
+  return page.evaluate((sel) => {
+    const el =
+      document.querySelector('.desktop-header') ||
+      document.querySelector('.impact-header') ||
+      document.querySelector('.header');
+    if (!el) return { found: false };
+    const r = el.getBoundingClientRect();
+    const logo = document.querySelector('.header-logo');
+    const lr = logo?.getBoundingClientRect();
+    const visibleSelects = [...document.querySelectorAll('.gtranslate_wrapper select')].filter((node) => {
+      const cs = getComputedStyle(node);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return false;
+      const pr = node.getBoundingClientRect();
+      return pr.width > 0 && pr.height > 0;
+    });
+    return {
+      found: true,
+      scrollY: window.scrollY,
+      header: { x: r.x, y: r.y, width: r.width, height: r.height },
+      logo: lr ? { x: lr.x, y: lr.y, width: lr.width, height: lr.height } : null,
+      gtranslateVisibleSelects: visibleSelects.length,
+    };
+  }, selector);
+}
+
 export async function headerScrollState(page, selector = '.header, .desktop-header, .impact-header') {
   return page.evaluate((sel) => {
     const el = document.querySelector(sel);

@@ -128,10 +128,15 @@ function df_migrate_web_editor_issue_e2e(): array {
       ->setEntity($issue);
     $form = \Drupal::formBuilder()->getForm($form_object);
     if (isset($form['df_homepage_hero']) && ($form['df_homepage_hero']['#access'] ?? TRUE) !== FALSE) {
-      $fail('web_editor_issue_form_hides_hero', 'Homepage hero group must be hidden for web_editor.');
+      $fail('web_editor_issue_form_hides_hero', 'Homepage hero video group must be hidden for web_editor.');
     }
-    if (isset($form['field_hero_heading'])) {
-      $fail('web_editor_issue_form_hides_hero', 'Top-level hero fields must not appear for web_editor.');
+    if (!isset($form['field_hero_heading'])) {
+      $fail('web_editor_issue_form_hides_hero', 'Web editor must see field_hero_heading on the issue form.');
+    }
+    foreach (['field_hero_video', 'field_hero_poster'] as $hero_field) {
+      if (isset($form[$hero_field])) {
+        $fail('web_editor_issue_form_hides_hero', "Top-level $hero_field must not appear for web_editor.");
+      }
     }
     $pass('web_editor_issue_form_hides_hero');
 

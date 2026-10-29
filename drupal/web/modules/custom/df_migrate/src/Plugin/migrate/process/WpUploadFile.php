@@ -55,6 +55,16 @@ final class WpUploadFile extends ProcessPluginBase {
 
     $wp_images_uri = $this->resolveWpImagesFallback($relative, $url, $row);
     if ($wp_images_uri !== NULL) {
+      if ($relative !== '' && $uri !== '' && $wp_images_uri !== $uri) {
+        $fs = \Drupal::service('file_system');
+        $local_wp = $fs->realpath($wp_images_uri);
+        if ($local_wp && is_readable($local_wp)) {
+          $data = file_get_contents($local_wp);
+          if ($data !== FALSE) {
+            return $this->writeUri($uri, $data);
+          }
+        }
+      }
       return $wp_images_uri;
     }
 

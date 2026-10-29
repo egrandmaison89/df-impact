@@ -6,6 +6,8 @@ dependencies:
     - core.entity_view_mode.media.issue_story
     - field.storage.node.field_excerpt
     - field.storage.node.field_featured_image
+    - field.storage.node.field_homepage_sort_weight
+    - field.storage.node.field_postx_sort_weight
     - field.storage.node.field_topics
     - node.type.article
   module:
@@ -64,12 +66,19 @@ display:
         options:
           items_per_page: 10
       sorts:
-        sticky:
-          id: sticky
-          table: node_field_data
-          field: sticky
-          plugin_id: boolean
-          order: DESC
+        field_postx_sort_weight_value:
+          id: field_postx_sort_weight_value
+          table: node__field_postx_sort_weight
+          field: field_postx_sort_weight_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: standard
+          order: ASC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
         created:
           id: created
           table: node_field_data
@@ -117,6 +126,7 @@ display:
       tags:
         - 'config:field.storage.node.field_excerpt'
         - 'config:field.storage.node.field_featured_image'
+        - 'config:field.storage.node.field_postx_sort_weight'
         - 'config:field.storage.node.field_topics'
   block_1:
     id: block_1
@@ -193,18 +203,32 @@ display:
           offset: 0
           items_per_page: 3
       sorts:
-        sticky:
-          id: sticky
-          table: node_field_data
-          field: sticky
-          plugin_id: boolean
-          order: DESC
-        created:
-          id: created
-          table: node_field_data
-          field: created
-          plugin_id: date
-          order: DESC
+        field_homepage_sort_weight_value:
+          id: field_homepage_sort_weight_value
+          table: node__field_homepage_sort_weight
+          field: field_homepage_sort_weight_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: standard
+          order: ASC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
+        field_postx_sort_weight_value:
+          id: field_postx_sort_weight_value
+          table: node__field_postx_sort_weight
+          field: field_postx_sort_weight_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: standard
+          order: ASC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
       defaults:
         pager: false
         sorts: false

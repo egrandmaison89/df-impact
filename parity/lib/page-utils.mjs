@@ -66,9 +66,21 @@ export async function scrollForLazyLoad(page) {
 
 export async function waitForFonts(page) {
   await page.evaluate(async () => {
-    if (document.fonts && document.fonts.ready) {
-      await document.fonts.ready;
+    if (!document.fonts) {
+      return;
     }
+    const families = [
+      '400 16px Montserrat',
+      '600 16px Montserrat',
+      '700 16px Montserrat',
+      '400 16px Roboto',
+      '600 16px Roboto',
+      '400 16px "Baskervville"',
+    ];
+    await Promise.all(
+      families.map((spec) => document.fonts.load(spec).catch(() => undefined)),
+    );
+    await document.fonts.ready;
   });
 }
 

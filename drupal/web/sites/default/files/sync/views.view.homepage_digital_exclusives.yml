@@ -6,6 +6,7 @@ dependencies:
     - field.storage.node.field_excerpt
     - field.storage.node.field_featured_image
     - field.storage.node.field_channels
+    - field.storage.node.field_homepage_sort_weight
     - field.storage.node.field_topics
     - node.type.article
   module:
@@ -64,12 +65,19 @@ display:
         options:
           items_per_page: 3
       sorts:
-        sticky:
-          id: sticky
-          table: node_field_data
-          field: sticky
-          plugin_id: boolean
-          order: DESC
+        field_homepage_sort_weight_value:
+          id: field_homepage_sort_weight_value
+          table: node__field_homepage_sort_weight
+          field: field_homepage_sort_weight_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: standard
+          order: ASC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
         created:
           id: created
           table: node_field_data

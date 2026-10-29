@@ -1,0 +1,23 @@
+uuid: 7d1f4f5a-2e6c-7b4d-1f8a-d4e5f6a7b8c9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_homepage_sort_weight
+    - node.type.article
+id: node.article.field_homepage_sort_weight
+field_name: field_homepage_sort_weight
+entity_type: node
+bundle: article
+label: 'Homepage grid sort weight'
+description: 'Lower numbers appear first on homepage PostX rows (Explore, Digital Exclusives, Recent Highlights).'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

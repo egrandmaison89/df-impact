@@ -1,0 +1,30 @@
+{
+  "runId": "2026-10-29T01-56-59-044Z",
+  "wpBase": "https://danafarberimpact.org",
+  "drupalBase": "http://127.0.0.1:8888",
+  "baselineId": null,
+  "paths": [
+    "/homepage",
+    "/fall-2026-issue",
+    "/summer-2025-issue",
+    "/spring-2026-issue",
+    "/2026/09/more-than-a-building-name",
+    "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
+    "/2024/06/the-charlie-landers-foundation",
+    "/in-brief",
+    "/2026/09/a-new-era-in-cancer-care-lavine-bekenstein-cancer-hospital-at-dana-farber",
+    "/about-impact",
+    "/browse-issues",
+    "/past-issues",
+    "/category/cancer-research",
+    "/category/digital-exclusives",
+    "/digital-exclusives"
+  ],
+  "assertionSummary": {
+    "tests": 1,
+    "assertions": 14,
+    "passed": 13,
+    "passRate": 0.9285714285714286
+  },
+  "note": "See behavior.json per case for per-inventory assertion names."
+}

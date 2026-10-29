@@ -7,57 +7,57 @@
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.12727154150095285,
-    "viewport_median_mac_desktop": 0.3170420524691358,
-    "chrome_median_tablet": 0.17283616470141447,
-    "viewport_median_mac_tablet": 0.36286024305555553,
-    "chrome_median_mobile": 0.15911740741561087,
-    "viewport_median_mac_mobile": 0.27497925925925926
+    "chrome_median_desktop": 0.12736054994097723,
+    "viewport_median_mac_desktop": 0.31708564814814816,
+    "chrome_median_tablet": 0.1713355957230897,
+    "viewport_median_mac_tablet": 0.36299189814814814,
+    "chrome_median_mobile": 0.15885222672200117,
+    "viewport_median_mac_mobile": 0.2749274074074074
   },
   "summary": [
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "desktop",
-      "pixelDiffRatio": 0.4253564814814815,
+      "pixelDiffRatio": 0.42535262345679015,
       "headerPixelDiffRatio": 0.15929809843400447,
-      "footerPixelDiffRatio": 0.09510149939033684,
-      "chromePixelDiffRatio": 0.12719979891217065,
-      "viewportPixelDiffRatioMac": 0.4253564814814815
+      "footerPixelDiffRatio": 0.09521819272976681,
+      "chromePixelDiffRatio": 0.12725814558188564,
+      "viewportPixelDiffRatioMac": 0.42535262345679015
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "tablet",
-      "pixelDiffRatio": 0.571322337962963,
+      "pixelDiffRatio": 0.5715856481481482,
       "headerPixelDiffRatio": 0.21032395287958114,
-      "footerPixelDiffRatio": 0.12694402541750657,
-      "chromePixelDiffRatio": 0.16863398914854386,
-      "viewportPixelDiffRatioMac": 0.571322337962963
+      "footerPixelDiffRatio": 0.12454555972357571,
+      "chromePixelDiffRatio": 0.16743475630157842,
+      "viewportPixelDiffRatioMac": 0.5715856481481482
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "mobile",
-      "pixelDiffRatio": 0.3624059259259259,
+      "pixelDiffRatio": 0.36230222222222225,
       "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.14968960985998458,
-      "chromePixelDiffRatio": 0.15499140178863102,
-      "viewportPixelDiffRatioMac": 0.3624059259259259
+      "footerPixelDiffRatio": 0.15139500492257754,
+      "chromePixelDiffRatio": 0.15584409931992751,
+      "viewportPixelDiffRatioMac": 0.36230222222222225
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "desktop",
-      "pixelDiffRatio": 0.20872762345679013,
+      "pixelDiffRatio": 0.20881867283950617,
       "headerPixelDiffRatio": 0.15929809843400447,
-      "footerPixelDiffRatio": 0.09538846974546564,
-      "chromePixelDiffRatio": 0.12734328408973505,
-      "viewportPixelDiffRatioMac": 0.20872762345679013
+      "footerPixelDiffRatio": 0.09562781016613321,
+      "chromePixelDiffRatio": 0.12746295430006885,
+      "viewportPixelDiffRatioMac": 0.20881867283950617
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "tablet",
       "pixelDiffRatio": 0.15439814814814815,
       "headerPixelDiffRatio": 0.21032395287958114,
-      "footerPixelDiffRatio": 0.14375272762898902,
-      "chromePixelDiffRatio": 0.17703834025428508,
+      "footerPixelDiffRatio": 0.14014891740962085,
+      "chromePixelDiffRatio": 0.175236435144601,
       "viewportPixelDiffRatioMac": 0.15439814814814815
     },
     {
@@ -65,8 +65,8 @@
       "bp": "mobile",
       "pixelDiffRatio": 0.1875525925925926,
       "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.16619363236790397,
-      "chromePixelDiffRatio": 0.1632434130425907,
+      "footerPixelDiffRatio": 0.16342751453087218,
+      "chromePixelDiffRatio": 0.16186035412407485,
       "viewportPixelDiffRatioMac": 0.1875525925925926
     }
   ]

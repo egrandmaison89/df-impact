@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-10-29T06:11:36.187Z",
+  "drupalBase": "http://127.0.0.1:8888",
+  "inventoryPaths": 801,
+  "pagesHttpFailed": 2,
+  "uniqueImagesChecked": 1498,
+  "brokenCount": 2,
+  "brokenOnWpToo": 0,
+  "broken": [
+    {
+      "path": "/category/pediatrics",
+      "src": "http://127.0.0.1:8888/category/pediatrics",
+      "issue": "page_http_404",
+      "wpOk": null,
+      "wpBrokenToo": null
+    },
+    {
+      "path": "/home",
+      "src": "http://127.0.0.1:8888/home",
+      "issue": "page_http_404",
+      "wpOk": null,
+      "wpBrokenToo": null
+    }
+  ]
+}

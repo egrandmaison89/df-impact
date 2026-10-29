@@ -32,6 +32,10 @@ export const WP_PROFILE = {
     drawer: '.mobile-header .mega-menu-wrap, .mega-menu-wrap',
     card: 'main .ultp-block-item, main .wp-block-post, main article',
     button: 'main .wp-block-button a.wp-block-button__link.has-background',
+    pagerLink:
+      'main .wp-block-query-pagination a, main .pagination a, main nav.pager a, main .pager__item a',
+    categoryLink: 'main .wp-block-categories-list a, main .archive a[href*="/category/"]',
+    inBriefButton: 'main .in-brief-button a, .in-brief-button a.wp-block-button__link',
   },
   reveal: '.ultp-animation, .homepage-section, [class*="ultp-animation"]',
 };
@@ -52,6 +56,10 @@ export const DRUPAL_PROFILE = {
     drawer: '.header__drawer, .mobile-header .mega-menu-wrap, #mega-menu-max_mega_menu_1',
     card: 'main .ultp-block-item, main .views-row, main article',
     button: 'main .wp-block-button a.wp-block-button__link.has-background',
+    pagerLink:
+      'main .wp-block-query-pagination a, main .pagination a, main nav.pager a, main .pager__item a',
+    categoryLink: 'main .wp-block-categories-list a, main .archive a[href*="/category/"]',
+    inBriefButton: 'main .in-brief-button a, .in-brief-button a.wp-block-button__link',
   },
   reveal: '.df-reveal, .df-reveal--visible, .ultp-animation, .homepage-section',
 };
@@ -82,16 +90,29 @@ export async function captureSiteBehavior(page, profile, bp) {
   data.navDefault = await computedStyle(page, s.navLink);
   data.headerBeforeScroll = await headerScrollState(page, s.header);
   data.headerScrollDepths = {};
-  if (!lite && data.hero?.found) {
+  const headerPresent = await elementPresent(page, s.header);
+  if (!lite && headerPresent && (profile.site !== 'wp' || data.hero?.found)) {
     for (const y of [600, 2000]) {
       await page.evaluate((scrollY) => window.scrollTo(0, scrollY), y);
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(lite ? 350 : 500);
       data.headerScrollDepths[`y${y}`] = await headerLayoutBox(page, s.header);
     }
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(250);
   }
   if (!lite) {
+    if (s.pagerLink) {
+      data.pagerDefault = await computedStyle(page, s.pagerLink);
+      data.pagerHover = await computedStyleHover(page, s.pagerLink);
+    }
+    if (s.categoryLink) {
+      data.categoryDefault = await computedStyle(page, s.categoryLink);
+      data.categoryHover = await computedStyleHover(page, s.categoryLink);
+    }
+    if (s.inBriefButton) {
+      data.inBriefButtonDefault = await computedStyle(page, s.inBriefButton);
+      data.inBriefButtonHover = await computedStyleHover(page, s.inBriefButton);
+    }
     await ensurePointerClearForSelector(page, s.footerLink);
     await scrollSelectorIntoView(page, s.footerLink);
     data.footerDefault = await computedStyle(page, s.footerLink);

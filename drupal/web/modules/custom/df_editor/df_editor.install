@@ -1,0 +1,161 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for DF Editor.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
+use Drupal\node\Entity\Node;
+
+/**
+ * Implements hook_install().
+ */
+function df_editor_install(): void {
+  _df_editor_ensure_hero_heading_field();
+  _df_editor_ensure_header_primary_menu();
+  _df_editor_backfill_hero_headings();
+}
+
+/**
+ * Adds homepage hero heading field (issue bundle).
+ */
+function df_editor_update_9001(): string {
+  _df_editor_ensure_hero_heading_field();
+  _df_editor_unhide_issue_scheduler_fields();
+  return 'Ensured field_hero_heading and visible scheduler fields on issues.';
+}
+
+/**
+ * Creates header-primary menu with default links if empty.
+ */
+function df_editor_update_9002(): string {
+  _df_editor_ensure_header_primary_menu();
+  return 'Ensured header-primary navigation menu.';
+}
+
+function _df_editor_ensure_hero_heading_field(): void {
+  if (!FieldStorageConfig::loadByName('node', 'field_hero_heading')) {
+    FieldStorageConfig::create([
+      'field_name' => 'field_hero_heading',
+      'entity_type' => 'node',
+      'type' => 'string',
+      'settings' => ['max_length' => 255],
+      'cardinality' => 1,
+    ])->save();
+  }
+  if (!FieldConfig::loadByName('node', 'issue', 'field_hero_heading')) {
+    FieldConfig::create([
+      'field_name' => 'field_hero_heading',
+      'entity_type' => 'node',
+      'bundle' => 'issue',
+      'label' => 'Homepage hero heading',
+      'description' => 'Large headline over the homepage cover video when this issue is the featured (newest published) issue.',
+      'required' => FALSE,
+    ])->save();
+  }
+
+  $display = EntityFormDisplay::load('node.issue.default');
+  if ($display) {
+    $display->setComponent('field_hero_heading', [
+      'type' => 'string_textfield',
+      'weight' => 22,
+      'settings' => ['size' => 80, 'placeholder' => ''],
+    ]);
+    $display->removeComponent('publish_on');
+    $display->setComponent('publish_on', [
+      'type' => 'datetime_timestamp',
+      'weight' => 99,
+      'region' => 'content',
+    ]);
+    $display->save();
+  }
+}
+
+function _df_editor_unhide_issue_scheduler_fields(): void {
+  $display = EntityFormDisplay::load('node.issue.default');
+  if (!$display) {
+    return;
+  }
+  $display->removeComponent('publish_on');
+  $display->setComponent('publish_on', [
+    'type' => 'datetime_timestamp',
+    'weight' => 99,
+    'region' => 'content',
+  ]);
+  $display->save();
+
+  $article = EntityFormDisplay::load('node.article.default');
+  if ($article) {
+    $article->removeComponent('publish_on');
+    $article->setComponent('publish_on', [
+      'type' => 'datetime_timestamp',
+      'weight' => 102,
+      'region' => 'content',
+    ]);
+    $article->save();
+  }
+}
+
+function _df_editor_ensure_header_primary_menu(): void {
+  $menu_storage = \Drupal::entityTypeManager()->getStorage('menu');
+  if (!$menu_storage->load('header-primary')) {
+    $menu_storage->create([
+      'id' => 'header-primary',
+      'label' => 'Header primary navigation',
+      'description' => 'Top-level header links (Current Issue, Past Issues, About). Managed by site administrators.',
+    ])->save();
+  }
+
+  $existing = \Drupal::entityTypeManager()->getStorage('menu_link_content')->loadByProperties(['menu_name' => 'header-primary']);
+  if ($existing) {
+    return;
+  }
+
+  $latest_url = 'internal:/browse-issues';
+  $latest_nid = df_setup_get_latest_issue_nid();
+  if ($latest_nid) {
+    $issue = Node::load($latest_nid);
+    if ($issue) {
+      $latest_url = 'entity:node/' . $issue->id();
+    }
+  }
+
+  $links = [
+    ['title' => 'Current Issue', 'uri' => $latest_url, 'weight' => 0],
+    ['title' => 'Past Issues', 'uri' => 'internal:/past-issues', 'weight' => 1],
+    ['title' => 'About', 'uri' => 'internal:/about', 'weight' => 2],
+  ];
+  foreach ($links as $link) {
+    MenuLinkContent::create([
+      'title' => $link['title'],
+      'link' => ['uri' => $link['uri']],
+      'menu_name' => 'header-primary',
+      'weight' => $link['weight'],
+      'expanded' => FALSE,
+    ])->save();
+  }
+}
+
+function _df_editor_backfill_hero_headings(): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'issue')
+    ->accessCheck(FALSE)
+    ->execute();
+  foreach ($storage->loadMultiple($nids) as $node) {
+    if (!$node instanceof Node || !$node->hasField('field_hero_heading')) {
+      continue;
+    }
+    if (!$node->get('field_hero_heading')->isEmpty()) {
+      continue;
+    }
+    $node->set('field_hero_heading', 'Stories From Our Community of Support');
+    $node->save();
+  }
+}

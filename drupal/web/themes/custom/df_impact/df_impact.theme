@@ -395,8 +395,11 @@ function df_impact_preprocess_page(&$variables) {
     $variables['wp_singular_post_title'] = $route_node->label();
   }
 
-  // Donate CTA — match legacy WordPress / Jimmy Fund campaign parameters.
+  // Donate CTA — defaults match WordPress; df_editor Site settings override when set.
   $variables['donate_url'] = 'https://danafarber.jimmyfund.org/site/Donation2?df_id=2101&mfc_pref=T&2101.donation=form1&utm_source=dfimpact&utm_medium=button&utm_campaign=AGDFI031323&s_src=AGDFI031323&s_subsrc=AGDFI031323';
+  if (\Drupal::moduleHandler()->moduleExists('df_editor')) {
+    \Drupal::service('df_editor.site_chrome')->applyPreprocessPage($variables);
+  }
   $route_provider = \Drupal::service('router.route_provider');
   if ($route_provider->getRoutesByNames(['df_searchstax.page'])) {
     $variables['search_page_url'] = Url::fromRoute('df_searchstax.page')->toString();
@@ -408,7 +411,12 @@ function df_impact_preprocess_page(&$variables) {
   $variables['about_impact_url'] = Url::fromUri('internal:/about')->toString();
 
   // Header Issues dropdown — recent published issues (WordPress chrome).
-  $variables['header_issue_links'] = df_impact_get_header_issue_links(4);
+  if (function_exists('df_setup_get_header_issue_links')) {
+    $variables['header_issue_links'] = df_setup_get_header_issue_links(4);
+  }
+  else {
+    $variables['header_issue_links'] = df_impact_get_header_issue_links(4);
+  }
 
   // WXR wp_navigation "Main Nav" + dropdown-menu (Issues submenu items as top links).
   $latest_issue_url = NULL;
@@ -419,20 +427,22 @@ function df_impact_preprocess_page(&$variables) {
       $latest_issue_url = $latest_issue->toUrl()->toString();
     }
   }
-  $variables['header_primary_links'] = [
-    [
-      'title' => t('Current Issue'),
-      'url' => $latest_issue_url ?: Url::fromRoute('view.browse_issues.page_1')->toString(),
-    ],
-    [
-      'title' => t('Past Issues'),
-      'url' => Url::fromRoute('view.past_issues.page_1')->toString(),
-    ],
-    [
-      'title' => t('About'),
-      'url' => $variables['about_impact_url'],
-    ],
-  ];
+  if (empty($variables['header_primary_links'])) {
+    $variables['header_primary_links'] = [
+      [
+        'title' => t('Current Issue'),
+        'url' => $latest_issue_url ?: Url::fromRoute('view.browse_issues.page_1')->toString(),
+      ],
+      [
+        'title' => t('Past Issues'),
+        'url' => Url::fromRoute('view.past_issues.page_1')->toString(),
+      ],
+      [
+        'title' => t('About'),
+        'url' => $variables['about_impact_url'],
+      ],
+    ];
+  }
 
   $topic_order = [
     'Cancer Research',
@@ -1672,10 +1682,14 @@ function df_impact_build_homepage_hero(?NodeInterface $issue): ?array {
     $video_url = 'https://danafarberimpact.org/wp-content/uploads/2026/09/Impact_Ambient.mp4';
   }
   $poster_url = df_impact_media_file_url($issue, 'field_hero_poster', 'field_media_image');
+  $heading = t('Stories From Our Community of Support');
+  if ($issue->hasField('field_hero_heading') && !$issue->get('field_hero_heading')->isEmpty()) {
+    $heading = $issue->get('field_hero_heading')->value;
+  }
   return [
     'video_url' => $video_url,
     'poster_url' => $poster_url,
-    'title' => t('Stories From Our Community of Support'),
+    'title' => $heading,
   ];
 }
 

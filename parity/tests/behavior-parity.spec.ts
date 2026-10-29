@@ -17,7 +17,12 @@ import {
   DRUPAL_PROFILE,
   WP_PROFILE,
 } from '../lib/behavior-profiles.mjs';
-import { loadTemplateSamplePaths, normalizeBehaviorPath } from '../lib/behavior-paths.mjs';
+import {
+  expectedBehaviorCaseCount,
+  loadTemplateSamplePaths,
+  normalizeBehaviorPath,
+  pathUsesChromeHeader,
+} from '../lib/behavior-paths.mjs';
 import { resolveParityRoot } from '../lib/parity-root.mjs';
 import { dismissOverlays, gotoWithBoundedSettle, waitForFonts } from '../lib/page-utils.mjs';
 
@@ -46,13 +51,21 @@ const paths =
         .filter(Boolean);
 
 type AssertionStat = { name: string; pass: boolean };
+type WpSnap = Record<string, unknown> | null;
 
 function writeJson(file: string, data: unknown) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, JSON.stringify(data, null, 2));
 }
 
-const globalStats = { tests: 0, assertions: 0, passed: 0, crossMismatches: 0 };
+const globalStats = {
+  tests: 0,
+  assertions: 0,
+  passed: 0,
+  crossMismatches: 0,
+  capturedCases: 0,
+  incompleteCases: 0,
+};
 
 function recordAssertion(stats: AssertionStat[], name: string, pass: boolean) {
   stats.push({ name, pass });
@@ -67,8 +80,12 @@ function wpSnapshotReady(pathNorm: string, snap: Record<string, unknown> | null)
   if (!snap) return false;
   const isHome = pathNorm === '/' || pathNorm === '/homepage';
   if (isHome && !(snap.hero as { found?: boolean } | undefined)?.found) return false;
-  if (!(snap.navDefault as object | null)) return false;
-  return true;
+  const layout600 = (snap.headerScrollDepths as { y600?: { found?: boolean } } | undefined)?.y600;
+  const hasChrome =
+    Boolean(layout600?.found) ||
+    Boolean(snap.navDefault) ||
+    Boolean((snap.headerBeforeScroll as { found?: boolean } | undefined)?.found);
+  return hasChrome;
 }
 
 function drupalUrl(pathNorm: string) {
@@ -81,19 +98,91 @@ function wpUrl(pathNorm: string) {
   return `${wpBase}${p}`;
 }
 
+async function headerScrollScreenshots(page: import('@playwright/test').Page, outBase: string, prefix: string) {
+  for (const scrollY of [600, 2000]) {
+    await page.evaluate((y) => window.scrollTo(0, y), scrollY);
+    await page.waitForTimeout(450);
+    await page.screenshot({
+      path: path.join(outBase, `${prefix}-header-scroll-${scrollY}.png`),
+      fullPage: false,
+    });
+  }
+}
+
+async function loadWpSnapshot(
+  wpPage: import('@playwright/test').Page,
+  pathNorm: string,
+  bp: (typeof BEHAVIOR_BREAKPOINTS)[number],
+  report: Record<string, unknown>,
+): Promise<WpSnap> {
+  const target = wpUrl(pathNorm);
+  const maxAttempts = behaviorLite ? 2 : bp.label === 'desktop' ? 5 : 8;
+  const gotoTimeout = behaviorLite ? 75_000 : bp.label === 'desktop' ? 120_000 : 180_000;
+  let lastErr: unknown;
+  let snap: WpSnap = null;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    try {
+      if (attempt > 0) {
+        const backoff = Math.min(32_000, 4000 * 2 ** (attempt - 1));
+        await wpPage.waitForTimeout(backoff);
+      }
+      await gotoWithBoundedSettle(wpPage, target, {
+        timeout: gotoTimeout,
+        settleMs: behaviorLite ? 800 : 1200,
+      });
+      if (pathNorm === '/homepage' || pathNorm === '/') {
+        await wpPage.waitForSelector(WP_PROFILE.heroVideo, { timeout: 45_000 }).catch(() => {});
+      }
+      await wpPage
+        .waitForSelector(`${WP_PROFILE.selectors.header}, ${WP_PROFILE.selectors.navLink}`, {
+          timeout: 45_000,
+        })
+        .catch(() => {});
+      await wpPage.waitForTimeout(900);
+      snap = await captureSiteBehavior(wpPage, WP_PROFILE, bp);
+      if (wpSnapshotReady(pathNorm, snap)) {
+        report.wp = snap;
+        return snap;
+      }
+      snap = null;
+      report.wpError = `wpSnapshotReady=false attempt ${attempt + 1}/${maxAttempts}`;
+    } catch (e) {
+      lastErr = e;
+      report.wpError = String(e);
+      snap = null;
+    }
+  }
+  if (lastErr) {
+    report.wpError = String(lastErr);
+  }
+  return null;
+}
+
+test.describe.configure({ mode: 'serial' });
+
 for (const pathNorm of paths) {
   for (const bp of BEHAVIOR_BREAKPOINTS) {
     test(`behavior ${pathNorm} @ ${bp.label}`, async ({ browser, browserName }) => {
       test.skip(browserName !== 'chromium', 'Chromium only');
       if (crossSite) {
-        test.setTimeout(behaviorLite ? 120_000 : 180_000);
+        test.setTimeout(
+          behaviorLite ? 120_000 : bp.label === 'desktop' ? 300_000 : 420_000,
+        );
       }
       globalStats.tests += 1;
 
       const assertionLog: AssertionStat[] = [];
       const slug = pathNorm.replace(/\//g, '_') || 'root';
       const outBase = behaviorOutDir(parityRoot, runId, 'compare', `${slug}_${bp.label}`);
-      const report: Record<string, unknown> = { path: pathNorm, breakpoint: bp.label, runId, crossSite, hitWp };
+      const report: Record<string, unknown> = {
+        path: pathNorm,
+        breakpoint: bp.label,
+        runId,
+        crossSite,
+        hitWp,
+        captured: false,
+      };
 
       const wpPage = await browser.newPage();
       const drPage = await browser.newPage();
@@ -102,86 +191,44 @@ for (const pathNorm of paths) {
       await prepareBehaviorPage(wpPage);
       await prepareBehaviorPage(drPage);
 
-      let wpSnap = null;
+      let wpSnap: WpSnap = null;
       if (hitWp) {
-        const target = wpUrl(pathNorm);
-        let lastErr: unknown;
-        for (let attempt = 0; attempt < 2 && !wpSnap; attempt += 1) {
-          try {
-            if (attempt > 0) {
-              await wpPage.waitForTimeout(1500);
-            }
-            await gotoWithBoundedSettle(wpPage, target, {
-              timeout: behaviorLite ? 75000 : 90000,
-              settleMs: behaviorLite ? 800 : 1200,
-            });
-            if (pathNorm === '/homepage' || pathNorm === '/') {
-              await wpPage.waitForSelector(WP_PROFILE.heroVideo, { timeout: 15000 }).catch(() => {});
-            }
-            await wpPage.waitForSelector(WP_PROFILE.selectors.navLink, { timeout: 12000 }).catch(() => {});
-            wpSnap = await captureSiteBehavior(wpPage, WP_PROFILE, bp);
-            report.wp = wpSnap;
-            if (pathNorm === '/homepage' || pathNorm === '/') {
-              await wpPage.screenshot({ path: path.join(outBase, 'wp-scroll.png'), fullPage: false });
-              for (const scrollY of [600, 2000]) {
-                await wpPage.evaluate((y) => window.scrollTo(0, y), scrollY);
-                await wpPage.waitForTimeout(450);
-                await wpPage.screenshot({
-                  path: path.join(outBase, `wp-header-scroll-${scrollY}.png`),
-                  fullPage: false,
-                });
-              }
-            }
-          } catch (e) {
-            lastErr = e;
-            report.wpError = String(e);
-          }
-        }
-        if (!wpSnap && lastErr) {
-          report.wpError = String(lastErr);
+        wpSnap = await loadWpSnapshot(wpPage, pathNorm, bp, report);
+        if (wpSnap && pathUsesChromeHeader(pathNorm)) {
+          await headerScrollScreenshots(wpPage, outBase, 'wp');
         }
       }
 
       const isHome = pathNorm === '/' || pathNorm === '/homepage';
 
       await gotoWithBoundedSettle(drPage, drupalUrl(pathNorm), {
-        timeout: 75000,
+        timeout: 90_000,
         settleMs: behaviorLite ? 600 : 1000,
       });
       const drSnap = await captureSiteBehavior(drPage, DRUPAL_PROFILE, bp);
       report.dr = drSnap;
       await drPage.screenshot({ path: path.join(outBase, 'drupal-scroll.png'), fullPage: false });
-      if (isHome) {
-        for (const scrollY of [600, 2000]) {
-          await drPage.evaluate((y) => window.scrollTo(0, y), scrollY);
-          await drPage.waitForTimeout(450);
-          await drPage.screenshot({
-            path: path.join(outBase, `drupal-header-scroll-${scrollY}.png`),
-            fullPage: false,
-          });
-        }
+      if (pathUsesChromeHeader(pathNorm)) {
+        await headerScrollScreenshots(drPage, outBase, 'drupal');
       }
 
       if (bp.label === 'mobile' && drSnap.mobileMenu?.opened) {
         await drPage.screenshot({ path: path.join(outBase, 'drupal-drawer-open.png'), fullPage: false });
       }
 
-      const isContent =
-        /\/\d{4}\/\d{2}\//.test(pathNorm) ||
-        pathNorm.includes('/in-brief') ||
-        pathNorm.includes('-issue');
-
       if (crossSite && wpSnap && drSnap && wpSnapshotReady(pathNorm, wpSnap)) {
         const cross = buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap);
         report.crossSite = cross;
+        report.captured = true;
+        globalStats.capturedCases += 1;
         if (!cross.match) globalStats.crossMismatches += 1;
         writeJson(path.join(outBase, 'wp-drupal-behavior-diff.json'), cross);
 
         recordAssertion(assertionLog, 'cross.diff.zero_mismatch_rows', cross.match);
-      } else if (crossSite && (!wpSnap || !wpSnapshotReady(pathNorm, wpSnap))) {
+      } else if (crossSite) {
+        globalStats.incompleteCases += 1;
         recordAssertion(assertionLog, 'cross.wp.snapshot', false);
       } else if (drSnap) {
-        // Drupal-only fallback (legacy gate).
         if (isHome) {
           recordAssertion(assertionLog, 'hero.video.found', !!drSnap.hero?.found);
           recordAssertion(assertionLog, 'hero.video.muted', drSnap.hero?.muted === true);
@@ -217,12 +264,14 @@ for (const pathNorm of paths) {
 
 test.afterAll(() => {
   const runDir = path.join(parityRoot, 'reports/behavior', runId);
+  const expectedCases = expectedBehaviorCaseCount(paths);
   writeJson(path.join(runDir, 'run-meta.json'), {
     runId,
     wpBase,
     drupalBase,
     baselineId: baselineId || null,
     paths,
+    expectedCases,
     crossSite,
     hitWp,
     assertionSummary: {
@@ -232,6 +281,8 @@ test.afterAll(() => {
       passRate: globalStats.assertions ? globalStats.passed / globalStats.assertions : 0,
     },
     crossSiteMismatchCases: globalStats.crossMismatches,
+    capturedCases: globalStats.capturedCases,
+    incompleteCases: globalStats.incompleteCases,
     note: 'Per-case wp-drupal-behavior-diff.json when crossSite; aggregate via npm run parity:behavior:report-diff',
   });
 });

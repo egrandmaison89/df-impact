@@ -492,6 +492,20 @@ function df_setup_issue_season_weight(string $season): int {
  * Returns the newest published issue node ID (year desc, season weight desc).
  */
 function df_setup_get_latest_issue_nid(): ?int {
+  $issues = df_setup_load_published_issues_sorted();
+  if ($issues === []) {
+    return NULL;
+  }
+  $best = reset($issues);
+  return $best instanceof NodeInterface ? (int) $best->id() : NULL;
+}
+
+/**
+ * Published issue nodes sorted newest first (year desc, season weight desc).
+ *
+ * @return \Drupal\node\NodeInterface[]
+ */
+function df_setup_load_published_issues_sorted(): array {
   $storage = \Drupal::entityTypeManager()->getStorage('node');
   $nids = $storage->getQuery()
     ->condition('type', 'issue')
@@ -499,23 +513,52 @@ function df_setup_get_latest_issue_nid(): ?int {
     ->accessCheck(FALSE)
     ->execute();
   if (!$nids) {
-    return NULL;
+    return [];
   }
   $nodes = $storage->loadMultiple($nids);
-  $best = NULL;
-  $bestYear = -1;
-  $bestSeason = -1;
+  $issues = [];
   foreach ($nodes as $node) {
-    if (!$node instanceof NodeInterface) {
-      continue;
-    }
-    $year = (int) ($node->get('field_year')->value ?? 0);
-    $season = df_setup_issue_season_weight((string) ($node->get('field_season')->value ?? ''));
-    if ($year > $bestYear || ($year === $bestYear && $season > $bestSeason)) {
-      $bestYear = $year;
-      $bestSeason = $season;
-      $best = $node;
+    if ($node instanceof NodeInterface) {
+      $issues[] = $node;
     }
   }
-  return $best instanceof NodeInterface ? (int) $best->id() : NULL;
+  usort($issues, static function (NodeInterface $a, NodeInterface $b): int {
+    $year_a = (int) ($a->get('field_year')->value ?? 0);
+    $year_b = (int) ($b->get('field_year')->value ?? 0);
+    if ($year_a !== $year_b) {
+      return $year_b <=> $year_a;
+    }
+    $season_a = df_setup_issue_season_weight((string) ($a->get('field_season')->value ?? ''));
+    $season_b = df_setup_issue_season_weight((string) ($b->get('field_season')->value ?? ''));
+    return $season_b <=> $season_a;
+  });
+  return $issues;
+}
+
+/**
+ * Header Issues dropdown links from published issues (newest first).
+ *
+ * @return array<int, array{title: string, url: string}>
+ */
+function df_setup_get_header_issue_links(int $limit = 4): array {
+  $links = [];
+  foreach (array_slice(df_setup_load_published_issues_sorted(), 0, $limit) as $issue) {
+    $links[] = [
+      'title' => df_setup_format_issue_nav_label($issue),
+      'url' => $issue->toUrl()->toString(),
+    ];
+  }
+  return $links;
+}
+
+/**
+ * Short issue label for navigation (e.g. "Fall 2026").
+ */
+function df_setup_format_issue_nav_label(NodeInterface $issue): string {
+  if (function_exists('df_impact_format_issue_label')) {
+    return (string) df_impact_format_issue_label($issue);
+  }
+  $season = ucfirst(trim((string) ($issue->get('field_season')->value ?? '')));
+  $year = trim((string) ($issue->get('field_year')->value ?? ''));
+  return trim($season . ' ' . $year);
 }

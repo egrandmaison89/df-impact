@@ -1,0 +1,11 @@
+administer df site settings:
+  title: 'Administer Impact site settings (header, footer, donate, logo)'
+  restrict access: true
+
+publish issue with articles:
+  title: 'Publish an issue and its attached articles together'
+  description: 'Allows publishing a magazine issue and all articles assigned to that issue in one step.'
+
+access editorial dashboard:
+  title: 'Access editorial dashboard'
+  description: 'View the moderated content dashboard intended for web editors.'

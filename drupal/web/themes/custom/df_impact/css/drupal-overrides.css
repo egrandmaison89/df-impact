@@ -19,9 +19,8 @@ body {
   margin: 0;
 }
 
-/* Mega flyout hover (Max Mega Menu). Sticky header comes from WP pack (`header { position: sticky }`). */
+/* Mega flyout hover (Max Mega Menu). Sticky header from WP pack (`header { position: sticky }`). */
 @media (min-width: 769px) {
-
   #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children:hover > ul.mega-sub-menu,
   #mega-menu-max_mega_menu_1 li.mega-menu-flyout.mega-menu-item-has-children:hover > ul.mega-sub-menu {
     display: block !important;
@@ -36,8 +35,30 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+/* Full viewport width on scroll (wp-chrome-behaviors toggles `.header--scrolled`, not `.scrolled`). */
+@media (min-width: 769px) {
+  .wp-site-blocks .desktop-header.alignfull.header--scrolled {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+  }
+}
+
 .gtranslate_wrapper select:not(.gt_selector) {
   display: none !important;
+}
+
+@media (min-width: 769px) {
+  .mobile-header .gtranslate_wrapper {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-header .gtranslate_wrapper {
+    display: none !important;
+  }
 }
 
 /*
@@ -109,9 +130,8 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
 }
 
 /*
- * WP blockmag applies -outer margins to every .alignfull under .wp-site-blocks.
- * Header chrome nests several .wp-block-group.alignfull; only .desktop-header
- * should bleed once (Mac pack: 1440px wide at 1440 viewport, not 1584px).
+ * Header chrome: cancel .wp-site-blocks outer padding on .desktop-header / .mobile-header (blockmag alignfull).
+ * Drop nested alignfull side-padding so logo/donate sit at 15px inset like live WP.
  */
 @media (min-width: 769px) {
   .wp-site-blocks .desktop-header.alignfull {
@@ -119,22 +139,81 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
     margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
     width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
     max-width: none;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     box-sizing: border-box;
   }
 
-  .wp-site-blocks .desktop-header .alignfull,
-  .wp-site-blocks .desktop-header .impact-header.alignfull {
+  .wp-site-blocks .desktop-header.alignfull .impact-header.alignfull,
+  .wp-site-blocks .desktop-header.alignfull .is-content-justification-space-between.alignfull {
     margin-left: 0 !important;
     margin-right: 0 !important;
-    width: auto;
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
   }
 
-  .wp-site-blocks .mobile-header.alignfull {
-    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
-    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
-    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
-    max-width: none;
+  .wp-site-blocks .desktop-header .left-side-header,
+  .wp-site-blocks .desktop-header .right-side-header {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
+}
+
+@media (max-width: 768px) {
+  .wp-site-blocks .mobile-header.alignfull {
+    margin-left: -20px !important;
+    margin-right: -20px !important;
+    width: calc(100% + 40px) !important;
+    max-width: none;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .wp-site-blocks .mobile-header.alignfull .impact-header.alignfull,
+  .wp-site-blocks .mobile-header.alignfull .is-content-justification-space-between.alignfull {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .wp-site-blocks .mobile-header .left-side-header,
+  .wp-site-blocks .mobile-header .right-side-header {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* Article singular title band — match WP line breaks (main y parity). */
+.wp-block-group.alignfull.is-content-justification-center h1.wp-block-post-title.alignwide {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 1.38;
+  word-break: break-word;
+}
+
+@media only screen and (max-width: 860px) {
+  .wp-block-group.alignfull.is-content-justification-center h1.wp-block-post-title.alignwide {
+    font-size: 28px;
+  }
+}
+
+/* Social Snap share icons — WP hover/focus parity (inline block). */
+.ss-inline-share-wrapper .ss-social-icons-container a:hover .ss-network-icon svg,
+.ss-inline-share-wrapper .ss-social-icons-container a:focus-visible .ss-network-icon svg {
+  opacity: 0.85;
 }
 
 .visually-hidden {

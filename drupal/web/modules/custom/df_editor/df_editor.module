@@ -1,0 +1,114 @@
+<?php
+
+/**
+ * @file
+ * Editor roles, site chrome, and issue publishing workflow.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeForm;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter() for issue edit forms.
+ */
+function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  $entity = $form_object->getEntity();
+  if (!$entity instanceof NodeInterface || $entity->bundle() !== 'issue') {
+    return;
+  }
+
+  if (isset($form['field_hero_video'])) {
+    $form['field_hero_video']['#description'] = (string) t('Ambient MP4 for the homepage cover video when this issue is the newest published issue. Autoplay, muted, loop—same behavior as WordPress.');
+    $form['field_hero_video']['#weight'] = 20;
+  }
+  if (isset($form['field_hero_poster'])) {
+    $form['field_hero_poster']['#description'] = (string) t('Poster image shown while the homepage hero video loads (cover image).');
+    $form['field_hero_poster']['#weight'] = 21;
+  }
+  if (isset($form['field_hero_heading'])) {
+    $form['field_hero_heading']['#description'] = (string) t('Large heading over the homepage hero video. Only shown when this issue is the current featured issue on the homepage.');
+    $form['field_hero_heading']['#weight'] = 22;
+  }
+
+  $group = [
+    '#type' => 'details',
+    '#title' => t('Homepage hero (site admins)'),
+    '#open' => TRUE,
+    '#weight' => 15,
+  ];
+  foreach (['field_hero_video', 'field_hero_poster', 'field_hero_heading'] as $field_name) {
+    if (isset($form[$field_name])) {
+      $group[$field_name] = $form[$field_name];
+      unset($form[$field_name]);
+    }
+  }
+  if (isset($group['field_hero_video']) || isset($group['field_hero_poster']) || isset($group['field_hero_heading'])) {
+    $form['df_homepage_hero'] = $group;
+    if (!\Drupal::currentUser()->hasPermission('administer df site settings')) {
+      $form['df_homepage_hero']['#access'] = FALSE;
+    }
+  }
+
+  if (\Drupal::currentUser()->hasPermission('publish issue with articles')) {
+    $form['df_publish_issue_bundle'] = [
+      '#type' => 'submit',
+      '#value' => t('Publish issue and all attached articles'),
+      '#weight' => 101,
+      '#submit' => ['df_editor_issue_publish_bundle_submit'],
+      '#limit_validation_errors' => [],
+    ];
+  }
+
+  if (isset($form['publish_on'])) {
+    $form['publish_on']['#description'] = (string) t('Optional: schedule this issue to go live automatically (requires Scheduler).');
+    $form['publish_on']['#weight'] = 99;
+  }
+}
+
+/**
+ * Submit handler: publish issue and attached articles.
+ */
+function df_editor_issue_publish_bundle_submit(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  $issue = $form_object->getEntity();
+  if (!$issue instanceof NodeInterface) {
+    return;
+  }
+  /** @var \Drupal\df_editor\IssuePublisher $publisher */
+  $publisher = \Drupal::service('df_editor.issue_publisher');
+  $articles = $publisher->publishIssueWithArticles($issue);
+  \Drupal::messenger()->addStatus(t('Published issue @issue and @count article(s).', [
+    '@issue' => $issue->label(),
+    '@count' => count($articles),
+  ]));
+  $form_state->setRedirect('entity.node.canonical', ['node' => $issue->id()]);
+}
+
+/**
+ * Implements hook_node_update().
+ *
+ * When an issue is first published via moderation, attach-publish its articles.
+ */
+function df_editor_node_update(NodeInterface $node): void {
+  if ($node->bundle() !== 'issue' || !$node->isPublished()) {
+    return;
+  }
+  $original = $node->original ?? NULL;
+  if (!$original instanceof NodeInterface || $original->isPublished()) {
+    return;
+  }
+  if (!\Drupal::currentUser()->hasPermission('publish issue with articles')) {
+    return;
+  }
+  \Drupal::service('df_editor.issue_publisher')->publishAttachedArticles($node);
+}

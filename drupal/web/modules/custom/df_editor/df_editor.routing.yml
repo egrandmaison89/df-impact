@@ -1,0 +1,15 @@
+df_editor.site_settings:
+  path: '/admin/config/df-impact/site-settings'
+  defaults:
+    _form: '\Drupal\df_editor\Form\SiteSettingsForm'
+    _title: 'Impact site settings'
+  requirements:
+    _permission: 'administer df site settings'
+
+df_editor.footer_settings:
+  path: '/admin/config/df-impact/footer-settings'
+  defaults:
+    _form: '\Drupal\df_editor\Form\FooterSettingsForm'
+    _title: 'Impact footer settings'
+  requirements:
+    _permission: 'administer df site settings'

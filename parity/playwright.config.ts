@@ -21,9 +21,11 @@ export default defineConfig({
     {
       name: 'behavior',
       testMatch: '**/behavior-parity.spec.ts',
+      timeout: 420_000,
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1440, height: 900 },
+        navigationTimeout: 180_000,
         video: process.env.PARITY_BEHAVIOR_VIDEO === '1' ? 'on' : 'off',
       },
     },

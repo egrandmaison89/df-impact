@@ -1,0 +1,51 @@
+uuid: 8b2c3d4e-5f60-7890-bcde-f01122334455
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.article
+    - node.type.in_brief
+    - node.type.issue
+    - workflows.workflow.editorial
+  module:
+    - coffee
+    - content_moderation
+    - df_editor
+    - media
+    - node
+    - scheduler
+    - system
+    - taxonomy
+    - toolbar
+id: web_editor
+label: 'Web editor'
+weight: 7
+is_admin: false
+permissions:
+  - 'access coffee'
+  - 'access content'
+  - 'access content overview'
+  - 'access editorial dashboard'
+  - 'access media overview'
+  - 'access toolbar'
+  - 'create article content'
+  - 'create in_brief content'
+  - 'create issue content'
+  - 'create media'
+  - 'create terms in topics'
+  - 'edit any article content'
+  - 'edit any in_brief content'
+  - 'edit any issue content'
+  - 'edit own article content'
+  - 'edit own in_brief content'
+  - 'edit own issue content'
+  - 'publish issue with articles'
+  - 'schedule publishing of nodes'
+  - 'update any media'
+  - 'use editorial transition create_new_draft'
+  - 'use editorial transition publish'
+  - 'use editorial transition submit_for_review'
+  - 'view any unpublished content'
+  - 'view latest version'
+  - 'view scheduled content'
+  - 'view the administration theme'

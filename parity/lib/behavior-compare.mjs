@@ -277,12 +277,33 @@ export function buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap) {
     drSnap.headerBeforeScroll,
     drSnap.headerAfterScroll,
   );
-  sections.headerLayout600 = isHome
+  const chromeHeader =
+    (wpSnap.headerScrollDepths?.y600?.found || drSnap.headerScrollDepths?.y600?.found) &&
+    (wpSnap.headerBeforeScroll?.found || drSnap.headerBeforeScroll?.found);
+  sections.headerLayout600 = chromeHeader
     ? compareHeaderLayoutBox(wpSnap.headerScrollDepths?.y600, drSnap.headerScrollDepths?.y600)
     : { ok: true, diffs: [] };
-  sections.headerLayout2000 = isHome
+  sections.headerLayout2000 = chromeHeader
     ? compareHeaderLayoutBox(wpSnap.headerScrollDepths?.y2000, drSnap.headerScrollDepths?.y2000)
     : { ok: true, diffs: [] };
+  sections.pagerHover = optionalHoverCompare(
+    wpSnap.pagerDefault,
+    wpSnap.pagerHover,
+    drSnap.pagerDefault,
+    drSnap.pagerHover,
+  );
+  sections.categoryLinkHover = optionalHoverCompare(
+    wpSnap.categoryDefault,
+    wpSnap.categoryHover,
+    drSnap.categoryDefault,
+    drSnap.categoryHover,
+  );
+  sections.inBriefButtonHover = optionalHoverCompare(
+    wpSnap.inBriefButtonDefault,
+    wpSnap.inBriefButtonHover,
+    drSnap.inBriefButtonDefault,
+    drSnap.inBriefButtonHover,
+  );
   sections.reveal = compareReveal(wpSnap.reveal, drSnap.reveal);
   sections.widgets = compareWidgets(wpSnap.widgets, drSnap.widgets);
   sections.cardHover = compareHoverStyles(wpSnap.cardDefault, wpSnap.cardHover, drSnap.cardDefault, drSnap.cardHover);

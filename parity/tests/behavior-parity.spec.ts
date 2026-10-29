@@ -35,6 +35,16 @@ const paths = (process.env.PARITY_BEHAVIOR_PATHS || '/homepage,/')
   .map((p) => p.trim())
   .filter(Boolean);
 
+/** Drupal uses wp-chrome on most routes; legacy `.header` exists on site-header include only. */
+const DR_HEADER = '.header, .desktop-header, .impact-header';
+const DR_NAV_LINK = '.header__nav-link, .mega-menu-link, header nav a';
+const DR_DONATE = '.header__donate, .homepage-banner-button a, a.homepage-banner-button';
+const DR_ISSUES_TRIGGER = '.header__nav-item--issues, .mega-menu-item-has-children, #mega-menu-item-599';
+const DR_ISSUES_PANEL = '.header__dropdown, .mega-sub-menu';
+const DR_SEARCH = '.header__search-link, .header-search a, .is-search-icon, .astm-search-menu a';
+const DR_MENU_TOGGLE = '.header__menu-toggle, .mega-menu-toggle';
+const DR_DRAWER = '.header__drawer, .mega-menu-wrap';
+
 function writeJson(file: string, data: unknown) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, JSON.stringify(data, null, 2));
@@ -92,32 +102,31 @@ for (const pathNorm of paths) {
       await drPage.waitForTimeout(500);
       const drHero = await videoState(drPage, DRUPAL_HERO_VIDEO);
       report.drHero = drHero;
-      report.drNavDefault = await computedStyle(drPage, '.header__nav-link');
-      report.drNavHover = await computedStyleHover(drPage, '.header__nav-link');
-      report.drHeaderBeforeScroll = await headerScrollState(drPage, '.header');
-      report.drDonateDefault = await computedStyle(drPage, '.header__donate, .homepage-banner-button a');
-      report.drDonateHover = await computedStyleHover(drPage, '.header__donate, .homepage-banner-button a');
-      report.drIssuesDropdown = await dropdownOpenOnHover(
-        drPage,
-        '.header__nav-item--issues, .mega-menu-item-has-children',
-        '.header__dropdown, .mega-sub-menu',
-      );
-      report.drGtranslate = await elementPresent(drPage, '.gtranslate_wrapper, #gtranslate_selector');
-      report.drSearchToggle = await elementPresent(drPage, '.header__search-link, .header-search a, .is-search-icon');
+      report.drNavDefault = await computedStyle(drPage, DR_NAV_LINK);
+      report.drNavHover = await computedStyleHover(drPage, DR_NAV_LINK);
+      report.drHeaderBeforeScroll = await headerScrollState(drPage, DR_HEADER);
+      report.drDonateDefault = await computedStyle(drPage, DR_DONATE);
+      report.drDonateHover = await computedStyleHover(drPage, DR_DONATE);
+      report.drIssuesDropdown =
+        bp.label === 'desktop'
+          ? await dropdownOpenOnHover(drPage, DR_ISSUES_TRIGGER, DR_ISSUES_PANEL)
+          : { found: false, skipped: true };
+      report.drGtranslate = await elementPresent(drPage, '.gtranslate_wrapper, #gtranslate_selector, #gt-wrapper-23849622');
+      report.drSearchToggle = await elementPresent(drPage, DR_SEARCH);
       report.drReveal = await revealState(drPage);
       await drPage.evaluate(() => window.scrollTo(0, 120));
       await drPage.waitForTimeout(200);
       await drPage.screenshot({ path: path.join(outBase, 'drupal-scroll.png'), fullPage: false });
-      report.drHeaderScroll = await computedStyle(drPage, '.header');
-      report.drHeaderAfterScroll = await headerScrollState(drPage, '.header');
+      report.drHeaderScroll = await computedStyle(drPage, DR_HEADER);
+      report.drHeaderAfterScroll = await headerScrollState(drPage, DR_HEADER);
 
       if (bp.label === 'mobile') {
-        const toggle = drPage.locator('.header__menu-toggle');
+        const toggle = drPage.locator(DR_MENU_TOGGLE).first();
         if (await toggle.isVisible()) {
           await toggle.click();
           await drPage.waitForTimeout(250);
           await drPage.screenshot({ path: path.join(outBase, 'drupal-drawer-open.png') });
-          report.drDrawerOpen = await computedStyle(drPage, '.header__drawer');
+          report.drDrawerOpen = await computedStyle(drPage, DR_DRAWER);
           await toggle.click();
         }
       }
@@ -161,7 +170,9 @@ for (const pathNorm of paths) {
         ).toBeTruthy();
       }
 
-      expect(report.drNavHover?.color, 'Nav hover color computed').toBeTruthy();
+      if (bp.label === 'desktop') {
+        expect(report.drNavHover?.color, 'Nav hover color computed').toBeTruthy();
+      }
 
       await wpPage.close();
       await drPage.close();

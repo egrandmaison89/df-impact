@@ -26,6 +26,11 @@
 <html{{ html_attributes }}>
   <head>
     <head-placeholder token="{{ placeholder_token }}">
+    {% if head_title.title %}
+    <title>{{ head_title.title }}</title>
+    {% elseif head_title %}
+    <title>{{ head_title|safe_join(' - ') }}</title>
+    {% endif %}
     <css-placeholder token="{{ placeholder_token }}">
     <js-placeholder token="{{ placeholder_token }}">
     {% if df_site_snippets_header %}

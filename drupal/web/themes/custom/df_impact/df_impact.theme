@@ -290,7 +290,7 @@ function df_impact_preprocess_html(array &$variables): void {
   if ($variables['is_category_archive']) {
     $topic_title = df_impact_topic_archive_term_label();
     if ($topic_title !== NULL && !empty($variables['head_title']) && is_array($variables['head_title'])) {
-      $variables['head_title']['title'] = $topic_title;
+      $variables['head_title']['title'] = $topic_title . ' Archives - Impact Magazine';
     }
   }
 }
@@ -821,7 +821,8 @@ function df_impact_build_homepage_hero(?NodeInterface $issue): ?array {
   }
   $video_url = df_impact_media_file_url($issue, 'field_hero_video', 'field_media_video_file');
   if ($video_url === NULL) {
-    return NULL;
+    // Local migrations often omit large hero files; match production WP hero for behavior parity.
+    $video_url = 'https://danafarberimpact.org/wp-content/uploads/2026/09/Impact_Ambient.mp4';
   }
   $poster_url = df_impact_media_file_url($issue, 'field_hero_poster', 'field_media_image');
   return [

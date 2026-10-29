@@ -162,7 +162,7 @@ HTML;
     }
   }
 
-  $node->set('path', ['alias' => '/about', 'pathauto' => $pathauto_skip]);
+  $node->set('path', ['alias' => '/about-impact', 'pathauto' => $pathauto_skip]);
   if ($node->hasField('moderation_state')) {
     $node->set('moderation_state', 'published');
   }

@@ -87,6 +87,12 @@ export async function extractMeta(page) {
       ogDescription: pick('meta[property="og:description"]'),
       ogImage: pick('meta[property="og:image"]'),
       canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href') || '',
+      jsonLd: (() => {
+        const el =
+          document.querySelector('script[type="application/ld+json"].yoast-schema-graph') ||
+          document.querySelector('script[type="application/ld+json"]');
+        return el?.textContent?.trim() || '';
+      })(),
     };
   });
 }

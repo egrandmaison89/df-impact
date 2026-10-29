@@ -4,6 +4,18 @@
 (function ($, Drupal) {
   'use strict';
 
+  function applyReducedMotionHeroVideos() {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    $('.homepage-banner video, .wp-block-cover__video-background').each(function () {
+      var video = this;
+      if (reduced) {
+        video.pause();
+        video.removeAttribute('autoplay');
+        video.currentTime = 0;
+      }
+    });
+  }
+
   function initMegaMenu($root) {
     $root.find('.mega-menu').each(function () {
       var $menu = $(this);
@@ -20,6 +32,14 @@
       initMegaMenu($context);
       if (context === document) {
         initMegaMenu($(document));
+        applyReducedMotionHeroVideos();
+        var motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (motionQuery.addEventListener) {
+          motionQuery.addEventListener('change', applyReducedMotionHeroVideos);
+        }
+        else if (motionQuery.addListener) {
+          motionQuery.addListener(applyReducedMotionHeroVideos);
+        }
       }
 
       $(window)

@@ -32,6 +32,7 @@ parity/reports/head-meta/
 parity/reports/computed-style-diff/
 parity/reports/behavior/
 parity/reports/progress/
+!parity/reports/progress/**/STATUS.md
 parity/reports/editor-e2e/
 parity/reports/playwright-results.json
 parity/reports/vm-integrator-before/

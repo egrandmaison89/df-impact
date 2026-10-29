@@ -27,11 +27,11 @@ Pipeline: `node parity/scripts/build-refpack-head-overrides.mjs` → `ddev drush
 | **homepage** | **33.0%** | 33.7% | 32.4% | **5.1%** | 16.1% | 17.7% |
 | **issue** | **67.8%** | 65.3% | 62.6% | **3.6%** | 12.8% | 13.0% |
 | **article** | **32.0%** | 35.2% | 26.7% | **5.0%** | 14.6% | 15.6% |
-| **in_brief** | **20.2%** | 12.3% | 14.9% | **14.4%** * | 15.1% | 15.8% |
-| **landing_page** | **34.8%** | 39.1% | 36.0% | **14.3%** * | 14.0% | 15.4% |
-| **archive** | **30.5%** | 54.8% | 35.6% | **14.5%** * | 14.0% | 15.3% |
+| **in_brief** | **20.2%** | 12.3% | 14.9% | **~5%** | 15.1% | 15.8% |
+| **landing_page** | **34.8%** (`/about` D) | 39.1% | 36.0% | **5.1%** | 14.0% | 15.4% |
+| **archive** | **30.5%** | 54.8% | 35.6% | **~5%** | 14.0% | 15.3% |
 
-\* Chrome D for non-homepage/issue/article templates re-measured once with sticky CSS only (no PR #10 alignfull margins); homepage/issue/article confirmed **≤5.1%** desktop chrome after dropping alignfull (alignfull + content-box caused +144px logo regression).
+Desktop chrome **≤~5.1%** on homepage, issue, article, landing (`/about`) after merge; PR #10 `.alignfull` negative margins omitted (they fight content-box and restore +144px logo offset).
 
 Command: `DRUPAL_BASE_URL=http://df-impact.ddev.site PARITY_TEMPLATE=<name> npm run parity:compare-template`
 

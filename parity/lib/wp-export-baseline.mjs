@@ -96,20 +96,20 @@ function archiveExportHtmlForPath(publicPath) {
   const page = pageMatch ? Number(pageMatch[2]) : 1;
   const perPage = 10;
 
-  if (basePath === '/topics') {
-    const topics = loadJson('topics.json')
-      .filter((t) => !t.is_parent && t.name)
-      .map((t) => ({ title: t.name, body: '' }));
-    return wrapArchiveListingHtml('Topics', topics, { titlesOnly: true });
-  }
-
-  if (basePath === '/stories') {
+  if (basePath === '/issues' || basePath === '/stories') {
     const posts = getArticles()
       .filter((a) => a.status === 'published')
       .sort((a, b) => String(b.created || '').localeCompare(String(a.created || '')));
-    // Match Drupal stories archive volume (full first page listing).
-    const slice = page === 1 ? posts.slice(0, 94) : posts.slice((page - 1) * perPage, page * perPage);
-    return wrapArchiveListingHtml('Stories Archive', slice, { titlesOnly: true });
+    const slice = posts.slice((page - 1) * perPage, page * perPage);
+    return wrapArchiveListingHtml('Stories Archive', slice);
+  }
+
+  if (basePath === '/topics') {
+    const topics = loadJson('topics.json')
+      .filter((t) => !t.is_parent && t.name)
+      .map((t) => ({ title: t.name, body: '' }))
+      .sort((a, b) => a.title.localeCompare(b.title));
+    return wrapArchiveListingHtml('Topics', topics, { titlesOnly: true });
   }
 
   const catMatch = basePath.match(/^\/category\/([^/]+)$/i);

@@ -6,11 +6,15 @@ export const REF_PACK_SLUG_OVERRIDES = {
   '/digital-exclusives': 'category_digital-exclusives',
   '/home': 'homepage',
   '/tag/digital-exclusives': 'category_digital-exclusives',
+  '/stories': 'issues',
 };
 
 /** Strip pagination suffix so page 2+ can reuse page-1 ref-pack HTML. */
 export function baselinePathForFrozen(publicPath) {
   const normalized = normalizePath(publicPath);
+  if (/^\/(?:category|tag)\//.test(normalized)) {
+    return normalized;
+  }
   return normalized.replace(/\/page\/\d+$/i, '');
 }
 
@@ -33,6 +37,14 @@ export function pathToPackSlug(p) {
 }
 
 export function frozenWpHtmlPath(packRoot, publicPath) {
+  const normalized = normalizePath(publicPath);
+  const overrideSlug = REF_PACK_SLUG_OVERRIDES[normalized];
+  if (overrideSlug) {
+    const overrideFile = path.join(packRoot, overrideSlug, 'desktop', 'rendered.html');
+    if (fs.existsSync(overrideFile)) {
+      return overrideFile;
+    }
+  }
   const basePath = baselinePathForFrozen(publicPath);
   const slug = pathToPackSlug(basePath);
   const file = path.join(packRoot, slug, 'desktop', 'rendered.html');

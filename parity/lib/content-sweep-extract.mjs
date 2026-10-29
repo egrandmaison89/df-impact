@@ -67,7 +67,9 @@ function pickRoot($) {
   if (query.length && query.find('.wp-block-post, li.wp-block-post').length >= 2) {
     return query;
   }
-  const aboutBody = $('.about-impact-page__body, .page-node__body').first();
+  const aboutBody = $(
+    '.about-impact-page .entry-content, .about-impact-page__body, .page-node__body',
+  ).first();
   if (aboutBody.length && (aboutBody.text() || '').replace(/\s+/g, ' ').trim().length > 80) {
     return aboutBody;
   }
@@ -110,6 +112,10 @@ function cloneRoot($, root) {
   REMOVE_SELECTORS.forEach((sel) => {
     clone.find(sel).remove();
   });
+  clone.find(
+    '.wp-block-post-excerpt__more-text, .wp-block-post-excerpt__more-link, a.more-link',
+  ).remove();
+  clone.find('.wp-block-query-title, h1.category-header, h1.wp-block-query-title').remove();
   clone.find('.is-collapsed, [hidden], [aria-hidden="true"]').remove();
   stripIssueDeckParagraphs($, clone);
   clone.find('.wp-block-post-terms, .byline, .article__byline').remove();

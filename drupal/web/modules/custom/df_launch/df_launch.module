@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * @file
+ * WordPress analytics / consent tag parity for production launch.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Render\Markup;
+
+/**
+ * Implements hook_page_attachments().
+ */
+function df_launch_page_attachments(array &$attachments): void {
+  $config = \Drupal::config('df_launch.settings');
+  if (!$config->get('enabled')) {
+    return;
+  }
+  if (\Drupal::service('router.admin_context')->isAdminRoute()) {
+    return;
+  }
+
+  $onetrust_url = (string) $config->get('onetrust_stub_url');
+  $domain_script = (string) $config->get('onetrust_domain_script');
+  if ($onetrust_url !== '' && $domain_script !== '') {
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#attributes' => [
+          'src' => $onetrust_url,
+          'type' => 'text/javascript',
+          'charset' => 'UTF-8',
+          'data-domain-script' => $domain_script,
+        ],
+      ],
+      'df_launch_onetrust',
+    ];
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#value' => Markup::create("function OptanonWrapper() {}\n"),
+        '#attributes' => ['type' => 'text/javascript'],
+      ],
+      'df_launch_onetrust_wrapper',
+    ];
+  }
+
+  $launch = (string) $config->get('adobe_launch_url');
+  if ($launch !== '') {
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#attributes' => [
+          'src' => $launch,
+          'async' => TRUE,
+        ],
+      ],
+      'df_launch_adobe',
+    ];
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#value' => Markup::create(df_launch_adobe_page_context_js()),
+        '#attributes' => ['type' => 'text/javascript'],
+      ],
+      'df_launch_adobe_context',
+    ];
+  }
+
+  $pixel_id = (string) $config->get('facebook_pixel_id');
+  if ($pixel_id !== '') {
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#value' => Markup::create(df_launch_facebook_pixel_js($pixel_id)),
+        '#attributes' => ['type' => 'text/javascript'],
+      ],
+      'df_launch_fb_pixel',
+    ];
+  }
+
+  if ($config->get('bing_uet_enabled')) {
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#attributes' => [
+          'src' => 'https://bat.bing.com/bat.js',
+          'async' => TRUE,
+        ],
+      ],
+      'df_launch_bing_uet',
+    ];
+  }
+
+  $blog_id = (string) $config->get('jetpack_stats_blog_id');
+  if ($blog_id !== '') {
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#value' => Markup::create("window._wpStats = window._wpStats || { blog_id: " . json_encode($blog_id) . " };\n"),
+        '#attributes' => ['type' => 'text/javascript'],
+      ],
+      'df_launch_jetpack_stats',
+    ];
+  }
+}
+
+/**
+ * Adobe CJA page context (reference-pack homepage head).
+ */
+function df_launch_adobe_page_context_js(): string {
+  return <<<'JS'
+let pagePath = document.location.pathname;
+if (pagePath === "/homepage/" || pagePath === "/homepage") {
+  pagePath = "Home";
+}
+const pathSegments = window.location.pathname.split('/').filter(segment => segment !== '');
+let siteSection = '/' + (document.location.pathname.split('/')[1] || '') + '/';
+if (siteSection === "/homepage/" || siteSection === "/home/") {
+  siteSection = "Home";
+}
+window.danaFarberImpactPageContext = { pagePath, siteSection, pathSegments };
+JS;
+}
+
+/**
+ * Meta Pixel bootstrap (matches connect.facebook.net/fbevents.js pattern).
+ */
+function df_launch_facebook_pixel_js(string $pixel_id): string {
+  $id = json_encode($pixel_id);
+  return <<<JS
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', {$id});
+fbq('track', 'PageView');
+JS;
+}

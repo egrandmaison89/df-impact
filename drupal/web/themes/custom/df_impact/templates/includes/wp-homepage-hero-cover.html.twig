@@ -8,7 +8,7 @@
   {% endif %}
   {% if video_url %}
     {# WP hero video has no poster attribute; cover img handles still frame for parity captures. #}
-    <video class="wp-block-cover__video-background intrinsic-ignore" autoplay muted loop playsinline src="{{ video_url }}" data-object-fit="cover"></video>
+    <video class="wp-block-cover__video-background intrinsic-ignore" autoplay muted loop playsinline preload="metadata" src="{{ video_url }}" data-object-fit="cover"></video>
   {% endif %}
   <span aria-hidden="true" class="wp-block-cover__background has-background-dim-0 has-background-dim" style="background-color:#FFF"></span>
   <div class="wp-block-cover__inner-container is-layout-flow wp-block-cover-is-layout-flow">

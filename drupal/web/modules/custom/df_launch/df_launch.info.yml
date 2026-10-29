@@ -1,0 +1,7 @@
+name: 'DF launch readiness'
+type: module
+description: 'Production analytics and tag parity with WordPress (Adobe Launch, OneTrust, Meta pixel).'
+core_version_requirement: ^10 || ^11
+package: 'DF Impact'
+dependencies:
+  - drupal:system

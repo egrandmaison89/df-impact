@@ -1,0 +1,25 @@
+df_launch.settings:
+  type: config_object
+  label: 'DF launch settings'
+  mapping:
+    enabled:
+      type: boolean
+      label: 'Enable production tags'
+    adobe_launch_url:
+      type: string
+      label: 'Adobe Launch script URL'
+    onetrust_stub_url:
+      type: string
+      label: 'OneTrust stub script URL'
+    onetrust_domain_script:
+      type: string
+      label: 'OneTrust domain script ID'
+    facebook_pixel_id:
+      type: string
+      label: 'Meta (Facebook) pixel ID'
+    bing_uet_enabled:
+      type: boolean
+      label: 'Load Bing UET (bat.js)'
+    jetpack_stats_blog_id:
+      type: string
+      label: 'WordPress.com stats blog ID (parity pixel)'

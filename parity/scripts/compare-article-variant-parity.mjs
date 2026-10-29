@@ -88,6 +88,11 @@ async function probeComponents(page, variant) {
         if (h === 0 && inlineH) {
           h = Math.round(parseFloat(inlineH[1]));
         }
+        // Offline WP fixtures: external src may not decode; trust WP inline dimensions.
+        if (el.naturalWidth === 0 && inlineW && inlineH && (h < 80 || w < 200)) {
+          w = Math.round(parseFloat(inlineW[1]));
+          h = Math.round(parseFloat(inlineH[1]));
+        }
         if (w > 0 && h === 0 && el.naturalWidth > 0 && el.naturalHeight > 0) {
           h = Math.round(w * (el.naturalHeight / el.naturalWidth));
         }
@@ -223,6 +228,8 @@ for (const variant of VARIANT_KEYS.map((v) => v.trim()).filter(Boolean)) {
               'main .article__body figure.wp-block-image:first-of-type img',
               'main .entry-content .wp-block-image.alignright img',
               'main .article__body .wp-block-image.alignright img',
+              'main .entry-content.wp-block-post-content > figure.wp-block-image.alignright.is-resized img',
+              'main .article__body.wp-block-post-content > figure.wp-block-image.alignright.is-resized img',
             ];
             const imgs = selectors
               .map((sel) => document.querySelector(sel))

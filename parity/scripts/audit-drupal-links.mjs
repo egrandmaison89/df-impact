@@ -18,9 +18,19 @@ function loadInventoryPaths() {
   if (process.env.AUDIT_PATHS) {
     return process.env.AUDIT_PATHS.split(',').map((p) => p.trim()).filter(Boolean);
   }
-  const invFile =
-    process.env.URL_PARITY_REPORT ||
-    path.join(parityRoot, 'reports', 'url-parity', 'check-1793239889622.json');
+  let invFile = process.env.URL_PARITY_REPORT;
+  if (!invFile) {
+    const dir = path.join(parityRoot, 'reports', 'url-parity');
+    const candidates = fs
+      .readdirSync(dir)
+      .filter((f) => f.startsWith('check-') && f.endsWith('.json'))
+      .map((f) => ({ f, m: fs.statSync(path.join(dir, f)).mtimeMs }))
+      .sort((a, b) => b.m - a.m);
+    invFile = candidates.length ? path.join(dir, candidates[0].f) : '';
+  }
+  if (!invFile || !fs.existsSync(invFile)) {
+    throw new Error(`URL parity report missing (set URL_PARITY_REPORT or run parity:url:check)`);
+  }
   const inv = JSON.parse(fs.readFileSync(invFile, 'utf8'));
   return inv.results.filter((r) => r.drupal?.ok).map((r) => r.path);
 }
@@ -40,7 +50,7 @@ function extractHrefs(html, pageUrl) {
       continue;
     }
     if (href.startsWith('//')) href = `https:${href}`;
-    else if (href.startsWith('/')) href = new URL(href, pageUrl).href;
+    else if (href.startsWith('/') || href.startsWith('?')) href = new URL(href, pageUrl).href;
     hrefs.push(href.split('#')[0]);
   }
   return hrefs;

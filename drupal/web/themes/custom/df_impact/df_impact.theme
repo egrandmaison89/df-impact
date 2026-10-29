@@ -1346,6 +1346,15 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
  * PostX card URL with article export fallback when wp-images lacks uploads mapping.
  */
 function df_impact_card_image_url_for_parity_node(NodeInterface $node, string $uri): string {
+  $file_system = \Drupal::service('file_system');
+  $resolved = df_impact_resolve_wp_images_uri($uri) ?? $uri;
+  $real = $file_system->realpath($resolved);
+  if (is_string($real) && is_readable($real) && filesize($real) >= 512) {
+    $info = @getimagesize($real);
+    if (is_array($info) && !empty($info[0])) {
+      return df_impact_card_image_url_for_parity($resolved);
+    }
+  }
   $photon = df_impact_wp_i0_postx_card_url($uri);
   if ($photon !== NULL && df_impact_wp_uploads_path_from_uri($uri) !== NULL) {
     return $photon;
@@ -1431,9 +1440,14 @@ function df_impact_card_image_url_for_parity_from_src(string $src): string {
     return $src;
   }
   if (preg_match('#/wp-content/uploads/(.+)$#', $src, $m)) {
+    $file_system = \Drupal::service('file_system');
     $uri = 'public://wp-content/uploads/' . $m[1];
-    if (\Drupal::service('file_system')->realpath($uri)) {
+    if ($file_system->realpath($uri)) {
       return df_impact_card_image_url_for_parity($uri);
+    }
+    $wp_images = df_impact_resolve_wp_images_uri('public://wp-images/' . basename($m[1]));
+    if (is_string($wp_images) && $file_system->realpath($wp_images)) {
+      return df_impact_card_image_url_for_parity($wp_images);
     }
   }
   return $src;

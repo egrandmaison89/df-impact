@@ -273,7 +273,7 @@ function df_article_featured_is_direct_image_url(string $url): bool {
   if (preg_match('#i\d*\.wp\.com/.+/wp-content/uploads/#i', $url)) {
     return TRUE;
   }
-  return (bool) preg_match('#\.(jpe?g|png|gif|webp|avif)(\?|#|$)#i', $url);
+  return (bool) preg_match('~\.(jpe?g|png|gif|webp|avif)(\?|#|$)~i', $url);
 }
 
 /**

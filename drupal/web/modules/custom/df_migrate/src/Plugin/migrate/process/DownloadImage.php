@@ -62,6 +62,7 @@ class DownloadImage extends ProcessPluginBase {
       return static::$fileCache[$url];
     }
 
+    $fs = \Drupal::service('file_system');
     $uri = static::urlToUri($url);
     $existing = \Drupal::entityQuery('file')
       ->condition('uri', $uri)
@@ -70,11 +71,20 @@ class DownloadImage extends ProcessPluginBase {
 
     if (!empty($existing)) {
       $fid = (int) reset($existing);
-      static::$fileCache[$url] = $fid;
-      return $fid;
+      /** @var \Drupal\file\FileInterface|null $existing_file */
+      $existing_file = \Drupal::entityTypeManager()->getStorage('file')->load($fid);
+      if ($existing_file instanceof FileInterface) {
+        $real = $fs->realpath($existing_file->getFileUri());
+        $size = is_string($real) && is_readable($real) ? filesize($real) : FALSE;
+        $info = is_string($real) && is_readable($real) ? @getimagesize($real) : FALSE;
+        if ($size !== FALSE && $size >= 512 && is_array($info) && !empty($info[0])) {
+          static::$fileCache[$url] = $fid;
+          return $fid;
+        }
+        $existing_file->delete();
+      }
     }
 
-    $fs = \Drupal::service('file_system');
     $local_path = $fs->realpath($uri);
     if (is_string($local_path) && is_readable($local_path) && filesize($local_path) > 256) {
       $file_data = file_get_contents($local_path);

@@ -82,6 +82,12 @@ foreach ($nids as $nid) {
   echo "Fetch: $wp_url\n";
   $html = df_issue_page_http_get($wp_url);
   if ($html === '') {
+    $html = df_issue_page_reference_pack_html($issue);
+    if ($html !== '') {
+      echo "  Using reference-pack HTML fallback.\n";
+    }
+  }
+  if ($html === '') {
     fwrite(STDERR, "  Failed to fetch.\n");
     $errors++;
     continue;
@@ -148,7 +154,9 @@ foreach ($nids as $nid) {
         fwrite(STDERR, "  Promo target not article/page: $href → {$promo_node->bundle()}\n");
         continue;
       }
-      $promo_nids[] = $mapped;
+      if (!in_array($mapped, $promo_nids, TRUE)) {
+        $promo_nids[] = $mapped;
+      }
       if (count($promo_nids) >= 2) {
         break;
       }
@@ -215,6 +223,32 @@ function df_issue_page_wordpress_url(NodeInterface $issue): string {
   return WP_HOST . '/' . $slug . '-issue/';
 }
 
+function df_issue_page_reference_pack_html(NodeInterface $issue): string {
+  $pack_roots = [
+    dirname(DRUPAL_ROOT, 2) . '/parity/reference-pack',
+    DRUPAL_ROOT . '/../../parity/reference-pack',
+    '/workspace/parity/reference-pack',
+    '/var/www/parity/reference-pack',
+  ];
+  $slug = df_issue_page_wordpress_url($issue);
+  if ($slug === '') {
+    return '';
+  }
+  $path = (string) (parse_url($slug, PHP_URL_PATH) ?? '');
+  $pack_slug = trim($path, '/');
+  if ($pack_slug === '') {
+    return '';
+  }
+  foreach ($pack_roots as $root) {
+    $file = rtrim($root, '/') . '/' . str_replace('/', '_', $pack_slug) . '/desktop/rendered.html';
+    if (is_readable($file)) {
+      $body = file_get_contents($file);
+      return is_string($body) ? $body : '';
+    }
+  }
+  return '';
+}
+
 function df_issue_page_http_get(string $url): string {
   $ctx = stream_context_create([
     'http' => [
@@ -260,11 +294,16 @@ function df_issue_page_parse_banner_url(DOMXPath $xpath): string {
 function df_issue_page_parse_promo_article_urls(DOMXPath $xpath): array {
   $blocks = $xpath->query("//div[contains(@class,'ultp-post-grid-block')]");
   $target = NULL;
+  if ($blocks->length >= 2) {
+    /** @var DOMElement|null $second */
+    $second = $blocks->item(1);
+    $target = $second instanceof DOMElement ? $second : NULL;
+  }
   for ($i = 0; $i < $blocks->length; $i++) {
     /** @var DOMElement $block */
     $block = $blocks->item($i);
     $class = $block->getAttribute('class');
-    if (str_contains($class, 'ultp-block-42b646')) {
+    if (str_contains($class, 'ultp-block-dd35a6') || str_contains($class, 'ultp-block-42b646') || str_contains($class, 'ultp-block-407e0b')) {
       $target = $block;
       break;
     }
@@ -279,9 +318,31 @@ function df_issue_page_parse_promo_article_urls(DOMXPath $xpath): array {
   }
   $hrefs = [];
   $seen = [];
-  $anchors = $xpath->query(".//div[contains(@class,'ultp-block-item')]//h2//a/@href", $target);
-  for ($j = 0; $j < $anchors->length; $j++) {
-    $href = trim(html_entity_decode((string) $anchors->item($j)->nodeValue, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+  $items = $xpath->query(".//div[contains(@class,'ultp-block-item')]", $target);
+  for ($j = 0; $j < $items->length; $j++) {
+    /** @var DOMElement $item */
+    $item = $items->item($j);
+    if (!$item instanceof DOMElement) {
+      continue;
+    }
+    $class = $item->getAttribute('class');
+    if (preg_match('/post-id-(\d+)/', $class, $m)) {
+      $wp_id = (int) $m[1];
+      $mapped = df_issue_page_wp_post_id_to_node_id($wp_id);
+      if ($mapped !== NULL) {
+        $node = \Drupal::entityTypeManager()->getStorage('node')->load($mapped);
+        if ($node instanceof NodeInterface) {
+          $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $mapped);
+          $hrefs[] = 'https://danafarberimpact.org' . $alias;
+          continue;
+        }
+      }
+    }
+    $anchors = $xpath->query('.//h2//a/@href', $item);
+    if ($anchors->length === 0) {
+      continue;
+    }
+    $href = trim(html_entity_decode((string) $anchors->item(0)->nodeValue, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
     if ($href === '') {
       continue;
     }
@@ -296,6 +357,20 @@ function df_issue_page_parse_promo_article_urls(DOMXPath $xpath): array {
     $hrefs[] = $href;
   }
   return $hrefs;
+}
+
+function df_issue_page_wp_post_id_to_node_id(int $wp_id): ?int {
+  static $map = NULL;
+  if ($map === NULL) {
+    $map = [];
+    $rows = \Drupal::database()->select('migrate_map_df_articles', 'm')
+      ->fields('m', ['sourceid1', 'destid1'])
+      ->execute();
+    foreach ($rows as $row) {
+      $map[(int) $row->sourceid1] = (int) $row->destid1;
+    }
+  }
+  return $map[$wp_id] ?? NULL;
 }
 
 function df_issue_page_wp_url_to_node_id(string $wp_url): ?int {

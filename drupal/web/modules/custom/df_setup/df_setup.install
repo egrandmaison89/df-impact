@@ -994,3 +994,29 @@ function df_setup_update_10026(): string {
   $term->save();
   return 'Created Pediatrics topic term (tid ' . $term->id() . ').';
 }
+
+/**
+ * Issue landing: PostX NULLS-LAST sort, promo exclusions, WP backfills.
+ */
+function df_setup_update_10027(): string {
+  $parts = [];
+  foreach ([
+    'backfill_postx_sort_weights.php',
+    'backfill_issue_page_from_wordpress.php',
+  ] as $script_name) {
+    $script = __DIR__ . '/../df_migrate/scripts/' . $script_name;
+    if (!is_readable($script)) {
+      $parts[] = "$script_name missing";
+      continue;
+    }
+    try {
+      require $script;
+      $parts[] = "$script_name ok";
+    }
+    catch (\Throwable $e) {
+      $parts[] = "$script_name failed: " . $e->getMessage();
+    }
+  }
+  drupal_flush_all_caches();
+  return implode('; ', $parts);
+}

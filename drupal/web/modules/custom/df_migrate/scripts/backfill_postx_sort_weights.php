@@ -51,27 +51,31 @@ function df_postx_nid_for_wp_id(int $wp_id): ?int {
 }
 
 /**
+ * Main “In This Issue” PostX grid only (excludes promo grid below In Brief).
+ */
+function df_postx_issue_main_grid_html(string $html): string {
+  $parts = preg_split('/<div class="ultp-post-grid-block/s', $html, 3);
+  if (is_array($parts) && count($parts) >= 2) {
+    return $parts[1];
+  }
+  return $html;
+}
+
+/**
  * @return list<int>
  */
 function df_postx_parse_grid_post_ids(string $html): array {
   if (!preg_match_all('/ultp-block-item post-id-(\d+)/', $html, $m)) {
     return [];
   }
-  $ids = array_map('intval', $m[1]);
-  // First grid on issue pages is the main listing; stop at promo grid if repeated.
-  $seen = [];
-  $out = [];
-  foreach ($ids as $id) {
-    if (isset($seen[$id])) {
-      break;
-    }
-    $seen[$id] = TRUE;
-    $out[] = $id;
-    if (count($out) >= 10) {
-      break;
-    }
-  }
-  return $out;
+  return array_values(array_unique(array_map('intval', $m[1])));
+}
+
+/**
+ * @return list<int>
+ */
+function df_postx_parse_issue_main_grid_post_ids(string $html): array {
+  return df_postx_parse_grid_post_ids(df_postx_issue_main_grid_html($html));
 }
 
 /**
@@ -123,7 +127,7 @@ if (is_readable($issues_json)) {
       if ($html === '') {
         continue;
       }
-      $wp_ids = df_postx_parse_grid_post_ids($html);
+      $wp_ids = df_postx_parse_issue_main_grid_post_ids($html);
       foreach ($wp_ids as $index => $wp_id) {
         $nid = df_postx_nid_for_wp_id($wp_id);
         if ($nid === NULL) {

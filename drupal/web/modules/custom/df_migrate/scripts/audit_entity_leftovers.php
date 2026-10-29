@@ -48,4 +48,6 @@ foreach ($tables as $table => $columns) {
 }
 
 echo json_encode($report, JSON_PRETTY_PRINT) . "\n";
-exit($report['total'] === 0 ? 0 : 1);
+if ($report['total'] > 0) {
+  exit(1);
+}

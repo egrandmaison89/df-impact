@@ -303,7 +303,8 @@ function df_impact_preprocess_page(&$variables) {
   $variables['wp_home_url'] = str_ends_with($front, '/') ? $front : $front . '/';
   $request = \Drupal::request();
   $origin = $request->getSchemeAndHttpHost() . $request->getBasePath();
-  $variables['wp_uploads_base'] = rtrim($origin, '/') . '/wp-content/uploads/';
+  // Migrated media lives under public://wp-images (not WP uploads path segments).
+  $variables['wp_uploads_base'] = rtrim($origin, '/') . '/sites/default/files/wp-images/';
   $theme_path = \Drupal::service('extension.list.theme')->getPath('df_impact');
   $variables['wp_logo_url'] = '/' . $theme_path . '/wp-assets/ImpactDFJF_HeaderLogo_878.png';
   $logo_abs = rtrim($origin, '/') . $variables['wp_logo_url'];
@@ -432,6 +433,8 @@ function df_impact_preprocess_node(&$variables) {
     $banner = df_impact_issue_banner_meta($node);
     $variables['issue_banner_url'] = $banner['url'] ?? NULL;
     $variables['issue_banner_alt'] = $banner['alt'] ?? $node->label();
+    $variables['issue_banner_width'] = $banner['width'] ?? 1024;
+    $variables['issue_banner_height'] = $banner['height'] ?? 396;
     $variables['issue_promo_cards'] = [];
     $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
     foreach (['field_leadership_message', 'field_issue_promo_2'] as $field_name) {
@@ -490,6 +493,7 @@ function df_impact_preprocess_node(&$variables) {
         if (isset($variables['content']['body'])) {
           $variables['content']['body']['#access'] = FALSE;
         }
+        $stripped = df_impact_article_add_drop_cap_class($stripped);
         $variables['article_body'] = [
           '#type' => 'processed_text',
           '#text' => $stripped,
@@ -743,6 +747,20 @@ function df_impact_preprocess_homepage_article_card_fields(array &$variables): v
  *
  * @return array{url: string, alt: string}|null
  */
+function df_impact_issue_banner_image_url(string $uri): string {
+  $vendored = df_impact_wp_vendored_derivative_url($uri, '1024x396');
+  if ($vendored) {
+    return $vendored;
+  }
+  foreach (['wp_issue_banner_1024x396', 'issue_banner'] as $style_id) {
+    $style = \Drupal::entityTypeManager()->getStorage('image_style')->load($style_id);
+    if ($style) {
+      return $style->buildUrl($uri);
+    }
+  }
+  return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+}
+
 function df_impact_issue_banner_meta(NodeInterface $node): ?array {
   foreach (['field_banner_image', 'field_cover_image'] as $field_name) {
     if (!$node->hasField($field_name) || $node->get($field_name)->isEmpty()) {
@@ -757,8 +775,10 @@ function df_impact_issue_banner_meta(NodeInterface $node): ?array {
           $alt = $node->label();
         }
         return [
-          'url' => \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri()),
+          'url' => df_impact_issue_banner_image_url($file->getFileUri()),
           'alt' => $alt,
+          'width' => 1024,
+          'height' => 396,
         ];
       }
     }
@@ -772,6 +792,22 @@ function df_impact_issue_banner_meta(NodeInterface $node): ?array {
 function df_impact_article_strip_leading_wp_image_block(string $body): string {
   $stripped = preg_replace('/\s*<!-- wp:image\b.*?<!-- \/wp:image -->\s*/s', '', $body, 1);
   return is_string($stripped) ? $stripped : $body;
+}
+
+/**
+ * Adds WP has-drop-cap to the first paragraph (matches Gutenberg dropCap blocks).
+ */
+function df_impact_article_add_drop_cap_class(string $html): string {
+  if (preg_match('/\bhas-drop-cap\b/', $html)) {
+    return $html;
+  }
+  $updated = preg_replace(
+    '/<p(\s[^>]*)?>/',
+    '<p class="has-drop-cap wp-block-paragraph"$1>',
+    $html,
+    1,
+  );
+  return is_string($updated) ? $updated : $html;
 }
 
 /**

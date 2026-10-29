@@ -7,12 +7,12 @@
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.12545877144401202,
-    "viewport_median_mac_desktop": 0.710662037037037,
-    "chrome_median_tablet": 0.16710153849539122,
-    "viewport_median_mac_tablet": 0.6112543402777778,
+    "chrome_median_desktop": 0.1252006732586421,
+    "viewport_median_mac_desktop": 0.6558248456790123,
+    "chrome_median_tablet": 0.16607261054656236,
+    "viewport_median_mac_tablet": 0.5312369791666667,
     "chrome_median_mobile": 0.1902622811895044,
-    "viewport_median_mac_mobile": 0.5320207407407408
+    "viewport_median_mac_mobile": 0.4532577777777778
   },
   "summary": [
     {
@@ -20,8 +20,8 @@
       "bp": "desktop",
       "pixelDiffRatio": 0.6009876543209877,
       "headerPixelDiffRatio": 0.04164336316181954,
-      "footerPixelDiffRatio": 0.07740541003252868,
-      "chromePixelDiffRatio": 0.059524386597174114,
+      "footerPixelDiffRatio": 0.20824178698472484,
+      "chromePixelDiffRatio": 0.1249425750732722,
       "viewportPixelDiffRatioMac": 0.6009876543209877
     },
     {
@@ -29,8 +29,8 @@
       "bp": "tablet",
       "pixelDiffRatio": 0.45121961805555555,
       "headerPixelDiffRatio": 0.21513688917975568,
-      "footerPixelDiffRatio": 0.11906618781102679,
-      "chromePixelDiffRatio": 0.16710153849539122,
+      "footerPixelDiffRatio": 0.11495047601571136,
+      "chromePixelDiffRatio": 0.16504368259773353,
       "viewportPixelDiffRatioMac": 0.45121961805555555
     },
     {

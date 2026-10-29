@@ -784,12 +784,14 @@
   border-radius: var(--border-radius);
 }
 
-.article__body .wp-block-image.is-resized[style*="width"] {
+.article__body .wp-block-image.is-resized[style*="width"],
+.entry-content.wp-block-post-content > figure.wp-block-image.is-resized[style*="width"] {
   max-width: none;
   width: auto;
 }
 
-.article__body .wp-block-image.is-resized img {
+.article__body .wp-block-image.is-resized img,
+.entry-content.wp-block-post-content > figure.wp-block-image.is-resized img {
   width: auto;
   max-width: 100%;
   height: auto;
@@ -856,7 +858,9 @@
 }
 
 .article__body .wp-block-image.alignright.is-resized,
-.article__body .wp-block-image.alignleft.is-resized {
+.article__body .wp-block-image.alignleft.is-resized,
+.entry-content.wp-block-post-content > figure.wp-block-image.alignright.is-resized,
+.entry-content.wp-block-post-content > figure.wp-block-image.alignleft.is-resized {
   max-width: none;
 }
 

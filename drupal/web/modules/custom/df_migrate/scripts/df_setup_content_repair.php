@@ -5,6 +5,9 @@
  * Idempotent repair: internal links, inline images, broken featured media.
  *
  * Used by df_setup post_update (drush updb). Safe to re-run.
+ *
+ * Link repair uses ArticleBodyCleaner::rewriteInternalLinksInHtml() only so
+ * converge / late-fall post_updates are not undone in any execution order.
  */
 
 declare(strict_types=1);
@@ -12,25 +15,22 @@ declare(strict_types=1);
 use Drupal\df_migrate\InlineImageHtmlProcessor;
 use Drupal\df_setup\ArticleBodyCleaner;
 use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 
 /**
  * Runs link rewrite, image localization, and featured-image repair.
  *
  * @return array<string, int|string>
  */
-function df_setup_content_repair_run(): array {
+function df_setup_content_repair_run(bool $repair_featured = TRUE): array {
   /** @var \Drupal\df_setup\ArticleBodyCleaner $cleaner */
   $cleaner = \Drupal::service('df_setup.article_body_cleaner');
 
   require_once __DIR__ . '/backfill_article_featured_images_from_wordpress.inc';
 
   $fieldMap = [
-    ['bundle' => 'article', 'field' => 'body', 'format' => 'full_html', 'featured' => TRUE],
-    ['bundle' => 'in_brief', 'field' => 'field_summary', 'format' => 'full_html', 'featured' => FALSE],
-    ['bundle' => 'page', 'field' => 'body', 'format' => 'full_html', 'featured' => FALSE],
-    ['bundle' => 'issue', 'field' => 'field_description', 'format' => 'full_html', 'featured' => FALSE],
-    ['bundle' => 'issue', 'field' => 'field_leadership_message', 'format' => 'full_html', 'featured' => FALSE],
-    ['bundle' => 'issue', 'field' => 'field_issue_promo_2', 'format' => 'full_html', 'featured' => FALSE],
+    ['bundle' => 'article', 'field' => 'body', 'format' => 'full_html'],
+    ['bundle' => 'in_brief', 'field' => 'field_summary', 'format' => 'full_html'],
   ];
 
   $links_updated = 0;
@@ -48,9 +48,7 @@ function df_setup_content_repair_run(): array {
       $fields_scanned++;
       $original = (string) $node->get($map['field'])->value;
       $format = (string) ($node->get($map['field'])->format ?? $map['format']);
-      $featuredUrl = !empty($map['featured']) ? $cleaner->getFeaturedAbsoluteUrl($node) : NULL;
-      $result = $cleaner->cleanArticleHtml($original, $featuredUrl);
-      $normalized = $result['html'];
+      $normalized = $cleaner->rewriteInternalLinksInHtml($original);
       if (trim($normalized) !== trim($original)) {
         $node->set($map['field'], ['value' => $normalized, 'format' => $format]);
         $node->save();
@@ -91,27 +89,9 @@ function df_setup_content_repair_run(): array {
     }
   }
 
-  $featured = df_migrate_repair_invalid_article_featured_images();
-
-  $lead_resync = 0;
-  foreach (Node::loadMultiple($storage->getQuery()->condition('type', 'article')->accessCheck(FALSE)->execute()) as $node) {
-    if (!$node->hasField('body') || $node->get('body')->isEmpty()) {
-      continue;
-    }
-    $featuredUrl = $cleaner->getFeaturedAbsoluteUrl($node);
-    if ($featuredUrl === NULL) {
-      continue;
-    }
-    $original = (string) $node->get('body')->value;
-    $result = $cleaner->cleanArticleHtml($original, $featuredUrl);
-    if (trim($result['html']) !== trim($original)) {
-      $node->set('body', [
-        'value' => $result['html'],
-        'format' => $node->get('body')->format ?? 'full_html',
-      ]);
-      $node->save();
-      $lead_resync++;
-    }
+  $featured = ['scanned' => 0, 'updated' => 0, 'cleared' => 0, 'failed' => 0];
+  if ($repair_featured) {
+    $featured = df_migrate_repair_invalid_article_featured_images();
   }
 
   drupal_flush_all_caches();
@@ -125,6 +105,10 @@ function df_setup_content_repair_run(): array {
     'featured_updated' => $featured['updated'],
     'featured_cleared' => $featured['cleared'],
     'featured_failed' => $featured['failed'],
-    'lead_body_resync' => $lead_resync,
+    'lead_body_resync' => 0,
   ];
+}
+
+if (PHP_SAPI === 'cli' && !empty($_SERVER['SCRIPT_FILENAME']) && realpath((string) $_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
+  echo json_encode(df_setup_content_repair_run(), JSON_PRETTY_PRINT) . "\n";
 }

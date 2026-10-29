@@ -377,6 +377,13 @@ function df_migrate_repair_invalid_article_featured_images(): array {
       continue;
     }
 
+    $current_mid = $node->get('field_featured_image')->isEmpty()
+      ? NULL
+      : (int) $node->get('field_featured_image')->target_id;
+    if ($current_mid === (int) $mid) {
+      continue;
+    }
+
     $node->set('field_featured_image', ['target_id' => $mid]);
     try {
       $node->save();

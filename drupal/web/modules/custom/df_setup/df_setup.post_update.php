@@ -20,6 +20,18 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 
 /**
+ * Ensures df_secondary is enabled so /search matches WP (update_10034 on fresh VMs).
+ */
+function df_setup_post_update_ensure_df_secondary_search(): string {
+  if (\Drupal::moduleHandler()->moduleExists('df_secondary')) {
+    return 'df_secondary already enabled.';
+  }
+  \Drupal::service('module_installer')->install(['df_secondary']);
+  drupal_flush_all_caches();
+  return 'Enabled df_secondary for /search parity.';
+}
+
+/**
  * Publishes Home and sets page.front when 10035 ran before moderation fix.
  */
 function df_setup_post_update_ensure_home_landing_published(): string {

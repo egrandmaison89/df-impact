@@ -42,9 +42,10 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 9. **#31** whole — Eric QA (share / pagination / In Brief / tablet spacing) — **owns** the single **main/footer inset** block in `drupal-overrides.css` — **rebase after #30**; dedupe In Brief **Photography by…** credit overlap with #30 — when agent ready (green gate table)
 10. **#28** whole — article variants — **rebase after #31**; drop duplicate main/footer inset CSS — when agent ready
 11. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
-12. **#33** — not ready (agent will report)
 
-**Next:** **#31 → #28 → #10 → #33** (whole merge once each only when that PR’s agent reports ready with a **green gate table**).
+**Next:** **#31 → #28 → #10** only (whole merge when that PR’s agent reports ready with a **green gate table**). **Integrator stays idle between merges** — no speculative work.
+
+**#33 dropped** (agent stopped; cost cut). **Do not merge #33.** Optional later (**Eric must ask first**, after **#31**): cherry-pick three small pieces from PR #33 only — (1) digital exclusives **GivingTuesday-first** order + refreshed refpack, (2) **`/digital-exclusives` 404** + baseline, (3) idempotent **About** body. Until then, no #33 work.
 
 **Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`), **#35** (`caf402c2` + integrator gate follow-up), **#30** (`4f8ca897`).
 

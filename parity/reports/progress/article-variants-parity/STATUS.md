@@ -1,58 +1,51 @@
-# Article variants + search + 404 parity
+# Article variant parity (PR #24)
 
-Branch: `cursor/article-variants-parity-185b` → base `cursor/phase4-chrome-behavior-0b67`.
+Branch: `cursor/article-variants-parity-185b` → `cursor/phase4-chrome-behavior-0b67`.
 
-## Search (`/?s=` → `/search`)
+## Harness
 
-| Query | WP fixture / live | Drupal `/search?s=` | Structure pass |
-| --- | --- | --- | --- |
-| `cancer` | 10 `wp-block-post` rows, H1 “Search Results”, pager | 10 rows, excerpts, pager | yes |
-| `jimmy` | 10 rows | 10 rows | yes |
-| `fund` | 10 rows | 10 rows | yes |
-| `zzznomatch99` | 0 rows, empty query main | 0 rows, empty main | yes |
+- Fixtures: `parity/cache/wp-article-variants/` (12 HTML files, 16 sample paths — some variants share paths).
+- Fetch: `npm run parity:article-variants:fetch-wp`
+- Compare: `REPORT_TAG=before|final npm run parity:article-variants:compare`
+- Reports: `variant-parity-*.json` in this directory.
 
-Fixes: internal rewrite `/search` → Search API view (`search-legacy` route); Better Search–style templates (`wp-block-post-template`, column cards, `bsearch_highlight`); re-import `views.view.df_impact_search` so exposed fulltext filter applies; WP HTML fixtures under `parity/cache/wp-search/`.
+## Gates (VM `DRUPAL_BASE_URL=http://127.0.0.1:8888`)
 
-Harness: `npm run parity:search:fetch-wp`, `npm run parity:search:compare` → `search-parity-*.json`.
+| Gate | Result |
+| --- | --- |
+| `parity:template-samples:http` | **19/19** (`check-1793271415984.json`) |
+| `parity:article-variants:compare` | **16/16** (`variant-parity-final-1793271407166.json`) |
+| `parity:search:compare` | 4/4 (see search JSON in this folder) |
 
-## 404
+Home 404 fix: `df_setup_update_10028` / `_df_setup_ensure_home_landing()` ensures a **Home** page and sets `system.site:page.front` to `/node/{nid}` (VM: `/node/1`, alias `/homepage`).
 
-Drupal `page--404.html.twig` matches WP copy (“Page not found”, search prompt). Hide duplicate Drupal page-title block on `system.404`.
+## Per-variant scores (2 samples × 8 layout variants)
 
-## Article / In Brief variants (759 published nodes, 10 variant keys)
+Text threshold 98%. Component probes: hero lead figure, sidebar alignright, pull quote, gallery, video iframe, custom Stackable blocks. **Before** = pre-fix run (`variant-parity-after2-1793265574824.json`, 7/16 pass). **After** = `variant-parity-final-1793271407166.json`, 16/16 pass).
 
-Classification: `variant-classification.json` (`npm run parity:article-variants:classify`).
+| Variant | Sample path | Text before | Text after | Component mismatches before | Component mismatches after | Fixes |
+| --- | --- | ---: | ---: | --- | --- | --- |
+| hero | `/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980` | 99.74% | 100% | lead_figure rect/style | — | `article__body`, lead figure CSS (`is-resized` max-width), fixture `setContent` base URL, probe fallbacks for offline WP images |
+| hero | `/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk` | 97.35% | 100% | lead_figure rect/style | — | Article byline **Photography by** line; same hero CSS/probes |
+| no_hero | `/2023/01/boston-red-sox-jimmy-fund-award` | 94.64% | 100% | — | — | In Brief full **body** + manifest photo credit in byline |
+| no_hero | `/2023/01/breast-cancer-alliance` | 100% | 100% | — | — | — |
+| sidebar | `/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980` | 99.74% | 100% | alignright rect/style | — | Alignright `is-resized` sizing (same as hero) |
+| sidebar | `/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk` | 97.35% | 100% | — | — | Photo credit in article byline |
+| pull_quote | `/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980` | 99.74% | 100% | — | — | Pull quote block CSS in `components.css` |
+| pull_quote | `/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials` | 100% | 100% | — | — | — |
+| gallery | `/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk` | 97.35% | 100% | — | — | Text parity via credits + body; gallery selector unchanged |
+| gallery | `/2022/11/dana-farber-marathon-challenge-raises-nearly-7-million-in-support-of-claudia-adams-barr-program-investigators` | 97.78% | 100% | — | — | Photo credit / body parity |
+| video_embed | `/2023/01/dana-farber-joins-with-parker-institute-for-cancer-immunotherapy-to-accelerate-cures-for-the-worlds-gravest-cancers` | 100% | 100% | — | — | — |
+| video_embed | `/2023/09/advancing-equity-tops-agenda-at-womens-leadership-breakfast` | 97.17% | 100% | — | — | Photo credit in byline |
+| long_form | `/2022/11/richard-and-susan-smith-family-receives-institutes-highest-honor-the-sidney-farber-medical-research-award` | 99.31% | 100% | — | — | — |
+| long_form | `/2024/09/campaign-leadership-spurs-innovation-and-progress-at-dana-farber` | 99.35% | 100% | — | — | — |
+| custom_blocks | `/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th` | 98.63% | 100% | — | — | Stackable CSS library; exclude Jetpack related posts from text extract |
+| custom_blocks | `/2025/03/another-ace-year-for-jimmy-fund-golf` | 97.65% | 100% | — | — | Related-post chrome stripped from `extractMainText` |
 
-| Variant | Count | Sample paths (2 each) |
-| --- | ---: | --- |
-| hero | 436 | `/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980`, `/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk` |
-| no_hero | 323 | `/2023/01/boston-red-sox-jimmy-fund-award`, `/2023/01/breast-cancer-alliance` |
-| sidebar | 433 | same as hero samples (alignright / column patterns) |
-| pull_quote | 32 | `/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials`, … |
-| gallery | 32 | `/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk`, … |
-| video_embed | 15 | `/2023/01/dana-farber-joins-with-parker-institute-for-cancer-immunotherapy-to-accelerate-cures-for-the-worlds-gravest-cancers`, … |
-| long_form | 2 | `/2022/11/richard-and-susan-smith-family-receives-institutes-highest-honor-the-sidney-farber-medical-research-award`, `/2024/09/campaign-leadership-spurs-innovation-and-progress-at-dana-farber` |
-| custom_blocks | 4 | `/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th`, `/2025/03/another-ace-year-for-jimmy-fund-golf` |
-| year_2022_2023 | 176 | (see JSON) |
-| year_2024_2026 | 583 | (see JSON) |
+## Code touched (summary)
 
-### Sample scores (after this branch)
-
-Template article paths (text vs live WP, desktop):
-
-| Path | Text (before*) | Text (after) | Notes |
-| --- | --- | --- | --- |
-| `/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials` | ~0.98 ref | ≥0.98 | pull_quote + hero |
-| `/2026/09/american-association-for-cancer-research-2` | in_brief parity | ≥0.98 | in_brief full |
-| `/2024/09/wheeling-in-the-years-the-pan-mass-challenge-produces-origin-story-video` | video embed | ≥0.98 | video embed |
-
-\*Before: Mac/ref-pack baseline from templates-inbrief-archives STATUS; after: live WP text harness (`sample-text-parity` / variant samples).
-
-Run full variant sweep: `npm run parity:article-variants:samples` (live WP; long).
-
-## Gates (`DRUPAL_BASE_URL=http://127.0.0.1:8888`)
-
-| Gate | Result | Artifact |
-| --- | --- | --- |
-| `parity:smoke:200` | pass (0×5xx) | `smoke-179326487*.json` |
-| `parity:template-samples:http` | 17/19 ( `/`, `/homepage` 404 — missing node/795 in VM DB; not introduced by this branch) | `check-1793264872464.json` |
+- **Templates:** `node--article--full.html.twig` (photo credit, `article__body`), `node--in-brief--full.html.twig` (body + credits).
+- **Theme:** `df_impact.theme` — in-brief byline/photo credit from migrate manifest.
+- **CSS:** `components.css` — Gutenberg pull quote, gallery, floats, `is-resized` lead/sidebar widths.
+- **Setup:** `df_setup_update_10028` — Home landing for template-samples `/` and `/homepage`.
+- **Parity:** `fetch-wp-article-variant-fixtures.mjs`, `compare-article-variant-parity.mjs`, `article-variant-components.json`, `content-region.mjs` (drop related-post text from compare).

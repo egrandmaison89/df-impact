@@ -998,6 +998,17 @@ function df_setup_update_10026(): string {
 /**
  * Search parity: enable df_secondary and point Search API view away from core /search.
  */
+/**
+ * Ensures Home landing exists when page.front points at a missing nid (local VM drift).
+ */
+function df_setup_update_10028(): string {
+  _df_setup_ensure_home_landing();
+  return 'Home landing verified; page.front set to /node/NID for Home page.';
+}
+
+/**
+ * Search parity: enable df_secondary and point Search API view away from core /search.
+ */
 function df_setup_update_10027(): string {
   $messages = [];
   /** @var \Drupal\Core\Extension\ModuleInstallerInterface $installer */

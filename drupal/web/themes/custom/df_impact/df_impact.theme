@@ -553,7 +553,11 @@ function df_impact_preprocess_node(&$variables) {
     $variables['in_brief_image_url'] = $image['url'] ?? NULL;
     $variables['in_brief_image_alt'] = $image['alt'] ?? $node->label();
     $variables['in_brief_excerpt'] = df_impact_in_brief_plain_excerpt($node);
-    $variables['in_brief_byline'] = df_impact_in_brief_byline($node);
+    $variables['in_brief_byline'] = ArticleCreditLabels::formatByline(df_impact_in_brief_byline($node));
+    $in_brief_row = df_impact_in_brief_manifest_row($node);
+    $variables['in_brief_photo_credit_display'] = !empty($in_brief_row['photo_credit'])
+      ? ArticleCreditLabels::formatPhotoCredit((string) $in_brief_row['photo_credit'])
+      : '';
     $variables['in_brief_listing_excerpt'] = df_impact_in_brief_listing_excerpt($node);
     $variables['in_brief_issue_url'] = NULL;
     $variables['in_brief_issue_label'] = NULL;

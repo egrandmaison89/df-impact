@@ -7,7 +7,7 @@
 <article{{ attributes.addClass('wp-singular', 'in-brief-post', 'post') }}>
 
   <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
-    <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+    <div class="entry-content article__body alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
 
       {% if in_brief_image_url %}
         <figure class="wp-block-image alignleft size-large is-resized no-caption-image">
@@ -16,12 +16,14 @@
       {% endif %}
 
       {% if in_brief_issue_url %}
-        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500"><a href="{{ in_brief_issue_url }}">{{ in_brief_issue_label }}</a>{% if in_brief_byline %}<br>By {{ in_brief_byline }}{% endif %}</p>
-      {% elseif in_brief_byline %}
-        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">By {{ in_brief_byline }}</p>
+        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500"><a href="{{ in_brief_issue_url }}">{{ in_brief_issue_label }}</a>{% if in_brief_byline %}<br>{{ in_brief_byline }}{% endif %}{% if in_brief_photo_credit_display %}<br>{{ in_brief_photo_credit_display }}{% endif %}</p>
+      {% elseif in_brief_byline or in_brief_photo_credit_display %}
+        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">{% if in_brief_byline %}{{ in_brief_byline }}{% endif %}{% if in_brief_photo_credit_display %}{% if in_brief_byline %}<br>{% endif %}{{ in_brief_photo_credit_display }}{% endif %}</p>
       {% endif %}
 
-      {% if in_brief_listing_excerpt %}
+      {% if content.body|render|trim %}
+        {{ content.body }}
+      {% elseif in_brief_listing_excerpt %}
         <p class="has-drop-cap wp-block-paragraph">{{ in_brief_listing_excerpt }}</p>
       {% endif %}
     </div>

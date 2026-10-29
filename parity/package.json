@@ -37,6 +37,8 @@
     "parity:search:compare": "node scripts/compare-search-parity.mjs",
     "parity:article-variants:classify": "cd ../drupal && ./vendor/bin/drush php:script web/modules/custom/df_migrate/scripts/classify_article_variants.php",
     "parity:article-variants:samples": "node scripts/run-article-variant-samples.mjs",
+    "parity:article-variants:fetch-wp": "node scripts/fetch-wp-article-variant-fixtures.mjs",
+    "parity:article-variants:compare": "node scripts/compare-article-variant-parity.mjs",
     "parity:header-chrome": "node scripts/compare-header-chrome.mjs",
     "parity:computed-style-diff:serial": "PARITY_SERIAL=1 node scripts/computed-style-diff.mjs",
     "parity:full": "PARITY_SAMPLE=0 node scripts/run-parity.mjs",

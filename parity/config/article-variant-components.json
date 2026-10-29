@@ -1,0 +1,35 @@
+{
+  "hero": [
+    {
+      "id": "lead_figure",
+      "selector": "main .entry-content.wp-block-post-content > figure.wp-block-image.size-large.is-resized:not(.header-logo) img, main .article__body.wp-block-post-content > figure.wp-block-image.size-large.is-resized img"
+    }
+  ],
+  "no_hero": [],
+  "sidebar": [
+    {
+      "id": "alignright",
+      "selector": "main .entry-content.wp-block-post-content > figure.wp-block-image.alignright.is-resized img, main .article__body.wp-block-post-content > figure.wp-block-image.alignright.is-resized img"
+    }
+  ],
+  "pull_quote": [
+    {
+      "id": "pullquote",
+      "selector": "main .wp-block-pullquote, main figure.wp-block-pullquote, main blockquote.wp-block-pullquote"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "gallery",
+      "selector": "main .article__body .wp-block-gallery, main .entry-content .wp-block-gallery, main .wp-block-gallery, main .tiled-gallery"
+    }
+  ],
+  "video_embed": [
+    { "id": "video_iframe", "selector": "main .wp-block-embed iframe, main figure.wp-block-embed-youtube iframe, main iframe[src*=\"youtube\"]" }
+  ],
+  "long_form": [],
+  "custom_blocks": [
+    { "id": "stackable", "selector": "main .stk-block, main [class*=\"stk-\"]" },
+    { "id": "ultp", "selector": "main .ultp-block-item, main [class*=\"ultp-\"]" }
+  ]
+}

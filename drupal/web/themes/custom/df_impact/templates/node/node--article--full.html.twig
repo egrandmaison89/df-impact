@@ -1,65 +1,65 @@
 {#
   Article full — WordPress post template (reference-pack article pages).
 #}
-<article{{ attributes.addClass('article', 'wp-singular', 'post') }}>
+<div{{ attributes.addClass('wp-singular', 'post') }}>
 
-  <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
-    <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+  <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
 
-        {% if article_lead_figure is defined and article_lead_figure %}
-          {{ article_lead_figure }}
-        {% endif %}
+    {% if article_lead_figure is defined and article_lead_figure %}
+      {{ article_lead_figure }}
+    {% endif %}
 
-        {% set has_byline = article_byline_display is defined and article_byline_display|trim %}
-        {% if issue_url is defined and issue_url %}
-          <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
-            <a href="{{ issue_url }}">{{ issue_title }}</a>
-            {% if has_byline %}<br>{{ article_byline_display }}{% endif %}
-          </p>
-        {% elseif has_byline %}
-          <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">{{ article_byline_display }}</p>
-        {% endif %}
+    {% set has_byline = article_byline_display is defined and article_byline_display|trim %}
+    {% if issue_url is defined and issue_url %}
+      <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
+        <a href="{{ issue_url }}">{{ issue_title }}</a>
+        {% if has_byline %}<br>{{ article_byline_display }}{% endif %}
+      </p>
+    {% elseif has_byline %}
+      <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">{{ article_byline_display }}</p>
+    {% endif %}
 
-        {% if article_body is defined and article_body %}
-          {{ article_body }}
-        {% else %}
-          {{ content.body }}
-        {% endif %}
+    {% if article_body is defined and article_body %}
+      {{ article_body }}
+    {% else %}
+      {{ content.body }}
+    {% endif %}
 
-        {% if content.field_content_sections|render|trim %}
-          {{ content.field_content_sections }}
-        {% endif %}
+    {% if content.field_content_sections|render|trim %}
+      {{ content.field_content_sections }}
+    {% endif %}
 
-        {% if article_post_term_links is defined and article_post_term_links|length %}
-          <div class="taxonomy-category has-link-color wp-block-post-terms has-text-color">
-            {% for term in article_post_term_links %}
-              {% if not loop.first %}<span class="wp-block-post-terms__separator">, </span>{% endif %}
-              <a href="{{ term.url }}" rel="tag">{{ term.label }}</a>
-            {% endfor %}
-          </div>
-        {% endif %}
-
-        {% if article_more_stories_cards is defined and article_more_stories_cards|length %}
-          <div class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-            <div style="height:18px" aria-hidden="true" class="wp-block-spacer"></div>
-            <h3 class="wp-block-heading has-montserrat-font-family" style="font-size:26px;font-style:normal;font-weight:700">{{ 'More stories:'|t }}</h3>
-            <nav class="jp-relatedposts-i2 wp-block-jetpack-related-posts" style="line-height:1.5;" data-layout="grid" aria-label="{{ 'Related Posts'|t }}">
-              <ul class="jp-related-posts-i2__list" role="list" data-post-count="{{ article_more_stories_cards|length }}">
-                {% for card in article_more_stories_cards %}
-                  <li class="jp-related-posts-i2__post">
-                    <a href="{{ card.url }}" class="jp-related-posts-i2__post-link">
-                      {{ card.title }}
-                      {% if card.image_url %}
-                        <img loading="lazy" class="jp-related-posts-i2__post-img" src="{{ card.image_url }}" width="350" height="200" alt="{{ card.image_alt }}">
-                      {% endif %}
-                    </a>
-                  </li>
-                {% endfor %}
-              </ul>
-            </nav>
-          </div>
-        {% endif %}
-    </div>
+    {% include '@df_impact/includes/wp-article-socialsnap-share.html.twig' %}
   </div>
 
-</article>
+  {% if article_post_term_links is defined and article_post_term_links|length %}
+    <div style="color:#00629b;text-transform:capitalize" class="taxonomy-category has-link-color wp-block-post-terms has-text-color">
+      {% for term in article_post_term_links %}
+        {% if not loop.first %}<span class="wp-block-post-terms__separator">, </span>{% endif %}
+        <a href="{{ term.url }}" rel="tag">{{ term.label }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if article_more_stories_cards is defined and article_more_stories_cards|length %}
+    <div class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
+      <div style="height:18px" aria-hidden="true" class="wp-block-spacer"></div>
+      <h3 class="wp-block-heading has-montserrat-font-family" style="font-size:26px;font-style:normal;font-weight:700">{{ 'More stories:'|t }}</h3>
+      <nav class="jp-relatedposts-i2 wp-block-jetpack-related-posts" style="line-height:1.5;" data-layout="grid" aria-label="{{ 'Related Posts'|t }}">
+        <ul class="jp-related-posts-i2__list" role="list" data-post-count="{{ article_more_stories_cards|length }}">
+          {% for card in article_more_stories_cards %}
+            <li class="jp-related-posts-i2__post">
+              <a href="{{ card.url }}" class="jp-related-posts-i2__post-link">
+                {{ card.title }}
+                {% if card.image_url %}
+                  <img loading="lazy" class="jp-related-posts-i2__post-img" src="{{ card.image_url }}" width="350" height="200" alt="{{ card.image_alt }}">
+                {% endif %}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    </div>
+  {% endif %}
+
+</div>

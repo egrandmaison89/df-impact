@@ -1,5 +1,5 @@
 {#
-  Article route — WordPress puts the post title above <main>, not inside it.
+  Article route — WordPress post template (title band wraps <main> like reference-pack).
 #}
 <div class="wp-site-blocks">
 
@@ -17,40 +17,20 @@
 
   <div class="wp-block-group alignfull is-content-justification-center is-layout-constrained wp-block-group-is-layout-constrained">
     {% if wp_singular_post_title %}
-      <h1 style="color:#003354;font-size:38px" class="alignwide wp-block-post-title has-text-color has-libre-baskerville-font-family">{{ wp_singular_post_title }}</h1>
+      <h1 style="color:#003354;font-size:38px;font-style:normal;font-weight:600" class="alignwide wp-block-post-title has-text-color has-libre-baskerville-font-family">{{ wp_singular_post_title }}</h1>
     {% endif %}
-  </div>
 
-  {# Extra rhythm between title band and <main> (live WP vs Drupal computed-style parity). #}
-  <div style="height:46px" aria-hidden="true" class="wp-block-spacer wp-article-main-offset"></div>
-
-  {% if page.highlighted and not is_about_impact %}
-    <div class="highlighted visually-hidden">
-      {{ page.highlighted }}
-    </div>
-  {% endif %}
-
-  <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
-  <main id="wp--skip-link--target" class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow" style="margin-top:0;padding-top:0" role="main">
-    <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
-      {% if page.hero %}
-        {{ page.hero }}
-      {% endif %}
-      {% if page.sidebar %}
-        <div class="layout-with-sidebar">
-          <div class="layout-with-sidebar__content">
-            {{ page.content }}
+    <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+      <main id="wp--skip-link--target" class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow" style="margin-top:0;padding-top:0" role="main">
+        {% if page.highlighted and not is_about_impact %}
+          <div class="highlighted visually-hidden">
+            {{ page.highlighted }}
           </div>
-          <aside class="layout-with-sidebar__sidebar" role="complementary">
-            {{ page.sidebar }}
-          </aside>
-        </div>
-      {% else %}
+        {% endif %}
         {{ page.content }}
-      {% endif %}
+        <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained"></div>
+      </main>
     </div>
-    <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained"></div>
-  </main>
   </div>
 
   {% include '@df_impact/includes/wp-chrome-footer.html.twig' %}

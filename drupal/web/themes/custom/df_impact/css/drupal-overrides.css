@@ -72,6 +72,20 @@ body {
   }
 }
 
+/* Social Snap inline share — WP block layout stacks icon rows (flex row was ~96px vs ~304px). */
+.ss-inline-share-wrapper.ss-left-inline-content .ss-social-icons-container {
+  display: block !important;
+}
+
+.ss-inline-share-wrapper.ss-left-inline-content .ss-social-icons-container > li {
+  display: block;
+  margin: 0 0 16px;
+}
+
+.ss-inline-share-wrapper.ss-left-inline-content {
+  padding-bottom: 8px;
+}
+
 /* Article/in-brief: floated lead images must expand <main> height (WP block layout). */
 main#wp--skip-link--target .entry-content.wp-block-post-content::after {
   content: "";
@@ -101,10 +115,11 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
  */
 @media (min-width: 769px) {
   .wp-site-blocks .desktop-header.alignfull {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    max-width: 100%;
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+    max-width: none;
+    box-sizing: border-box;
   }
 
   .wp-site-blocks .desktop-header .alignfull,
@@ -114,10 +129,11 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
     width: auto;
   }
 
-  .wp-site-blocks > header.wp-block-template-part {
-    margin-left: 0;
-    margin-right: 0;
-    max-width: 100%;
+  .wp-site-blocks .mobile-header.alignfull {
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+    max-width: none;
   }
 }
 

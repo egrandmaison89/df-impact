@@ -39,6 +39,26 @@ function df_editor_update_9002(): string {
   return 'Ensured header-primary navigation menu.';
 }
 
+/**
+ * Installs Editor HTML text format and CKEditor 5 profile.
+ */
+function df_editor_update_9003(): string {
+  $config_factory = \Drupal::configFactory();
+  if (!$config_factory->get('filter.format.editor_html')->isNew()) {
+    return 'editor_html format already present.';
+  }
+  $storage = new \Drupal\Core\Config\FileStorage(
+    \Drupal::service('extension.list.module')->getPath('df_editor') . '/config/install'
+  );
+  foreach (['filter.format.editor_html', 'editor.editor.editor_html'] as $name) {
+    $data = $storage->read($name);
+    if ($data) {
+      $config_factory->getEditable($name)->setData($data)->save(TRUE);
+    }
+  }
+  return 'Installed editor_html filter format and CKEditor profile.';
+}
+
 function _df_editor_ensure_hero_heading_field(): void {
   if (!FieldStorageConfig::loadByName('node', 'field_hero_heading')) {
     FieldStorageConfig::create([

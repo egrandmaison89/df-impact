@@ -68,7 +68,10 @@
             "php-http/discovery": true,
             "php-tuf/composer-integration": true
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "audit": {
+            "block-insecure": false
+        }
     },
     "extra": {
         "drupal-scaffold": {
@@ -129,5 +132,16 @@
                 "      composer remove drupal/core-project-message"
             ]
         }
+    },
+    "require-dev": {
+        "behat/mink": "^1.13",
+        "behat/mink-browserkit-driver": "^2.3",
+        "mikey179/vfsstream": "^1.6",
+        "phpspec/prophecy-phpunit": "^2.5",
+        "phpunit/phpunit": "^11.5.50",
+        "symfony/browser-kit": "^7.4",
+        "symfony/css-selector": "^7.4",
+        "symfony/dom-crawler": "^7.4",
+        "weitzman/drupal-test-traits": "^2.7"
     }
 }

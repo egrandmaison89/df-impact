@@ -6,12 +6,28 @@ This walkthrough covers creating a magazine issue, adding articles, and publishi
 
 - You need the **Web editor** role.
 - You cannot open **Impact site settings**, **Site snippets**, block layout, user accounts, or module screens (you will get “access denied”).
+- Homepage hero video, poster, and heading are edited by **site admins** only—you will not see those fields on the issue form.
+
+## Issue dashboard (recommended)
+
+**Content → Issue dashboard** (`/admin/content/issue-dashboard`)
+
+![Issue dashboard listing draft issue, articles, preview, and publish action](screenshots/issue-dashboard.png)
+
+The dashboard shows:
+
+- The **next draft issue** (newest draft by year/season)
+- **Attached articles** with moderation and published status
+- **Preview before publish** — open the homepage with this issue treated as the current featured issue (Issues nav + hero preview for you only)
+- **Publish issue and all attached articles** — one confirmation step
+
+Use **Open homepage preview** to review the cover band and Issues flyout before going live. **Clear preview session** removes the preview cookie when you are done.
 
 ## Step 1 — Create the issue (draft)
 
 1. **Content → Add content → Issue**
 2. Fill in **Season**, **Year**, and title (for example “Fall 2026 Issue”).
-3. Add **Cover**, **Banner**, and **Homepage hero** fields if you have them (hero video/poster/heading are usually finalized with a site admin).
+3. Add **Cover** and **Banner** as needed.
 4. Set **Moderation state** to **Draft**.
 5. Save.
 
@@ -20,13 +36,24 @@ This walkthrough covers creating a magazine issue, adding articles, and publishi
 For each story in the issue:
 
 1. **Content → Add content → Article**
-2. Write the story in the **Content** tab (title, body, featured image, byline, etc.).
+2. Write the story in the **Content** tab using the **Editor HTML** text format (CKEditor 5). It supports the same WordPress block patterns as migrated stories—scripts and arbitrary iframes are stripped; Vimeo and YouTube embeds are allowed.
+
+   ![Article body editor with Editor HTML toolbar](screenshots/article-body-editor.png)
+
+   - **Pull quote:** Blockquote toolbar button, or Source view with `wp-block-pullquote` markup
+   - **Image + caption:** Image button or `<figure class="wp-block-image">` with `<figcaption class="wp-element-caption">`
+   - **Vimeo / YouTube:** Media embed or iframe in Source view (`wp-block-embed` wrapper)
+   - **Button:** Source view — `wp-block-button` / `wp-block-button__link`
+   - **Spacer:** Source view — `<div class="wp-block-spacer" style="height:…">`
+
 3. In **Publication & placement**, set **Issue** to the issue you created.
 4. Use **Show under Digital Exclusives** if the story should appear in that homepage row (independent of the issue).
 5. Set **Moderation state** to **Draft**.
 6. Save.
 
-Repeat for all articles in the issue.
+### Media library
+
+When you upload or reuse **images**, **Alternative text is required** on every image (accessibility and WordPress parity).
 
 ### Schedule a go-live time (optional)
 
@@ -46,8 +73,8 @@ A site admin or another editor with publish rights can set **Published** when re
 
 When content is ready to go live:
 
-1. Open the **issue** edit form.
-2. Click **Publish issue and all attached articles** (below the moderation widget).
+1. Open **Content → Issue dashboard**, or the **issue** edit form.
+2. Click **Publish issue and all attached articles** (dashboard or issue form).
 
    **Or** set **Moderation state** to **Published** and save — attached articles in draft will also be published automatically.
 
@@ -59,25 +86,18 @@ After the issue is published:
 
 | Area | Behavior |
 | --- | --- |
-| Header **Issues** dropdown | Newest published issues appear first (this issue at the top when it is the latest by year/season) |
-| Homepage hero | Video, poster, and heading from the newest published issue |
-| Homepage article grid | Articles for that issue, ordered by **PostX / homepage sort weight** |
-| `/browse-issues` | Issue sort matches year/season (newest first) |
+| **Issues** header dropdown | Newest published issue first |
+| **Current Issue** (top nav) | Links to the newest published issue (no menu URL edit) |
+| **Homepage hero** | Video, poster, and heading from the newest published issue |
+| **Homepage “Explore” grid** | Articles from the newest issue |
+| **Browse Issues** | Lists the new issue |
 
-No manual menu or block changes are required.
+## Automated checks
 
-## In Brief and other content
+From a bootstrapped VM:
 
-- **In Brief**: **Content → Add content → In Brief** — same moderation and scheduling as articles.
-- **Media**: **Content → Media** — upload images for use in stories.
-- **Topics**: assign on articles; creating new topic terms is allowed for web editors when needed.
-
-## Tips
-
-- Use **Content → Editorial dashboard** (if linked in your toolbar) to see drafts and in-review items.
-- Use **Revisions** on any node for history and rollback.
-- Preview drafts using the moderation preview where available.
-
-## Need site-wide changes?
-
-Header logo, donate link, footer text, and main nav menus are managed by **Site admins** — see [ADMIN_GUIDE.md](./ADMIN_GUIDE.md).
+```bash
+cd drupal/web/modules/custom/df_editor && ../../../../vendor/bin/phpunit -c phpunit.xml.dist
+../vendor/bin/drush df-editor:test-publish-workflow
+../vendor/bin/drush df-editor:test-article-patterns
+```

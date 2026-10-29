@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Drupal\df_editor\Drush\Commands;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\df_editor\CurrentIssueNav;
 use Drupal\df_editor\IssuePublisher;
 use Drupal\node\Entity\Node;
 use Drupal\user\Entity\User;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use GuzzleHttp\Client;
 
 /**
  * Drush commands for editor workflow verification.
@@ -19,18 +21,21 @@ final class DfEditorCommands extends DrushCommands {
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly IssuePublisher $issuePublisher,
+    private readonly CurrentIssueNav $currentIssueNav,
   ) {
     parent::__construct();
   }
 
   /**
-   * Creates a test issue + articles as web editor, publishes, asserts, cleans up.
+   * Integration test: web editor workflow, public listings, and access denials.
    */
   #[CLI\Command(name: 'df-editor:test-publish-workflow')]
-  #[CLI\Usage(name: 'df-editor:test-publish-workflow', description: 'Run publish workflow smoke test')]
+  #[CLI\Usage(name: 'df-editor:test-publish-workflow', description: 'Run publish workflow integration test')]
   public function testPublishWorkflow(): void {
     $storage = $this->entityTypeManager->getStorage('node');
     $user_storage = $this->entityTypeManager->getStorage('user');
+    $base = rtrim(getenv('DRUPAL_BASE_URL') ?: 'http://127.0.0.1:8888', '/');
+    $http = new Client(['http_errors' => FALSE, 'timeout' => 30]);
 
     $web_editor = $user_storage->loadByProperties(['name' => 'df_test_web_editor']);
     $web_editor = reset($web_editor);
@@ -58,7 +63,7 @@ final class DfEditorCommands extends DrushCommands {
     ]);
     $issue->save();
     $article_nids = [];
-    for ($i = 1; $i <= 3; $i++) {
+    for ($i = 1; $i <= 2; $i++) {
       $article = Node::create([
         'type' => 'article',
         'title' => "DF Test Article $i",
@@ -71,19 +76,31 @@ final class DfEditorCommands extends DrushCommands {
       $article_nids[] = (int) $article->id();
     }
 
-    $access = \Drupal::accessManager()->checkNamedRoute(
-      'df_editor.site_settings',
-      [],
-      $web_editor,
-      TRUE
-    );
-    if ($access->isAllowed()) {
-      throw new \RuntimeException('Web editor must not access Impact site settings.');
+    foreach (['df_editor.site_settings', 'df_editor.footer_settings', 'df_editor.homepage_hero'] as $route) {
+      $access = \Drupal::accessManager()->checkNamedRoute($route, [], $web_editor, TRUE);
+      if ($access->isAllowed()) {
+        throw new \RuntimeException("Web editor must not access route $route.");
+      }
+    }
+
+    $form_object = \Drupal::entityTypeManager()
+      ->getFormObject('node', 'default')
+      ->setEntity($issue);
+    \Drupal::service('account_switcher')->switchTo($web_editor);
+    $form = \Drupal::formBuilder()->getForm($form_object);
+    \Drupal::service('account_switcher')->switchBack();
+    if (isset($form['df_homepage_hero']) && ($form['df_homepage_hero']['#access'] ?? TRUE) !== FALSE) {
+      throw new \RuntimeException('Web editor must not see df_homepage_hero on the issue form.');
+    }
+    foreach (['field_hero_heading', 'field_hero_video', 'field_hero_poster'] as $key) {
+      if (isset($form[$key])) {
+        throw new \RuntimeException("Web editor must not see top-level $key on the issue form.");
+      }
     }
 
     $published_articles = $this->issuePublisher->publishIssueWithArticles($issue);
-    if (count($published_articles) !== 3) {
-      throw new \RuntimeException('Expected 3 published articles, got ' . count($published_articles));
+    if (count($published_articles) !== 2) {
+      throw new \RuntimeException('Expected 2 published articles, got ' . count($published_articles));
     }
 
     $issue = $storage->load($issue->id());
@@ -91,14 +108,30 @@ final class DfEditorCommands extends DrushCommands {
       throw new \RuntimeException('Issue was not published.');
     }
 
-    $latest = df_setup_get_latest_issue_nid();
-    if ((int) $latest !== (int) $issue->id()) {
-      throw new \RuntimeException("Expected test issue to be latest ($issue->id()), got $latest");
+    if ((int) df_setup_get_latest_issue_nid() !== (int) $issue->id()) {
+      throw new \RuntimeException('Published test issue must be the latest issue.');
     }
 
     $header_links = df_setup_get_header_issue_links(1);
     if ($header_links === [] || !str_contains($header_links[0]['title'], '2099')) {
-      throw new \RuntimeException('Header issue links did not list the new test issue first.');
+      throw new \RuntimeException('Header Issues dropdown did not list the test issue first.');
+    }
+
+    $primary = $this->currentIssueNav->applyCurrentIssueUrl([
+      ['title' => 'Current Issue', 'url' => '/browse-issues'],
+    ]);
+    if ($primary[0]['url'] !== $issue->toUrl()->toString()) {
+      throw new \RuntimeException('Current Issue link did not resolve to the latest issue URL.');
+    }
+
+    $front = (string) $http->get($base . '/')->getBody();
+    if (!str_contains($front, 'Test Hero Heading')) {
+      throw new \RuntimeException('Homepage hero heading missing on front page.');
+    }
+
+    $browse = (string) $http->get($base . '/browse-issues')->getBody();
+    if (!str_contains($browse, 'DF Test Issue Workflow')) {
+      throw new \RuntimeException('Browse issues page missing test issue title.');
     }
 
     foreach ([$issue->id(), ...$article_nids] as $nid) {

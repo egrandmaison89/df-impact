@@ -1,6 +1,10 @@
 services:
   df_editor.commands:
     class: Drupal\df_editor\Drush\Commands\DfEditorCommands
-    arguments: ['@entity_type.manager', '@df_editor.issue_publisher']
+    arguments: ['@entity_type.manager', '@df_editor.issue_publisher', '@df_editor.current_issue_nav']
+    tags:
+      - { name: drush.command }
+  df_editor.article_pattern_commands:
+    class: Drupal\df_editor\Drush\Commands\ArticlePatternTestCommands
     tags:
       - { name: drush.command }

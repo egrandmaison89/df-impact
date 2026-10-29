@@ -26,11 +26,26 @@ Assign roles at **People → edit user → Roles**.
 
 Edit menu links at **Structure → Menus → Header primary navigation**. Typical items:
 
-- Current Issue (point to the latest issue path)
+- **Current Issue** — keep this title; the public site **always** links it to the newest published issue (you do not update its URL when a new issue launches).
 - Past Issues (`/past-issues`)
 - About (`/about`)
 
 The **Issues** flyout is built automatically from **published issues** (newest first). You do not add each issue to the menu manually.
+
+## Homepage hero (quick edit)
+
+1. **Configuration → Impact site settings** (`/admin/config/df-impact/site-settings`)
+2. Open the **Homepage hero** section and click **Open homepage hero fields** (or use **Configuration → Impact site settings → Homepage hero**).
+
+![Site settings with Homepage hero section and shortcut button](screenshots/site-settings-homepage-hero.png)
+
+You land on the **current featured issue** edit form, scrolled to **Homepage hero (site admins)**:
+
+- Homepage hero video (MP4)
+- Homepage hero poster
+- Homepage hero heading
+
+Only the **newest published issue** drives the homepage cover. Publish a new issue to switch which node these fields affect.
 
 ## Footer
 
@@ -54,7 +69,7 @@ The homepage cover video and headline come from the **newest published issue** (
    - **Homepage hero heading** — headline over the video (default: “Stories From Our Community of Support”)
 3. After publishing a new issue, the homepage hero and “Explore the Latest Issue” grid update automatically.
 
-**Web editors** can edit hero fields only when they can edit the issue node; hero management is intended for **site admins** coordinating launch.
+**Web editors** do not see homepage hero fields on the issue form; only **site admins** (`administer df site settings`) can edit video, poster, and heading.
 
 ## Optional: header/footer HTML snippets
 
@@ -62,7 +77,9 @@ Trusted staff with **Administer site snippets** can add tracking or embed HTML a
 
 ## Publishing a new issue (admin view)
 
-See [WEB_EDITOR_GUIDE.md](./WEB_EDITOR_GUIDE.md) for the editorial workflow. Site admins may also use **Publish issue and all attached articles** on the issue edit form when helping with launch.
+See [WEB_EDITOR_GUIDE.md](./WEB_EDITOR_GUIDE.md) for the editorial workflow and **Issue dashboard**. Site admins may also use **Publish issue and all attached articles** on the issue edit form when helping with launch.
+
+Web editors use **Content → Issue dashboard** for draft status, homepage/nav preview, and one-click publish—they cannot access this site settings screen.
 
 ## Cache
 

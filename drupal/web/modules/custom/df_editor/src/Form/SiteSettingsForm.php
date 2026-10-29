@@ -6,6 +6,9 @@ namespace Drupal\df_editor\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\df_editor\CurrentIssueNav;
 
 /**
  * Header / donate / logo settings for site administrators.
@@ -56,9 +59,33 @@ final class SiteSettingsForm extends ConfigFormBase {
     $form['header_primary_menu'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Main navigation menu machine name'),
-      '#description' => $this->t('Menu used for top-level header links (excluding the Issues flyout). Manage links at Structure → Menus. Default: header-primary.'),
+      '#description' => $this->t('Menu used for top-level header links (excluding the Issues flyout). The link titled “@label” always resolves to the newest published issue automatically—its menu URL is ignored on the public site.', ['@label' => CurrentIssueNav::DEFAULT_LABEL]),
       '#default_value' => $config->get('header_primary_menu') ?: 'header-primary',
       '#required' => TRUE,
+    ];
+    /** @var \Drupal\df_editor\CurrentIssueNav $nav */
+    $nav = \Drupal::service('df_editor.current_issue_nav');
+    $hero_edit = $nav->homepageHeroEditUrl();
+    $latest_nid = function_exists('df_setup_get_latest_issue_nid') ? df_setup_get_latest_issue_nid() : NULL;
+    $hero_markup = $hero_edit
+      ? Link::fromTextAndUrl($this->t('Edit homepage hero on the current issue'), $hero_edit)->toString()
+      : $this->t('No published issue yet—publish an issue first.');
+    $form['homepage_hero'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Homepage hero'),
+      '#open' => TRUE,
+      '#description' => $this->t('The homepage cover video, poster, and heading come from the newest published issue (currently node @nid).', [
+        '@nid' => $latest_nid ?? $this->t('none'),
+      ]),
+    ];
+    $form['homepage_hero']['link'] = [
+      '#markup' => $hero_markup,
+    ];
+    $form['homepage_hero']['shortcut'] = [
+      '#type' => 'link',
+      '#title' => $this->t('Open homepage hero fields'),
+      '#url' => Url::fromRoute('df_editor.homepage_hero'),
+      '#attributes' => ['class' => ['button', 'button--primary']],
     ];
     $form['translate_note'] = [
       '#type' => 'item',

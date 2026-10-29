@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - filter.format.editor_html
     - node.type.article
     - node.type.in_brief
     - node.type.issue
@@ -42,6 +43,8 @@ permissions:
   - 'publish issue with articles'
   - 'schedule publishing of nodes'
   - 'update any media'
+  - 'use legacy full html on stored content'
+  - 'use text format editor_html'
   - 'use editorial transition create_new_draft'
   - 'use editorial transition publish'
   - 'use editorial transition submit_for_review'

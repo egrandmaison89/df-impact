@@ -1,32 +1,45 @@
 # Editor workflow agent status
 
-Branch: `cursor/editor-workflow-ce7f`  
-Base PR target: `cursor/phase4-chrome-behavior-0b67`
+**PR:** https://github.com/egrandmaison89/df-impact/pull/17  
+**Branch:** `cursor/editor-followups-ce7f`
 
-## Resume checklist
+## PHPUnit (VM, 2026-10-29)
 
-1. `git pull origin cursor/editor-workflow-ce7f`
-2. Bootstrap DB if needed: `bash scripts/repro/bootstrap-vm.sh`
-3. `cd drupal/web && ../vendor/bin/drush cr`
-4. Run workflow test: `../vendor/bin/drush df-editor:test-publish-workflow`
-5. Parity gates: `cd parity && DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:head:refpack && npm run parity:url:check`
+Install dev deps once: `bash scripts/repro/install-phpunit-deps.sh`
 
-## Deliverables
+```bash
+cd drupal/web/modules/custom/df_editor && ../../../../vendor/bin/phpunit -c phpunit.xml.dist
+# OK (6 tests, 36 assertions) — publish workflow, editor_html filters, migrated full_html save
+```
+
+## Editor HTML security (PR #17)
 
 | Item | Status |
 | --- | --- |
-| `df_editor` module (roles, site chrome, issue publish) | Done |
-| Dynamic Issues nav / browse-issues sort | Done (`df_setup_get_header_issue_links`) |
-| Hero heading field on issue | Done |
-| Editor docs | Done (`docs/editors/*`) |
-| Automated publish workflow test | Done (`drush df-editor:test-publish-workflow`) |
-| VM bootstrap | `scripts/repro/bootstrap-vm.sh` (PHP 8.3 + MariaDB) |
-| `parity:head:refpack` | **21/21** (`compare-1793251754549.json`) |
-| `parity:url:check` | Running on VM (801 URLs) |
+| **`editor_html` text format** | CKEditor 5 + `filter_html` allowlist for WP block patterns |
+| **Custom filters** | `editor_html_sanitize` (script + `on*`), `editor_html_iframe` (Vimeo/YouTube hosts only) |
+| **Web editor role** | `use text format editor_html` + legacy permission to edit stored `full_html` bodies |
+| **Site admin** | `use text format full_html` (only role with unrestricted Full HTML) |
+| **Migrated articles** | Body format stays `full_html`; web editor save parity tested (2 articles) |
 
-## Decisions
+## Editor UX (PR #17 follow-up)
 
-- **Homepage hero**: Video, poster, and heading live on the **latest published issue** (site admins edit via the issue form). Web editors can edit hero fields only if they can edit issues; by default issue create/edit is limited—see role matrix in docs.
-- **Site admin vs web editor**: Exported roles `site_admin` and `web_editor` replace day-to-day use of legacy `editor` / `issue_manager` (legacy roles kept for migration compatibility).
+| Feature | Status |
+| --- | --- |
+| **Issue dashboard** (`/admin/content/issue-dashboard`) | Draft issue + attached articles table, publish confirm, preview links |
+| **Homepage / Issues nav preview** | `?df_preview_issue=NID` + session; `df_setup_get_latest_issue_nid()` + header links honor preview |
+| **Media alt required** | Image media form widgets |
+| **Pattern render test** | `drush df-editor:test-article-patterns` (editor_html + script strip + migrated save) |
+| **Guide screenshots** | `docs/editors/screenshots/*.png` |
 
-Updated: 2026-10-29T05:30Z
+## Parity gates (VM `http://127.0.0.1:8888`, 2026-10-29)
+
+| Gate | Result | Artifact |
+| --- | --- | --- |
+| `parity:url:check` | **801/801** | `check-1793254008925.json` |
+| `parity:head:refpack` | **21/21** | (see npm output) |
+| `parity:template-samples:http` | **18/18** | (see npm output) |
+| `drush df-editor:test-publish-workflow` | pass | |
+| `drush df-editor:test-article-patterns` | pass | |
+
+Updated: 2026-10-29T06:15Z

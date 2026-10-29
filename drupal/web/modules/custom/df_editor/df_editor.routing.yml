@@ -6,6 +6,30 @@ df_editor.site_settings:
   requirements:
     _permission: 'administer df site settings'
 
+df_editor.homepage_hero:
+  path: '/admin/config/df-impact/homepage-hero'
+  defaults:
+    _controller: '\Drupal\df_editor\Controller\HomepageHeroController::editRedirect'
+    _title: 'Homepage hero'
+  requirements:
+    _permission: 'administer df site settings'
+
+df_editor.issue_dashboard:
+  path: '/admin/content/issue-dashboard'
+  defaults:
+    _controller: '\Drupal\df_editor\Controller\IssueDashboardController::dashboard'
+    _title: 'Issue dashboard'
+  requirements:
+    _permission: 'publish issue with articles'
+
+df_editor.issue_dashboard_clear_preview:
+  path: '/admin/content/issue-dashboard/clear-preview'
+  defaults:
+    _controller: '\Drupal\df_editor\Controller\IssueDashboardController::clearPreview'
+    _title: 'Clear preview'
+  requirements:
+    _permission: 'publish issue with articles'
+
 df_editor.footer_settings:
   path: '/admin/config/df-impact/footer-settings'
   defaults:

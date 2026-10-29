@@ -1,0 +1,83 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.editor_html
+  module:
+    - ckeditor5
+format: editor_html
+editor: ckeditor5
+settings:
+  toolbar:
+    items:
+      - heading
+      - '|'
+      - bold
+      - italic
+      - '|'
+      - link
+      - '|'
+      - bulletedList
+      - numberedList
+      - '|'
+      - blockQuote
+      - '|'
+      - drupalInsertImage
+      - drupalMedia
+      - '|'
+      - insertTable
+      - '|'
+      - sourceEditing
+      - '|'
+      - undo
+      - redo
+  plugins:
+    ckeditor5_heading:
+      enabled_headings:
+        - heading2
+        - heading3
+        - heading4
+        - heading5
+        - heading6
+    ckeditor5_imageResize:
+      allow_resize: true
+    ckeditor5_list:
+      properties:
+        reversed: true
+        startIndex: true
+        styles: true
+      multiBlock: true
+    ckeditor5_sourceEditing:
+      allowed_tags:
+        - '<a class href hreflang target rel>'
+        - '<p class>'
+        - '<h2 id class>'
+        - '<h3 id class>'
+        - '<h4 id class>'
+        - '<h5 id class>'
+        - '<h6 id class>'
+        - '<blockquote cite class>'
+        - '<ul type class>'
+        - '<ol start type class>'
+        - '<li>'
+        - '<figure class>'
+        - '<figcaption class>'
+        - '<div class style aria-hidden>'
+        - '<img src alt width height class loading>'
+        - '<iframe src width height frameborder allow allowfullscreen title loading>'
+        - '<strong>'
+        - '<em>'
+        - '<br>'
+        - '<cite>'
+        - '<code>'
+        - '<dl>'
+        - '<dt>'
+        - '<dd>'
+image_upload:
+  status: true
+  scheme: public
+  directory: inline-images
+  max_size: null
+  max_dimensions:
+    width: null
+    height: null

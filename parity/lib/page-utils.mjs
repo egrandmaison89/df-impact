@@ -127,8 +127,8 @@ export async function waitForFonts(page, maxMs = 5000) {
 /**
  * Navigate with load (not networkidle) and a capped post-load settle for parity/behavior.
  */
-export async function gotoWithBoundedSettle(page, url, { timeout = 90000, settleMs = 1200 } = {}) {
-  await page.goto(url, { waitUntil: 'load', timeout });
+export async function gotoWithBoundedSettle(page, url, { timeout = 90000, settleMs = 1200, waitUntil = 'load' } = {}) {
+  await page.goto(url, { waitUntil, timeout });
   await dismissOverlays(page);
   await waitForFonts(page, Math.min(settleMs + 800, 6000));
   await page.waitForTimeout(Math.min(settleMs, 1500));

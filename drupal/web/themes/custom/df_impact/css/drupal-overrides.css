@@ -70,7 +70,7 @@ body {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .desktop-header .gtranslate_wrapper {
     display: none !important;
   }
@@ -92,7 +92,17 @@ body {
   padding-right: var(--wp--custom--spacing--outer, 72px);
 }
 
+<<<<<<< HEAD
 @media (max-width: 768px) {
+=======
+@media (max-width: 767px) {
+  .wp-site-blocks {
+    width: calc(100vw - 40px) !important;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+>>>>>>> db1e98ff (Nav parity @768: desktop chrome until 767px; WP nav bg evidence; domcontentloaded goto)
   .wp-site-blocks .desktop-header {
     display: none !important;
   }

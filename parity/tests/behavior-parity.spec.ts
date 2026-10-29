@@ -136,6 +136,7 @@ async function loadWpSnapshot(
       await gotoWithBoundedSettle(wpPage, target, {
         timeout: gotoTimeout,
         settleMs: behaviorLite ? 800 : 1200,
+        waitUntil: 'domcontentloaded',
       });
       if (pathNorm === '/homepage' || pathNorm === '/') {
         await wpPage.waitForSelector(WP_PROFILE.heroVideo, { timeout: 45_000 }).catch(() => {});

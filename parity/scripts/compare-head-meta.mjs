@@ -24,6 +24,14 @@ function packSlugToPath(name) {
   return `/${name.replace(/_/g, '-')}`;
 }
 
+/** WP baseline HTML slug (reference-pack folder). Legacy `/digital-exclusives` pack is a 404 snapshot; live route is the category archive. */
+function packSlugForWpBaseline(slug) {
+  if (slug === 'digital-exclusives') {
+    return 'category_digital-exclusives';
+  }
+  return slug;
+}
+
 const slugs = fs
   .readdirSync(packRoot, { withFileTypes: true })
   .filter(
@@ -41,7 +49,11 @@ let drupalReachable = 0;
 
 for (const slug of slugs) {
   const pagePath = packSlugToPath(slug);
-  const wpHtml = fs.readFileSync(path.join(packRoot, slug, 'desktop', 'rendered.html'), 'utf8');
+  const wpBaselineSlug = packSlugForWpBaseline(slug);
+  const wpHtml = fs.readFileSync(
+    path.join(packRoot, wpBaselineSlug, 'desktop', 'rendered.html'),
+    'utf8',
+  );
   const wpMeta = pickMetaFromHtml(wpHtml);
   let drMeta = null;
   let drStatus = null;

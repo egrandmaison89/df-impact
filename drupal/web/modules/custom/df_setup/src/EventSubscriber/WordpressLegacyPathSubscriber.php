@@ -29,11 +29,6 @@ final class WordpressLegacyPathSubscriber implements EventSubscriberInterface {
     $request = $event->getRequest();
     $path = rtrim($request->getPathInfo(), '/') ?: '/';
 
-    if ($path === '/digital-exclusives') {
-      $this->rebuildRequest($request, '/category/digital-exclusives', []);
-      return;
-    }
-
     if (preg_match('#^/category/([a-z0-9-]+)/page/(\d+)$#i', $path, $matches)) {
       $slug = $matches[1];
       $page = max(0, (int) $matches[2] - 1);
@@ -46,17 +41,7 @@ final class WordpressLegacyPathSubscriber implements EventSubscriberInterface {
   }
 
   private function rebuildRequest(Request $request, string $path, array $query): void {
-    $uri = $path . ($query !== [] ? '?' . http_build_query($query) : '');
-    $new = Request::create(
-      $uri,
-      $request->getMethod(),
-      $query,
-      $request->cookies->all(),
-      $request->files->all(),
-      $request->server->all(),
-      $request->getContent(),
-    );
-    $new->headers->replace($request->headers->all());
+    $new = $this->duplicateRequest($request, $path, $query);
     $request->initialize(
       $new->query->all(),
       $new->request->all(),
@@ -66,6 +51,28 @@ final class WordpressLegacyPathSubscriber implements EventSubscriberInterface {
       $new->server->all(),
       $new->getContent(),
     );
+  }
+
+  /**
+   * @param array<string, mixed> $query
+   */
+  private function duplicateRequest(Request $request, string $path, array $query): Request {
+    $uri = $path . ($query !== [] ? '?' . http_build_query($query) : '');
+    $server = $request->server->all();
+    $server['REQUEST_URI'] = $uri;
+    $server['QUERY_STRING'] = $query !== [] ? http_build_query($query) : '';
+    $base = $request->getSchemeAndHttpHost();
+    $new = Request::create(
+      $base . $uri,
+      $request->getMethod(),
+      $query,
+      $request->cookies->all(),
+      $request->files->all(),
+      $server,
+      $request->getContent(),
+    );
+    $new->headers->replace($request->headers->all());
+    return $new;
   }
 
 }

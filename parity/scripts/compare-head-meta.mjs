@@ -39,7 +39,8 @@ const slugs = fs
       d.isDirectory() &&
       d.name !== 'assets' &&
       !d.name.startsWith('phase') &&
-      fs.existsSync(path.join(packRoot, d.name, 'desktop', 'rendered.html')),
+      fs.existsSync(path.join(packRoot, d.name, 'desktop', 'rendered.html')) &&
+      fs.existsSync(path.join(packRoot, d.name, 'desktop', 'viewport.png')),
   )
   .map((d) => d.name);
 
@@ -60,8 +61,10 @@ for (const slug of slugs) {
   let wpStatus = null;
   let error = null;
   const fetchPath = pagePath === '/' ? '/' : pagePath;
+  // Frozen pack maps digital-exclusives → category archive meta; compare same Drupal canonical.
+  const metaFetchPath = slug === 'digital-exclusives' ? '/category/digital-exclusives' : fetchPath;
   try {
-    let res = await fetch(`${drupalBase}${fetchPath}`, {
+    let res = await fetch(`${drupalBase}${metaFetchPath}`, {
       redirect: 'manual',
       headers: { Accept: 'text/html' },
     });

@@ -121,19 +121,78 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
   clear: both;
 }
 
-/* Category archive rows (wp-block-query template). */
-.archive-row .wp-block-post-featured-image {
+/* Category archive rows (wp-block-query template) — match live WP row rhythm + image height. */
+.view-topic-archive ul.wp-block-post-template {
+  margin-top: 53px;
+}
+
+.wp-block-post-template > .wp-block-post {
+  margin-bottom: 64.8px;
+  padding-bottom: 64.8px;
+}
+
+.wp-block-post-template > .wp-block-post .wp-block-post-featured-image {
   margin: 0;
   overflow: hidden;
 }
 
-.archive-row .wp-block-post-featured-image img {
-  display: block;
+.wp-block-post-template > .wp-block-post .wp-block-post-featured-image img {
+  display: inline;
   width: 100%;
   height: auto;
-  max-height: 260px;
   object-fit: cover;
-  aspect-ratio: 1450 / 1040;
+}
+
+/* About landing — wp-block-columns in main (not footer chrome). */
+main .entry-content > .wp-block-group .wp-block-columns.is-layout-flex,
+main .wp-block-post-content > .wp-block-group .wp-block-columns.is-layout-flex {
+  gap: 40px;
+  max-width: 1400px;
+  box-sizing: border-box;
+}
+
+main .entry-content > .wp-block-group .wp-block-columns .wp-block-image img,
+main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-image img {
+  width: 100%;
+  height: auto;
+  max-width: 544px;
+}
+
+/* Category archive — WP wp-block-columns 33/66 at tablet (matches topic-archive twig). */
+.wp-block-post-template > .wp-block-post .wp-block-columns {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.25rem);
+}
+
+@media (min-width: 768px) {
+  .wp-block-post-template > .wp-block-post .wp-block-column[style*="flex-basis:33"] {
+    flex: 0 0 33% !important;
+    max-width: 33%;
+  }
+
+  .wp-block-post-template > .wp-block-post .wp-block-column[style*="flex-basis:66"] {
+    flex: 1 1 66% !important;
+    min-width: 0;
+  }
+
+  .wp-block-post-template > .wp-block-post .wp-block-post-featured-image img {
+    max-height: none;
+    aspect-ratio: auto;
+    height: auto;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .wp-block-post-template > .wp-block-post .wp-block-columns {
+    gap: 1.25rem;
+  }
+
+  .wp-block-post-template > .wp-block-post .wp-block-post-featured-image img {
+    object-fit: cover;
+    min-height: 0;
+  }
 }
 
 /*
@@ -141,6 +200,15 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
  * Drop nested alignfull side-padding so logo/donate sit at 15px inset like live WP.
  */
 @media (min-width: 769px) {
+  .wp-site-blocks .homepage-banner.wp-block-cover.alignfull,
+  .wp-site-blocks .issue-page > .wp-block-cover.alignfull {
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
   .wp-site-blocks .desktop-header.alignfull {
     margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
     margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
@@ -221,6 +289,97 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
 .ss-inline-share-wrapper .ss-social-icons-container a:hover .ss-network-icon svg,
 .ss-inline-share-wrapper .ss-social-icons-container a:focus-visible .ss-network-icon svg {
   opacity: 0.85;
+}
+
+/* Eric hover parity — match extracted WP chrome rules when theme order differs. */
+#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link:hover {
+  color: #68a0c1 !important;
+}
+
+footer .copyright a:hover,
+footer p.copyright a:hover {
+  color: #d5d5da !important;
+}
+
+main a.wp-block-button__link.has-background:hover {
+  background-color: transparent !important;
+  color: #00629b !important;
+  border: 2px solid #00629b !important;
+}
+
+main .wp-block-post a:hover,
+main .ultp-block-item a:hover {
+  opacity: 0.92;
+}
+
+/*
+ * Footer chrome: mirror desktop-header bleed on .footer-dark (not template-part — that pushed footer x=0 vs WP x=72).
+ */
+@media (min-width: 769px) {
+  .wp-site-blocks footer .footer-dark.alignfull {
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+    max-width: none;
+    padding-left: var(--wp--custom--spacing--outer, 72px) !important;
+    padding-right: var(--wp--custom--spacing--outer, 72px) !important;
+    box-sizing: border-box;
+  }
+
+  .wp-site-blocks footer .footer.alignfull {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 768px) {
+  .wp-site-blocks > footer.wp-block-template-part {
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    margin-right: -20px;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+
+  .wp-site-blocks > footer.wp-block-template-part .footer-dark.alignfull,
+  .wp-site-blocks > footer.wp-block-template-part .footer.alignfull,
+  .wp-site-blocks > footer.wp-block-template-part .alignfull {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Mobile mega menu open — slide effect (maxmegamenu data-effect-mobile=slide). */
+@media (max-width: 768px) {
+  .mobile-header .mega-menu-wrap:not(.mega-menu-open) .mega-menu {
+    display: none !important;
+  }
+
+  .mobile-header .mega-menu-wrap.mega-menu-open .mega-menu {
+    display: block !important;
+    animation: df-mega-menu-slide-in 0.4s ease;
+  }
+}
+
+@keyframes df-mega-menu-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .visually-hidden {

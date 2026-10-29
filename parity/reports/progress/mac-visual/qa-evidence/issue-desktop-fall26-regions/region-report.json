@@ -1,0 +1,101 @@
+{
+  "generatedAt": "2026-10-29T07:40:28.264Z",
+  "path": "/fall-2026-issue",
+  "breakpoint": "desktop",
+  "width": 1440,
+  "viewportHeightPx": 900,
+  "overallDiffPercent": 59.17,
+  "progressDir": "/Users/ericgrandmaison/Desktop/AI/claudeCode/df-impact/parity/reports/progress/homepage/fall-2026-issue_desktop",
+  "qaEvidenceDir": "reports/progress/mac-visual/qa-evidence/issue-desktop-fall26-regions",
+  "cascade": {
+    "mode": "per_element",
+    "bestShiftPx": -4,
+    "diffImprovementIfAligned": 0,
+    "hotBandCount": 40,
+    "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+  },
+  "regions": [
+    {
+      "id": "hero_banner",
+      "label": "Hero / banner",
+      "y": "148-705",
+      "diffPercent": 100,
+      "shareOfViewport": 61.9,
+      "contributionToOverallPercent": 61.9
+    },
+    {
+      "id": "in_this_issue_heading",
+      "label": "In This Issue heading",
+      "y": "744-795",
+      "diffPercent": 100,
+      "shareOfViewport": 5.7,
+      "contributionToOverallPercent": 5.7
+    },
+    {
+      "id": "card_grid",
+      "label": "PostX card grid",
+      "y": "794-900",
+      "diffPercent": 100,
+      "shareOfViewport": 11.8,
+      "contributionToOverallPercent": 11.8
+    },
+    {
+      "id": "promo_row",
+      "label": "Promo row",
+      "y": "794-900",
+      "diffPercent": 100,
+      "shareOfViewport": 11.8,
+      "contributionToOverallPercent": 11.8
+    },
+    {
+      "id": "in_brief_band",
+      "label": "In Brief band",
+      "y": "900-900",
+      "diffPercent": 0,
+      "shareOfViewport": 0,
+      "contributionToOverallPercent": 0
+    },
+    {
+      "id": "footer",
+      "label": "Footer (in viewport)",
+      "y": "900-900",
+      "diffPercent": 0,
+      "shareOfViewport": 0,
+      "contributionToOverallPercent": 0
+    }
+  ],
+  "topScanBands": [
+    {
+      "y": "0-22",
+      "diffPercent": 100
+    },
+    {
+      "y": "22-44",
+      "diffPercent": 100
+    },
+    {
+      "y": "44-66",
+      "diffPercent": 100
+    },
+    {
+      "y": "66-88",
+      "diffPercent": 100
+    },
+    {
+      "y": "88-110",
+      "diffPercent": 100
+    },
+    {
+      "y": "110-132",
+      "diffPercent": 100
+    },
+    {
+      "y": "132-154",
+      "diffPercent": 100
+    },
+    {
+      "y": "154-176",
+      "diffPercent": 100
+    }
+  ]
+}

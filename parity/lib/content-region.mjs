@@ -22,10 +22,17 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     '.wp-block-post-excerpt__more-link',
     '.ultp-loadmore',
     '.ultp-loadmore-action',
+    '.ultp-pagination',
+    '.ultp-pagination-wrap',
+    '.pagination-block-html',
+    '.ultp-block-readmore',
     '.js-in-brief-load-more',
     '.tabs',
     '.related-posts',
     '.related-articles',
+    '.jp-relatedposts-i2',
+    '.wp-block-jetpack-related-posts',
+    'nav.jp-relatedposts-i2',
     '.share-links',
     '.social-share',
     '.ss-inline-share-wrapper',
@@ -43,6 +50,8 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
   ];
 
   const CONTENT_SELECTORS = [
+    'article.issue-page',
+    'main article.issue-page',
     'main:has(.wp-block-query)',
     'main .wp-block-query',
     '.wp-block-query',
@@ -79,6 +88,13 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     clone.querySelectorAll('.is-collapsed, [hidden], [aria-hidden="true"]').forEach((el) => {
       el.remove();
     });
+    // PostX grids in static ref HTML omit inter-card whitespace in innerText.
+    clone.querySelectorAll('.ultp-block-title, .ultp-block-excerpt, .ultp-block-item').forEach((el) => {
+      el.append(document.createTextNode(' '));
+    });
+    clone.querySelectorAll('.about-impact-page__staff-column p, .about-impact-page__staff-column h3').forEach((el) => {
+      el.append(document.createTextNode(' '));
+    });
     return clone;
   }
 
@@ -113,7 +129,9 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     }));
   // In Brief load-more: live innerText respects display:none on collapsed rows.
   const useLiveInnerText =
-    root.isConnected && root.querySelector('.ultp-block-item.is-collapsed');
+    root.isConnected &&
+    (root.querySelector('.ultp-block-item.is-collapsed') ||
+      root.querySelector('.in-brief-page__issue-section, .view-in-brief-listing'));
   const text = (useLiveInnerText ? root.innerText : cleaned.innerText || '')
     .replace(/\s+/g, ' ')
     .trim();

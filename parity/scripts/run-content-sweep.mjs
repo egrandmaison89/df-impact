@@ -21,6 +21,11 @@ import { httpGet } from '../lib/http-get.mjs';
 import { wpArchiveExportHtmlForPath, wpExportHtmlForPath } from '../lib/wp-export-baseline.mjs';
 import { loadIssueTagArchiveFallbackHtml, loadIssueWpHtml } from '../lib/issue-wp-baseline.mjs';
 import { textSimilarity } from '../lib/page-utils.mjs';
+import { chromium } from '@playwright/test';
+import {
+  createIssueParityPage,
+  issueLandingTextSimilarity,
+} from '../lib/issue-playwright-text.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
@@ -133,6 +138,25 @@ function clusterRow(row) {
   return c.length ? c : ['pass'];
 }
 
+let issueBrowser;
+let issueParityPage;
+/** Playwright page is not safe for concurrent issue rows. */
+let issueTextLock = Promise.resolve();
+
+function withIssueTextLock(fn) {
+  const run = issueTextLock.then(() => fn());
+  issueTextLock = run.catch(() => {});
+  return run;
+}
+
+async function getIssueParityPage() {
+  if (!issueBrowser) {
+    issueBrowser = await chromium.launch();
+    issueParityPage = await createIssueParityPage(issueBrowser);
+  }
+  return issueParityPage;
+}
+
 async function processOne({ entry, path: p }) {
   try {
   const row = {
@@ -152,21 +176,22 @@ async function processOne({ entry, path: p }) {
   const exportHtml = isIssue ? null : wpExportHtmlForPath(p);
   const archiveExportHtml = !exportHtml ? wpArchiveExportHtmlForPath(p) : null;
   const issueCacheHtml = isIssue ? loadIssueWpHtml(p) : null;
-  const issueTagFallbackHtml = isIssue && !issueCacheHtml ? loadIssueTagArchiveFallbackHtml(p) : null;
-  if (frozen) {
-    wpHtml = fs.readFileSync(frozen, 'utf8');
-    row.wpSource = 'frozen';
-    if (baselinePathForFrozen(p) !== normalizePath(p)) {
-      row.wpSource = 'frozen-paginated';
-    }
-    row.wpStatus = 200;
-  } else if (issueCacheHtml) {
+  const issueTagFallbackHtml =
+    isIssue && !issueCacheHtml ? loadIssueTagArchiveFallbackHtml(p) : null;
+  if (issueCacheHtml) {
     wpHtml = issueCacheHtml;
     row.wpSource = 'issue-cache';
     row.wpStatus = 200;
   } else if (issueTagFallbackHtml) {
     wpHtml = issueTagFallbackHtml;
     row.wpSource = 'issue-tag-frozen';
+    row.wpStatus = 200;
+  } else if (frozen) {
+    wpHtml = fs.readFileSync(frozen, 'utf8');
+    row.wpSource = 'frozen';
+    if (baselinePathForFrozen(p) !== normalizePath(p)) {
+      row.wpSource = 'frozen-paginated';
+    }
     row.wpStatus = 200;
   } else if (exportHtml) {
     wpHtml = exportHtml;
@@ -222,9 +247,21 @@ async function processOne({ entry, path: p }) {
   const wpM = extractContentMetrics(wpHtml);
   const drM = extractContentMetrics(drHtml);
   const useTextSimilarity = isIssue || row.template === 'archive';
-  row.textSimilarity = useTextSimilarity
-    ? textSimilarity(wpM.text, drM.text)
-    : wordJaccardSimilarity(wpM.text, drM.text);
+  if (isIssue && wpHtml) {
+    row.textSimilarity = await withIssueTextLock(async () => {
+      const page = await getIssueParityPage();
+      return issueLandingTextSimilarity(page, {
+        wpHtml,
+        drupalUrl: `${drupalBase}${p}`,
+        drupalHtml: drHtml,
+      });
+    });
+    row.textMetric = 'playwright_main_text';
+  } else {
+    row.textSimilarity = useTextSimilarity
+      ? textSimilarity(wpM.text, drM.text)
+      : wordJaccardSimilarity(wpM.text, drM.text);
+  }
   row.h1Match = !wpM.h1 || wpM.h1 === drM.h1 || drM.h1.includes(wpM.h1) || wpM.h1.includes(drM.h1);
   row.titleMatch =
     !wpM.title ||
@@ -248,7 +285,7 @@ async function processOne({ entry, path: p }) {
     row.template === 'archive' || String(p).includes('/page/')
       ? Math.min(maxLinksPerPage, 6)
       : maxLinksPerPage;
-  if (linkCheck && row.template !== 'issue') {
+  if (linkCheck) {
     for (const href of drM.links.slice(0, linkLimit)) {
       if (href.startsWith('http') && !href.includes('danafarberimpact.org') && !href.includes('127.0.0.1')) {
         continue;
@@ -314,6 +351,9 @@ for (let i = 0; i < entries.length; i += concurrency) {
   process.stderr.write(`\rcontent-sweep ${Math.min(i + concurrency, entries.length)}/${entries.length}`);
 }
 process.stderr.write('\n');
+if (issueBrowser) {
+  await issueBrowser.close();
+}
 
 const comparable = rows.filter((r) => r.wpComparable !== false && r.drupalStatus === 200);
 const passed = comparable.filter((r) => r.pass);

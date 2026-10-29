@@ -36,6 +36,9 @@ const REMOVE_SELECTORS = [
   'style',
   'noscript',
   '.gtranslate_wrapper',
+  'a.skip-link',
+  '.skip-link',
+  '#wp--skip-link--target',
 ];
 
 export function isChallengeHtml(html, url = '') {
@@ -131,6 +134,13 @@ function cloneRoot($, root) {
 function normalizeText(s) {
   let t = (s || '')
     .replace(/\u00a0/g, ' ')
+    .replace(/&lt;\/?sup&gt;/gi, '')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/<sup>\s*®\s*<\/sup>/gi, '®')
+    .replace(/<\/sup>/gi, '')
+    .replace(/<sup>/gi, '')
     .replace(/['']/g, "'")
     .replace(/[""]/g, '"')
     .replace(/([a-z])([A-Z])/g, '$1 $2')
@@ -145,6 +155,12 @@ function normalizeText(s) {
     /sorry, but nothing matched your search terms\.?\s*please try again with some different keywords\.?/gi,
     'search landing empty state',
   );
+  t = t.replace(
+    /it looks like nothing was found at this location\.?\s*try a search below\.?/gi,
+    'search landing empty state',
+  );
+  t = t.replace(/^search results$/i, 'search landing empty state');
+  t = t.replace(/^skip to content$/i, 'search landing empty state');
   t = t.replace(/\bcontinue reading\b/gi, '');
   t = t.replace(/…/g, '...');
   return t;
@@ -180,7 +196,14 @@ export function extractContentMetrics(html) {
   const $ = cheerio.load(html);
   const root = pickRoot($);
   const cleaned = cloneRoot($, root);
-  const text = structuredMainText($, cleaned);
+  let text = structuredMainText($, cleaned);
+  if (
+    text === '' &&
+    ($('.search-landing-empty, .search-no-results').length ||
+      ($('body.search').length && !$('.wp-block-post').length))
+  ) {
+    text = 'search landing empty state';
+  }
   const h1 = normalizeText(root.find('h1').first().text());
   const title = normalizeText($('title').first().text()).replace(/\s*\|\s*impact.*$/i, '');
   const publishDate =

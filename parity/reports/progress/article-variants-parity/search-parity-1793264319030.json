@@ -1,0 +1,97 @@
+{
+  "generatedAt": "2026-10-29T08:58:39.030Z",
+  "rows": [
+    {
+      "query": "cancer",
+      "drupal": {
+        "title": "You searched for cancer - Impact Magazine",
+        "h1": "Search Results",
+        "resultCards": 10,
+        "excerptCount": 10,
+        "hasPager": true,
+        "emptyText": null,
+        "bodyClass": "search search-results error404 wp-embed-responsive wp-theme-blockmag wp-child-theme-blockmagchild postx-page mega-menu-max-mega-menu-1 blockmag path-search-legacy"
+      },
+      "wp": {
+        "title": "You searched for cancer - Impact Magazine",
+        "h1": "Search Results",
+        "resultCards": 10,
+        "excerptCount": 10,
+        "hasPager": true,
+        "emptyText": null,
+        "bodyClass": "search search-results wp-embed-responsive wp-theme-blockmag wp-child-theme-blockmagchild postx-page mega-menu-max-mega-menu-1 blockmag stk--anim-init"
+      },
+      "textSimilarity": 0.5063291139240507,
+      "pass": true
+    },
+    {
+      "query": "jimmy",
+      "drupal": {
+        "title": "You searched for jimmy - Impact Magazine",
+        "h1": "Search Results",
+        "resultCards": 10,
+        "excerptCount": 10,
+        "hasPager": true,
+        "emptyText": null,
+        "bodyClass": "search search-results error404 wp-embed-responsive wp-theme-blockmag wp-child-theme-blockmagchild postx-page mega-menu-max-mega-menu-1 blockmag path-search-legacy"
+      },
+      "wp": {
+        "title": "You searched for jimmy - Impact Magazine",
+        "h1": "Search Results",
+        "resultCards": 10,
+        "excerptCount": 10,
+        "hasPager": true,
+        "emptyText": null,
+        "bodyClass": "search search-results wp-embed-responsive wp-theme-blockmag wp-child-theme-blockmagchild postx-page mega-menu-max-mega-menu-1 blockmag stk--anim-init"
+      },
+      "textSimilarity": 0.9101123595505618,
+      "pass": true
+    },
+    {
+      "query": "fund",
+      "drupal": {
+        "title": "You searched for fund - Impact Magazine",
+        "h1": "Search Results",
+        "resultCards": 10,
+        "excerptCount": 10,
+        "hasPager": true,
+        "emptyText": null,
+        "bodyClass": "search search-results error404 wp-embed-responsive wp-theme-blockmag wp-child-theme-blockmagchild postx-page mega-menu-max-mega-menu-1 blockmag path-search-legacy"
+      },
+      "wp": {
+        "title": "You searched for fund - Impact Magazine",
+        "h1": "Search Results",
+        "resultCards": 10,
+        "excerptCount": 10,
+        "hasPager": true,
+        "emptyText": null,
+        "bodyClass": "search search-results wp-embed-responsive wp-theme-blockmag wp-child-theme-blockmagchild postx-page mega-menu-max-mega-menu-1 blockmag stk--anim-init"
+      },
+      "textSimilarity": 0.9101123595505618,
+      "pass": true
+    },
+    {
+      "query": "zzznomatch99",
+      "drupal": {
+        "title": "You searched for zzznomatch99 - Impact Magazine",
+        "h1": "Search Results",
+        "resultCards": 0,
+        "excerptCount": 0,
+        "hasPager": false,
+        "emptyText": null,
+        "bodyClass": "search search-results error404 wp-embed-responsive wp-theme-blockmag wp-child-theme-blockmagchild postx-page mega-menu-max-mega-menu-1 blockmag path-search-legacy"
+      },
+      "wp": {
+        "title": "You searched for zzznomatch99 - Impact Magazine",
+        "h1": "Search Results",
+        "resultCards": 0,
+        "excerptCount": 0,
+        "hasPager": false,
+        "emptyText": null,
+        "bodyClass": "search search-no-results wp-embed-responsive wp-theme-blockmag wp-child-theme-blockmagchild postx-page mega-menu-max-mega-menu-1 blockmag stk--anim-init"
+      },
+      "textSimilarity": 0.024875621890547265,
+      "pass": true
+    }
+  ]
+}

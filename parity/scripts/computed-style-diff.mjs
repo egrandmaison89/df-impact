@@ -14,11 +14,16 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { preparePage, dismissOverlays } from '../lib/page-utils.mjs';
 import { stabilizeParityViewport } from '../lib/capture-stabilize.mjs';
+import { startRefPackServer } from './lib/ref-pack-server.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
-const wpBase = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
+const WP_SOURCE = (process.env.PARITY_WP_SOURCE || 'live').toLowerCase();
+const wpBaseLive = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(/\/$/, '');
+const packRoot = path.join(parityRoot, 'reference-pack');
+let refPackServer = null;
+let refPackBase = null;
 const RECT_TOLERANCE = Number(process.env.PARITY_RECT_TOLERANCE_PX || 2);
 const PARITY_GOTO_TIMEOUT_MS = Number(process.env.PARITY_GOTO_TIMEOUT_MS || 120000);
 const PARITY_SETTLE_AFTER_LOAD_MS = Number(process.env.PARITY_SETTLE_AFTER_LOAD_MS || 800);
@@ -64,9 +69,10 @@ const selectorConfig = JSON.parse(
 );
 const ALL_SELECTORS = [...new Set([...selectorConfig.chrome, ...selectorConfig.content])];
 
-const samples = JSON.parse(
-  fs.readFileSync(path.join(parityRoot, 'config', 'template-samples.json'), 'utf8'),
-);
+const samplesFile = process.env.PARITY_SAMPLES_JSON
+  ? path.join(parityRoot, 'config', process.env.PARITY_SAMPLES_JSON)
+  : path.join(parityRoot, 'config', 'template-samples.json');
+const samples = JSON.parse(fs.readFileSync(samplesFile, 'utf8'));
 
 function normalizeFontFamily(v) {
   return String(v)
@@ -86,6 +92,41 @@ function normalizeStyle(key, v) {
 function pathSlug(p) {
   if (p === '/') return 'root';
   return p.replace(/^\/|\/$/g, '').replace(/\//g, '_') || 'root';
+}
+
+/** Live WP canonical path (legacy slugs that 404 or captcha more often). */
+function wpParityPath(path) {
+  if (path === '/digital-exclusives') {
+    return '/category/digital-exclusives';
+  }
+  return path;
+}
+
+/** WP paths whose reference-pack folder differs from pathToPackSlug. */
+const REF_PACK_SLUG_OVERRIDES = {
+  '/digital-exclusives': 'category_digital-exclusives',
+};
+
+function pathToPackSlug(p) {
+  const normalized = p.replace(/\/+$/, '') || '/';
+  if (REF_PACK_SLUG_OVERRIDES[normalized]) {
+    return REF_PACK_SLUG_OVERRIDES[normalized];
+  }
+  if (p === '/' || p === '') return 'root';
+  if (p === '/homepage') return 'homepage';
+  const m = p.match(/^\/(\d{4})\/(\d{2})\/(.+?)\/?$/);
+  if (m) return `${m[1]}_${m[2]}_${m[3]}`;
+  return p.replace(/^\/|\/$/g, '').replace(/\//g, '_');
+}
+
+async function ensureRefPackServer() {
+  if (refPackBase) {
+    return refPackBase;
+  }
+  const started = await startRefPackServer(packRoot, { drupalBase });
+  refPackBase = started.baseUrl;
+  refPackServer = { close: () => started.close() };
+  return refPackBase;
 }
 
 function jobsFromEnv() {
@@ -312,10 +353,33 @@ async function comparePath(browser, job) {
   await wpPage.setViewportSize(vp);
   await drPage.setViewportSize(vp);
 
-  const wpUrl = `${wpBase}${job.path === '/' ? '' : job.path}`;
   const drUrl = `${drupalBase}${job.path === '/' ? '' : job.path}`;
 
-  const wpNav = await gotoWordPressParityPage(wpPage, wpUrl);
+  let wpUrl;
+  let wpNav;
+  if (WP_SOURCE === 'refpack') {
+    const base = await ensureRefPackServer();
+    const slug = pathToPackSlug(job.path);
+    wpUrl = `${base}/rendered/${slug}/${job.bp}/`;
+    const resp = await wpPage
+      .goto(wpUrl, { waitUntil: 'domcontentloaded', timeout: PARITY_GOTO_TIMEOUT_MS })
+      .catch(() => null);
+    await wpPage.waitForTimeout(PARITY_SETTLE_AFTER_LOAD_MS);
+    await dismissOverlays(wpPage);
+    await stabilizeParityViewport(wpPage);
+    const nav = { status: resp?.status() ?? 0, captcha: false };
+    wpNav = {
+      status: nav.status,
+      captcha: false,
+      shellReason: nav.status === 200 ? null : 'refpack_missing',
+      attempts: 1,
+      comparable: nav.status === 200,
+    };
+  } else {
+    const wpPath = wpParityPath(job.path);
+    wpUrl = `${wpBaseLive}${wpPath === '/' ? '' : wpPath}`;
+    wpNav = await gotoWordPressParityPage(wpPage, wpUrl);
+  }
   const drNav = await gotoParityPage(drPage, drUrl);
 
   const perSelector = {};
@@ -441,9 +505,14 @@ for (const bucket of Object.values(byTemplate)) {
   delete bucket.comparableMismatchCounts;
 }
 
+if (refPackServer) {
+  refPackServer.close();
+}
+
 const summary = {
   generatedAt: new Date().toISOString(),
-  wpBase,
+  wpSource: WP_SOURCE,
+  wpBase: WP_SOURCE === 'refpack' ? refPackBase : wpBaseLive,
   drupalBase,
   jobCount: jobs.length,
   byTemplate,

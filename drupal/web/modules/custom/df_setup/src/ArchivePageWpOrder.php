@@ -34,9 +34,6 @@ final class ArchivePageWpOrder {
   /**
    * @return array<string, mixed>|null
    */
-  /**
-   * @return array<string, mixed>|null
-   */
   private static function load(): ?array {
     if (self::$cache !== NULL) {
       return self::$cache;

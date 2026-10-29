@@ -585,8 +585,7 @@
 
 /* Topic archive (WordPress /category/[name]): Montserrat title + accent bar. */
 .path-category-archive h1,
-.path-category-archive .page-title,
-.view-topic-archive h1 {
+.path-category-archive .page-title {
   margin: 2.5rem 0;
   font-family: Montserrat, "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.75rem, 2.6vw, 2.375rem);
@@ -594,6 +593,19 @@
   line-height: 1.2;
   color: #003354;
   border-left: 5px solid #00629b;
+  padding-left: 15px;
+}
+
+.view-topic-archive h1.wp-block-query-title.category-header {
+  margin-top: 40px;
+  margin-bottom: 46px;
+  font-family: Montserrat, "Helvetica Neue", Arial, sans-serif;
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 51.68px;
+  color: #003354;
+  max-width: 760px;
+  border-left: none;
   padding-left: 15px;
 }
 
@@ -1321,6 +1333,160 @@ article.post .wp-block-post-terms {
 }
 
 /* --- Issue Page --- */
+.issue-page .issue-page-banner.wp-block-cover {
+  width: 100%;
+  min-height: 481px;
+  height: 481px;
+  max-height: 481px;
+  aspect-ratio: unset;
+  overflow: hidden;
+  contain: layout;
+}
+
+.issue-page .issue-page-banner .wp-block-cover__image-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+/* Issue hero title — live WP uses .issue-page-header float, not .issue-page-banner margin-top. */
+.issue-page .issue-page-banner .ultp-heading-wrap .ultp-heading-inner {
+  margin-top: 0;
+}
+
+.issue-page .issue-page-banner .wp-block-cover__inner-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-height: 481px;
+  padding: 183px clamp(20px, 5vw, 72px) 36px clamp(20px, 3vw, 40px);
+  box-sizing: border-box;
+}
+
+.issue-page .issue-page-header {
+  width: 495px;
+  max-width: 100%;
+  float: none;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.issue-page .issue-page-header h1,
+.issue-page .issue-page-header .ultp-heading-inner {
+  background-color: rgba(0, 98, 155, 0.5);
+  padding: 10px;
+  margin-top: 0;
+}
+
+@media (max-width: 991px) {
+  .issue-page .issue-page-header {
+    width: min(495px, 55vw);
+  }
+
+  .issue-page .issue-page-banner .wp-block-cover__inner-container {
+    padding-top: 187px;
+  }
+
+  .issue-page .ultp-block-73dec1 .ultp-heading-wrap .ultp-heading-inner,
+  .issue-page .ultp-block-73dec1 .ultp-heading-wrap .ultp-heading-inner a {
+    font-size: clamp(42px, 8vw, 65px);
+  }
+}
+
+@media (max-width: 767px) {
+  .issue-page .issue-page-banner.wp-block-cover {
+    height: 481px;
+    max-height: 481px;
+  }
+
+  .issue-page .issue-page-header {
+    width: auto;
+    max-width: none;
+  }
+
+  .issue-page .issue-page-banner .wp-block-cover__inner-container {
+    justify-content: flex-start;
+    padding: 196px 20px 24px 28px;
+  }
+}
+
+/* PostX “In This Issue” grid — WP style4 crop (768×551), layout-only parity. */
+.issue-page .ultp-block-items-wrap .ultp-block-row,
+.issue-page .ultp-block-70af6c .ultp-block-row {
+  column-gap: 40px;
+  row-gap: 40px;
+}
+
+.issue-page .ultp-block-70af6c .ultp-block-image {
+  aspect-ratio: 768 / 551;
+  width: 100%;
+  overflow: hidden;
+  contain: layout;
+  margin-bottom: 10px !important;
+}
+
+.issue-page .ultp-block-70af6c .ultp-block-content {
+  padding: 10px 40px 20px;
+  text-align: left;
+}
+
+.issue-page .ultp-block-70af6c .ultp-block-title {
+  padding: 10px 0 5px;
+}
+
+.issue-page .ultp-block-70af6c .ultp-block-title a {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+.issue-page .ultp-block-dd35a6 .ultp-block-row {
+  column-gap: 60px;
+  row-gap: 40px;
+}
+
+.issue-page .ultp-block-dd35a6 .ultp-block-content-wrap {
+  padding: 0 60px;
+}
+
+.issue-page .ultp-block-dd35a6 .ultp-block-image {
+  aspect-ratio: 768 / 551;
+  margin-bottom: 10px !important;
+}
+
+.issue-page .ultp-block-dd35a6 .ultp-block-excerpt,
+.issue-page .ultp-block-dd35a6 .ultp-block-excerpt p {
+  font-size: 18px;
+  line-height: 26px;
+  padding: 10px 0 0;
+}
+
+.issue-page h2.orange-border-header#IN_THIS_ISSUE {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.ultp-block-70af6c .ultp-block-image {
+  aspect-ratio: 768 / 551;
+  width: 100%;
+  overflow: hidden;
+  contain: layout;
+}
+
+.ultp-block-70af6c .ultp-block-image a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ultp-block-70af6c .ultp-block-image img.ultp-block-image-content {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .issue-page__banner {
   position: relative;
 }

@@ -39,6 +39,6 @@
     ".archive-row",
     ".archive-row img",
     ".wp-block-group.about-impact",
-    ".wp-block-columns"
+    "main .wp-block-columns"
   ]
 }

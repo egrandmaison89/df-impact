@@ -1,8 +1,36 @@
 # Mac visual parity — live status
 
-**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Merged:** PR **#18** `cursor/secondary-surfaces-ce7f` (`b6905482`). **Not merged:** PR #16 (superseded).
+**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Merged:** PR **#18** secondary, PR **#19** launch, PR **#21** in-brief/browse/DE text (`262ddc0a`). **Not merged:** PR #16 (superseded), PR **#20** VM round 2 (hold).
 
-**Updated:** 2026-10-29 ~2:55 AM ET
+**Issue pixels:** integrator owns **layout/CSS only** (banner, band heights, PostX gaps/cards). **Content** (sections, views, article order) is on a separate templates PR — re-measure Mac medians after that lands.
+
+**Updated:** 2026-10-29 ~9:15 AM UTC (VM integrator: Mac private worker down — hero/archive CSS + region-analyzer fix measured on **Linux VM** `http://127.0.0.1:8888`, not Mac pack)
+
+### Mac worker outage + VM integrator (2026-10-29)
+
+The private Mac visual agent could not run (worker error every run). Uncommitted Mac patch (`mac-hero-theme-clean`) was applied on **`cursor/phase4-chrome-behavior-0b67`** from this cloud VM:
+
+- **Kept:** issue hero/cover CSS + `node--issue--full.html.twig` (`aspect-ratio:unset`, 481px cover, title panel flex).
+- **Kept:** topic-archive tablet CSS in `drupal-overrides.css`.
+- **Reverted:** browse-issues `@media (768–1024)` 33.333% column rule (Mac had regressed landing tablet 31% → 38%).
+- **Fixed:** `parity:analyze:regions` progress-dir profile (`/browse-issues` → `landing/`, not `issue/`); `ANALYZE_FORCE_DRUPAL`, viewport-height capture, downstream shift stats; **no** `parity:probe:issue-hero` npm script (script not in repo).
+
+**VM ref-pack viewport % (Mac pack PNG, before → after patch, same VM):**
+
+| Path | Desktop | Tablet | Mobile |
+|------|---------|--------|--------|
+| `/fall-2026-issue` | 59.37 → **59.37** | 51.90 → **51.90** | 48.25 → **48.25** |
+| `/spring-2026-issue` | 67.61 → **67.61** | 65.47 → **65.47** | 62.81 → **62.81** |
+| `/browse-issues` | 28.24 → **28.24** | 31.47 → **31.47** | 36.49 → **36.49** |
+| `/category/cancer-research` | 29.95 → **29.95** | 55.96 → **55.96** | 36.54 → **36.54** |
+
+Region analyzer with corrected `landing/browse-issues_tablet`: **31.54%** overall (was mis-filed under `issue/` at 27.03%).
+
+**Computed-style-diff** (`/fall-2026-issue` desktop, live WP **200** both sides): **38 → 38** mismatches (no VM delta; Mac-reported 59%→14% region drop not reproduced vs frozen pack).
+
+**Gates (VM, post-`cim`/`cr`, Home node republished):** wp-port **20/20**; `parity:head:refpack` **21/21**; `parity:head:manifest` **773/773**; `parity:url:check` **801/801**; `parity:template-samples:http` **19/19**; `parity:smoke:200` **0** fails; `parity:behavior:smoke` **pass** (0 mismatches).
+
+**Prior integrator (~3:45 AM ET):** PR **#21** merge confirmed `a4df69ad`, `cim`/`cr`, full gates, region heatmaps refreshed.
 
 ---
 
@@ -32,12 +60,12 @@
 
 | PR | Branch | Head | In PR #5 |
 |----|--------|------|----------|
-| #10 Meta | `cursor/meta-head-behavior-0751` | `2778e304` | yes |
+| #10 Meta | `cursor/meta-head-behavior-0751` | **`456734b2`** (Drupal capture retry) | yes |
 | #13 Templates | `cursor/templates-inbrief-archives-185b` | **`f1593b50`** (≥ `9cf106ab`) | yes |
 | #14 VM | `cursor/vm-visual-parity-2b1b` | **`6876d0ed`** (header logo × fix, Social Snap) | yes |
 | #17 Editor | `cursor/editor-followups-ce7f` | `5efc6901` | yes |
 
-**DDEV backfills (this run):** `df_backfill_article_body.php` (**16**/447), `df_backfill_all_embeds.php`, `decode_text_entities.php` (**53→0** entities), `df-migrate:backfill-jetpack-related` (**439**), then **`cim`** + **`cr`**.
+**DDEV backfills (this run):** `cim` / `updb` / `cr`, `df_backfill_article_body.php` (**16**/447), `df_backfill_all_embeds.php`, `decode_text_entities.php` (**53→0** entities), `df-migrate:backfill-jetpack-related` (**439**), **`cr`**. PR **#13** / **#14** heads unchanged; merged PR **#10** **`456734b2`**.
 
 ---
 
@@ -68,33 +96,88 @@
 | Gate | Result | Report / run |
 |------|--------|----------------|
 | wp-port assets | **20/20** | `scripts/repro/verify-wp-port-assets.sh` |
-| `parity:head:refpack` | **21/21** | `compare-1793256215357.json` |
-| `parity:head:manifest` | **773/773** | `manifest-1793256253158.json` |
-| `parity:url:check` | **801/801** | `check-1793256254467.json` |
-| `parity:template-samples:http` | **19/19** @ **200** | `check-1793256254784.json` |
-| `parity:smoke:200` | **pass** (40 paths) | `smoke-1793256256004.json` |
-| `parity:behavior:smoke` (lite) | **pass** (3/3) | `behavior/2026-10-29T06-32-43-899Z/` |
+| `parity:head:refpack` | **21/21** | `compare-1793259462007.json` |
+| `parity:head:manifest` | **773/773** | `manifest-1793259498202.json` |
+| `parity:url:check` | **801/801** | `check-1793259504219.json` |
+| `parity:template-samples:http` | **19/19** @ **200** | `check-1793259502966.json` |
+| `parity:smoke:200` | **pass** (40 paths) | `smoke-1793259504941.json` |
+| `parity:behavior:smoke` (lite) | **pass** (3/3) | `behavior/2026-10-29T07-38-22-955Z/` |
+| `parity:launch:tags-test` | **5/5** PHPUnit | `df_launch` LaunchEnvironmentTest (DDEV) |
+
+**Config:** `ddev drush cim -y` imported **11** items (entity displays, editor roles, editor_html); `cr` OK.
 
 ---
 
-## Template pixel medians (Mac pack, desktop)
+## Template pixel medians (Mac pack viewport %)
 
-| Template | Before viewport D | After viewport D | Before chrome D | After chrome D |
-|----------|-------------------|------------------|-----------------|----------------|
-| **homepage** | 32.7% | **31.8%** | 14.3% | **4.8%** |
-| **issue** | 68.2% | **67.4%** | 11.0% | **1.3%** |
-| article | 31.2% | **30.4%** | 14.1% | **5.0%** |
-| in_brief | 19.9% | **19.1%** | 14.1% | **5.1%** |
-| landing_page | 34.5% | **33.7%** | 14.2% | **5.0%** |
-| archive | 30.2% | **29.4%** | 14.4% | **4.9%** |
+**Prior baseline (integrator ~2:00 AM ET):** homepage **~33%**, issue **~67.8%**, archive **~30.4%** desktop viewport. **Now (~3:45 AM ET):** `parity:compare-template`, `DRUPAL_BASE_URL=http://df-impact.ddev.site` (post–PR **#21** + issue PostX layout CSS).
 
-**Before** = post–first integrator merge (~2:00 AM ET). **After** = post **`6876d0ed`** + hero/banner parity tweaks (~2:55 AM ET; `parity:compare-template`, `DRUPAL_BASE_URL=http://df-impact.ddev.site`). Chrome medians ~14% → ~5% (header logo × fix). Homepage hero: no poster `<img>` (matches WP reference pack).
+| Template | Desktop vp (was → now) | Tablet vp | Mobile vp | Chrome D |
+|----------|------------------------|-----------|-----------|----------|
+| **homepage** | 33% → **31.8%** | **33.7%** | **32.3%** | **5.0%** |
+| **issue** | 67.8% → **67.4%** | **65.2%** | **62.5%** | **1.3%** |
+| article | 31.2% → **30.4%** | **34.1%** | **24.9%** | **5.0%** |
+| in_brief | 19.9% → **19.1%** | **12.2%** | **14.8%** | **5.1%** |
+| landing_page | 34.5% → **33.7%** | **39.1%** | **35.9%** | **5.0%** |
+| archive | 30.4% → **29.4%** | **53.8%** | **35.0%** | **4.9%** |
+
+Issue viewport still dominated by **article roster / title drift** vs live WP (see `docs/PHASE1_GAP_REGISTER.md`); banner photon + alignfull breakout applied this run.
+
+### Bisect notes (PR #18 / #19 — Mac medians)
+
+**Hold:** PR **#20** VM visual round 2 — do **not** merge until VM agent explains computed-style sum regression (user clearance).
+
+**Rerun ~3:25 AM ET** post–PR **#19** (`d071765f`, issue CLS). Compare to **~3:15 AM ET** snapshot (post–PR **#18**, pre–#19):
+
+| Template | Δ viewport D | Δ viewport T | Δ viewport M | Worse after #18/#19? |
+|----------|--------------|--------------|--------------|----------------------|
+| homepage | 0.0 pp | 0.0 pp | 0.0 pp | **no** |
+| issue | **+0.01 pp** | 0.0 pp | 0.0 pp | **no** (noise; chrome D +0.09 pp) |
+| article | 0.0 pp | 0.0 pp | 0.0 pp | **no** |
+| in_brief | 0.0 pp | 0.0 pp | 0.0 pp | **no** |
+| landing_page | 0.0 pp | 0.0 pp | 0.0 pp | **no** |
+| archive | 0.0 pp | 0.0 pp | 0.0 pp | **no** |
+
+Vs integrator **~2:00 AM ET** desktop viewport baselines (homepage ~33%, issue ~67.8%, archive ~30.4%): all six templates **same or better**; no Mac pack regression attributable to #18/#19 in this harness.
+
+### Region diff breakdown (Mac viewport bands)
+
+Tool: `npm run parity:analyze:regions` (`parity/scripts/analyze-template-region-bands.mjs`). Heatmaps: `qa-evidence/*/diff-heatmap.png`.
+
+**Issue desktop** (`/fall-2026-issue`, **59.2%** overall on this path; template median **67.4%** on 3 issues) — **`per_element`** (`bestShiftPx` −4; not a height cascade). Heatmap: `qa-evidence/issue-desktop-fall26-regions/diff-heatmap.png` (local; PNG gitignored).
+
+| Band | Diff % | ~Share of 900px frame | ~Contribution |
+|------|--------|------------------------|---------------|
+| Hero / banner | 100 | 62% | **62%** |
+| In This Issue heading | 100 | 5.7% | 5.7% |
+| PostX card grid (in frame) | 100 | 11.8% | 11.8% |
+| Promo row (overlap w/ grid) | 100 | 11.8% | 11.8% |
+| In Brief / footer | 0 | — | — |
+
+Evidence JSON: `region-report.json` **`2026-10-29T07:40:28.264Z`**.
+
+**Archive tablet** (`/category/cancer-research`, **55.7%**) — **`per_element`**: filters/query + card rows ~**70.6%** contribution; archive header ~**3.9%**. Heatmap: `archive-tablet-cancer-regions/diff-heatmap.png`.
+
+Evidence JSON: **`2026-10-29T07:40:28.739Z`**.
+
+**Landing tablet** (`/browse-issues`, **31.0%** this path; template median **39.1%**) — **`per_element`**. Horizontal fallback bands (issue covers below fold in 900px capture):
+
+| Band | Diff % | ~Contribution |
+|------|--------|---------------|
+| Top 0–25% | 33.2 | 8.3% |
+| 25–50% | 100 | 25% |
+| 50–75% | 100 | 25% |
+| 75–100% | 99.9 | 25% |
+
+Heatmap: `landing-tablet-browse-regions/diff-heatmap.png`. Evidence JSON: **`2026-10-29T07:40:28.429Z`**.
+
+**Hold:** PR **#20** VM visual round 2 until user clearance.
 
 ### DDEV wp-images restore + full audit
 
 | Metric | Before restore | After restore / audit |
 |--------|----------------|------------------------|
-| Magic-byte HTML stubs in `wp-images/` | **137** / 1673 | **41** / 1673 |
+| Magic-byte HTML stubs in `wp-images/` | **137** / 1673 | **13** / 1673 (DDEV `file` scan) |
 | `restore-bad-wp-images.mjs` | — | **96/109** restored (**13** unmappable) |
 | `audit-drupal-images.mjs` (801 inventory paths) | — | **2178** unique `<img>` URLs checked |
 | Broken on Drupal (fixable from WP) | — | **0** |

@@ -1,0 +1,200 @@
+{
+  "generatedAt": "2026-10-29T07:03:33.847Z",
+  "drupalBase": "http://127.0.0.1:8888",
+  "wpBase": "https://danafarberimpact.org",
+  "useRefWp": false,
+  "rows": [
+    {
+      "template": "homepage",
+      "formFactor": "mobile",
+      "drupal": {
+        "performance": 0.55,
+        "lcp": 31440.890249999997,
+        "cls": 0.00850340282927714,
+        "tbt": 18,
+        "weightKb": 5613,
+        "requests": 51,
+        "attempts": 1
+      },
+      "wordpress": {
+        "performance": 0.91,
+        "lcp": 1709.8464999999999,
+        "cls": 0.1930406050826113,
+        "tbt": 0,
+        "weightKb": 9,
+        "requests": 12,
+        "attempts": 1
+      },
+      "drUrl": "http://127.0.0.1:8888/homepage",
+      "wpUrl": "https://danafarberimpact.org/homepage"
+    },
+    {
+      "template": "homepage",
+      "formFactor": "desktop",
+      "drupal": {
+        "performance": 0.55,
+        "lcp": 36491.5164,
+        "cls": 0.0033885242881611954,
+        "tbt": 21.5,
+        "weightKb": 5613,
+        "requests": 51,
+        "attempts": 1
+      },
+      "wordpress": {
+        "performance": 0.54,
+        "lcp": 10285.643499999998,
+        "cls": 0.0013132484331831208,
+        "tbt": 120.5,
+        "weightKb": 41577,
+        "requests": 86,
+        "attempts": 1
+      },
+      "drUrl": "http://127.0.0.1:8888/homepage",
+      "wpUrl": "https://danafarberimpact.org/homepage"
+    },
+    {
+      "template": "issue",
+      "formFactor": "mobile",
+      "drupal": {
+        "performance": 0.35,
+        "lcp": 31205.539749999993,
+        "cls": 0.47454519993703986,
+        "tbt": 19.5,
+        "weightKb": 5767,
+        "requests": 54,
+        "attempts": 1
+      },
+      "wordpress": {
+        "performance": 0.59,
+        "lcp": 9073.412700271605,
+        "cls": 0.1930406050826113,
+        "tbt": 43.5,
+        "weightKb": 1547,
+        "requests": 100,
+        "attempts": 1
+      },
+      "drUrl": "http://127.0.0.1:8888/fall-2026-issue",
+      "wpUrl": "https://danafarberimpact.org/fall-2026-issue"
+    },
+    {
+      "template": "issue",
+      "formFactor": "desktop",
+      "drupal": {
+        "performance": 0.4,
+        "lcp": 31059.33825,
+        "cls": 0.292585335037216,
+        "tbt": 19.5,
+        "weightKb": 5674,
+        "requests": 54,
+        "attempts": 1
+      },
+      "wordpress": {
+        "performance": 0.54,
+        "lcp": 9625.940999999999,
+        "cls": 0.05568094279593089,
+        "tbt": 120.5,
+        "weightKb": 1600,
+        "requests": 89,
+        "attempts": 1
+      },
+      "drUrl": "http://127.0.0.1:8888/fall-2026-issue",
+      "wpUrl": "https://danafarberimpact.org/fall-2026-issue"
+    },
+    {
+      "template": "article",
+      "formFactor": "mobile",
+      "drupal": {
+        "performance": 0.55,
+        "lcp": 30682.298000000003,
+        "cls": 0.020908524423611546,
+        "tbt": 19.5,
+        "weightKb": 5599,
+        "requests": 48,
+        "attempts": 1
+      },
+      "wordpress": {
+        "performance": 0.61,
+        "lcp": 8277.452500000001,
+        "cls": 0.1930406050826113,
+        "tbt": 49.5,
+        "weightKb": 1364,
+        "requests": 82,
+        "attempts": 1
+      },
+      "drUrl": "http://127.0.0.1:8888/2026/09/american-association-for-cancer-research-2",
+      "wpUrl": "https://danafarberimpact.org/2026/09/american-association-for-cancer-research-2"
+    },
+    {
+      "template": "article",
+      "formFactor": "desktop",
+      "drupal": {
+        "performance": 0.55,
+        "lcp": 30606.277,
+        "cls": 0.018308904151904306,
+        "tbt": 23.5,
+        "weightKb": 5599,
+        "requests": 48,
+        "attempts": 1
+      },
+      "wordpress": {
+        "performance": 0.58,
+        "lcp": 5542.713499999998,
+        "cls": 0.039231330860927775,
+        "tbt": 74,
+        "weightKb": 1356,
+        "requests": 74,
+        "attempts": 1
+      },
+      "drUrl": "http://127.0.0.1:8888/2026/09/american-association-for-cancer-research-2",
+      "wpUrl": "https://danafarberimpact.org/2026/09/american-association-for-cancer-research-2"
+    },
+    {
+      "template": "archive",
+      "formFactor": "mobile",
+      "drupal": {
+        "performance": 0.55,
+        "lcp": 31505.017250000004,
+        "cls": 0.0023119810077238427,
+        "tbt": 20,
+        "weightKb": 5761,
+        "requests": 56,
+        "attempts": 1
+      },
+      "wordpress": {
+        "performance": 0.91,
+        "lcp": 1715.553,
+        "cls": 0.1930406050826113,
+        "tbt": 0,
+        "weightKb": 9,
+        "requests": 12,
+        "attempts": 1
+      },
+      "drUrl": "http://127.0.0.1:8888/category/cancer-research",
+      "wpUrl": "https://danafarberimpact.org/category/cancer-research"
+    },
+    {
+      "template": "archive",
+      "formFactor": "desktop",
+      "drupal": {
+        "performance": 0.55,
+        "lcp": 32407.537750000003,
+        "cls": 0.002956758495461834,
+        "tbt": 23,
+        "weightKb": 5817,
+        "requests": 60,
+        "attempts": 1
+      },
+      "wordpress": {
+        "performance": 0.58,
+        "lcp": 5628.6055000000015,
+        "cls": 0.00419006882533577,
+        "tbt": 63,
+        "weightKb": 2003,
+        "requests": 74,
+        "attempts": 1
+      },
+      "drUrl": "http://127.0.0.1:8888/category/cancer-research",
+      "wpUrl": "https://danafarberimpact.org/category/cancer-research"
+    }
+  ]
+}

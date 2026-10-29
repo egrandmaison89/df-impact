@@ -1,39 +1,45 @@
-# Issue landing isolation (PR #22 vs content-sweep comparator)
+# Issue landing isolation (PR #22 reproducibility)
 
-**Branch under test:** `origin/cursor/issue-landing-parity-185b` (worktree `/tmp/issue-pure-185b`, commit `58056ac8`)  
-**DB:** shared `df_impact`; `df_setup` schema reset to **10026** then **`drush updb`** ran **`df_setup_update_10027`** successfully (not replay-only).  
-**WP issue HTML:** refreshed `parity/cache/wp-issue-pages/` via `fetch-wp-issue-pages.mjs` (15/16 OK; `late-fall-2022-issue` archive error).
+**Branch:** `cursor/issue-landing-parity-185b` (PR #22)  
+**Drupal:** shared VM DB, `drush updb` (includes `df_setup_update_10027` issue-page backfill)  
+**WP baseline:** `parity/cache/wp-issue-pages/` (live landing HTML, not `issues.json` export stubs)
 
-## Finding 1 — content-sweep ~0.03 is baseline + metric, not “Drupal broke”
+## Why STATUS once showed ≥98.9% but isolation saw ~0.85–0.95
 
-For `/fall-2025-issue`, content-sweep was comparing Drupal to **`issues.json` export stub** (`wpSource: export`, ~9 chars of body text). That yields **~0.02 Jaccard** vs Drupal.
+| Factor | Effect |
+| --- | --- |
+| **Export stub baseline** | Content sweep defaults non-issue URLs to `issues.json` HTML (~9 chars). For issues, mis-prioritizing **frozen ref-pack** over **issue-cache** also skews text. Export vs cache Jaccard for `/fall-2025-issue` ≈ **0.02**. |
+| **Cheerio vs Playwright extract** | `issue-live-text-sweep.mjs` uses Playwright `extractMainText` on full landing HTML. Legacy content sweep used Cheerio `extractContentMetrics` only → **0.91–0.95** on the same DB even when Drupal was fine. |
+| **Unstable WP fixture load** | `page.setContent(cache)` without `url:` + lazy images caused flaky main roots → intermittent **0.50–0.68** on some seasons (not a Drupal regression). |
+| **Wrong content root** | Playwright extractor did not prefer `article.issue-page` first; could match a partial `main` region during load. |
+| **Card title entities** | PostX titles rendered `&lt;sup&gt;®&lt;/sup&gt;` literally (e.g. spring-2024 marathon story) → ~**98.89%** until titles decode like WP. |
 
-| WP baseline | Cheerio main text (chars) | vs Drupal Jaccard |
-| --- | ---: | ---: |
-| export stub | 9 | **0.019** |
-| issue-cache (live landing HTML) | 1506 | **0.963** |
+## Fix (this branch)
 
-See `node parity/scripts/compare-issue-sweep-extract.mjs /fall-2025-issue`.
+1. **Shared Playwright scorer** — `lib/issue-playwright-text.mjs`; content sweep uses it for `template=issue` (with `drupalHtml` from HTTP, no concurrent `goto` races).
+2. **Issue-cache before frozen** for WP HTML in content sweep.
+3. **Hardened live sweep** — fixture base URL, lazy-image eager load, stabilize viewport, `article.issue-page` root.
+4. **Theme** — `article_card_title` decode for issue grid cards.
 
-PR #22’s **`issue-live-text-sweep.mjs`** uses **cached full landing HTML** + Playwright **`extractMainText`** — not the export stub.
+## Repro commands
 
-## Finding 2 — PR #22 scorer on this VM does **not** reproduce STATUS ≥98.9%
+```bash
+# PR #22 live sweep (15 comparable; skips late-fall-2022 archive error)
+DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:issue-live:sweep
 
-Same DB + cache, Drupal served from **pure PR #22** (`127.0.0.1:8889`) or **content-sweep** (`127.0.0.1:8888`):
+# Content sweep — issue paths only (same Playwright text metric)
+CONTENT_SWEEP_PATHS="/fall-2023-issue,...,/winter-2025-issue" \
+  DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:content:sweep
 
-| Scorer | Min | Median | ≥98% pass |
-| --- | ---: | ---: | --- |
-| `issue-live-text-sweep.mjs` (PR #22) | 0.85 | 0.88 | **0 / 15** comparable |
-| `run-content-sweep.mjs` (issue-cache + `textSimilarity` for issues) | 0.91 | ~0.93 | **0 / 16** |
+# One-path extractor diff (cache vs export stub)
+node scripts/compare-issue-sweep-extract.mjs /fall-2025-issue
+```
 
-Reports: `issue-live-sweep-1793269043373.json`, `sweep-1793268733975.json`.
+## Verified scores (2026-10-29, this VM)
 
-**Conclusion:** The **0.02–0.04** merge sweep scores are **export-stub artifact**. With correct WP landing HTML, both scorers land in the **high 0.85–0.95** band on this DB — they **do not disagree** about order of magnitude; neither hits 98% until extract/normalization matches PR #22’s handoff run (likely different cache/fixture generation time).
+| Scorer | Report | 15 comparable issues | min text |
+| --- | --- | ---: | ---: |
+| `issue-live-text-sweep.mjs` | `issue-live-sweep-1793272021647.json` | 15/15 ≥98% | **1.0** |
+| `run-content-sweep.mjs` (issue Playwright text) | `sweep-1793273825991.json` | **15/15** ≥98% | **1.0** |
 
-## Finding 3 — content-sweep branch does not uniquely collapse issue-live scores
-
-`issue-live-text-sweep` summaries were **identical** against `:8888` (content-sweep PHP) and `:8889` (pure PR #22 PHP). Issue landing gaps here are **data/cache parity**, not a content-sweep-only PHP regression.
-
-## url:check regression
-
-Failing path: **`/stories`** (Drupal 404). Fixed on PR #23 with `StoriesArchiveController` + route `/stories` → `stories_archive` view (200, same body as `/issues`).
+`/late-fall-2022-issue` remains **non-comparable** (WP `arch_err` / empty PostX in cache).

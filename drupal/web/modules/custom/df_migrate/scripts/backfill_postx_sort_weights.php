@@ -10,6 +10,7 @@
  * Usage: drush scr modules/custom/df_migrate/scripts/backfill_postx_sort_weights.php
  */
 
+use Drupal\df_migrate\IssuePageWpFixture;
 use Drupal\node\Entity\Node;
 
 $pack_root = realpath('/var/www/parity/reference-pack')
@@ -21,6 +22,31 @@ $use_live_wp = !$pack_root || !is_dir($pack_root);
 /**
  * @return string
  */
+function df_postx_issue_page_html(string $slug, ?string $pack_root, bool $use_live_wp): string {
+  $cache_roots = [
+    dirname(DRUPAL_ROOT, 2) . '/parity/cache/wp-issue-pages',
+    DRUPAL_ROOT . '/../../parity/cache/wp-issue-pages',
+    '/workspace/parity/cache/wp-issue-pages',
+  ];
+  $file_slug = str_replace('/', '_', $slug);
+  foreach ($cache_roots as $root) {
+    $file = rtrim($root, '/') . '/' . $file_slug . '.html';
+    if (is_readable($file)) {
+      $body = file_get_contents($file);
+      if (is_string($body) && strlen($body) > 5000 && !preg_match('/sgcaptcha/i', $body)) {
+        return $body;
+      }
+    }
+  }
+  if (!$use_live_wp && $pack_root && is_dir($pack_root)) {
+    $html_path = $pack_root . '/' . $file_slug . '/desktop/rendered.html';
+    if (is_readable($html_path)) {
+      return (string) file_get_contents($html_path);
+    }
+  }
+  return df_postx_fetch_wp_html('/' . $slug);
+}
+
 function df_postx_fetch_wp_html(string $path): string {
   $url = 'https://danafarberimpact.org' . ($path === '/' ? '/' : rtrim($path, '/') . '/');
   $ctx = stream_context_create([
@@ -30,7 +56,10 @@ function df_postx_fetch_wp_html(string $path): string {
     ],
   ]);
   $html = @file_get_contents($url, FALSE, $ctx);
-  return is_string($html) ? $html : '';
+  if (!is_string($html) || strlen($html) < 5000 || preg_match('/sgcaptcha/i', $html)) {
+    return '';
+  }
+  return $html;
 }
 
 /**
@@ -51,27 +80,31 @@ function df_postx_nid_for_wp_id(int $wp_id): ?int {
 }
 
 /**
+ * Main “In This Issue” PostX grid only (excludes promo grid below In Brief).
+ */
+function df_postx_issue_main_grid_html(string $html): string {
+  $parts = preg_split('/<div class="ultp-post-grid-block/s', $html, 3);
+  if (is_array($parts) && count($parts) >= 2) {
+    return $parts[1];
+  }
+  return $html;
+}
+
+/**
  * @return list<int>
  */
 function df_postx_parse_grid_post_ids(string $html): array {
   if (!preg_match_all('/ultp-block-item post-id-(\d+)/', $html, $m)) {
     return [];
   }
-  $ids = array_map('intval', $m[1]);
-  // First grid on issue pages is the main listing; stop at promo grid if repeated.
-  $seen = [];
-  $out = [];
-  foreach ($ids as $id) {
-    if (isset($seen[$id])) {
-      break;
-    }
-    $seen[$id] = TRUE;
-    $out[] = $id;
-    if (count($out) >= 10) {
-      break;
-    }
-  }
-  return $out;
+  return array_values(array_unique(array_map('intval', $m[1])));
+}
+
+/**
+ * @return list<int>
+ */
+function df_postx_parse_issue_main_grid_post_ids(string $html): array {
+  return df_postx_parse_grid_post_ids(df_postx_issue_main_grid_html($html));
 }
 
 /**
@@ -99,6 +132,8 @@ function df_postx_parse_homepage_sections(string $html): array {
 $issue_updated = 0;
 $home_updated = 0;
 
+$fixture_index = IssuePageWpFixture::indexByAlias();
+
 if (is_readable($issues_json)) {
   $issues = json_decode(file_get_contents($issues_json), TRUE);
   if (is_array($issues)) {
@@ -108,22 +143,21 @@ if (is_readable($issues_json)) {
         continue;
       }
       $slug = trim($alias, '/');
-      if ($use_live_wp) {
-        $html = df_postx_fetch_wp_html($alias);
+      $norm = '/' . $slug . '/';
+      $wp_ids = [];
+      if (isset($fixture_index[$norm]['main_grid_wp_post_ids']) && is_array($fixture_index[$norm]['main_grid_wp_post_ids'])) {
+        $wp_ids = array_map('intval', $fixture_index[$norm]['main_grid_wp_post_ids']);
       }
-      else {
-        $html_path = $pack_root . '/' . str_replace('/', '_', $slug) . '/desktop/rendered.html';
-        if (!is_readable($html_path)) {
-          $html = df_postx_fetch_wp_html($alias);
+      if ($wp_ids === []) {
+        $html = df_postx_issue_page_html($slug, $pack_root, $use_live_wp);
+        if ($html === '') {
+          continue;
         }
-        else {
-          $html = file_get_contents($html_path);
-        }
+        $wp_ids = df_postx_parse_issue_main_grid_post_ids($html);
       }
-      if ($html === '') {
+      if ($wp_ids === []) {
         continue;
       }
-      $wp_ids = df_postx_parse_grid_post_ids($html);
       foreach ($wp_ids as $index => $wp_id) {
         $nid = df_postx_nid_for_wp_id($wp_id);
         if ($nid === NULL) {

@@ -82,6 +82,54 @@ function df_setup_update_10001(): void {
 }
 
 /**
+ * WordPress Gutenberg block markup for About Impact (PR #25 parity).
+ */
+function df_setup_about_impact_gutenberg_body(): string {
+  return <<<'HTML'
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+<div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+<figure class="wp-block-image alignright size-full is-resized"><img src="/themes/custom/df_impact/images/Impact_About_Courage_725.jpg" alt="Wall with the words Courage, Hope, and Inspiration" width="544" height="390" style="width:544px;height:auto"/></figure>
+<p>Impact is a magazine of Dana-Farber Cancer Institute and the Jimmy Fund, published by the Division of Philanthropy. Impact features stories on the individuals, corporations, foundations, and events that support Dana-Farber and the Jimmy Fund, and the advances in cancer science and medicine made possible by their generosity.</p>
+<p>Dana-Farber Cancer Institute provides expert, compassionate, and equitable care to children and adults and is home to groundbreaking cancer discoveries. Since its founding in 1948, the Jimmy Fund has raised millions of dollars through thousands of community efforts to advance Dana-Farber’s lifesaving mission.</p>
+<p>Dana-Farber Cancer Institute has been the top-ranked cancer hospital in New England by U.S. News &amp; World Report for 25 consecutive years, and is the only cancer center in the country ranked in the top 3 for both adult and pediatric cancer programs.</p>
+<p><strong>It takes more than courage to beat cancer®</strong></p>
+</div>
+</div>
+
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+<div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading has-text-color has-montserrat-font-family" style="color:#000000">Division of Philanthropy</h2>
+<div class="wp-block-columns alignwide is-layout-flex wp-block-columns-is-layout-flex" style="gap:40px">
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<p><strong>Senior Vice President and Chief Philanthropy Officer</strong><br>Melany N. Duval</p>
+<p><strong>Assistant Vice President, Integrated Philanthropy Marketing</strong><br>Brian Beirne</p>
+<p><strong>Editor</strong><br>Tarice Gray</p>
+<p><strong>Assistant Editor</strong><br>Hannah White Hannah</p>
+</div>
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>
+<p><strong>Art Directors</strong><br>Grace Howard, Sharon Veino</p>
+<p><strong>Print Production Manager</strong><br>Danielle Gray</p>
+<p><strong>Photography Manager</strong><br>Jessamyn Martin</p>
+</div>
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<p><strong>Director, Web Development</strong><br>Sarah Cunningham</p>
+<p><strong>Web Developer</strong><br>Alicia Lazzaro</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+<div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+<p><strong>Contact Information</strong><br>Tarice Gray<br>Dana-Farber Cancer Institute &amp; The Jimmy Fund<br>Division of Philanthropy<br>10 Brookline Place West<br>Brookline, MA 02445-7295<br><a href="mailto:tarice_gray@dfci.harvard.edu">Tarice_Gray@dfci.harvard.edu</a></p>
+<p><strong>Opt-out</strong><br>If you’d like to opt out of <em>Impact</em>, please complete our <a href="https://www.jimmyfund.org/about-us/contact-us/print-opt-out/">online form</a>.</p>
+</div>
+</div>
+HTML;
+}
+
+/**
  * Creates the editable About Impact page if missing.
  */
 function _df_setup_ensure_about_impact_page(): void {
@@ -995,9 +1043,38 @@ function df_setup_update_10026(): string {
 }
 
 /**
- * Sync About Impact staff block with WordPress reference (content sweep parity).
+ * Issue landing: PostX NULLS-LAST sort, promo exclusions, WP backfills.
  *
- * Renumbered from 10027 — PR #22 owns hook_update_10027 (issue fixture backfill).
+ * Uses committed `df_migrate/data/issue_page_wp_fixture.json` (regenerate via
+ * `node parity/scripts/build-issue-page-fixture.mjs` after refreshing cache).
+ * Live WP is fallback only when a fixture row is missing.
+ */
+function df_setup_update_10027(): string {
+  $parts = [];
+  foreach ([
+    'backfill_postx_sort_weights.php',
+    'backfill_issue_page_from_wordpress.php',
+  ] as $script_name) {
+    $script = __DIR__ . '/../df_migrate/scripts/' . $script_name;
+    if (!is_readable($script)) {
+      $parts[] = "$script_name missing";
+      continue;
+    }
+    try {
+      require $script;
+      $parts[] = "$script_name ok";
+    }
+    catch (\Throwable $e) {
+      $parts[] = "$script_name failed: " . $e->getMessage();
+    }
+  }
+  drupal_flush_all_caches();
+  \Drupal::keyValue('df_setup')->set('update_10027_applied', \Drupal::time()->getRequestTime());
+  return implode('; ', $parts);
+}
+
+/**
+ * Sync About Impact staff block with WordPress reference (content sweep parity).
  */
 function df_setup_update_10028(): string {
   $storage = \Drupal::entityTypeManager()->getStorage('node');
@@ -1042,82 +1119,151 @@ function df_setup_update_10028(): string {
 }
 
 /**
- * Seeds archive listing excerpts onto article field_excerpt (editable by editors).
+ * About Impact: WordPress Gutenberg block body (PR #25; after 10028 staff sync).
  */
-function df_setup_update_10031(): string {
+function df_setup_update_10029(): string {
+  return _df_setup_apply_about_impact_gutenberg_body();
+}
+
+/**
+ * About Impact: idempotent staff sync on Gutenberg body (matches WP reference).
+ */
+function df_setup_update_10030(): string {
+  $node = _df_setup_load_about_impact_node();
+  if ($node === NULL) {
+    _df_setup_ensure_about_impact_page();
+    return 'Created About Impact page; run update 10029 for Gutenberg body.';
+  }
+  $body = (string) $node->get('body')->value;
+  $synced = _df_setup_sync_about_impact_staff_body($body);
+  if ($synced === $body) {
+    return 'About Impact staff block already synced.';
+  }
+  $node->set('body', ['value' => $synced, 'format' => 'full_html']);
+  $node->save();
+  return 'About Impact staff block synced on Gutenberg body.';
+}
+
+/**
+ * Search parity (PR #24): enable df_secondary and move Search API view off /search.
+ *
+ * Hook 10034+ so #23 can use 10031–10033 (merge #25 before #23).
+ */
+function df_setup_update_10034(): string {
   $messages = [];
-  if (!FieldConfig::loadByName('node', 'in_brief', 'field_excerpt')) {
-    $storage = FieldStorageConfig::loadByName('node', 'field_excerpt');
-    if ($storage instanceof FieldStorageConfig) {
-      FieldConfig::create([
-        'field_storage' => $storage,
-        'bundle' => 'in_brief',
-        'label' => 'Listing excerpt',
-        'required' => FALSE,
-      ])->save();
-      $messages[] = 'Added field_excerpt to in_brief.';
+  /** @var \Drupal\Core\Extension\ModuleInstallerInterface $installer */
+  $installer = \Drupal::service('module_installer');
+  if (!\Drupal::moduleHandler()->moduleExists('df_secondary')) {
+    $installer->install(['df_secondary']);
+    $messages[] = 'Enabled df_secondary.';
+  }
+  $view = \Drupal::entityTypeManager()->getStorage('view')->load('df_impact_search');
+  if ($view) {
+    $display = &$view->getDisplay('page_1');
+    if (($display['display_options']['path'] ?? '') !== 'search-legacy') {
+      $display['display_options']['path'] = 'search-legacy';
+      $view->save();
+      $messages[] = 'Set df_impact_search page path to search-legacy.';
     }
   }
-  $restore = __DIR__ . '/../df_migrate/scripts/restore_in_brief_summary_from_export.php';
-  if (is_readable($restore)) {
-    require_once $restore;
-    $fixed = df_migrate_restore_in_brief_summary_from_export();
-    $messages[] = sprintf('in_brief summary restore: %d updated.', (int) ($fixed['updated'] ?? 0));
+  drupal_flush_all_caches();
+  return $messages !== [] ? implode(' ', $messages) : 'Search parity already configured.';
+}
+
+/**
+ * Ensures Home landing exists when page.front points at a missing nid (local VM drift).
+ */
+function df_setup_update_10035(): string {
+  _df_setup_ensure_home_landing();
+  return 'Home landing verified; page.front set to /node/NID for Home page.';
+}
+
+/**
+ * Loads the canonical About Impact page node, if present.
+ */
+function _df_setup_load_about_impact_node(): ?Node {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if (!$nids) {
+    return NULL;
   }
-  $script = __DIR__ . '/../df_migrate/scripts/backfill_archive_row_excerpts.php';
-  if (!is_readable($script)) {
-    return 'backfill_archive_row_excerpts.php missing';
-  }
-  require_once $script;
-  $result = df_migrate_backfill_archive_row_excerpts();
-  if (!empty($result['error'])) {
-    return 'Archive excerpt backfill failed: ' . $result['error'];
-  }
-  $messages[] = sprintf(
-    'Article field_excerpt backfill: %d updated, %d already matched, %d unresolved.',
-    (int) ($result['updated'] ?? 0),
-    (int) ($result['skipped'] ?? 0),
-    (int) ($result['missing'] ?? 0),
+  $node = $storage->load(reset($nids));
+  return $node instanceof Node ? $node : NULL;
+}
+
+/**
+ * Whether the About body already uses the Gutenberg block structure.
+ */
+function _df_setup_about_impact_body_is_gutenberg(string $body): bool {
+  return str_contains($body, 'wp-block-columns-is-layout-flex')
+    && str_contains($body, 'Division of Philanthropy')
+    && str_contains($body, 'alignright');
+}
+
+/**
+ * Content-sweep staff corrections (safe after df_setup_update_10028).
+ */
+function _df_setup_sync_about_impact_staff_body(string $body): string {
+  $body = preg_replace(
+    '/<p><strong>Vice President, Philanthropy Communications &amp; Marketing<\/strong><br>Zuhirah Khaldun-Diarra<\/p>\s*/',
+    '',
+    $body,
+  ) ?? $body;
+  $body = str_replace(
+    '<p><strong>Creative Director</strong><br>Claudia de Piante</p>',
+    '<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>',
+    $body,
   );
-  return implode(' ', $messages);
+  $body = str_replace(
+    '<p><strong>Creative Director</strong><br>Claudia De Piante</p>',
+    '<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>',
+    $body,
+  );
+  return $body;
 }
 
 /**
- * in_brief listing excerpts on field_excerpt; restore full-page field_summary.
+ * Whether staff block matches the WordPress reference (post content-sweep).
  */
-function df_setup_update_10032(): string {
-  $messages = [];
-  $restore = __DIR__ . '/../df_migrate/scripts/restore_in_brief_summary_from_export.php';
-  if (is_readable($restore)) {
-    require_once $restore;
-    $fixed = df_migrate_restore_in_brief_summary_from_export();
-    $messages[] = sprintf('in_brief field_summary restore: %d.', (int) ($fixed['updated'] ?? 0));
+function _df_setup_about_impact_staff_is_synced(string $body): bool {
+  if (str_contains($body, 'Vice President, Philanthropy Communications &amp; Marketing')
+    && str_contains($body, 'Zuhirah Khaldun-Diarra')) {
+    return FALSE;
   }
-  $script = __DIR__ . '/../df_migrate/scripts/backfill_archive_row_excerpts.php';
-  if (is_readable($script)) {
-    require_once $script;
-    $result = df_migrate_backfill_archive_row_excerpts();
-    $messages[] = sprintf(
-      'Listing excerpt backfill: %d updated, %d matched, %d unresolved.',
-      (int) ($result['updated'] ?? 0),
-      (int) ($result['skipped'] ?? 0),
-      (int) ($result['missing'] ?? 0),
-    );
+  if (str_contains($body, '<strong>Creative Director</strong><br>Claudia de Piante</p>')) {
+    return FALSE;
   }
-  drupal_flush_all_caches();
-  return implode(' ', $messages);
+  return str_contains($body, 'Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>');
 }
 
 /**
- * Rebuild in_brief field_summary from body after listing excerpt seeding.
+ * Writes Gutenberg About Impact body onto the canonical node.
  */
-function df_setup_update_10033(): string {
-  $restore = __DIR__ . '/../df_migrate/scripts/restore_in_brief_summary_from_export.php';
-  if (!is_readable($restore)) {
-    return 'restore_in_brief_summary_from_export.php missing';
+function _df_setup_apply_about_impact_gutenberg_body(): string {
+  $node = _df_setup_load_about_impact_node();
+  if ($node === NULL) {
+    _df_setup_ensure_about_impact_page();
+    return 'Created About Impact page with Gutenberg body.';
   }
-  require_once $restore;
-  $fixed = df_migrate_restore_in_brief_summary_from_export();
-  drupal_flush_all_caches();
-  return sprintf('in_brief field_summary restored from export body: %d updated.', (int) ($fixed['updated'] ?? 0));
+  $existing = (string) $node->get('body')->value;
+  if (_df_setup_about_impact_body_is_gutenberg($existing)
+    && _df_setup_about_impact_staff_is_synced($existing)) {
+    return 'About Impact Gutenberg body already present.';
+  }
+  $body = df_setup_about_impact_gutenberg_body();
+  if (_df_setup_about_impact_body_is_gutenberg($existing)
+    && !_df_setup_about_impact_staff_is_synced($existing)) {
+    $body = _df_setup_sync_about_impact_staff_body($existing);
+  }
+  $node->set('body', [
+    'value' => $body,
+    'format' => 'full_html',
+  ]);
+  $node->save();
+  return 'Updated About Impact body to Gutenberg block structure.';
 }

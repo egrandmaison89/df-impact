@@ -6,6 +6,8 @@
 #}
 {% if use_wp_query_pager|default(false) %}
   {% include '@df_impact/navigation/pager--wp-query.html.twig' %}
+{% elseif use_issue_postx_pager|default(false) %}
+  {% include '@df_impact/navigation/pager--issue-postx.html.twig' %}
 {% elseif items %}
   <nav class="pager" role="navigation" aria-labelledby="{{ heading_id }}">
     <{{ pagination_heading_level }} id="{{ heading_id }}" class="visually-hidden">{{ 'Pagination'|t }}</{{ pagination_heading_level }}>
@@ -27,7 +29,7 @@
         </li>
       {% endif %}
       {% if ellipses.previous %}
-        <li class="pager__item pager__item--ellipsis" role="presentation">&hellip;</li>
+        <li class="pager__item pager__item--ellipsis" aria-hidden="true"><span aria-hidden="true">&hellip;</span></li>
       {% endif %}
       {% for key, item in items.pages %}
         <li class="pager__item{{ current == key ? ' is-active' : '' }}">
@@ -43,7 +45,7 @@
         </li>
       {% endfor %}
       {% if ellipses.next %}
-        <li class="pager__item pager__item--ellipsis" role="presentation">&hellip;</li>
+        <li class="pager__item pager__item--ellipsis" aria-hidden="true"><span aria-hidden="true">&hellip;</span></li>
       {% endif %}
       {% if items.next %}
         <li class="pager__item pager__item--next">

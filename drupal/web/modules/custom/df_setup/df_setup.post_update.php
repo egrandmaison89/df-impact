@@ -91,14 +91,14 @@ function df_setup_post_update_restore_in_brief_summary(): string {
 /**
  * Seed issue field_cover_image from committed wp-images / WP uploads (browse-issues).
  */
-function df_setup_post_update_seed_issue_covers(&$sandbox): string {
+function df_setup_post_update_seed_issue_covers(&$sandbox = NULL): string {
   return _df_setup_backfill_issue_cover_images();
 }
 
 /**
  * Seed issue field_banner_image when empty (issue landing hero parity).
  */
-function df_setup_post_update_seed_issue_banners(&$sandbox): string {
+function df_setup_post_update_seed_issue_banners(&$sandbox = NULL): string {
   return _df_setup_backfill_issue_banner_images();
 }
 
@@ -139,20 +139,5 @@ function df_setup_post_update_late_fall_2022_export_byline_trim(): string {
  */
 function df_setup_post_update_converge_content_sweep_reference_bodies(): string {
   require_once __DIR__ . '/df_setup.install';
-  $about = _df_setup_apply_about_impact_gutenberg_body();
-  $script = __DIR__ . '/../df_migrate/scripts/df_content_sweep_body_backfill.php';
-  if (!is_readable($script)) {
-    return $about . '; article backfill script missing.';
-  }
-  require_once $script;
-  $result = df_migrate_content_sweep_body_backfill();
-  if (!empty($result['error'])) {
-    return $about . '; article backfill failed: ' . $result['error'];
-  }
-  return sprintf(
-    '%s; article bodies scanned=%d updated=%d.',
-    $about,
-    (int) ($result['scanned'] ?? 0),
-    (int) ($result['updated'] ?? 0),
-  );
+  return _df_setup_converge_content_sweep_reference_bodies();
 }

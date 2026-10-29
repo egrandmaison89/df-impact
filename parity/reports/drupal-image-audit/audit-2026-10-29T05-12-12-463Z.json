@@ -1,0 +1,86 @@
+{
+  "drupalBase": "http://127.0.0.1:8888",
+  "paths": 19,
+  "imagesChecked": 51,
+  "brokenCount": 13,
+  "broken": [
+    {
+      "path": "/",
+      "src": "http://127.0.0.1:8888/sites/default/files/wp-images/Dana-Farber-Logo.png",
+      "issue": "img_http_fail",
+      "wpOk": false
+    },
+    {
+      "path": "/fall-2026-issue",
+      "src": "https://danafarberimpact.org/presidentsfloor_1450/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/summer-2025-issue",
+      "src": "https://danafarberimpact.org/bcrf_1450/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/spring-2026-issue",
+      "src": "https://danafarberimpact.org/2026/03/jimmy-fund-walk-steps-into-record-breaking-year-with-over-11-2-million-raised/gubb_1450/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/about",
+      "src": "http://default/sites/default/files/wp-images/Impact_About_Courage_725.jpg",
+      "issue": "img_http_fail",
+      "wpOk": false
+    },
+    {
+      "path": "/category/cancer-research",
+      "src": "https://danafarberimpact.org/myelomasolutionsfund_1450/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/category/digital-exclusives",
+      "src": "https://danafarberimpact.org/cllsociety_1450/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/category/digital-exclusives",
+      "src": "https://danafarberimpact.org/2023/01/grants-support-innovations-in-pediatric-cancer-research/hyundaihopeonwheelslogo_1450/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/category/digital-exclusives",
+      "src": "https://danafarberimpact.org/carson_1450/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/category/digital-exclusives",
+      "src": "https://danafarberimpact.org/drfarber_1450/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/category/access-and-equity",
+      "src": "https://danafarberimpact.org/df_melissa-and-paul-at-jimmy-fund-telethon/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/category/access-and-equity",
+      "src": "https://danafarberimpact.org/df_img_8917/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/category/access-and-equity",
+      "src": "https://danafarberimpact.org/df_defy_cancer_25_sp_f14a1270b/",
+      "issue": "img_http_fail",
+      "wpOk": null
+    }
+  ]
+}

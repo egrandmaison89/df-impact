@@ -1540,6 +1540,87 @@
   color: #004f7a;
 }
 
+/* In Brief band — Stackable row (issue landing + anywhere stk-c3abd9d is used) */
+.stk-c3abd9d.stk-block-background,
+.stk-c3abd9d {
+  background-color: #003354 !important;
+  padding-top: 40px !important;
+  padding-bottom: 55px !important;
+  margin-top: 40px !important;
+  margin-bottom: 40px !important;
+}
+
+.stk-c3abd9d::before {
+  background-color: #003354 !important;
+}
+
+.stk-c3abd9d .wp-block-paragraph,
+.stk-c3abd9d .has-background-color.has-text-color {
+  color: #ffffff !important;
+}
+
+.stk-c3abd9d .wp-block-paragraph a {
+  color: #ffffff;
+}
+
+@media screen and (min-width: 768px) {
+  .stk-f37234b {
+    flex: 1 1 calc(66% - var(--stk-column-gap, 0px) / 2) !important;
+  }
+
+  .stk-74f6241 {
+    flex: 1 1 calc(34% - var(--stk-column-gap, 0px) / 2) !important;
+  }
+}
+
+.stk-f37234b-container {
+  margin-left: 20px !important;
+}
+
+.stk-f37234b-inner-blocks,
+.stk-74f6241-inner-blocks {
+  justify-content: center !important;
+}
+
+/* Browse Issues — cover grid (reference-pack /browse-issues/) */
+figure.issue-cover {
+  margin: 0 0 0.5rem;
+}
+
+figure.issue-cover img {
+  width: 250px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.wp-container-core-group-is-layout-7caa2bd2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.wp-container-core-group-is-layout-7caa2bd2 > .wp-block-group {
+  flex: 0 0 25%;
+  max-width: 25%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 991px) {
+  .wp-container-core-group-is-layout-7caa2bd2 > .wp-block-group {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 600px) {
+  .wp-container-core-group-is-layout-7caa2bd2 > .wp-block-group {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
 /* In Brief — WordPress Stackable row: accent rule + headline + filled CTA */
 .issue-page__in-brief-region {
   padding: clamp(1.5rem, 4vw, 2.75rem) var(--space-md);
@@ -1829,12 +1910,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-}
-
-.in-brief-page__item.is-collapsed,
-.ultp-block-items-wrap .ultp-block-item.is-collapsed,
-.ultp-block-item.ultp-block-media.is-collapsed {
-  display: none !important;
 }
 
 .in-brief-page__load-more {

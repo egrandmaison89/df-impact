@@ -89,7 +89,16 @@ const PAGES = (process.env.PACK_COMPARE_PATHS || defaultPages.join(','))
   .filter(Boolean);
 const BPS = { desktop: 1440, tablet: 768, mobile: 375 };
 
+/** WP paths whose reference-pack folder differs from pathToPackSlug (404 vs category archive). */
+const REF_PACK_SLUG_OVERRIDES = {
+  '/digital-exclusives': 'category_digital-exclusives',
+};
+
 function pathToPackSlug(p) {
+  const normalized = p.replace(/\/+$/, '') || '/';
+  if (REF_PACK_SLUG_OVERRIDES[normalized]) {
+    return REF_PACK_SLUG_OVERRIDES[normalized];
+  }
   if (p === '/' || p === '') return 'root';
   if (p === '/homepage') return 'homepage';
   const m = p.match(/^\/(\d{4})\/(\d{2})\/(.+?)\/?$/);

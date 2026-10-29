@@ -1,0 +1,62 @@
+{
+  "drupalBase": "http://127.0.0.1:8888",
+  "paths": 19,
+  "imagesChecked": 51,
+  "brokenCount": 9,
+  "broken": [
+    {
+      "path": "/",
+      "src": "http://127.0.0.1:8888/sites/default/files/wp-images/Dana-Farber-Logo.png",
+      "issue": "img_http_fail",
+      "wpOk": false
+    },
+    {
+      "path": "/fall-2026-issue",
+      "src": "http://127.0.0.1:8888/sites/default/files/wp-content/uploads/2026/08/LavineBekensteinFCH_1450-1024x734.jpg",
+      "issue": "img_http_fail",
+      "wpOk": false
+    },
+    {
+      "path": "/fall-2026-issue",
+      "src": "http://127.0.0.1:8888/sites/default/files/wp-content/uploads/2026/08/LubinFamily_1450-1024x734.jpg",
+      "issue": "img_http_fail",
+      "wpOk": false
+    },
+    {
+      "path": "/about",
+      "src": "http://default/sites/default/files/wp-images/Impact_About_Courage_725.jpg",
+      "issue": "img_http_fail",
+      "wpOk": true
+    },
+    {
+      "path": "/category/cancer-research",
+      "src": "http://127.0.0.1:8888/sites/default/files/wp-content/uploads/2026/08/Gross_1450-1024x734.jpg",
+      "issue": "img_http_fail",
+      "wpOk": true
+    },
+    {
+      "path": "/category/cancer-research",
+      "src": "http://127.0.0.1:8888/sites/default/files/wp-content/uploads/2026/08/MyelomaSolutionsFund_1450-1024x734.jpg",
+      "issue": "img_http_fail",
+      "wpOk": false
+    },
+    {
+      "path": "/category/digital-exclusives",
+      "src": "http://127.0.0.1:8888/sites/default/files/wp-content/uploads/2026/08/CLLSociety_1450-1024x734.jpg",
+      "issue": "img_http_fail",
+      "wpOk": true
+    },
+    {
+      "path": "/category/digital-exclusives",
+      "src": "https://danafarberimpact.org/wp-content/uploads/2026/06/Carson_1450-1024x734.jpg",
+      "issue": "img_http_fail",
+      "wpOk": null
+    },
+    {
+      "path": "/category/access-and-equity",
+      "src": "https://danafarberimpact.org/wp-content/uploads/2026/06/FoodPantry_1450-1024x734.jpg",
+      "issue": "img_http_fail",
+      "wpOk": null
+    }
+  ]
+}

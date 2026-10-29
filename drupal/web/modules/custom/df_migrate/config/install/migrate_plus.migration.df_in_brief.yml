@@ -44,7 +44,9 @@ source:
       type: integer
 
 process:
-  title: title
+  title:
+    plugin: df_decode_plain_text
+    source: title
   type:
     plugin: default_value
     default_value: in_brief

@@ -4,7 +4,11 @@
  * Digital Exclusives archive — same query layout as topic archives.
  */
 #}
-<h1 class="wp-block-heading alignwide blue-border-header has-text-color has-montserrat-font-family">{{ 'Digital Exclusives'|t }}</h1>
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+  <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+    <h1 class="wp-block-heading alignwide blue-border-header category-header wp-block-query-title has-text-color has-montserrat-font-family" style="color:#003354;margin-top:40px;padding-top:0;padding-right:20px;padding-bottom:0;padding-left:15px;font-size:38px;font-style:normal;font-weight:600;text-transform:capitalize">{{ 'Digital Exclusives'|t }}</h1>
+  </div>
+</div>
 
 {% if rows %}
   {{ rows }}

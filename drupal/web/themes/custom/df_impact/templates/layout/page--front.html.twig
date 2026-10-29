@@ -1,87 +1,65 @@
 {#
-/**
- * @file
- * Theme override for the front page.
- *
- * Section order aligns with the legacy WordPress homepage pattern.
- */
+  Front page — WordPress homepage DOM (reference-pack homepage/desktop/rendered.html).
 #}
 <div class="wp-site-blocks">
 
   {% include '@df_impact/includes/wp-chrome-header.html.twig' %}
 
-  {# --- Hero: region block overrides default banner --- #}
-  <section class="hero hero--front" aria-label="{{ 'Magazine feature imagery'|t }}">
-    {% if homepage_hero %}
-      {% include '@df_impact/includes/hero-video.html.twig' with homepage_hero only %}
-    {% elseif page.hero %}
-      {{ page.hero }}
-    {% else %}
-      <div class="hero__banner" role="group" aria-label="{{ 'Magazine feature imagery'|t }}">
-        <img src="/{{ directory }}/images/Impact_Homepage_Banner_2560.jpg" width="2560" height="981" alt="{{ 'Blue-toned collage of Dana-Farber staff and patients'|t }}" class="hero__banner-img" loading="eager" fetchpriority="high">
-        <div class="hero__banner-overlay">
-          <div class="hero__banner-inner">
-            <h1 class="hero__banner-title">{{ 'Stories From Our Community of Support'|t }}</h1>
-          </div>
-        </div>
+  <div class="wp-block-group alignfull no-margin-top header-media-inner-post without-bg is-layout-constrained wp-block-group-is-layout-constrained">
+    <div class="wp-block-group alignfull is-layout-flow wp-block-group-is-layout-flow" style="padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px">
+      <div class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
+        <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow"></div>
       </div>
-    {% endif %}
-  </section>
+    </div>
+  </div>
 
-  <main id="main-content" class="page__content page__content--front" role="main">
+  <main id="wp--skip-link--target" class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
+    <div class="entry-content wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
 
-    {# --- Explore the latest issue --- #}
-    <section class="homepage-section homepage-section--explore" aria-labelledby="homepage-explore-heading">
-      <div class="container">
-        <h2 id="homepage-explore-heading" class="homepage-section__title">{{ 'Explore the Latest Issue'|t }}</h2>
-        {% if latest_issue_label %}
-          <p class="homepage-explore-issue-label">{{ latest_issue_label }}</p>
-        {% endif %}
-        {% if latest_issue_articles %}
-          <div class="homepage-latest-issue-stories">
-            {{ latest_issue_articles }}
-          </div>
-        {% else %}
-          <div class="homepage-current-issue">
-            {{ drupal_view('browse_issues', 'current_issue') }}
-          </div>
-        {% endif %}
-        <p class="homepage-section__footer-link">
+      {% if homepage_hero %}
+        {% include '@df_impact/includes/wp-homepage-hero-cover.html.twig' with homepage_hero only %}
+      {% endif %}
+
+      <h2 class="wp-block-heading alignwide orange-border-header has-text-color has-background has-montserrat-font-family" style="color:#63666a;background-color:#dde5f000;margin-top:40px;padding-top:5px;padding-right:20px;padding-bottom:5px;padding-left:15px;font-size:28px;font-style:normal;font-weight:600;text-transform:none">{{ 'Explore the Latest Issue'|t }}</h2>
+
+      {% if latest_issue_articles %}
+        {{ latest_issue_articles }}
+      {% endif %}
+
+      <div class="wp-block-buttons is-content-justification-center is-layout-flex wp-container-core-buttons-is-layout-20959078 wp-block-buttons-is-layout-flex">
+        <div class="wp-block-button">
           {% if latest_issue_url %}
-            <a href="{{ latest_issue_url }}" class="btn btn--primary btn--homepage">{{ 'See Full Issue'|t }}</a>
+            <a class="wp-block-button__link has-background-color has-text-color has-background wp-element-button" href="{{ latest_issue_url }}" style="border-radius:5px;background-color:#00629b;text-transform:none" data-analytics-linktype="cta" data-analytics-region="body" data-analytics-category="See Full Issue" data-analytics-text="See Full Issue">{{ 'See Full Issue'|t }}</a>
           {% else %}
-            <a href="{{ path('view.browse_issues.page_1') }}" class="btn btn--primary btn--homepage">{{ 'See Full Issue'|t }}</a>
+            <a class="wp-block-button__link has-background-color has-text-color has-background wp-element-button" href="{{ path('view.browse_issues.page_1') }}" style="border-radius:5px;background-color:#00629b;text-transform:none">{{ 'See Full Issue'|t }}</a>
           {% endif %}
-        </p>
-      </div>
-    </section>
-
-    {# --- Digital exclusives (before recent highlights, matching WordPress) --- #}
-    <section class="homepage-section" aria-labelledby="homepage-de-heading">
-      <div class="container">
-        <div class="homepage-section__header">
-          <h2 id="homepage-de-heading" class="homepage-section__title">{{ 'Digital Exclusives'|t }}</h2>
         </div>
-        {{ drupal_view('homepage_digital_exclusives', 'block_1') }}
-        <p class="homepage-section__footer-link">
-          <a href="{{ path('view.digital_exclusives_archive.page_1') }}" class="btn btn--primary btn--homepage">{{ 'All Digital Exclusives'|t }}</a>
-        </p>
       </div>
-    </section>
 
-    {# --- Recent highlights --- #}
-    <section class="homepage-section" aria-labelledby="homepage-highlights-heading">
-      <div class="container">
-        <div class="homepage-section__header">
-          <h2 id="homepage-highlights-heading" class="homepage-section__title">{{ 'Recent Highlights'|t }}</h2>
+      <h2 class="wp-block-heading alignwide orange-border-header has-text-color has-background has-montserrat-font-family" style="color:#63666a;background-color:#dde5f000;margin-top:40px;padding-top:5px;padding-right:20px;padding-bottom:5px;padding-left:15px;font-size:28px;font-style:normal;font-weight:600;text-transform:none">{{ 'Digital Exclusives'|t }}</h2>
+
+      {{ drupal_view('homepage_digital_exclusives', 'block_1') }}
+
+      <div class="wp-block-buttons is-content-justification-center is-layout-flex wp-container-core-buttons-is-layout-20959078 wp-block-buttons-is-layout-flex">
+        <div class="wp-block-button">
+          <a class="wp-block-button__link has-background-color has-text-color has-background wp-element-button" href="{{ homepage_digital_exclusives_url }}" style="border-radius:5px;background-color:#00629b;text-transform:none" data-analytics-linktype="cta" data-analytics-region="body" data-analytics-category="All Digital Exclusives" data-analytics-text="All Digital Exclusives">{{ 'All Digital Exclusives'|t }}</a>
         </div>
-        {{ drupal_view('homepage_highlights', 'block_1') }}
-        <p class="homepage-section__footer-link">
-          <a href="{{ path('view.browse_issues.page_1') }}" class="btn btn--primary btn--homepage">{{ 'See All Issues'|t }}</a>
-        </p>
       </div>
-    </section>
 
+      <h2 class="wp-block-heading alignwide orange-border-header has-background-background-color has-text-color has-background has-montserrat-font-family" style="color:#63666a;margin-top:40px;padding-top:5px;padding-right:20px;padding-bottom:5px;padding-left:15px;font-size:28px;font-style:normal;font-weight:600;text-transform:none">{{ 'Recent Highlights'|t }}</h2>
+
+      {{ drupal_view('homepage_highlights', 'block_1') }}
+
+      <div class="wp-block-buttons is-content-justification-center is-layout-flex wp-container-core-buttons-is-layout-20959078 wp-block-buttons-is-layout-flex">
+        <div class="wp-block-button">
+          <a class="wp-block-button__link has-background-color has-text-color has-background wp-element-button" href="{{ path('view.browse_issues.page_1') }}" style="border-radius:5px;background-color:#00629b;text-transform:none" data-analytics-linktype="cta" data-analytics-region="body" data-analytics-category="See All Issues" data-analytics-text="See All Issues">{{ 'See All Issues'|t }}</a>
+        </div>
+      </div>
+
+      <p class="wp-block-paragraph"></p>
+    </div>
+
+    <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained"></div>
   </main>
 
   {% include '@df_impact/includes/wp-chrome-footer.html.twig' %}

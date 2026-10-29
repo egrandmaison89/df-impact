@@ -205,6 +205,20 @@ function df_impact_views_result_row_node($row): ?NodeInterface {
 }
 
 /**
+ * Implements hook_preprocess_views_view().
+ */
+function df_impact_preprocess_views_view(array &$variables): void {
+  $view = $variables['view'] ?? NULL;
+  if (!$view) {
+    return;
+  }
+  $homepage_views = ['homepage_digital_exclusives', 'homepage_highlights', 'issue_articles'];
+  if (in_array($view->id(), $homepage_views, TRUE)) {
+    $variables['title'] = '';
+  }
+}
+
+/**
  * Implements hook_preprocess_views_view_fields().
  */
 function df_impact_preprocess_views_view_fields(&$variables): void {
@@ -223,10 +237,7 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     return;
   }
   if ($view_id === 'issue_articles' && ($view->current_display ?? '') === 'homepage_latest') {
-    $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
-    if ($node instanceof NodeInterface && $node->bundle() === 'article') {
-      $variables['article_card_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
-    }
+    df_impact_preprocess_homepage_article_card_fields($variables);
     return;
   }
 
@@ -249,10 +260,10 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     'homepage_highlights',
     'homepage_digital_exclusives',
   ];
-  if (in_array($view_id, $homepage_card_views, TRUE) && ($view->current_display ?? '') === 'default') {
-    $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
-    if ($node instanceof NodeInterface && $node->bundle() === 'article') {
-      $variables['article_card_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
+  if (in_array($view_id, $homepage_card_views, TRUE)) {
+    $display = $view->current_display ?? '';
+    if ($display === 'default' || $display === 'block_1') {
+      df_impact_preprocess_homepage_article_card_fields($variables);
     }
   }
 }
@@ -371,6 +382,7 @@ function df_impact_preprocess_page(&$variables) {
     }
   }
   $variables['footer_topic_links'] = $footer_topic_links;
+  $variables['homepage_digital_exclusives_url'] = Url::fromUri('internal:/category/digital-exclusives')->toString();
 
   // Front page: stories from the newest issue (WordPress "Explore" band).
   $variables['latest_issue_articles'] = NULL;
@@ -667,6 +679,64 @@ function df_impact_build_issue_browse_thumbnail(NodeInterface $issue): array {
     return [];
   }
   return $article->get('field_featured_image')->view($formatter);
+}
+
+/**
+ * Populates PostX card variables for homepage view rows.
+ */
+function df_impact_preprocess_homepage_article_card_fields(array &$variables): void {
+  $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
+  if (!$node instanceof NodeInterface || $node->bundle() !== 'article') {
+    return;
+  }
+  $variables['article_nid'] = $node->id();
+  $variables['article_url'] = $node->toUrl()->toString();
+  $meta = df_impact_article_card_image_meta($node);
+  $variables['article_card_image_url'] = $meta['url'] ?? NULL;
+  $variables['article_card_image_alt'] = $meta['alt'] ?? $node->label();
+  $variables['article_card_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
+}
+
+/**
+ * Image URL + alt for PostX-style homepage cards.
+ *
+ * @return array{url: string, alt: string}|null
+ */
+function df_impact_article_card_image_meta(NodeInterface $node): ?array {
+  if ($node->bundle() !== 'article') {
+    return NULL;
+  }
+  if ($node->hasField('field_featured_image') && !$node->get('field_featured_image')->isEmpty()) {
+    $media = $node->get('field_featured_image')->entity;
+    if ($media && $media->hasField('field_media_image') && !$media->get('field_media_image')->isEmpty()) {
+      $file = $media->get('field_media_image')->entity;
+      if ($file) {
+        $alt = (string) $media->get('field_media_image')->alt;
+        if ($alt === '') {
+          $alt = $node->label();
+        }
+        return [
+          'url' => \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri()),
+          'alt' => $alt,
+        ];
+      }
+    }
+  }
+  $row = df_impact_article_export_row_for_node($node);
+  if (!is_array($row)) {
+    return NULL;
+  }
+  foreach (df_impact_article_export_try_image_urls($row) as $candidate) {
+    $src = df_impact_article_fallback_image_src($candidate);
+    if ($src === NULL || $src === '') {
+      continue;
+    }
+    return [
+      'url' => $src,
+      'alt' => df_impact_article_export_lead_alt($row, $node) ?: $node->label(),
+    ];
+  }
+  return NULL;
 }
 
 /**

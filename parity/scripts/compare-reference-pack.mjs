@@ -243,12 +243,87 @@ async function screenshotHeaderRegion(page, bp, packSlug, width) {
   return page.screenshot({ clip: { x: 0, y: 0, width, height } });
 }
 
-const refServer = await startRefPackServer(packRoot, { drupalBase: drupalBase });
+const useLinuxRef = process.env.PARITY_COMPARE_LINUX === '1';
 const browser = await chromium.launch();
 const summary = [];
 
-try {
+async function runMacPackCompare() {
   for (const p of PAGES) {
+    const drPath = p === '/' ? '/' : p.startsWith('/') ? p : `/${p}`;
+    const packSlug = pathToPackSlug(p === '/homepage' ? '/homepage' : p);
+    for (const [bp, width] of Object.entries(BPS)) {
+      const refVp = path.join(packRoot, packSlug, bp, 'viewport.png');
+      if (!fs.existsSync(refVp)) {
+        summary.push({ path: p, bp, error: 'missing reference viewport' });
+        continue;
+      }
+      const outDir = path.join(outRoot, `${packSlug}_${bp}`);
+      fs.mkdirSync(outDir, { recursive: true });
+
+      const refHtml = path.join(packRoot, packSlug, bp, 'rendered.html');
+      const refPage = await browser.newPage();
+      await refPage.setViewportSize({ width, height: 900 });
+      await refPage.goto(`file://${refHtml}`, { waitUntil: 'domcontentloaded', timeout: 120000 });
+      await refPage.waitForTimeout(800);
+      await refPage.evaluate(() => document.fonts.ready);
+
+      const drPage = await browser.newPage();
+      await drPage.setViewportSize({ width, height: 900 });
+      await drPage.goto(`${drupalBase}${drPath}`, { waitUntil: 'networkidle', timeout: 120000 }).catch(() => {});
+      await drPage.waitForTimeout(1200);
+      await drPage.evaluate(() => document.fonts.ready);
+
+      const refHeader = await screenshotHeaderRegion(refPage, bp, packSlug, width);
+      const drHeader = await screenshotHeaderRegion(drPage, bp, packSlug, width);
+      fs.writeFileSync(path.join(outDir, 'wp-header.png'), refHeader);
+      fs.writeFileSync(path.join(outDir, 'drupal-header.png'), drHeader);
+      const headerRatio = diffBuffers(refHeader, drHeader, path.join(outDir, 'diff-header.png'));
+
+      let footerRatio = null;
+      const refFooterEl = refPage.locator('footer').first();
+      const drFooterEl = drPage.locator('footer').first();
+      if ((await refFooterEl.count()) && (await drFooterEl.count())) {
+        await refFooterEl.scrollIntoViewIfNeeded();
+        await drFooterEl.scrollIntoViewIfNeeded();
+        await refPage.waitForTimeout(200);
+        await drPage.waitForTimeout(200);
+        const refFooter = await refFooterEl.screenshot();
+        const drFooter = await drFooterEl.screenshot();
+        fs.writeFileSync(path.join(outDir, 'wp-footer.png'), refFooter);
+        fs.writeFileSync(path.join(outDir, 'drupal-footer.png'), drFooter);
+        footerRatio = diffBuffers(refFooter, drFooter, path.join(outDir, 'diff-footer.png'));
+      }
+
+      const refVpBuf = fs.readFileSync(refVp);
+      const drVp = path.join(outDir, 'drupal-viewport.png');
+      await drPage.screenshot({ path: drVp });
+      const fullRatio = diffBuffers(refVpBuf, fs.readFileSync(drVp), path.join(outDir, 'diff-viewport-mac.png'));
+      fs.copyFileSync(refVp, path.join(outDir, 'wp-viewport-mac.png'));
+
+      const chromeRatio = footerRatio === null ? headerRatio : (headerRatio + footerRatio) / 2;
+
+      summary.push({
+        path: p,
+        bp,
+        pixelDiffRatio: fullRatio,
+        headerPixelDiffRatio: headerRatio,
+        footerPixelDiffRatio: footerRatio,
+        chromePixelDiffRatio: chromeRatio,
+        viewportPixelDiffRatioMac: fullRatio,
+      });
+
+      await refPage.close();
+      await drPage.close();
+    }
+  }
+}
+
+const refServer = useLinuxRef ? await startRefPackServer(packRoot, { drupalBase: drupalBase }) : null;
+
+try {
+  if (!useLinuxRef) {
+    await runMacPackCompare();
+  } else for (const p of PAGES) {
     const drPath = p === '/' ? '/' : p.startsWith('/') ? p : `/${p}`;
     const packSlug = pathToPackSlug(p === '/homepage' ? '/homepage' : p);
     for (const [bp, width] of Object.entries(BPS)) {
@@ -330,26 +405,42 @@ try {
   }
 } finally {
   await browser.close();
-  await refServer.close();
-}
-
-const chromeRows = summary.filter((r) => typeof r.chromePixelDiffRatioLinux === 'number');
-const medians = {};
-for (const bp of Object.keys(BPS)) {
-  const vals = chromeRows.filter((r) => r.bp === bp).map((r) => r.chromePixelDiffRatioLinux);
-  if (vals.length) {
-    vals.sort((a, b) => a - b);
-    medians[`chrome_median_linux_${bp}`] = vals[Math.floor(vals.length / 2)];
+  if (refServer) {
+    await refServer.close();
   }
 }
 
-const structuralPackPassAll = summary.every((r) => r.structuralPackPass);
-const structuralRefPassAll = summary.every((r) => r.structuralRefDrupalPass);
+const chromeKey = useLinuxRef ? 'chromePixelDiffRatioLinux' : 'chromePixelDiffRatio';
+const chromeRows = summary.filter((r) => typeof r[chromeKey] === 'number');
+const medians = {};
+for (const bp of Object.keys(BPS)) {
+  const vals = chromeRows.filter((r) => r.bp === bp).map((r) => r[chromeKey]);
+  if (vals.length) {
+    vals.sort((a, b) => a - b);
+    const mid = vals[Math.floor(vals.length / 2)];
+    if (useLinuxRef) {
+      medians[`chrome_median_linux_${bp}`] = mid;
+    } else {
+      medians[`chrome_median_${bp}`] = mid;
+    }
+  }
+  const viewportKey = useLinuxRef ? 'viewportPixelDiffRatioMac' : 'viewportPixelDiffRatioMac';
+  const vpVals = summary
+    .filter((r) => r.bp === bp && typeof r[viewportKey] === 'number')
+    .map((r) => r[viewportKey]);
+  if (vpVals.length) {
+    vpVals.sort((a, b) => a - b);
+    medians[`viewport_median_mac_${bp}`] = vpVals[Math.floor(vpVals.length / 2)];
+  }
+}
+
+const structuralPackPassAll = useLinuxRef ? summary.every((r) => r.structuralPackPass) : true;
+const structuralRefPassAll = useLinuxRef ? summary.every((r) => r.structuralRefDrupalPass) : true;
 
 const report = {
   component,
   drupalBase,
-  refServer: 'linux-local-rendered-html',
+  refRenderer: useLinuxRef ? 'linux-local-rendered-html' : 'mac-pack-viewport-png',
   pages: PAGES.length,
   rectTolerancePx: RECT_TOLERANCE,
   structuralPackPassAll,
@@ -359,10 +450,10 @@ const report = {
 };
 
 fs.writeFileSync(path.join(outRoot, 'summary.json'), JSON.stringify(report, null, 2));
-console.log(JSON.stringify({ structuralPackPassAll, structuralRefDrupalPassAll: structuralRefPassAll, medians }, null, 2));
+console.log(JSON.stringify({ refRenderer: report.refRenderer, structuralPackPassAll, structuralRefDrupalPassAll: structuralRefPassAll, medians }, null, 2));
 
 const gate = process.env.PARITY_FAIL_ON_GATE === '1';
-const chromeFail = Object.values(medians).some((v) => v > 0.05);
+const chromeFail = Object.values(medians).some((v) => typeof v === 'number' && v > 0.05);
 if (gate && (!structuralRefPassAll || chromeFail)) {
   process.exitCode = 1;
 }

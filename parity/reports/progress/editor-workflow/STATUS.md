@@ -1,12 +1,11 @@
 # Editor workflow agent status
 
-Branch: `cursor/editor-workflow-ce7f`  
-Base PR target: `cursor/phase4-chrome-behavior-0b67`  
-PR: https://github.com/egrandmaison89/df-impact/pull/15
+Branch: `cursor/editor-followups-ce7f` (stacked on PR #5 @ `b51df612` after PR #15 merge + Mac `entity:node/{nid}` install fix)  
+Base PR target: `cursor/phase4-chrome-behavior-0b67`
 
 ## Resume checklist
 
-1. `git pull origin cursor/editor-workflow-ce7f`
+1. `git fetch origin cursor/phase4-chrome-behavior-0b67 && git checkout cursor/editor-followups-ce7f && git merge origin/cursor/phase4-chrome-behavior-0b67`
 2. Bootstrap DB if needed: `bash scripts/repro/bootstrap-vm.sh`
 3. `cd drupal/web && ../vendor/bin/drush cr`
 4. Run workflow test: `../vendor/bin/drush df-editor:test-publish-workflow`

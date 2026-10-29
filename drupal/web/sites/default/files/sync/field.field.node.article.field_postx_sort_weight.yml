@@ -1,0 +1,23 @@
+uuid: 6c0e3e4f-1d5b-6a3c-0e7f-c3d4e5f6a7b8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_postx_sort_weight
+    - node.type.article
+id: node.article.field_postx_sort_weight
+field_name: field_postx_sort_weight
+entity_type: node
+bundle: article
+label: 'Issue grid sort weight'
+description: 'Lower numbers appear first in issue PostX grids (matches WordPress order when backfilled).'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

@@ -928,3 +928,41 @@ function _df_setup_apply_wordpress_manifest_paths(): string {
     $home_alias_added ? 'yes' : 'already present'
   );
 }
+
+/**
+ * PostX sort fields + backfill from Mac reference pack / WP post-id order.
+ */
+function df_setup_update_10025(): string {
+  foreach (['field_postx_sort_weight', 'field_homepage_sort_weight'] as $field_name) {
+    if (!FieldStorageConfig::loadByName('node', $field_name)) {
+      FieldStorageConfig::create([
+        'field_name' => $field_name,
+        'entity_type' => 'node',
+        'type' => 'integer',
+        'cardinality' => 1,
+        'translatable' => FALSE,
+      ])->save();
+    }
+    if (!FieldConfig::loadByName('node', 'article', $field_name)) {
+      FieldConfig::create([
+        'field_storage' => FieldStorageConfig::loadByName('node', $field_name),
+        'bundle' => 'article',
+        'label' => $field_name === 'field_postx_sort_weight' ? 'Issue grid sort weight' : 'Homepage grid sort weight',
+        'required' => FALSE,
+      ])->save();
+    }
+  }
+
+  $msg = 'PostX sort weight fields ensured.';
+  $script = __DIR__ . '/../df_migrate/scripts/backfill_postx_sort_weights.php';
+  if (is_readable($script)) {
+    try {
+      require $script;
+      $msg .= ' Backfill script executed.';
+    }
+    catch (\Throwable $e) {
+      $msg .= ' Backfill skipped: ' . $e->getMessage();
+    }
+  }
+  return $msg;
+}

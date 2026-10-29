@@ -354,14 +354,14 @@ function df_impact_preprocess_page(&$variables) {
   $origin = $request->getSchemeAndHttpHost() . $request->getBasePath();
   // Migrated media lives under public://wp-images (not WP uploads path segments).
   $variables['wp_uploads_base'] = rtrim($origin, '/') . '/sites/default/files/wp-images/';
-  $theme_path = \Drupal::service('extension.list.theme')->getPath('df_impact');
-  $variables['wp_logo_url'] = '/' . $theme_path . '/wp-assets/ImpactDFJF_HeaderLogo_878.png';
-  $logo_abs = rtrim($origin, '/') . $variables['wp_logo_url'];
+  // Match Mac reference-pack header logo (i0.wp.com derivatives, not local theme stub).
+  $logo_base = 'https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png';
+  $variables['wp_logo_url'] = $logo_base . '?ssl=1';
   $variables['wp_logo_srcset'] = implode(', ', [
-    $logo_abs . ' 878w',
-    $logo_abs . ' 300w',
-    $logo_abs . ' 150w',
-    $logo_abs . ' 768w',
+    $logo_base . '?w=878&ssl=1 878w',
+    $logo_base . '?resize=300%2C80&ssl=1 300w',
+    $logo_base . '?resize=150%2C40&ssl=1 150w',
+    $logo_base . '?resize=768%2C206&ssl=1 768w',
   ]);
 
   // Add the current year for copyright.

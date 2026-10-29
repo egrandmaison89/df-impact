@@ -13,7 +13,9 @@ dependencies:
     - field.field.node.article.field_excerpt
     - field.field.node.article.field_featured_image
     - field.field.node.article.field_homepage_placement
+    - field.field.node.article.field_homepage_sort_weight
     - field.field.node.article.field_image
+    - field.field.node.article.field_postx_sort_weight
     - field.field.node.article.field_issue
     - field.field.node.article.field_meta_description
     - field.field.node.article.field_photo_credit
@@ -61,6 +63,8 @@ third_party_settings:
         - field_cancer_types
         - field_content_type
         - field_homepage_placement
+        - field_postx_sort_weight
+        - field_homepage_sort_weight
       label: 'Publication & placement'
       region: content
       parent_name: ''
@@ -178,6 +182,20 @@ content:
     weight: 15
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_homepage_sort_weight:
+    type: number
+    weight: 16
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_postx_sort_weight:
+    type: number
+    weight: 17
+    region: content
+    settings:
+      placeholder: ''
     third_party_settings: {  }
   field_issue:
     type: entity_reference_autocomplete

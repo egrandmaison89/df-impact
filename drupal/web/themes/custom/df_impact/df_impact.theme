@@ -279,6 +279,9 @@ function df_impact_preprocess_views_view_unformatted(array &$variables): void {
  * Implements hook_preprocess_views_view_fields().
  */
 function df_impact_preprocess_views_view_fields(&$variables): void {
+  if (is_array($variables['row'] ?? NULL)) {
+    unset($variables['row']['#contextual_links']);
+  }
   $view = $variables['view'] ?? NULL;
   if (!$view) {
     return;

@@ -2,7 +2,7 @@
 
 Branch: `cursor/templates-inbrief-archives-185b`  
 Base: `cursor/phase4-chrome-behavior-0b67`  
-PR: [#11](https://github.com/egrandmaison89/df-impact/pull/11)
+PR: [#13](https://github.com/egrandmaison89/df-impact/pull/13)
 
 ## Owner manual QA (DDEV) — fixes landed
 
@@ -28,6 +28,15 @@ PR: [#11](https://github.com/egrandmaison89/df-impact/pull/11)
 | `/past-issues` | ~10% (ref pack is stale promo page, not issue grid) |
 
 Linux viewport pixel diffs remain dominated by phase4 chrome (~16%); out of scope per brief.
+
+## Pre-push gate (fatal regression)
+
+`df_impact_preprocess_views_view_fields()` must not treat Views `ResultRow` as an array when unsetting `#contextual_links` (see `cursor/vm-visual-parity-2b1b` / `f80dbbbd`).
+
+```bash
+drush -r web cr
+cd parity && DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:template-samples:http
+```
 
 ## Commands
 

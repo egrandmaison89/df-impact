@@ -4,7 +4,7 @@
 **Drupal:** `http://127.0.0.1:8888` (MariaDB `dfimpact`, host Drush).  
 **Method:** `npm run parity:computed-style-diff` (live WP vs Drupal, desktop/tablet/mobile).
 
-**Updated:** 2026-10-29 (phase4 merge, article main h, chrome bleed, DE archive filter)
+**Updated:** 2026-10-29 (merge phase4 @ `b51df612`, header logo x, Social Snap JS, gates)
 
 ---
 
@@ -84,9 +84,18 @@ Report: `parity/reports/computed-style-diff/post-merge-pr11/summary.json`
 
 `parity/scripts/computed-style-diff.mjs`, `parity/config/parity-selectors.json`, npm script `parity:computed-style-diff`. WP loads retry with backoff on **202** / captcha HTML / missing header / stub footer; **`wpComparable`** runs feed **`byTemplate.medianMismatchComparable`** (non-comparable samples excluded from medians).
 
-### Chrome header — **bleed restored**
+### Chrome header — **logo / donate inset (2026-10-29)**
 
-`.desktop-header` **x=0, w=1440, margin 0 -72px** (was **x=72, w=1296**). Avoid double bleed on `header.wp-block-template-part`. Open: **`.header-logo` x** still ~144px vs WP **15** (inner padding stack).
+Blockmag pads nested `.alignfull` header groups (+72px) and sets nested alignfull `width:inherit` → **`.header-logo` x≈159** vs WP **15**. Fix: bleed **`.desktop-header` / `.mobile-header`** with blockmag negative margins, zero side-padding on nested rows, cancel stray **`.left-side-header`** alignfull margins on mobile.
+
+| Viewport | Metric | WP (live / ref-pack) | Drupal (post-`e922cc40`) |
+|----------|--------|----------------------|---------------------------|
+| 1440 | `.header-logo` x | **15** | **15** |
+| 1440 @ scroll 300 | logo img h | **~67** (`.header-logo.scrolled`) | **~67**; header h **143** vs WP **~143** |
+| 1024 | logo x / donate x | **15** / **~904** | **15** / **~916** (±2px donate w) |
+| 768 / 390 | mobile logo x | **15** | **15** |
+
+Harness: `npm run parity:header-chrome` (`parity/scripts/compare-header-chrome.mjs`). Eric **`.header--scrolled` 100vw** rule unchanged on `.desktop-header.alignfull`.
 
 ### Article main height — **2026-10-29**
 

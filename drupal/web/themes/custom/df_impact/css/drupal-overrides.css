@@ -47,6 +47,18 @@ body {
   display: none !important;
 }
 
+@media (min-width: 769px) {
+  .mobile-header .gtranslate_wrapper {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-header .gtranslate_wrapper {
+    display: none !important;
+  }
+}
+
 /*
  * WP blockmag uses content-box on .wp-site-blocks (1296px + 72px padding = 1440).
  * Drupal/global border-box was stretching to 1440 content + bleed → 1584px chrome.

@@ -916,6 +916,8 @@ function df_impact_preprocess_homepage_article_card_fields(array &$variables): v
   $variables['article_card_image_alt'] = $meta['alt'] ?? $node->label();
   $variables['article_card_image_width'] = $meta['width'] ?? 768;
   $variables['article_card_image_height'] = $meta['height'] ?? 551;
+  $variables['article_card_image_srcset'] = $meta['srcset'] ?? NULL;
+  $variables['article_card_image_sizes'] = $meta['sizes'] ?? '(max-width: 768px) 100vw, 768px';
   $variables['article_card_image_fallback'] = df_impact_article_lead_image_fallback_build($node);
 }
 
@@ -1033,11 +1035,21 @@ function df_impact_issue_banner_meta(NodeInterface $node): ?array {
         if ($alt === '') {
           $alt = $node->label();
         }
+        $width = 1024;
+        $height = 396;
+        $path = \Drupal::service('file_system')->realpath($file->getFileUri());
+        if ($path && is_file($path)) {
+          $info = @getimagesize($path);
+          if (is_array($info) && !empty($info[0]) && !empty($info[1])) {
+            $width = (int) $info[0];
+            $height = (int) $info[1];
+          }
+        }
         return [
           'url' => df_impact_issue_banner_image_url($file->getFileUri()),
           'alt' => $alt,
-          'width' => 1024,
-          'height' => 396,
+          'width' => $width,
+          'height' => $height,
         ];
       }
     }
@@ -1702,11 +1714,14 @@ function df_impact_article_card_image_meta(NodeInterface $node): ?array {
         if ($alt === '') {
           $alt = $node->label();
         }
+        $uri = $file->getFileUri();
         return [
-          'url' => df_impact_card_image_url_for_parity_node($node, $file->getFileUri()),
+          'url' => df_impact_card_image_url_for_parity_node($node, $uri),
           'alt' => $alt,
-          'width' => 768,
-          'height' => 551,
+          'width' => 1024,
+          'height' => 734,
+          'srcset' => df_impact_postx_card_srcset($uri),
+          'sizes' => '(max-width: 768px) 100vw, 768px',
         ];
       }
     }
@@ -1723,11 +1738,52 @@ function df_impact_article_card_image_meta(NodeInterface $node): ?array {
     return [
       'url' => df_impact_card_image_url_for_parity_from_src($src),
       'alt' => df_impact_article_export_lead_alt($row, $node) ?: $node->label(),
-      'width' => 768,
-      'height' => 551,
+      'width' => 1024,
+      'height' => 734,
+      'srcset' => df_impact_postx_card_srcset_from_src($src),
+      'sizes' => '(max-width: 768px) 100vw, 768px',
     ];
   }
   return NULL;
+}
+
+/**
+ * Responsive srcset for PostX cards (Photon 350w + 768w, matching WP).
+ */
+function df_impact_postx_card_srcset(string $file_uri): ?string {
+  $parts = [];
+  $small = df_impact_wp_i0_derivative_url($file_uri, '350', '200');
+  $large = df_impact_wp_i0_postx_card_url($file_uri);
+  if ($small) {
+    $parts[] = $small . ' 350w';
+  }
+  if ($large) {
+    $parts[] = $large . ' 768w';
+  }
+  return $parts === [] ? NULL : implode(', ', $parts);
+}
+
+/**
+ * Build srcset from a parity image URL or uploads URI.
+ */
+function df_impact_postx_card_srcset_from_src(string $src): ?string {
+  $uri = $src;
+  if (str_starts_with($src, 'http')) {
+    $path = parse_url($src, PHP_URL_PATH) ?? '';
+    if ($path !== '') {
+      $uri = $path;
+    }
+  }
+  $parts = [];
+  $small = df_impact_wp_i0_derivative_url($uri, '350', '200');
+  $large = df_impact_wp_i0_postx_card_url($uri);
+  if ($small) {
+    $parts[] = $small . ' 350w';
+  }
+  if ($large) {
+    $parts[] = $large . ' 768w';
+  }
+  return $parts === [] ? NULL : implode(', ', $parts);
 }
 
 /**
@@ -1974,7 +2030,7 @@ function df_impact_article_fallback_image_src(string $url): ?string {
     }
   }
   $hostless = preg_replace('#^https?://[^/]+/#', '', $clean) ?? $clean;
-  if (preg_match('#^([^/?#]+)/?$#', $hostless, $slug_match)) {
+  if (preg_match('~^([^/?#]+)/?$~', $hostless, $slug_match)) {
     $stem = strtolower(pathinfo($slug_match[1], PATHINFO_FILENAME));
     $index = df_impact_media_source_url_index();
     if (!empty($index[$stem]) && is_string($index[$stem])) {

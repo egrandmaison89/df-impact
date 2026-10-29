@@ -1,0 +1,184 @@
+{
+  "generatedAt": "2026-10-29T06:47:28.795Z",
+  "drupalBase": "http://127.0.0.1:8888",
+  "wpBase": "https://danafarberimpact.org",
+  "useRefWp": true,
+  "rows": [
+    {
+      "template": "homepage",
+      "formFactor": "mobile",
+      "drupal": {
+        "performance": 0.55,
+        "lcp": 34773.5844,
+        "cls": 0.00850340282927714,
+        "tbt": 87.5,
+        "weightKb": 6126,
+        "requests": 73
+      },
+      "wordpress": {
+        "performance": null,
+        "lcp": null,
+        "cls": null,
+        "tbt": null,
+        "weightKb": 0,
+        "requests": null
+      },
+      "drUrl": "http://127.0.0.1:8888/homepage",
+      "wpUrl": "http://127.0.0.1:33069/homepage/desktop/rendered.html"
+    },
+    {
+      "template": "homepage",
+      "formFactor": "desktop",
+      "drupal": {
+        "performance": 0.54,
+        "lcp": 34910.0256,
+        "cls": 0.000719959332450502,
+        "tbt": 113,
+        "weightKb": 49742,
+        "requests": 77
+      },
+      "wordpress": {
+        "performance": null,
+        "lcp": null,
+        "cls": null,
+        "tbt": null,
+        "weightKb": 0,
+        "requests": null
+      },
+      "drUrl": "http://127.0.0.1:8888/homepage",
+      "wpUrl": "http://127.0.0.1:33069/homepage/desktop/rendered.html"
+    },
+    {
+      "template": "issue",
+      "formFactor": "mobile",
+      "drupal": {
+        "performance": 0.33,
+        "lcp": 32479.059500000007,
+        "cls": 0.5095699946270965,
+        "tbt": 90,
+        "weightKb": 6187,
+        "requests": 76
+      },
+      "wordpress": {
+        "performance": null,
+        "lcp": null,
+        "cls": null,
+        "tbt": null,
+        "weightKb": 0,
+        "requests": null
+      },
+      "drUrl": "http://127.0.0.1:8888/fall-2026-issue",
+      "wpUrl": "http://127.0.0.1:33069/fall-2026-issue/desktop/rendered.html"
+    },
+    {
+      "template": "issue",
+      "formFactor": "desktop",
+      "drupal": {
+        "performance": 0.41,
+        "lcp": 32479.282000000007,
+        "cls": 0.2818671525597187,
+        "tbt": 52.5,
+        "weightKb": 6187,
+        "requests": 76
+      },
+      "wordpress": {
+        "performance": null,
+        "lcp": null,
+        "cls": null,
+        "tbt": null,
+        "weightKb": 0,
+        "requests": null
+      },
+      "drUrl": "http://127.0.0.1:8888/fall-2026-issue",
+      "wpUrl": "http://127.0.0.1:33069/fall-2026-issue/desktop/rendered.html"
+    },
+    {
+      "template": "article",
+      "formFactor": "mobile",
+      "drupal": {
+        "performance": 0.55,
+        "lcp": 32931.19675,
+        "cls": 0.020908524423611546,
+        "tbt": 21,
+        "weightKb": 6112,
+        "requests": 70
+      },
+      "wordpress": {
+        "performance": null,
+        "lcp": null,
+        "cls": null,
+        "tbt": null,
+        "weightKb": 0,
+        "requests": null
+      },
+      "drUrl": "http://127.0.0.1:8888/2026/09/american-association-for-cancer-research-2",
+      "wpUrl": "http://127.0.0.1:33069/2026_09_american-association-for-cancer-research-2/desktop/rendered.html"
+    },
+    {
+      "template": "article",
+      "formFactor": "desktop",
+      "drupal": {
+        "performance": 0.55,
+        "lcp": 33831.761,
+        "cls": 0.018308904151904306,
+        "tbt": 20.5,
+        "weightKb": 6112,
+        "requests": 70
+      },
+      "wordpress": {
+        "performance": null,
+        "lcp": null,
+        "cls": null,
+        "tbt": null,
+        "weightKb": 0,
+        "requests": null
+      },
+      "drUrl": "http://127.0.0.1:8888/2026/09/american-association-for-cancer-research-2",
+      "wpUrl": "http://127.0.0.1:33069/2026_09_american-association-for-cancer-research-2/desktop/rendered.html"
+    },
+    {
+      "template": "archive",
+      "formFactor": "mobile",
+      "drupal": {
+        "performance": 0.54,
+        "lcp": 35771.904899999994,
+        "cls": 0.0023119810077238427,
+        "tbt": 129,
+        "weightKb": 6150,
+        "requests": 78
+      },
+      "wordpress": {
+        "performance": null,
+        "lcp": null,
+        "cls": null,
+        "tbt": null,
+        "weightKb": 0,
+        "requests": null
+      },
+      "drUrl": "http://127.0.0.1:8888/category/cancer-research",
+      "wpUrl": "http://127.0.0.1:33069/category_cancer-research/desktop/rendered.html"
+    },
+    {
+      "template": "archive",
+      "formFactor": "desktop",
+      "drupal": {
+        "performance": 0.54,
+        "lcp": 34635.71029999999,
+        "cls": 0.002956758495461834,
+        "tbt": 89.5,
+        "weightKb": 6333,
+        "requests": 82
+      },
+      "wordpress": {
+        "performance": null,
+        "lcp": null,
+        "cls": null,
+        "tbt": null,
+        "weightKb": 0,
+        "requests": null
+      },
+      "drUrl": "http://127.0.0.1:8888/category/cancer-research",
+      "wpUrl": "http://127.0.0.1:33069/category_cancer-research/desktop/rendered.html"
+    }
+  ]
+}

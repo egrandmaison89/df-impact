@@ -212,9 +212,7 @@ function df_metatag_rewrite_to_production(string $url, string $origin): string {
       $url = $m[1];
     }
   }
-  if (preg_match('#^/?(https?://.+)$#i', ltrim($url, '/'), $m)) {
-    return df_metatag_rewrite_to_production($m[1], $origin);
-  }
+  // Strip a leading slash before a full URL (corrupted token), not normal https URLs.
   if (preg_match('#^/(https?://.+)$#i', $url, $m)) {
     return df_metatag_rewrite_to_production($m[1], $origin);
   }

@@ -3,7 +3,21 @@
 **Branch:** `cursor/phase4-chrome-behavior-0b67` (integration PR **#5**).  
 **PR #7** (`cursor/wp-assets-vendor-cdf8` → `main`) is **redundant** for this work: its commits are already on phase4; keep measuring and fixing here, not on #7.
 
-**Updated:** 2026-10-28 (ET)
+**Updated:** 2026-10-28 (ET, post–PR #9 DDEV verify)
+
+## PR #9 merge + DDEV gates (full content)
+
+| Gate | Result | Report / run |
+|------|--------|----------------|
+| **Merge** | `cc4d56a8` — PR #9 `cursor/meta-head-behavior-0751` into phase4 | `updatedb` OK; `cim` (browse_issues); `cr` OK |
+| **`parity:head:refpack`** | **57.1%** (12/21 pack slugs); **19/21** Drupal reachable | `parity/reports/head-meta/compare-1793238200437.json` |
+| **`parity:url:check`** (801 URLs) | **98.9%** (792/801) | `parity/reports/url-parity/check-1793238507941.json` |
+| **`parity:behavior:smoke`** | **3/3** pass (`/homepage` D/T/M) | `parity/reports/behavior/2026-10-29T01-48-30-879Z/` |
+| **`parity:smoke:baseline`** | **46/46** Playwright pass; ref-pack head self-tests **21/21** | run `2026-10-29T01-48-56-797Z` (pixel/text gates still fail — unchanged visual scope) |
+
+**0% metaMatch root cause (post-merge):** merge conflict left `df_metatag_rewrite_to_production()` recursing on normal `https://…` URLs → PHP memory fatal → empty Drupal head in compare. Fixed by only stripping `/https://…` corruption (commit after merge).
+
+Ref-pack **failures** (expected gaps, not harness): WP 404 slugs still in pack (`2022_03_in-brief…`, `digital-exclusives`); external canonical (Perer/Rosenberg → defycancer); category/archive **title** + simplified Drupal JSON-LD vs Yoast graph; some pages missing og:image on views.
 
 ## Mac reference pack (template-samples)
 
@@ -38,15 +52,15 @@ From fresh compares + `parity/scripts/analyze-diff-bands.mjs` / `parity/docs/MEA
 
 Do **not** treat as anti-aliasing until a WP-vs-WP rerun noise floor is measured.
 
-## metaMatch (PR #6 + Mac fixes)
+## metaMatch (PR #6 + #9 + Mac fixes)
 
 | Item | Status |
 |------|--------|
-| Modules | `df_metatag`, `metatag_open_graph`, `metatag_twitter_cards` **enabled** |
-| **Root cause (was 0%)** | `df_metatag_metatags_alter()` rewrote **unresolved tokens** → canonical/og URLs like `https://danafarberimpact.org/http://df-impact.ddev.site/...`; theme lacked `<title>`; node description tokens used invalid `\|` fallback syntax |
-| **Fixes** | URL rewrite moved to `hook_page_attachments_alter` after token replace; `<title>` in `html.html.twig`; `metatag.metatag_defaults.node` description tokens; OG image map via `media.json` for `wp-images/*` |
-| **`parity:head:refpack`** | **19.0%** (4/21 pack pages), report `parity/reports/head-meta/compare-1793238045326.json` — remaining: view/page **empty og:image**, archive **title** strings, `/about` vs pack slug reachability |
-| Example head | `curl -s http://df-impact.ddev.site/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials \| grep -E 'title|og:'` — canonical, og:url, og:image, description OK |
+| Modules | `df_metatag`, `metatag_open_graph`, `metatag_twitter_cards` **enabled**; PR #9 adds `WordPressHeadOverrides`, topic slug lookup, canonical + JSON-LD in `metaMatches` |
+| **Earlier 0%** | Unresolved metatag tokens + missing `<title>` (fixed on phase4 before #9) |
+| **Post–#9 0% on DDEV** | Infinite recursion in `df_metatag_rewrite_to_production()` — **fixed** |
+| **`parity:head:refpack` (authoritative on DDEV)** | **57.1%** (12/21), `compare-1793238200437.json` — up from **19%** pre-#9 on same 21-slug pack |
+| Example head | `curl -s http://df-impact.ddev.site/2023/09/american-association-for-cancer-research` — title, canonical, og:* populated |
 
 ## Next (chrome + content)
 

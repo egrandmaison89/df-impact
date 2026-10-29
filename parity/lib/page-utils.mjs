@@ -189,6 +189,8 @@ export async function sampleComputedStyles(page, selectors) {
 export function normalizeText(s) {
   return (s || '')
     .replace(/\u00a0/g, ' ')
+    .replace(/&lt;\/?sup&gt;/gi, '')
+    .replace(/<sup>\s*®\s*<\/sup>/gi, '®')
     .replace(/&amp;/g, '&')
     .replace(/&nbsp;/g, ' ')
     .replace(/https?:\/\/(?:i\d+\.)?wp\.com\/danafarberimpact\.org/gi, 'https://danafarberimpact.org')

@@ -54,6 +54,9 @@ class DownloadImage extends ProcessPluginBase {
     if ($url === '') {
       return NULL;
     }
+    if (!preg_match('#wp-content/uploads|/wp-images/|[.](?:jpe?g|png|webp|gif)(?:\?|$)#i', $url)) {
+      return NULL;
+    }
 
     if (isset(static::$fileCache[$url])) {
       return static::$fileCache[$url];
@@ -71,10 +74,29 @@ class DownloadImage extends ProcessPluginBase {
       return $fid;
     }
 
+    $fs = \Drupal::service('file_system');
+    $local_path = $fs->realpath($uri);
+    if (is_string($local_path) && is_readable($local_path) && filesize($local_path) > 256) {
+      $file_data = file_get_contents($local_path);
+      if ($file_data !== FALSE) {
+        /** @var \Drupal\file\FileInterface|false $file */
+        $file = \Drupal::service('file.repository')->writeData(
+          $file_data,
+          $uri,
+          FileSystemInterface::EXISTS_REPLACE
+        );
+        if ($file) {
+          $fid = (int) $file->id();
+          static::$fileCache[$url] = $fid;
+          return $fid;
+        }
+      }
+    }
+
     try {
       $file_data = @file_get_contents($url, FALSE, stream_context_create([
         'http' => [
-          'timeout' => 30,
+          'timeout' => 12,
           'user_agent' => 'Drupal/11 DFMigrate/1.0',
         ],
       ]));

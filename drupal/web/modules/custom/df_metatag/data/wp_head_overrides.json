@@ -111,8 +111,11 @@
     "title": "Fall 2026 - Impact Magazine"
   },
   "/home": {
-    "canonical": "https://danafarberimpact.org/2025/06/homegoods-expands-support-to-enhance-patient-care/",
-    "og_image": "https://danafarberimpact.org/wp-content/uploads/2023/09/HomeGoods_1450.jpg"
+    "canonical": "https://danafarberimpact.org/homepage/",
+    "description": "Explore the latest issue, read recent highlights, and dive into digital exclusives for Dana-Farber Cancer Institute's Impact newsletter.",
+    "og_description": "Explore the latest issue, read recent highlights, and dive into digital exclusives for Dana-Farber Cancer Institute's Impact newsletter.",
+    "og_title": "Homepage - Impact Magazine",
+    "title": "Homepage - Impact Magazine"
   },
   "/homepage": {
     "canonical": "https://danafarberimpact.org/homepage/",

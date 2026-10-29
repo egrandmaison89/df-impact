@@ -11,6 +11,8 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\TermInterface;
 
 /**
  * Implements hook_install().
@@ -927,4 +929,30 @@ function _df_setup_apply_wordpress_manifest_paths(): string {
     'Manifest paths: About -> /about; home aliases ensured=%s',
     $home_alias_added ? 'yes' : 'already present'
   );
+}
+
+/**
+ * Ensures Pediatrics topic term exists for /category/pediatrics (WP footer category).
+ */
+function df_setup_update_10025(): string {
+  if (df_setup_topic_term_load_by_category_slug('pediatrics') !== NULL) {
+    return 'Pediatrics topic term already present.';
+  }
+  /** @var \Drupal\taxonomy\TermStorageInterface $storage */
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $parent_tid = NULL;
+  foreach ($storage->loadTree('topics', 0, 1, TRUE) as $parent) {
+    if ($parent instanceof TermInterface && $parent->label() === 'Patient Care') {
+      $parent_tid = (int) $parent->id();
+      break;
+    }
+  }
+  $term = Term::create([
+    'vid' => 'topics',
+    'name' => 'Pediatrics',
+    'parent' => $parent_tid ? [$parent_tid] : [],
+    'status' => 1,
+  ]);
+  $term->save();
+  return 'Created Pediatrics topic term (tid ' . $term->id() . ').';
 }

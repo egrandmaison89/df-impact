@@ -38,19 +38,19 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 5. **#32** whole — **merged** (`ef3e2714` ← `cursor/admin-chrome-e2e-ce7f`); site-admin header/footer/hero + `admin-e2e` Playwright
 6. **#34** whole — **merged** (`91b165bf`); admin-e2e teardown + `system.site:page.front: /homepage` + `FixHomeFrontPageConfigSubscriber` (cim-safe `/` 200)
 7. **#35** whole — **merged** (`caf402c2` ← `cursor/editor-e2e-stable-ce7f`); issue-nav **Dynamic Page Cache** tags + publish invalidation; editor/admin e2e without `drush cr`; integrator follow-up: unpublish/archive nav bust + admin-e2e hero restore via entity save
-8. **#31** whole — Eric QA (share / pagination / In Brief / tablet spacing) — **owns** the single **main/footer inset** block in `drupal-overrides.css` — when agent ready (green gate table)
-9. **#28** whole — article variants — **rebase after #31**; drop duplicate main/footer inset CSS — when agent ready
-10. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
-11. **#30** — Eric QA (links / images / translate icon) — when agent ready
+8. **#30** whole — **merged** (`4f8ca897` ← `cursor/fall-2026-links-media-header-5b82`); Fall 2026 link/media repair, FA solid webfont (GTranslate icon), lead figcaption + In Brief photography credits, `parity:audit:drupal-links`; bootstrap runs `_df_setup_run_post_migrate_integrator_convergence()` (fresh-VM category archive sweep fix)
+9. **#31** whole — Eric QA (share / pagination / In Brief / tablet spacing) — **owns** the single **main/footer inset** block in `drupal-overrides.css` — **rebase after #30**; dedupe In Brief **Photography by…** credit overlap with #30 — when agent ready (green gate table)
+10. **#28** whole — article variants — **rebase after #31**; drop duplicate main/footer inset CSS — when agent ready
+11. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
 12. **#33** — not ready (agent will report)
 
-**Next:** **#31 → #28 → #10 → #30 → #33** (whole merge once each only when that PR’s agent reports ready with a **green gate table**).
+**Next:** **#31 → #28 → #10 → #33** (whole merge once each only when that PR’s agent reports ready with a **green gate table**).
 
-**Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`), **#35** (`caf402c2` + integrator gate follow-up).
+**Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`), **#35** (`caf402c2` + integrator gate follow-up), **#30** (`4f8ca897`).
 
 **Generated parity gate output** (`parity/reports/content-sweep/`, smoke, url-parity, etc.) is **gitignored** — do not commit sweep JSON/CSV from PR branches.
 
-**Post_updates (combined on phase4):** #23 four + #25 `seed_issue_covers`, `seed_issue_banners` (+ #10 `is_light` when merged).
+**Post_updates (combined on phase4):** #23 four + #25 `seed_issue_covers`, `seed_issue_banners` + **#30** `repair_internal_links_and_media`, `ensure_df_secondary_search` (+ #10 `is_light` when merged).
 
 On `df_setup.module` conflicts with #22, **keep #22’s side**.
 
@@ -72,7 +72,9 @@ Whole merge at **`83f35352`** from **`cursor/sweep-801-followup-ce7f`** @ **`efe
 
 ## Post-merge checklist (DB at schema 10035)
 
-Run after **every** whole merge onto phase4 (#29, #31, #28, #10, Eric QA PRs, etc.).
+Run after **every** whole merge onto phase4 (#29, #30, #31, #28, #10, etc.).
+
+**#30 gate extras:** `npm run parity:audit:drupal-links` (0 issues); article-variants **16/16** on fresh bootstrap (WP fixtures); pediatric brain tumor target → live WP `/2025/06/janower-family-drives-pediatric-brain-tumor-research-forward`.
 
 **After #31 merge:** exactly one main/footer inset block in overrides (`#28` must not re-add its copy when rebased):
 

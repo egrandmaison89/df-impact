@@ -82,10 +82,14 @@ display:
       display_extenders:
         metatag_display_extender:
           metatags:
-            title: 'Past Issues | [site:name]'
-            description: 'Recent issues of Dana-Farber Impact Magazine.'
-            og_title: 'Past Issues'
+            title: 'Recent Issues - Impact Magazine'
+            description: ''
+            og_title: 'Recent Issues - Impact Magazine'
+            og_description: ''
+            og_image: 'https://danafarberimpact.org/wp-content/uploads/2022/11/norma-and-riders_520.jpg'
             og_type: website
+            og_site_name: 'Impact Magazine'
+            twitter_cards_type: summary_large_image
           tokenize: false
       path: past-issues
     cache_metadata:

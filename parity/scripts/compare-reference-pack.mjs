@@ -412,6 +412,18 @@ try {
   }
 }
 
+function medianOfSorted(sorted) {
+  const n = sorted.length;
+  if (!n) {
+    return undefined;
+  }
+  const mid = Math.floor(n / 2);
+  if (n % 2 === 1) {
+    return sorted[mid];
+  }
+  return (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
 const chromeKey = useLinuxRef ? 'chromePixelDiffRatioLinux' : 'chromePixelDiffRatio';
 const chromeRows = summary.filter((r) => typeof r[chromeKey] === 'number');
 const medians = {};
@@ -419,7 +431,7 @@ for (const bp of Object.keys(BPS)) {
   const vals = chromeRows.filter((r) => r.bp === bp).map((r) => r[chromeKey]);
   if (vals.length) {
     vals.sort((a, b) => a - b);
-    const mid = vals[Math.floor(vals.length / 2)];
+    const mid = medianOfSorted(vals);
     if (useLinuxRef) {
       medians[`chrome_median_linux_${bp}`] = mid;
     } else {
@@ -432,7 +444,7 @@ for (const bp of Object.keys(BPS)) {
     .map((r) => r[viewportKey]);
   if (vpVals.length) {
     vpVals.sort((a, b) => a - b);
-    medians[`viewport_median_mac_${bp}`] = vpVals[Math.floor(vpVals.length / 2)];
+    medians[`viewport_median_mac_${bp}`] = medianOfSorted(vpVals);
   }
 }
 

@@ -17,6 +17,8 @@
     "parity:package-baseline-lite": "node scripts/package-baseline-lite.mjs",
     "parity:behavior": "node scripts/run-behavior-parity.mjs",
     "parity:behavior:smoke": "PARITY_BEHAVIOR_PATHS=/homepage PARITY_BEHAVIOR_HIT_WP=1 node scripts/run-behavior-parity.mjs",
+    "parity:head:refpack": "node scripts/compare-head-meta.mjs",
+    "parity:url:check": "node scripts/check-url-parity.mjs",
     "parity:full": "PARITY_SAMPLE=0 node scripts/run-parity.mjs",
     "report": "node scripts/generate-html-report.mjs",
     "test": "playwright test"

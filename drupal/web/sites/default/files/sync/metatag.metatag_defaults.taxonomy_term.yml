@@ -7,6 +7,12 @@ _core:
 id: taxonomy_term
 label: 'Taxonomy term'
 tags:
-  canonical_url: '[term:url]'
-  description: '[term:description]'
-  title: '[term:name] | [site:name]'
+  canonical_url: '[term:url:absolute]'
+  description: 'An archive of donor stories about [term:name] for the Impact Magazine by Dana-Farber Cancer Institute and The Jimmy Fund.'
+  title: '[term:name] Archives - [site:name]'
+  og_title: '[term:name] Archives - [site:name]'
+  og_description: 'An archive of donor stories about [term:name] for the Impact Magazine by Dana-Farber Cancer Institute and The Jimmy Fund.'
+  og_type: website
+  og_url: '[term:url:absolute]'
+  og_site_name: '[site:name]'
+  twitter_cards_type: summary_large_image

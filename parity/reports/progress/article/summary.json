@@ -2,42 +2,27 @@
   "component": "article",
   "drupalBase": "http://df-impact.ddev.site",
   "refRenderer": "mac-pack-viewport-png",
-  "pages": 3,
+  "pages": 2,
   "rectTolerancePx": 2,
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.1259092338715452,
-    "viewport_median_mac_desktop": 0.4250756172839506,
-    "chrome_median_tablet": 0.17537939579750014,
-    "viewport_median_mac_tablet": 0.5151432291666667,
-    "chrome_median_mobile": 0.19754698160235576,
-    "viewport_median_mac_mobile": 0.33009185185185186
+    "chrome_median_desktop": 0.12606581728108643,
+    "viewport_median_mac_desktop": 0.3152789351851852,
+    "chrome_median_tablet": 0.17520326358330862,
+    "viewport_median_mac_tablet": 0.3437673611111111,
+    "chrome_median_mobile": 0.1974640804534797,
+    "viewport_median_mac_mobile": 0.2807037037037037
   },
   "summary": [
     {
-      "path": "/2026/09/more-than-a-building-name",
-      "bp": "desktop",
-      "error": "missing reference viewport"
-    },
-    {
-      "path": "/2026/09/more-than-a-building-name",
-      "bp": "tablet",
-      "error": "missing reference viewport"
-    },
-    {
-      "path": "/2026/09/more-than-a-building-name",
-      "bp": "mobile",
-      "error": "missing reference viewport"
-    },
-    {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "desktop",
-      "pixelDiffRatio": 0.4250756172839506,
+      "pixelDiffRatio": 0.42461805555555554,
       "headerPixelDiffRatio": 0.033519761372110365,
-      "footerPixelDiffRatio": 0.09369046258192348,
-      "chromePixelDiffRatio": 0.06360511197701693,
-      "viewportPixelDiffRatioMac": 0.4250756172839506
+      "footerPixelDiffRatio": 0.21892504000914495,
+      "chromePixelDiffRatio": 0.12622240069062765,
+      "viewportPixelDiffRatioMac": 0.42461805555555554
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",

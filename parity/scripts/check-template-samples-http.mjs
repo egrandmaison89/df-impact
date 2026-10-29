@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * HTTP gate: every path in parity/config/template-samples.json returns 200 on Drupal.
+ * Gate: every path in template-samples.json must return HTTP 200 on Drupal.
+ * Run: DRUPAL_BASE_URL=http://df-impact.ddev.site npm run parity:template-samples:http
  */
 import fs from 'node:fs';
 import path from 'node:path';

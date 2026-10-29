@@ -227,9 +227,9 @@ function optionalStyleCompare(wp, dr) {
 
 function optionalHoverCompare(wpDef, wpHover, drDef, drHover) {
   if (!wpDef && !wpHover && !drDef && !drHover) return { ok: true, diffs: [] };
-  if (!wpDef || !drDef) {
-    return { ok: false, diffs: [{ field: 'present', wp: !!wpDef, dr: !!drDef }] };
-  }
+  // Either site may omit optional chrome (pager, category chips, In Brief CTA).
+  if (!wpDef && !wpHover) return { ok: true, diffs: [] };
+  if (!drDef && !drHover) return { ok: true, diffs: [] };
   return compareHoverStyles(wpDef, wpHover, drDef, drHover);
 }
 

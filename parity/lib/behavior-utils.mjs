@@ -40,12 +40,27 @@ export async function computedStyleHover(page, selector) {
   const loc = page.locator(selector).first();
   if (!(await loc.count())) return null;
   try {
-    await loc.hover({ force: true, timeout: 5000 });
+    await loc.scrollIntoViewIfNeeded();
+    await loc.hover({ force: true, timeout: 8000 });
   } catch {
     return null;
   }
-  await page.waitForTimeout(150);
-  return computedStyle(page, selector);
+  await page.waitForTimeout(350);
+  return page.evaluate((sel) => {
+    const el = document.querySelector(sel);
+    if (!el) return null;
+    const cs = getComputedStyle(el);
+    return {
+      color: cs.color,
+      backgroundColor: cs.backgroundColor,
+      transitionProperty: cs.transitionProperty,
+      transitionDuration: cs.transitionDuration,
+      transitionTimingFunction: cs.transitionTimingFunction,
+      transform: cs.transform,
+      position: cs.position,
+      boxShadow: cs.boxShadow,
+    };
+  }, selector.split(',')[0].trim());
 }
 
 export async function videoState(page, selector) {
@@ -82,10 +97,16 @@ export async function headerScrollState(page, selector = '.header, .desktop-head
     const el = document.querySelector(sel);
     if (!el) return { found: false };
     const cs = getComputedStyle(el);
+    const logo = document.querySelector('.header-logo');
+    const scrolledClass =
+      el.classList.contains('header--scrolled') ||
+      el.classList.contains('scrolled') ||
+      Boolean(el.querySelector('.scrolled')) ||
+      Boolean(logo?.classList.contains('scrolled'));
     return {
       found: true,
       className: el.className,
-      scrolled: el.classList.contains('header--scrolled') || el.classList.contains('scrolled'),
+      scrolled: scrolledClass,
       position: cs.position,
       boxShadow: cs.boxShadow,
       height: el.getBoundingClientRect().height,
@@ -101,12 +122,18 @@ export async function dropdownOpenOnHover(page, triggerSel, panelSel) {
   } catch {
     return { found: false };
   }
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(350);
   return page.evaluate((panel) => {
     const el = document.querySelector(panel);
     if (!el) return { found: false };
     const cs = getComputedStyle(el);
-    return { found: true, display: cs.display, visibility: cs.visibility, opacity: cs.opacity };
+    return {
+      found: true,
+      display: cs.display,
+      visibility: cs.visibility,
+      opacity: cs.opacity,
+      height: el.getBoundingClientRect().height,
+    };
   }, panelSel);
 }
 

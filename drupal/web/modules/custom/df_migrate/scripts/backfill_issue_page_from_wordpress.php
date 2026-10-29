@@ -80,11 +80,22 @@ foreach ($nids as $nid) {
   }
 
   echo "Fetch: $wp_url\n";
-  $html = df_issue_page_http_get($wp_url);
+  $from_cache = FALSE;
+  $html = df_issue_page_playwright_cache_html($issue);
+  if ($html !== '') {
+    echo "  Using Playwright WP cache.\n";
+    $from_cache = TRUE;
+  }
   if ($html === '') {
     $html = df_issue_page_reference_pack_html($issue);
     if ($html !== '') {
       echo "  Using reference-pack HTML fallback.\n";
+    }
+  }
+  if ($html === '') {
+    $html = df_issue_page_http_get($wp_url);
+    if ($html !== '' && df_issue_page_html_is_bot_block($html)) {
+      $html = '';
     }
   }
   if ($html === '') {
@@ -190,7 +201,9 @@ foreach ($nids as $nid) {
     }
   }
 
-  sleep(1);
+  if (!$from_cache) {
+    sleep(1);
+  }
 }
 
 echo "\nDone. Issues updated: $updated; errors: $errors\n";
@@ -221,6 +234,42 @@ function df_issue_page_wordpress_url(NodeInterface $issue): string {
     $slug = str_replace(' ', '-', $season) . '-' . $year;
   }
   return WP_HOST . '/' . $slug . '-issue/';
+}
+
+function df_issue_page_html_is_bot_block(string $html): bool {
+  return strlen($html) < 5000
+    || preg_match('/sgcaptcha|well-known\/sgcaptcha/i', $html);
+}
+
+/**
+ * HTML captured by parity/scripts/fetch-wp-issue-pages.mjs (Playwright).
+ */
+function df_issue_page_playwright_cache_html(NodeInterface $issue): string {
+  $wp_url = df_issue_page_wordpress_url($issue);
+  if ($wp_url === '') {
+    return '';
+  }
+  $path = (string) (parse_url($wp_url, PHP_URL_PATH) ?? '');
+  $pack_slug = trim($path, '/');
+  if ($pack_slug === '') {
+    return '';
+  }
+  $file_slug = str_replace('/', '_', $pack_slug);
+  $roots = [
+    dirname(DRUPAL_ROOT, 2) . '/parity/cache/wp-issue-pages',
+    DRUPAL_ROOT . '/../../parity/cache/wp-issue-pages',
+    '/workspace/parity/cache/wp-issue-pages',
+  ];
+  foreach ($roots as $root) {
+    $file = rtrim($root, '/') . '/' . $file_slug . '.html';
+    if (is_readable($file)) {
+      $body = file_get_contents($file);
+      if (is_string($body) && $body !== '' && !df_issue_page_html_is_bot_block($body)) {
+        return $body;
+      }
+    }
+  }
+  return '';
 }
 
 function df_issue_page_reference_pack_html(NodeInterface $issue): string {
@@ -261,7 +310,10 @@ function df_issue_page_http_get(string $url): string {
     ],
   ]);
   $data = @file_get_contents($url, FALSE, $ctx);
-  return is_string($data) ? $data : '';
+  if (!is_string($data) || df_issue_page_html_is_bot_block($data)) {
+    return '';
+  }
+  return $data;
 }
 
 function df_issue_page_parse_banner_url(DOMXPath $xpath): string {

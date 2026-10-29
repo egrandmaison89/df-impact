@@ -997,6 +997,9 @@ function df_setup_update_10026(): string {
 
 /**
  * Issue landing: PostX NULLS-LAST sort, promo exclusions, WP backfills.
+ *
+ * Run `node parity/scripts/fetch-wp-issue-pages.mjs` before deploy backfills when
+ * live WP blocks server-side HTTP (SiteGround captcha).
  */
 function df_setup_update_10027(): string {
   $parts = [];

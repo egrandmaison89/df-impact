@@ -16,6 +16,24 @@ const drupalBase = process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888';
 const wpBase = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const retries = Number(process.env.PARITY_LIVE_RETRIES || '2');
 const minDelay = Number(process.env.PARITY_LIVE_DELAY_MS || '800');
+const cacheDir = path.join(parityRoot, 'cache/wp-issue-pages');
+
+function loadCachedWpHtml(issuePath) {
+  const slug = issuePath.replace(/^\/|\/$/g, '').replace(/\//g, '_');
+  const file = path.join(cacheDir, `${slug}.html`);
+  if (!fs.existsSync(file)) {
+    return null;
+  }
+  const html = fs.readFileSync(file, 'utf8');
+  if (html.length < 5000 || /sgcaptcha|well-known\/sgcaptcha/i.test(html)) {
+    return null;
+  }
+  return html;
+}
+
+function wpHtmlIsArchiveError(html) {
+  return /arch_err|"post":"0"/.test(html) && !/ultp-post-grid-block/.test(html);
+}
 
 const issuePaths = (manifest.urls || [])
   .filter((e) => e.template === 'issue')
@@ -57,10 +75,24 @@ for (const p of issuePaths) {
   let drText = '';
   let error = null;
   try {
-    await fetchWpHtml(page, wpUrl);
+    const cached = loadCachedWpHtml(p);
+    if (cached) {
+      if (wpHtmlIsArchiveError(cached)) {
+        results.push({ path: p, textSimilarity: null, error: 'wp_archive_error_non_comparable', skipped: true });
+        continue;
+      }
+      await page.setContent(cached, { waitUntil: 'domcontentloaded', timeout: 120000 });
+    } else {
+      await fetchWpHtml(page, wpUrl);
+      const liveHtml = await page.content();
+      if (wpHtmlIsArchiveError(liveHtml)) {
+        results.push({ path: p, textSimilarity: null, error: 'wp_archive_error_non_comparable', skipped: true });
+        continue;
+      }
+    }
     wpText = (await extractMainText(page)).text;
     await sleep(minDelay);
-    await gotoWithBoundedSettle(page, drUrl);
+    await gotoWithBoundedSettle(page, drUrl, { timeout: 120000 });
     drText = (await extractMainText(page)).text;
   } catch (e) {
     error = String(e.message || e);

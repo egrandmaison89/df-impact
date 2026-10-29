@@ -21,6 +21,31 @@ $use_live_wp = !$pack_root || !is_dir($pack_root);
 /**
  * @return string
  */
+function df_postx_issue_page_html(string $slug, ?string $pack_root, bool $use_live_wp): string {
+  $cache_roots = [
+    dirname(DRUPAL_ROOT, 2) . '/parity/cache/wp-issue-pages',
+    DRUPAL_ROOT . '/../../parity/cache/wp-issue-pages',
+    '/workspace/parity/cache/wp-issue-pages',
+  ];
+  $file_slug = str_replace('/', '_', $slug);
+  foreach ($cache_roots as $root) {
+    $file = rtrim($root, '/') . '/' . $file_slug . '.html';
+    if (is_readable($file)) {
+      $body = file_get_contents($file);
+      if (is_string($body) && strlen($body) > 5000 && !preg_match('/sgcaptcha/i', $body)) {
+        return $body;
+      }
+    }
+  }
+  if (!$use_live_wp && $pack_root && is_dir($pack_root)) {
+    $html_path = $pack_root . '/' . $file_slug . '/desktop/rendered.html';
+    if (is_readable($html_path)) {
+      return (string) file_get_contents($html_path);
+    }
+  }
+  return df_postx_fetch_wp_html('/' . $slug);
+}
+
 function df_postx_fetch_wp_html(string $path): string {
   $url = 'https://danafarberimpact.org' . ($path === '/' ? '/' : rtrim($path, '/') . '/');
   $ctx = stream_context_create([
@@ -30,7 +55,10 @@ function df_postx_fetch_wp_html(string $path): string {
     ],
   ]);
   $html = @file_get_contents($url, FALSE, $ctx);
-  return is_string($html) ? $html : '';
+  if (!is_string($html) || strlen($html) < 5000 || preg_match('/sgcaptcha/i', $html)) {
+    return '';
+  }
+  return $html;
 }
 
 /**
@@ -112,18 +140,7 @@ if (is_readable($issues_json)) {
         continue;
       }
       $slug = trim($alias, '/');
-      if ($use_live_wp) {
-        $html = df_postx_fetch_wp_html($alias);
-      }
-      else {
-        $html_path = $pack_root . '/' . str_replace('/', '_', $slug) . '/desktop/rendered.html';
-        if (!is_readable($html_path)) {
-          $html = df_postx_fetch_wp_html($alias);
-        }
-        else {
-          $html = file_get_contents($html_path);
-        }
-      }
+      $html = df_postx_issue_page_html($slug, $pack_root, $use_live_wp);
       if ($html === '') {
         continue;
       }

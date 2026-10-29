@@ -11,6 +11,7 @@
  * - **#23** content-sweep: in_brief excerpts + home moderation fix.
  * - **#25** cover / media seed for issue parity.
  * - **#10** `is_light` field: config import + backfill post-update (stacked on #25).
+ * - **#29** About body + Late Fall 2022 link/byline parity.
  */
 
 declare(strict_types=1);
@@ -92,6 +93,7 @@ function df_setup_post_update_restore_in_brief_summary(): string {
  * Seed issue field_cover_image from committed wp-images / WP uploads (browse-issues).
  */
 function df_setup_post_update_seed_issue_covers(&$sandbox = NULL): string {
+  require_once __DIR__ . '/df_setup.install';
   return _df_setup_backfill_issue_cover_images();
 }
 
@@ -99,11 +101,12 @@ function df_setup_post_update_seed_issue_covers(&$sandbox = NULL): string {
  * Seed issue field_banner_image when empty (issue landing hero parity).
  */
 function df_setup_post_update_seed_issue_banners(&$sandbox = NULL): string {
+  require_once __DIR__ . '/df_setup.install';
   return _df_setup_backfill_issue_banner_images();
 }
 
 /**
- * Applies full About Impact Gutenberg body + staff block (#25 on phase4).
+ * Applies canonical About Impact Gutenberg body (/about + /about-impact).
  */
 function df_setup_post_update_ensure_about_impact_body(): string {
   require_once __DIR__ . '/df_setup.install';

@@ -3,7 +3,6 @@ import path from 'node:path';
 
 /** WP paths whose reference-pack folder differs from pathToPackSlug. */
 export const REF_PACK_SLUG_OVERRIDES = {
-  '/digital-exclusives': 'category_digital-exclusives',
   '/home': 'homepage',
   '/tag/digital-exclusives': 'category_digital-exclusives',
   '/stories': 'issues',

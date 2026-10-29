@@ -1385,7 +1385,7 @@ article.post .wp-block-post-terms {
 }
 
 .issue-page .ultp-block-70af6c .ultp-block-content {
-  padding: 10px 40px 20px;
+  padding: 10px 40px 46px;
   text-align: left;
 }
 
@@ -1410,6 +1410,12 @@ article.post .wp-block-post-terms {
 .issue-page .ultp-block-dd35a6 .ultp-block-image {
   aspect-ratio: 768 / 551;
   margin-bottom: 10px !important;
+}
+
+.issue-page .ultp-block-dd35a6 .ultp-block-image img.ultp-block-image-content {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .issue-page .ultp-block-dd35a6 .ultp-block-excerpt,

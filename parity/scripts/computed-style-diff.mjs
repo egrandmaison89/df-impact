@@ -19,6 +19,10 @@ import { startRefPackServer } from './lib/ref-pack-server.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
 const WP_SOURCE = (process.env.PARITY_WP_SOURCE || 'live').toLowerCase();
+/** Frozen live-WP HTML in reference-pack (same baseline policy as pass3 cache runs). */
+const WP_USE_REF_PACK =
+  WP_SOURCE === 'refpack' || WP_SOURCE === 'live-cache' || WP_SOURCE === 'live_cache';
+const WP_BASELINE_RUN = process.env.PARITY_CS_WP_BASELINE_RUN || '';
 const wpBaseLive = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(/\/$/, '');
 const packRoot = path.join(parityRoot, 'reference-pack');
@@ -94,18 +98,34 @@ function pathSlug(p) {
   return p.replace(/^\/|\/$/g, '').replace(/\//g, '_') || 'root';
 }
 
+function loadBaselineWpPerSelector(job) {
+  if (!WP_BASELINE_RUN) {
+    return null;
+  }
+  const file = path.join(
+    parityRoot,
+    'reports',
+    'computed-style-diff',
+    WP_BASELINE_RUN,
+    `${job.template}_${pathSlug(job.path)}_${job.bp}.json`,
+  );
+  if (!fs.existsSync(file)) {
+    return null;
+  }
+  const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
+  if (!raw.perSelector || raw.wpComparable === false) {
+    return null;
+  }
+  return raw.perSelector;
+}
+
 /** Live WP canonical path (legacy slugs that 404 or captcha more often). */
 function wpParityPath(path) {
-  if (path === '/digital-exclusives') {
-    return '/category/digital-exclusives';
-  }
   return path;
 }
 
 /** WP paths whose reference-pack folder differs from pathToPackSlug. */
-const REF_PACK_SLUG_OVERRIDES = {
-  '/digital-exclusives': 'category_digital-exclusives',
-};
+const REF_PACK_SLUG_OVERRIDES = {};
 
 function pathToPackSlug(p) {
   const normalized = p.replace(/\/+$/, '') || '/';
@@ -357,7 +377,17 @@ async function comparePath(browser, job) {
 
   let wpUrl;
   let wpNav;
-  if (WP_SOURCE === 'refpack') {
+  const baselineWpPerSelector = WP_BASELINE_RUN ? loadBaselineWpPerSelector(job) : null;
+  if (baselineWpPerSelector) {
+    wpUrl = `baseline://${WP_BASELINE_RUN}/${job.template}_${pathSlug(job.path)}_${job.bp}`;
+    wpNav = {
+      status: 200,
+      captcha: false,
+      shellReason: null,
+      attempts: 0,
+      comparable: true,
+    };
+  } else if (WP_USE_REF_PACK) {
     const base = await ensureRefPackServer();
     const slug = pathToPackSlug(job.path);
     wpUrl = `${base}/rendered/${slug}/${job.bp}/`;
@@ -386,7 +416,9 @@ async function comparePath(browser, job) {
   const mismatches = [];
 
   for (const selector of ALL_SELECTORS) {
-    const wp = await measure(wpPage, selector);
+    const wp = baselineWpPerSelector
+      ? baselineWpPerSelector[selector]?.wp ?? null
+      : await measure(wpPage, selector);
     const dr = await measure(drPage, selector);
     perSelector[selector] = { wp, drupal: dr };
     const { mismatches: m } = compareMeasurements(wp, dr, selector);
@@ -511,8 +543,9 @@ if (refPackServer) {
 
 const summary = {
   generatedAt: new Date().toISOString(),
-  wpSource: WP_SOURCE,
-  wpBase: WP_SOURCE === 'refpack' ? refPackBase : wpBaseLive,
+  wpSource: WP_BASELINE_RUN ? `live-cache:${WP_BASELINE_RUN}` : WP_SOURCE,
+  wpBaselineRun: WP_BASELINE_RUN || null,
+  wpBase: WP_USE_REF_PACK ? refPackBase : wpBaseLive,
   drupalBase,
   jobCount: jobs.length,
   byTemplate,

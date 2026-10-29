@@ -8,5 +8,10 @@
     "reason": "Live WordPress returns HTTP 404 at /late-fall-2022-issue/ (arch_err); canonical issue archive is /tag/late-fall-2022/. No browse-issues / Issues nav / past-issues link to the issue URL on WP (past-issues uses /tag/late-fall-2022/).",
     "liveUrl": "https://danafarberimpact.org/late-fall-2022-issue/",
     "baseline": "reference-pack/late-fall-2022-issue/desktop/rendered.html"
+  },
+  "/digital-exclusives": {
+    "reason": "Live WordPress returns HTTP 404 at /digital-exclusives/; canonical archive is /category/digital-exclusives/.",
+    "liveUrl": "https://danafarberimpact.org/digital-exclusives/",
+    "baseline": "reference-pack/digital-exclusives/desktop/rendered.html"
   }
 }

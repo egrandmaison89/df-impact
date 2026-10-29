@@ -548,6 +548,7 @@ function df_impact_preprocess_node(&$variables) {
       if ($variables['in_brief_image_url']) {
         $summary = df_impact_article_strip_leading_wp_image_block($summary);
       }
+      $summary = df_impact_rewrite_public_file_urls_in_html($summary);
       $summary = df_impact_article_add_drop_cap_class($summary);
       if (isset($variables['content']['field_summary'])) {
         $variables['content']['field_summary']['#access'] = FALSE;
@@ -1368,7 +1369,7 @@ function df_impact_card_image_url_for_parity(string $uri): string {
     $uri = df_impact_resolve_wp_images_uri($uri) ?? $uri;
   }
   if ($file_system->realpath($uri)) {
-    return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+    return df_impact_file_absolute_url($uri);
   }
   $photon = df_impact_wp_i0_postx_card_url($uri);
   if ($photon) {
@@ -1673,12 +1674,44 @@ function df_impact_wp_i0_derivative_url_from_photon_src(string $src, string $wid
 /**
  * Archive row thumbnail URL — WP uses full post-thumbnail (_1450), not PostX fit.
  */
+function df_impact_file_absolute_url(string $uri): string {
+  $absolute = \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+  $base = getenv('DRUPAL_BASE_URL') ?: getenv('DF_DRUPAL_BASE_URL') ?: '';
+  if ($base === '') {
+    $request = \Drupal::requestStack()->getCurrentRequest();
+    if ($request) {
+      $host = $request->getSchemeAndHttpHost();
+      if ($host !== '' && !str_contains($host, 'default')) {
+        $base = $host;
+      }
+    }
+  }
+  if ($base === '') {
+    $base = 'http://127.0.0.1:8888';
+  }
+  if (str_contains($absolute, '://default')) {
+    return preg_replace('#https?://default#', rtrim($base, '/'), $absolute) ?? $absolute;
+  }
+  if (preg_match('#^https?://[^/]+/wp-images/#', $absolute) && str_starts_with($uri, 'public://wp-images/')) {
+    $suffix = substr($uri, strlen('public://wp-images/'));
+    return rtrim($base, '/') . '/sites/default/files/wp-images/' . $suffix;
+  }
+  return $absolute;
+}
+
 function df_impact_archive_thumbnail_url_for_parity(string $uri): string {
+  $file_system = \Drupal::service('file_system');
+  if (!$file_system->realpath($uri)) {
+    $uri = df_impact_resolve_wp_images_uri($uri) ?? $uri;
+  }
+  if ($file_system->realpath($uri)) {
+    return df_impact_file_absolute_url($uri);
+  }
   $uploads_path = df_impact_wp_uploads_path_from_uri($uri);
   if ($uploads_path !== NULL) {
     return 'https://danafarberimpact.org/' . $uploads_path;
   }
-  return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+  return df_impact_file_absolute_url($uri);
 }
 
 function df_impact_archive_thumbnail_url_from_src(string $src): string {
@@ -2281,7 +2314,45 @@ function df_impact_in_brief_card_image_meta(NodeInterface $node): ?array {
       }
     }
   }
+  if ($node->hasField('field_summary') && !$node->get('field_summary')->isEmpty()) {
+    $src = df_impact_first_img_src_from_html((string) $node->get('field_summary')->value);
+    if ($src !== NULL && $src !== '') {
+      $src = df_impact_rewrite_public_file_urls_in_html($src);
+      if (preg_match('#/sites/default/files/(.+)$#', $src, $m)) {
+        $uri = 'public://' . rawurldecode($m[1]);
+        return [
+          'url' => df_impact_file_absolute_url($uri),
+          'alt' => $node->label(),
+        ];
+      }
+      return [
+        'url' => df_impact_card_image_url_for_parity_from_src($src),
+        'alt' => $node->label(),
+      ];
+    }
+  }
   return NULL;
+}
+
+/**
+ * First img src= in HTML fragment (in_brief export lead image).
+ */
+function df_impact_first_img_src_from_html(string $html): ?string {
+  if (!preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $html, $match)) {
+    return NULL;
+  }
+  return trim(html_entity_decode($match[1], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+}
+
+/**
+ * Rewrites broken default-host file URLs in migrated HTML to the VM base.
+ */
+function df_impact_rewrite_public_file_urls_in_html(string $html): string {
+  if (!str_contains($html, '://default/')) {
+    return $html;
+  }
+  $base = getenv('DRUPAL_BASE_URL') ?: 'http://127.0.0.1:8888';
+  return preg_replace('#https?://default/#', rtrim($base, '/') . '/', $html) ?? $html;
 }
 
 /**

@@ -96,41 +96,45 @@ function df_setup_about_impact_gutenberg_body(): string {
 <div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
 <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
 <figure class="wp-block-image alignright size-full is-resized"><img src="/themes/custom/df_impact/images/Impact_About_Courage_725.jpg" alt="Wall with the words Courage, Hope, and Inspiration" width="544" height="390" style="width:544px;height:auto"/></figure>
-<p>Impact is a magazine of Dana-Farber Cancer Institute and the Jimmy Fund, published by the Division of Philanthropy. Impact features stories on the individuals, corporations, foundations, and events that support Dana-Farber and the Jimmy Fund, and the advances in cancer science and medicine made possible by their generosity.</p>
-<p>Dana-Farber Cancer Institute provides expert, compassionate, and equitable care to children and adults and is home to groundbreaking cancer discoveries. Since its founding in 1948, the Jimmy Fund has raised millions of dollars through thousands of community efforts to advance Dana-Farber’s lifesaving mission.</p>
-<p>Dana-Farber Cancer Institute has been the top-ranked cancer hospital in New England by U.S. News &amp; World Report for 25 consecutive years, and is the only cancer center in the country ranked in the top 3 for both adult and pediatric cancer programs.</p>
-<p><strong>It takes more than courage to beat cancer®</strong></p>
-</div>
-</div>
-
-<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
-<div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
-<h2 class="wp-block-heading has-text-color has-montserrat-font-family" style="color:#000000">Division of Philanthropy</h2>
-<div class="wp-block-columns alignwide is-layout-flex wp-block-columns-is-layout-flex" style="gap:40px">
-<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
-<p><strong>Senior Vice President and Chief Philanthropy Officer</strong><br>Melany N. Duval</p>
-<p><strong>Assistant Vice President, Integrated Philanthropy Marketing</strong><br>Brian Beirne</p>
-<p><strong>Editor</strong><br>Tarice Gray</p>
-<p><strong>Assistant Editor</strong><br>Hannah White Hannah</p>
-</div>
-<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
-<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>
-<p><strong>Art Directors</strong><br>Grace Howard, Sharon Veino</p>
-<p><strong>Print Production Manager</strong><br>Danielle Gray</p>
-<p><strong>Photography Manager</strong><br>Jessamyn Martin</p>
-</div>
-<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
-<p><strong>Director, Web Development</strong><br>Sarah Cunningham</p>
-<p><strong>Web Developer</strong><br>Alicia Lazzaro</p>
-</div>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><em>Impact </em>is a magazine of Dana-Farber Cancer Institute and the Jimmy Fund, published by the Division of Philanthropy. <em>Impact</em> features stories on the individuals, corporations, foundations, and events that support Dana-Farber and the Jimmy Fund, and the advances in cancer science and medicine made possible by their generosity.</p>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph">Dana-Farber Cancer Institute provides expert, compassionate, and equitable care to children and adults and is home to groundbreaking cancer discoveries. Since its founding in 1948, the Jimmy Fund has raised millions of dollars through thousands of community efforts to advance Dana-Farber’s lifesaving mission.</p>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph">Dana-Farber Cancer Institute has been the top-ranked cancer hospital in New England by <em>U.S. News &amp; World Report</em> for 25 consecutive years, and is the only cancer center in the country ranked in the top 3 for both adult and pediatric cancer programs.</p>
+<p class="has-text-color wp-block-paragraph" style="color:#003354;font-size:20px;font-style:normal;font-weight:600">It takes more than courage to beat cancer<sup>®</sup></p>
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<div class="wp-block-group is-content-justification-left is-layout-constrained wp-block-group-is-layout-constrained">
+<div class="divider-line"></div>
 </div>
 </div>
 </div>
 
 <div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
 <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
-<p><strong>Contact Information</strong><br>Tarice Gray<br>Dana-Farber Cancer Institute &amp; The Jimmy Fund<br>Division of Philanthropy<br>10 Brookline Place West<br>Brookline, MA 02445-7295<br><a href="mailto:tarice_gray@dfci.harvard.edu">Tarice_Gray@dfci.harvard.edu</a></p>
-<p><strong>Opt-out</strong><br>If you’d like to opt out of <em>Impact</em>, please complete our <a href="https://www.jimmyfund.org/about-us/contact-us/print-opt-out/">online form</a>.</p>
+<h2 id="Division_of_Philanthropy" class="wp-block-heading has-montserrat-font-family has-content-heading-font-size" style="padding-top:20px"><strong>Division of Philanthropy</strong></h2>
+<div class="wp-block-columns alignwide are-vertically-aligned-top is-layout-flex wp-block-columns-is-layout-flex">
+<div class="wp-block-column is-vertically-aligned-top is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:33%">
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Senior Vice President and Chief Philanthropy Officer</strong><br>Melany N. Duval</p>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Assistant Vice President, Integrated Philanthropy Marketing</strong><br>Brian Beirne</p>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Editor</strong><br>Tarice Gray</p>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Assistant Editor</strong><br>Hannah White Hannah</p>
+</div>
+<div class="wp-block-column is-vertically-aligned-top is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:33%">
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Art Directors</strong><br>Grace Howard, Sharon Veino</p>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Print Production Manager</strong><br>Danielle Gray</p>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Photography Manager</strong><br>Jessamyn Martin</p>
+</div>
+<div class="wp-block-column is-vertically-aligned-top is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:33%">
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Director, Web Development</strong><br>Sarah Cunningham</p>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Web Developer</strong><br>Alicia Lazzaro</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+<div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Contact Information</strong><br>Tarice Gray<br>Dana-Farber Cancer Institute &amp; The Jimmy Fund<br>Division of Philanthropy<br>10 Brookline Place West<br>Brookline, MA 02445-7295<br><a href="mailto:tarice_gray@dfci.harvard.edu">Tarice_Gray@dfci.harvard.edu</a></p>
+<p class="has-tertiary-color has-text-color has-montserrat-font-family has-upper-heading-font-size wp-block-paragraph"><strong>Opt-out</strong><br>If you’d like to opt out of <em>Impact</em>, please complete our <a href="https://www.jimmyfund.org/about-us/contact-us/print-opt-out/">online form</a>.</p>
 </div>
 </div>
 HTML;
@@ -1230,7 +1234,10 @@ function _df_setup_apply_about_impact_gutenberg_body(): string {
   $node = _df_setup_load_about_impact_node();
   if ($node === NULL) {
     _df_setup_ensure_about_impact_page();
-    return 'Created About Impact page with Gutenberg body.';
+    $node = _df_setup_load_about_impact_node();
+    if ($node === NULL) {
+      return 'Failed to create About Impact page.';
+    }
   }
   // Always converge on canonical export + staff sync (never patch a bloated legacy body).
   $body = _df_setup_sync_about_impact_staff_body(df_setup_about_impact_gutenberg_body());
@@ -1243,7 +1250,7 @@ function _df_setup_apply_about_impact_gutenberg_body(): string {
     'format' => 'full_html',
   ]);
   $node->save();
-  return 'Updated About Impact body to Gutenberg block structure.';
+  return 'Updated About Impact body to canonical Gutenberg block structure.';
 }
 
 /**

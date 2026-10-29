@@ -5,20 +5,31 @@ declare(strict_types=1);
 namespace Drupal\df_setup\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Serves /digital-exclusives (same content as /category/digital-exclusives).
+ * WordPress /digital-exclusives parity: live WP returns HTTP 404 at this path.
  */
 final class DigitalExclusivesLegacyController extends ControllerBase {
 
   /**
-   * Renders the digital exclusives archive view (page_1).
+   * Builds the same not-found main content WordPress serves at /digital-exclusives/.
    */
-  public function render(Request $request): array {
-    $request->attributes->set('df_setup_wp_archive_path', '/digital-exclusives');
-    $build = views_embed_view('digital_exclusives_archive', 'page_1');
-    return is_array($build) ? $build : ['#markup' => ''];
+  public function render(): array {
+    return [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['wp-block-group', 'is-layout-flow']],
+      'main' => [
+        '#type' => 'html_tag',
+        '#tag' => 'main',
+        '#attributes' => ['id' => 'wp--skip-link--target', 'class' => ['wp-block-group']],
+        'message' => [
+          '#type' => 'html_tag',
+          '#tag' => 'p',
+          '#attributes' => ['class' => ['has-text-align-center', 'wp-block-paragraph']],
+          '#value' => $this->t('This page could not be found. Maybe try a search?'),
+        ],
+      ],
+    ];
   }
 
 }

@@ -2,7 +2,7 @@ df_setup.digital_exclusives_legacy:
   path: '/digital-exclusives'
   defaults:
     _controller: '\Drupal\df_setup\Controller\DigitalExclusivesLegacyController::render'
-    _title: 'Digital Exclusives'
+    _title: 'Page not found'
   requirements:
     _access: 'TRUE'
 

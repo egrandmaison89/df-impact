@@ -31,6 +31,11 @@ services:
     tags:
       - { name: event_subscriber }
 
+  df_setup.digital_exclusives_legacy_not_found:
+    class: Drupal\df_setup\EventSubscriber\DigitalExclusivesLegacyNotFoundSubscriber
+    tags:
+      - { name: event_subscriber }
+
   df_setup.legacy_issue_not_found:
     class: Drupal\df_setup\EventSubscriber\LegacyIssueNotFoundSubscriber
     tags:

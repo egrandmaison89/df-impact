@@ -148,7 +148,31 @@ main .entry-content > .wp-block-group .wp-block-columns.is-layout-flex,
 main .wp-block-post-content > .wp-block-group .wp-block-columns.is-layout-flex {
   gap: 40px;
   max-width: 1400px;
+  margin-top: 0 !important;
+  margin-bottom: 0;
   box-sizing: border-box;
+}
+
+main .entry-content .has-upper-heading-font-size.wp-block-paragraph,
+main .wp-block-post-content .has-upper-heading-font-size.wp-block-paragraph,
+main .entry-content > .wp-block-group .wp-block-columns .wp-block-paragraph,
+main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-paragraph,
+main .entry-content > .wp-block-group .wp-block-columns p,
+main .wp-block-post-content > .wp-block-group .wp-block-columns p {
+  font-size: 20px;
+  line-height: 35px;
+}
+
+main .page-node > h1.wp-block-heading.blue-border-header,
+main .about-impact-page > h1.wp-block-heading.blue-border-header {
+  margin-top: 40px;
+}
+
+main .entry-content .wp-block-image.alignright.size-full.is-resized img,
+main .wp-block-post-content .wp-block-image.alignright.size-full.is-resized img {
+  width: 544px;
+  max-width: 544px;
+  height: auto;
 }
 
 main .entry-content > .wp-block-group .wp-block-columns .wp-block-image img,
@@ -156,6 +180,28 @@ main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-image 
   width: 100%;
   height: auto;
   max-width: 544px;
+}
+
+/* In Brief singular — floated lead image + main height (WP 363×260). */
+.in-brief-post .entry-content.wp-block-post-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.in-brief-post .entry-content .wp-block-image.alignleft.is-resized img {
+  width: 363px !important;
+  max-width: 363px;
+  height: 260px !important;
+  object-fit: cover;
+}
+
+/* Category archive — first-row featured image column (~33% / 405px rendered). */
+.wp-block-post-template > .wp-block-post .wp-block-post-featured-image img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
 /*

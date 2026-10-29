@@ -71,10 +71,25 @@ class DownloadImage extends ProcessPluginBase {
       return $fid;
     }
 
+    $local_path = \Drupal::service('file_system')->realpath($uri);
+    if ($local_path && is_readable($local_path)) {
+      /** @var \Drupal\file\FileInterface $file */
+      $file = \Drupal::service('file.repository')->writeData(
+        (string) file_get_contents($local_path),
+        $uri,
+        FileSystemInterface::EXISTS_REPLACE,
+      );
+      if ($file) {
+        $fid = (int) $file->id();
+        static::$fileCache[$url] = $fid;
+        return $fid;
+      }
+    }
+
     try {
       $file_data = @file_get_contents($url, FALSE, stream_context_create([
         'http' => [
-          'timeout' => 30,
+          'timeout' => 8,
           'user_agent' => 'Drupal/11 DFMigrate/1.0',
         ],
       ]));

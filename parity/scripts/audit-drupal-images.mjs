@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Audit <img src> on Drupal template sample paths; compare HTTP status vs WP.
+ * Audit <img src> on Drupal pages; default inventory = all URL-parity paths (~801).
+ * Local files are verified on disk (HEAD on 127.0.0.1 often fails for PHP-built URLs).
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -8,26 +9,113 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
+const repoRoot = path.resolve(parityRoot, '..');
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(/\/$/, '');
 const wpBase = 'https://danafarberimpact.org';
+const filesRoot = path.join(repoRoot, 'drupal', 'web', 'sites', 'default', 'files');
+const concurrency = Math.max(1, parseInt(process.env.AUDIT_CONCURRENCY || '3', 10));
+const batchSize = Math.max(10, parseInt(process.env.AUDIT_BATCH_SIZE || '20', 10));
 
-const samples = JSON.parse(
-  fs.readFileSync(path.join(parityRoot, 'config', 'template-samples.json'), 'utf8'),
-);
-const paths = [...new Set(Object.values(samples).flatMap((e) => e.paths || []))];
+function loadInventoryPaths() {
+  if (process.env.AUDIT_PATHS) {
+    return process.env.AUDIT_PATHS.split(',').map((p) => p.trim()).filter(Boolean);
+  }
+  if (process.env.AUDIT_SAMPLES === '1') {
+    const samples = JSON.parse(
+      fs.readFileSync(path.join(parityRoot, 'config', 'template-samples.json'), 'utf8'),
+    );
+    return [...new Set(Object.values(samples).flatMap((e) => e.paths || []))];
+  }
+  const invFile =
+    process.env.URL_PARITY_REPORT ||
+    path.join(parityRoot, 'reports', 'url-parity', 'check-1793239889622.json');
+  const inv = JSON.parse(fs.readFileSync(invFile, 'utf8'));
+  return inv.results.filter((r) => r.drupal?.ok).map((r) => r.path);
+}
 
 async function fetchHtml(url) {
   const res = await fetch(url, { redirect: 'follow' });
   return { status: res.status, html: res.ok ? await res.text() : '' };
 }
 
-async function headOk(url) {
+function uriFromPublicUrl(src) {
+  const normalized = src.replace(/^https?:\/\/[^/]+/i, '').replace(/^\/+/, '');
+  if (normalized.startsWith('sites/default/files/')) {
+    return normalized.slice('sites/default/files/'.length);
+  }
+  return null;
+}
+
+function localFileOk(src) {
+  const rel = uriFromPublicUrl(src);
+  if (!rel) return null;
+  const full = path.join(filesRoot, rel);
   try {
-    const res = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+    const st = fs.statSync(full);
+    return st.isFile() && st.size > 64;
+  } catch {
+    return false;
+  }
+}
+
+async function remoteOk(url) {
+  try {
+    const res = await fetch(url, { method: 'GET', redirect: 'follow', headers: { Range: 'bytes=0-511' } });
     return res.status >= 200 && res.status < 400;
   } catch {
     return false;
   }
+}
+
+function wpCandidates(src) {
+  const out = [];
+  const rel = uriFromPublicUrl(src);
+  if (rel) {
+    if (rel.startsWith('wp-images/')) {
+      const bare = rel.replace(/^wp-images\//, '');
+      out.push(`${wpBase}/wp-content/uploads/${bare}`);
+      out.push(`${wpBase}/wp-content/uploads/2023/01/${bare}`);
+      const parts = bare.split('/');
+      if (parts.length === 1) {
+        out.push(`${wpBase}/wp-content/uploads/${bare}`);
+      }
+    } else if (rel.startsWith('wp-content/uploads/')) {
+      out.push(`${wpBase}/${rel}`);
+    }
+  }
+  if (src.includes('danafarberimpact.org/wp-content/uploads/')) {
+    out.push(src.split('?')[0]);
+  }
+  if (src.includes('i0.wp.com/')) {
+    out.push(src.split('?')[0]);
+  }
+  const uniq = [...new Set(out)];
+  for (const u of [...uniq]) {
+    if (!u.includes('danafarberimpact.org/wp-content/uploads/')) {
+      continue;
+    }
+    const m = u.match(/wp-content\/uploads\/(.+)$/);
+    if (m) {
+      uniq.push(`https://i0.wp.com/danafarberimpact.org/wp-content/uploads/${m[1]}?ssl=1`);
+    }
+  }
+  return [...new Set(uniq)];
+}
+
+async function imageReachable(src) {
+  const local = localFileOk(src);
+  if (local === true) return { ok: true, via: 'local' };
+  if (local === false) {
+    /* continue to HTTP */
+  }
+  if (src.startsWith('http://default/')) {
+    const fixed = src.replace('http://default', drupalBase);
+    const localFixed = localFileOk(fixed);
+    if (localFixed === true) return { ok: true, via: 'local_default_host' };
+    src = fixed;
+  }
+  const ok = await remoteOk(src);
+  return { ok, via: ok ? 'http' : 'fail' };
 }
 
 function extractImgSrcs(html, pageUrl) {
@@ -36,6 +124,7 @@ function extractImgSrcs(html, pageUrl) {
   let m;
   while ((m = re.exec(html))) {
     let src = m[1];
+    if (src.startsWith('data:')) continue;
     if (src.startsWith('//')) src = `https:${src}`;
     else if (src.startsWith('/')) src = new URL(src, pageUrl).href;
     srcs.push(src);
@@ -43,47 +132,112 @@ function extractImgSrcs(html, pageUrl) {
   return srcs;
 }
 
-const broken = [];
-const checked = new Set();
-
-for (const p of paths) {
-  const pageUrl = `${drupalBase}${p.startsWith('/') ? p : `/${p}`}`;
-  const { status, html } = await fetchHtml(pageUrl);
-  if (status >= 400) {
-    broken.push({ path: p, src: pageUrl, issue: `page_http_${status}`, wpOk: null });
-    continue;
-  }
-  for (const src of extractImgSrcs(html, pageUrl)) {
-    if (checked.has(src)) continue;
-    checked.add(src);
-    const ok = await headOk(src);
-    if (ok) continue;
-    let wpOk = null;
-    if (src.includes('/sites/default/files/') || src.includes('wp-images')) {
-      const rel = src.split('/sites/default/files/').pop();
-      const wpUrl = `${wpBase}/wp-content/uploads/${rel.replace(/^wp-images\//, '')}`;
-      wpOk = await headOk(wpUrl);
+async function mapPool(items, fn, limit) {
+  const results = [];
+  let i = 0;
+  async function worker() {
+    while (i < items.length) {
+      const idx = i++;
+      results[idx] = await fn(items[idx], idx);
     }
-    broken.push({ path: p, src, issue: 'img_http_fail', wpOk });
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => worker()));
+  return results;
+}
+
+const paths = loadInventoryPaths();
+console.error(`audit: ${paths.length} paths (AUDIT_PATHS=${process.env.AUDIT_PATHS || ''})`);
+/** @type {Map<string, {path: string, src: string, issue: string, wpOk: boolean|null, wpBrokenToo: boolean|null}>} */
+const brokenBySrc = new Map();
+const checked = new Set();
+const checkedOk = new Set();
+let pagesFailed = 0;
+
+for (let offset = 0; offset < paths.length; offset += batchSize) {
+  const slice = paths.slice(offset, offset + batchSize);
+  await mapPool(
+    slice,
+    async (p) => {
+      const pageUrl = `${drupalBase}${p.startsWith('/') ? p : `/${p}`}`;
+      const { status, html } = await fetchHtml(pageUrl);
+      if (status >= 400) {
+        pagesFailed++;
+        brokenBySrc.set(pageUrl, {
+          path: p,
+          src: pageUrl,
+          issue: `page_http_${status}`,
+          wpOk: null,
+          wpBrokenToo: null,
+        });
+        return;
+      }
+      const srcs = extractImgSrcs(html, pageUrl);
+      for (const src of srcs) {
+        if (checkedOk.has(src) || brokenBySrc.has(src)) continue;
+        if (checked.has(src)) continue;
+        checked.add(src);
+        const reach = await imageReachable(src);
+        if (reach.ok) {
+          checkedOk.add(src);
+          continue;
+        }
+
+        let wpOk = false;
+        let wpBrokenToo = true;
+        for (const candidate of wpCandidates(src)) {
+          if (await remoteOk(candidate)) {
+            wpOk = true;
+            wpBrokenToo = false;
+            break;
+          }
+        }
+        brokenBySrc.set(src, {
+          path: p,
+          src,
+          issue: reach.via === 'fail' ? 'img_unreachable' : 'img_http_fail',
+          wpOk,
+          wpBrokenToo,
+        });
+      }
+    },
+    concurrency,
+  );
+  if (offset % 100 === 0) {
+    console.error(`audit progress: ${Math.min(offset + batchSize, paths.length)}/${paths.length} paths`);
   }
 }
 
+const broken = [...brokenBySrc.values()];
+
+const wpBrokenCount = broken.filter((b) => b.wpBrokenToo === true).length;
+const uniqueImagesChecked = checkedOk.size + checked.size;
 const outDir = path.join(parityRoot, 'reports', 'drupal-image-audit');
 fs.mkdirSync(outDir, { recursive: true });
 const stamp = new Date().toISOString().replace(/[:.]/g, '-');
 const reportPath = path.join(outDir, `audit-${stamp}.json`);
-fs.writeFileSync(
-  reportPath,
+const summary = {
+  generatedAt: new Date().toISOString(),
+  drupalBase,
+  inventoryPaths: paths.length,
+  pagesHttpFailed: pagesFailed,
+  uniqueImagesChecked,
+  brokenCount: broken.length,
+  brokenOnWpToo: wpBrokenCount,
+  broken,
+};
+fs.writeFileSync(reportPath, JSON.stringify(summary, null, 2));
+fs.writeFileSync(path.join(outDir, 'latest-summary.json'), JSON.stringify(summary, null, 2));
+
+console.log(
   JSON.stringify(
     {
-      drupalBase,
-      paths: paths.length,
-      imagesChecked: checked.size,
+      reportPath,
+      inventoryPaths: paths.length,
+      uniqueImagesChecked,
       brokenCount: broken.length,
-      broken,
+      brokenOnWpToo: wpBrokenCount,
     },
     null,
     2,
   ),
 );
-console.log(JSON.stringify({ reportPath, brokenCount: broken.length, imagesChecked: checked.size }, null, 2));

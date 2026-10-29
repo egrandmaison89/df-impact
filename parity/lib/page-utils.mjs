@@ -99,24 +99,39 @@ export async function scrollForLazyLoad(page) {
   });
 }
 
-export async function waitForFonts(page) {
-  await page.evaluate(async () => {
-    if (!document.fonts) {
-      return;
-    }
-    const families = [
-      '400 16px Montserrat',
-      '600 16px Montserrat',
-      '700 16px Montserrat',
-      '400 16px Roboto',
-      '600 16px Roboto',
-      '400 16px "Baskervville"',
-    ];
-    await Promise.all(
-      families.map((spec) => document.fonts.load(spec).catch(() => undefined)),
-    );
-    await document.fonts.ready;
-  });
+/** Bounded font wait — live WP never settles on document.fonts.ready. */
+export async function waitForFonts(page, maxMs = 5000) {
+  await Promise.race([
+    page.evaluate(async () => {
+      if (!document.fonts) {
+        return;
+      }
+      const families = [
+        '400 16px Montserrat',
+        '600 16px Montserrat',
+        '700 16px Montserrat',
+        '400 16px Roboto',
+        '600 16px Roboto',
+        '400 16px "Baskervville"',
+      ];
+      await Promise.all(families.map((spec) => document.fonts.load(spec).catch(() => undefined)));
+      await Promise.race([
+        document.fonts.ready,
+        new Promise((r) => setTimeout(r, 3500)),
+      ]);
+    }),
+    page.waitForTimeout(maxMs),
+  ]);
+}
+
+/**
+ * Navigate with load (not networkidle) and a capped post-load settle for parity/behavior.
+ */
+export async function gotoWithBoundedSettle(page, url, { timeout = 90000, settleMs = 1200 } = {}) {
+  await page.goto(url, { waitUntil: 'load', timeout });
+  await dismissOverlays(page);
+  await waitForFonts(page, Math.min(settleMs + 800, 6000));
+  await page.waitForTimeout(Math.min(settleMs, 1500));
 }
 
 export async function extractMainText(page) {

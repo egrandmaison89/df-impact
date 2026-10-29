@@ -14,6 +14,8 @@ import {
 import { ensurePointerClearForSelector } from './page-utils.mjs';
 import { colorsClose } from './behavior-compare.mjs';
 
+const behaviorLite = () => process.env.PARITY_BEHAVIOR_LITE === '1';
+
 export const WP_PROFILE = {
   site: 'wp',
   heroVideo: WP_HERO_VIDEO,
@@ -74,12 +76,13 @@ export async function widgetInventory(page) {
 export async function captureSiteBehavior(page, profile, bp) {
   const s = profile.selectors;
   const data = {};
+  const lite = behaviorLite();
 
   data.hero = await videoState(page, profile.heroVideo);
   data.navDefault = await computedStyle(page, s.navLink);
   data.headerBeforeScroll = await headerScrollState(page, s.header);
   data.headerScrollDepths = {};
-  if (data.hero?.found) {
+  if (!lite && data.hero?.found) {
     for (const y of [600, 2000]) {
       await page.evaluate((scrollY) => window.scrollTo(0, scrollY), y);
       await page.waitForTimeout(500);
@@ -88,39 +91,45 @@ export async function captureSiteBehavior(page, profile, bp) {
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(250);
   }
-  await ensurePointerClearForSelector(page, s.footerLink);
-  await scrollSelectorIntoView(page, s.footerLink);
-  data.footerDefault = await computedStyle(page, s.footerLink);
-  data.footerLinkHover = await computedStyleHover(page, s.footerLink);
-  if (
-    profile.site === 'wp' &&
-    data.footerDefault &&
-    data.footerLinkHover &&
-    colorsClose(data.footerDefault.color, data.footerLinkHover.color)
-  ) {
+  if (!lite) {
     await ensurePointerClearForSelector(page, s.footerLink);
     await scrollSelectorIntoView(page, s.footerLink);
+    data.footerDefault = await computedStyle(page, s.footerLink);
     data.footerLinkHover = await computedStyleHover(page, s.footerLink);
+    if (
+      profile.site === 'wp' &&
+      data.footerDefault &&
+      data.footerLinkHover &&
+      colorsClose(data.footerDefault.color, data.footerLinkHover.color)
+    ) {
+      await ensurePointerClearForSelector(page, s.footerLink);
+      await scrollSelectorIntoView(page, s.footerLink);
+      data.footerLinkHover = await computedStyleHover(page, s.footerLink);
+    }
+    data.navHover = await computedStyleHover(page, s.navLink);
+    data.donateDefault = await computedStyle(page, s.donate);
+    data.donateHover = await computedStyleHover(page, s.donate);
+    if (s.bodyLink) {
+      await scrollSelectorIntoView(page, s.bodyLink);
+      data.bodyLinkDefault = await computedStyle(page, s.bodyLink);
+      data.bodyLinkHover = await computedStyleHover(page, s.bodyLink);
+    }
+    data.cardDefault = await computedStyle(page, s.card);
+    data.cardHover = await computedStyleHover(page, s.card);
+    data.buttonDefault = await computedStyle(page, s.button);
+    data.buttonHover = await computedStyleHover(page, s.button);
+  } else {
+    data.footerDefault = await computedStyle(page, s.footerLink);
+    data.navHover = null;
+    data.donateDefault = await computedStyle(page, s.donate);
   }
-  data.navHover = await computedStyleHover(page, s.navLink);
-  data.donateDefault = await computedStyle(page, s.donate);
-  data.donateHover = await computedStyleHover(page, s.donate);
-  if (s.bodyLink) {
-    await scrollSelectorIntoView(page, s.bodyLink);
-  }
-  data.bodyLinkDefault = await computedStyle(page, s.bodyLink);
-  data.bodyLinkHover = await computedStyleHover(page, s.bodyLink);
-  data.cardDefault = await computedStyle(page, s.card);
-  data.cardHover = await computedStyleHover(page, s.card);
-  data.buttonDefault = await computedStyle(page, s.button);
-  data.buttonHover = await computedStyleHover(page, s.button);
   data.gtranslate = await elementPresent(page, '.gtranslate_wrapper, #gtranslate_selector, #gt-wrapper-23849622');
   data.searchToggle = await elementPresent(page, s.search);
   data.reveal = await revealState(page, profile.reveal);
   data.widgets = await widgetInventory(page);
 
   data.issuesDropdown =
-    bp.label === 'desktop'
+    !lite && bp.label === 'desktop'
       ? await dropdownOpenOnHover(page, s.issuesTrigger, s.issuesPanel)
       : { found: false, skipped: true };
 
@@ -129,8 +138,10 @@ export async function captureSiteBehavior(page, profile, bp) {
   data.headerScrollStyle = await computedStyle(page, s.header);
   data.headerAfterScroll = await headerScrollState(page, s.header);
 
-  if (bp.label === 'mobile') {
+  if (!lite && bp.label === 'mobile') {
     data.mobileMenu = await mobileMenuToggle(page, s.menuToggle, s.drawer);
+  } else if (bp.label === 'mobile') {
+    data.mobileMenu = { opened: false, skipped: true };
   }
 
   return data;
@@ -165,7 +176,7 @@ async function mobileMenuToggle(page, toggleSel, drawerSel) {
 
 export async function captureReducedMotionHero(page, profile) {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(400);
+  await page.reload({ waitUntil: 'load', timeout: 60000 });
+  await page.waitForTimeout(350);
   return videoState(page, profile.heroVideo);
 }

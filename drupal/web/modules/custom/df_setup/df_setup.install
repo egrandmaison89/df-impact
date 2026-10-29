@@ -11,6 +11,7 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
+use Drupal\taxonomy\Entity\Term;
 
 /**
  * Implements hook_install().
@@ -965,4 +966,21 @@ function df_setup_update_10025(): string {
     }
   }
   return $msg;
+}
+
+/**
+ * Ensures a published topics term for /category/pediatrics (WP parity).
+ */
+function df_setup_update_10026(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $existing = $storage->loadByProperties(['vid' => 'topics', 'name' => 'Pediatrics']);
+  if ($existing !== []) {
+    return 'Pediatrics topics term already present.';
+  }
+  Term::create([
+    'vid' => 'topics',
+    'name' => 'Pediatrics',
+    'status' => 1,
+  ])->save();
+  return 'Created topics term Pediatrics for category archive route.';
 }

@@ -9,6 +9,9 @@
 
 require_once DRUPAL_ROOT . '/modules/custom/df_setup/df_setup.install';
 
+/** @see docs/MAC_INTEGRATOR_HOOK_REGISTRY.md — no numbered hooks above this. */
+const DF_SETUP_SCHEMA_FROZEN = 10035;
+
 $max = 0;
 foreach (get_defined_functions()['user'] as $fn) {
   if (preg_match('/^df_setup_update_(\d+)$/', $fn, $m)) {
@@ -20,7 +23,11 @@ $schema = (int) \Drupal::keyValue('system.schema')->get('df_setup');
 $kv = \Drupal::keyValue('df_setup');
 $applied_10027 = $kv->get('update_10027_applied');
 
-echo "df_setup schema={$schema} max_hook={$max}\n";
+echo "df_setup schema={$schema} max_hook={$max} (frozen cap " . DF_SETUP_SCHEMA_FROZEN . ")\n";
+if ($max > DF_SETUP_SCHEMA_FROZEN) {
+  echo "FAIL: numbered hooks above " . DF_SETUP_SCHEMA_FROZEN . " — use df_setup.post_update.php.\n";
+  exit(1);
+}
 if ($schema !== $max) {
   echo "FAIL: schema must equal max hook (run drush updb or fix key_value).\n";
   exit(1);

@@ -1,122 +1,82 @@
 # Mac integrator — `df_setup` hook registry (binding)
 
-Authoritative numbering for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5). **Refuse any branch whose `df_setup_update_*` numbers collide** with this table.
+Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5).
 
-## Assigned hooks (10027+)
+## Frozen numbered hooks (10027–10035 only)
 
-| Hook | PR | Purpose |
-|------|-----|---------|
-| **10027** | **#22** | Issue fixture backfill (`backfill_postx_sort_weights.php`, `backfill_issue_page_from_wordpress.php`). |
-| **10028** | **#23** | Content-sweep: `/about` staff sync (renumbered off 10027). |
-| **10029** | **#25** | `/about` Gutenberg body (renumbered off 10027). |
-| **10030** | **#25** | Staff sync on Gutenberg body (renumbered off 10028). |
-| **10031** | **#23** | Content-sweep (reserved on #23 branch). |
-| **10032** | **#23** | Content-sweep (reserved on #23 branch). |
-| **10033** | **#23** | Content-sweep (reserved on #23 branch). |
-| **10034+** | **#24** | Search parity → **10034**; home landing → **10035**; further #24 hooks → **10036+**. |
+**Policy (effective now):** **No new `df_setup_update_*` numbers.** Schema cap **`10035`**. All further data/backfill work uses **name-based** functions in **`df_setup.post_update.php`** (Drupal tracks by name, not order).
 
-Hooks **10025–10026** unchanged (PostX fields, Pediatrics term).
+**Reject any branch that:**
 
-## Merge order (hard)
+- Adds **`df_setup_update_10036`** or higher, or
+- **Redefines 10027–10035** differently from phase4.
 
-Drupal **never runs a hook numbered below the current schema**. If **#23** merges before **#25**, schema can reach **10033** while **10029/10030** were never registered → Gutenberg About hooks **never run**.
+| Hook | Owner on phase4 | Purpose |
+|------|-----------------|--------|
+| **10027** | **#22 / #27** | Issue fixture backfill |
+| **10028** | **#23** (partial) | `/about` staff sync |
+| **10029** | **#25** (partial) | Gutenberg About body |
+| **10030** | **#25** (partial) | Staff sync on Gutenberg body |
+| **10031–10033** | — | **Never numbered on phase4** → **#23 post_updates** |
+| **10034** | **#24** | Search parity (`df_secondary`, `search-legacy`) |
+| **10035** | **#24** | Home landing / `page.front` |
 
-**Required order (integrator queue):**
+**Upcoming post_updates (by name, on merge branches):**
 
-1. **#22** issue-landing (**10027**) — landed on PR #5 via **#27** (replaces re-merge of `issue-landing-parity-185b`).
-2. **#27** issue pagination + shared issue text scorer (**cherry-pick `fcf27bd2` + `f97587d4` PostX pager in `.ultp-pagination`**) — **merge next** after #22 hook is on branch.
-3. **#25** Gutenberg / archive / hover — see **hold criteria** below (do **not** full-merge the +483k / 762-file PR until green).
-4. **#23** content-sweep — **after #25**; tail hooks **10031–10033** only (overlap already in #25).
-5. **#28** article variants (**replaces #24 slot at end**) — **do not double-merge #24** (GitHub **#24 merged**); merge **#28** for follow-up variant parity (**16/16**, template-samples **19/19**). Hooks stay **10034+** on integrator.
+| PR | Was / topic | Delivery |
+|----|-------------|----------|
+| **#23** | 10031–10033 | `df_setup_post_update_*` content-sweep backfills |
+| **#25** | cover seed | `df_setup_post_update_*` media/cover seed |
+| **#10** | `is_light` | **config import** + `df_setup_post_update_*` backfill (**stacked on #25**) |
 
-Legacy note: **#24** (`1c5c4c5d`) is already on PR #5 as `7c27d051`; treat **#28** as the article-variant gate at queue end.
+## Merge order (whole merges only)
 
-If **#25 is not ready**, **hold #23** as well (schema / hook ordering).
+1. **#25** whole — after hold (a–c); verify pass-2 live-WP computed-style baseline
+2. **#23** whole — post_updates only (no new numbered hooks)
+3. **#28** whole — article variants (**#24 already merged**; do not double-merge)
+4. **#10** whole — **stacked on #25** (`is_light` + post_update)
+
+**Done on phase4:** **#22/#27** (`6622635f`, `fcf27bd2`), **#24** (`7c27d051`).
+
+Drupal still requires **#25 before #23** so **10029/10030** exist in install before DB work that assumed higher schema-only ordering; remaining #23 work is **post_update**, not 10031–10033 hooks.
 
 On `df_setup.module` conflicts with #22, **keep #22’s side**.
 
-## PR #25 hold (integrator does not merge yet)
+## PR #25 hold
 
-GitHub **#25** (`cursor/gutenberg-hover-archive-2b1b`) **merges `cursor/content-sweep-ce7f` inside it**, stacks **10029/10030** on **#23’s 10028**, and is **~+483k lines / 762 files**. **Do not merge #25 onto PR #5** until its agent reports:
+Do not merge until agent reports: **(a)** pass-2 vs pass-3 CS on same live-WP baseline, **(b)** trimmed artifacts, **(c)** `head:refpack` explained. Then merge **whole** branch.
 
-| Gate | Requirement |
-|------|----------------|
-| **(a) Computed-style** | **Pass-2 vs pass-3** compared on the **same live-WP baseline** (apples-to-apples); regressions explained. |
-| **(b) Diff size** | **Trimmed generated artifacts** (no huge accidental report/refpack dumps in the merge diff). |
-| **(c) Head meta** | **`parity:head:refpack` failures explained** (or fixed) on the PR branch. |
+Computed-style acceptance: `npm run parity:computed-style-diff:full:live-wp` (not refpack/pass-3 totals).
 
-Prefer **surgical/cherry-pick** onto PR #5 (as with prior #25 work) unless the trimmed PR is explicitly approved.
-
-### Computed-style baseline (PR #5 gates)
-
-Integrator **computed-style full** must stay on the **pass-2 live-WP baseline**, **not** pass-3 / new refpack aggregate totals:
-
-```bash
-cd parity
-DRUPAL_BASE_URL=http://127.0.0.1:8888 PARITY_WP_SOURCE=live npm run parity:computed-style-diff:full
-```
-
-Do **not** switch integrator acceptance to `PARITY_WP_SOURCE=refpack` (default in `run-computed-style-full.mjs`) or to new refpack mismatch sums from #25 until explicitly rebaselined.
-
-## Post-merge checklist (every merge)
+## Post-merge checklist (DB at schema 10035)
 
 ```bash
 cd drupal
 ./vendor/bin/drush updb -y
+./vendor/bin/drush updatedb:status    # must show no pending updates
 ./vendor/bin/drush php:script web/modules/custom/df_setup/scripts/verify_df_setup_schema.php
+./vendor/bin/drush php:script web/modules/custom/df_setup/scripts/verify_df_setup_post_updates.php
 ./vendor/bin/drush php:script web/modules/custom/df_migrate/scripts/test_issue_fixture_replay.php
 
 cd ../parity
-# Issue gates: committed cache + refpack only (no live WP) until #23 lands whole
 DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:issue-live-text:cache
 DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:content:sweep:issues:cache
-npm run parity:url:check    # must be 801/801 before merging #23
-npm run parity:smoke:200    # 0 fails
+npm run parity:smoke:200              # 0 fails
+npm run parity:template-samples:http  # 19/19
+npm run parity:url:check              # 801/801
 ```
 
-**Issue WP sources:** `parity/cache/wp-issue-pages/*.html` (committed), then refpack desktop `rendered.html`. Env: `PARITY_ISSUE_WP_CACHE_ONLY=1` and/or `PARITY_CONTENT_SWEEP_NO_LIVE_WP=1`.
+**Issue gates:** committed `parity/cache/wp-issue-pages` + refpack only (`PARITY_ISSUE_WP_CACHE_ONLY=1`).
 
-**No more partial merges:** take **#25** whole → **#23** whole → **#28** whole once agents clear (order unchanged).
+### PR #23 blocker
 
-**PR #25 pre-merge verify:** pass-2 **live-WP cache baseline** — issue gates use cache-only above; computed-style acceptance stays `npm run parity:computed-style-diff:full:live-wp` (not refpack/pass-3 totals).
+`parity:url:check` **801/801** on content-sweep branch before whole merge.
 
-**Pass:** `verify_df_setup_schema` exit 0 (`schema === max_hook`, `update_10027_applied` when max ≥ 10027). Record **both** issue text metrics in merge notes (live-text vs content-sweep can diverge; bad **10027** collision → ~0.03 sweep vs ≥98.9% live-text).
+## Phase4 reference state
 
-### PR #23 merge blockers
-
-- **`parity:url:check` = 801/801** on the content-sweep branch (#23 reported **800/801** — do not merge until green).
-- **#25 merged first** (standalone #23 only for **10031–10033** after #25; overlap already in #25).
-
-### Schema + `df_setup_update_10027`
-
-`10027` must run via **`drush updb`**, not replay-only. Sets `update_10027_applied`.
-
-Recovery if marker missing but schema ≥ 10027:
-
-```bash
-./vendor/bin/drush php:eval '\Drupal::keyValue("system.schema")->set("df_setup", 10026);'
-./vendor/bin/drush updb -y
-```
-
-### Home after `cim`
-
-```bash
-./vendor/bin/drush php:eval 'require_once DRUPAL_ROOT . "/modules/custom/df_setup/df_setup.install"; _df_setup_ensure_home_landing();'
-```
-
-## `/about` (#23 vs #25)
-
-- **10029–10030** (#25) must be **present in `df_setup.install` before schema passes 10031** (merge **#25 before #23**).
-- Pick About body/CSS that wins **text parity + computed-style vs WP** without losing visible **About Impact** h1.
-
-## PR #5 integrator reference
-
-`cursor/phase4-chrome-behavior-0b67` implements **10027–10030** and **10034–10035** (#24 search/home). Slots **10031–10033** remain for **#23** at merge time.
-
-### Latest VM snapshot (cache-only issue gates)
-
-| Gate | Result |
-|------|--------|
-| `df_setup` schema | **10035** (= max hook); **10027–10030** present; **10031–10033** reserved (#23); **10034–10035** (#24 search/home) |
-| `parity:issue-live-text:cache` | **15/15** compared (1 skipped archive), min **1.0** |
-| `parity:content:sweep:issues:cache` | **15/15** pass, text98 **15/15** |
+| Check | Expected |
+|-------|----------|
+| `df_setup` schema | **10035** |
+| Numbered hooks in code | **10027–10030**, **10034–10035** only |
+| `df_setup.post_update.php` | name-based only beyond cap |
+| Cache-only issue gates | **15/15** both scorers |

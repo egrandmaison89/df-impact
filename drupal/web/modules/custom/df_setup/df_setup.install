@@ -11,6 +11,8 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\TermInterface;
 
 /**
  * Implements hook_install().
@@ -162,7 +164,7 @@ HTML;
     }
   }
 
-  $node->set('path', ['alias' => '/about', 'pathauto' => $pathauto_skip]);
+  $node->set('path', ['alias' => '/about-impact', 'pathauto' => $pathauto_skip]);
   if ($node->hasField('moderation_state')) {
     $node->set('moderation_state', 'published');
   }
@@ -927,4 +929,59 @@ function _df_setup_apply_wordpress_manifest_paths(): string {
     'Manifest paths: About -> /about; home aliases ensured=%s',
     $home_alias_added ? 'yes' : 'already present'
   );
+}
+
+/**
+ * PostX sort fields + backfill from Mac reference pack / WP post-id order.
+ */
+function df_setup_update_10025(): string {
+  foreach (['field_postx_sort_weight', 'field_homepage_sort_weight'] as $field_name) {
+    if (!FieldStorageConfig::loadByName('node', $field_name)) {
+      FieldStorageConfig::create([
+        'field_name' => $field_name,
+        'entity_type' => 'node',
+        'type' => 'integer',
+        'cardinality' => 1,
+        'translatable' => FALSE,
+      ])->save();
+    }
+    if (!FieldConfig::loadByName('node', 'article', $field_name)) {
+      FieldConfig::create([
+        'field_storage' => FieldStorageConfig::loadByName('node', $field_name),
+        'bundle' => 'article',
+        'label' => $field_name === 'field_postx_sort_weight' ? 'Issue grid sort weight' : 'Homepage grid sort weight',
+        'required' => FALSE,
+      ])->save();
+    }
+  }
+
+  $msg = 'PostX sort weight fields ensured.';
+  $script = __DIR__ . '/../df_migrate/scripts/backfill_postx_sort_weights.php';
+  if (is_readable($script)) {
+    try {
+      require $script;
+      $msg .= ' Backfill script executed.';
+    }
+    catch (\Throwable $e) {
+      $msg .= ' Backfill skipped: ' . $e->getMessage();
+    }
+  }
+  return $msg;
+}
+
+/**
+ * Ensures a published topics term for /category/pediatrics (WP parity).
+ */
+function df_setup_update_10026(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $existing = $storage->loadByProperties(['vid' => 'topics', 'name' => 'Pediatrics']);
+  if ($existing !== []) {
+    return 'Pediatrics topics term already present.';
+  }
+  Term::create([
+    'vid' => 'topics',
+    'name' => 'Pediatrics',
+    'status' => 1,
+  ])->save();
+  return 'Created topics term Pediatrics for category archive route.';
 }

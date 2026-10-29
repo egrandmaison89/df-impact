@@ -209,11 +209,31 @@ function _df_setup_article_channels_has_exclusive_term(NodeInterface $node, int 
  * are environment-specific and cannot be stored reliably in exported Views config.
  */
 function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query): void {
-  $ids = ['homepage_digital_exclusives', 'digital_exclusives_archive'];
-  if (!in_array($view->storage->id(), $ids, TRUE)) {
+  if (!$query instanceof Sql) {
     return;
   }
-  if (!$query instanceof Sql) {
+
+  $view_id = $view->storage->id();
+  $display = $view->current_display ?? '';
+
+  if ($view_id === 'issue_articles' && $display === 'homepage_latest') {
+    $alias = $query->ensureTable('node__field_homepage_sort_weight');
+    if ($alias) {
+      $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 100, '<');
+      $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 0, '>');
+    }
+  }
+
+  if ($view_id === 'homepage_digital_exclusives') {
+    $alias = $query->ensureTable('node__field_homepage_sort_weight');
+    if ($alias) {
+      $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 110, '>=');
+      $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 200, '<');
+    }
+  }
+
+  $ids = ['homepage_digital_exclusives', 'digital_exclusives_archive'];
+  if (!in_array($view_id, $ids, TRUE)) {
     return;
   }
 

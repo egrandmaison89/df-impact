@@ -31,6 +31,11 @@ web_environment:
     - DF_SEARCHSTAX_PUBLIC_BASE_URL=${DF_SEARCHSTAX_PUBLIC_BASE_URL}
 corepack_enable: true
 
+# Mac parity harness (reference-pack captures live beside drupal/).
+bind_mounts:
+  - host_path: ../parity
+    container_path: /var/www/parity
+
 # Key features of DDEV's config.yaml:
 
 # name: <projectname> # Name of the project, automatically provides

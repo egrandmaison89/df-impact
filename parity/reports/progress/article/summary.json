@@ -7,67 +7,67 @@
   "structuralPackPassAll": true,
   "structuralRefDrupalPassAll": true,
   "medians": {
-    "chrome_median_desktop": 0.12606581728108643,
-    "viewport_median_mac_desktop": 0.3152789351851852,
-    "chrome_median_tablet": 0.17520326358330862,
-    "viewport_median_mac_tablet": 0.3437673611111111,
-    "chrome_median_mobile": 0.1974640804534797,
-    "viewport_median_mac_mobile": 0.2807037037037037
+    "chrome_median_desktop": 0.0490711915040472,
+    "viewport_median_mac_desktop": 0.3099733796296296,
+    "chrome_median_tablet": 0.1457597532297471,
+    "viewport_median_mac_tablet": 0.35214554398148146,
+    "chrome_median_mobile": 0.1561925037771321,
+    "viewport_median_mac_mobile": 0.2670385185185185
   },
   "summary": [
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "desktop",
-      "pixelDiffRatio": 0.42461805555555554,
-      "headerPixelDiffRatio": 0.033519761372110365,
-      "footerPixelDiffRatio": 0.21892504000914495,
-      "chromePixelDiffRatio": 0.12622240069062765,
-      "viewportPixelDiffRatioMac": 0.42461805555555554
+      "pixelDiffRatio": 0.4177091049382716,
+      "headerPixelDiffRatio": 0.016289149888143176,
+      "footerPixelDiffRatio": 0.08075298163389727,
+      "chromePixelDiffRatio": 0.04852106576102022,
+      "viewportPixelDiffRatioMac": 0.4177091049382716
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "tablet",
-      "pixelDiffRatio": 0.5151432291666667,
-      "headerPixelDiffRatio": 0.21032395287958114,
-      "footerPixelDiffRatio": 0.14043483871541915,
-      "chromePixelDiffRatio": 0.17537939579750014,
-      "viewportPixelDiffRatioMac": 0.5151432291666667
+      "pixelDiffRatio": 0.5592722800925926,
+      "headerPixelDiffRatio": 0.15902459642233857,
+      "footerPixelDiffRatio": 0.1226933123300716,
+      "chromePixelDiffRatio": 0.14085895437620508,
+      "viewportPixelDiffRatioMac": 0.5592722800925926
     },
     {
       "path": "/2022/11/couple-commits-2-million-to-fund-groundbreaking-clinical-trials",
       "bp": "mobile",
-      "pixelDiffRatio": 0.33009185185185186,
-      "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.23446916489192984,
-      "chromePixelDiffRatio": 0.19738117930460367,
-      "viewportPixelDiffRatioMac": 0.33009185185185186
+      "pixelDiffRatio": 0.35185777777777777,
+      "headerPixelDiffRatio": 0.09664223385689354,
+      "footerPixelDiffRatio": 0.20799846761603072,
+      "chromePixelDiffRatio": 0.15232035073646213,
+      "viewportPixelDiffRatioMac": 0.35185777777777777
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "desktop",
-      "pixelDiffRatio": 0.20593981481481483,
-      "headerPixelDiffRatio": 0.033519761372110365,
-      "footerPixelDiffRatio": 0.21829870637098003,
-      "chromePixelDiffRatio": 0.1259092338715452,
-      "viewportPixelDiffRatioMac": 0.20593981481481483
+      "pixelDiffRatio": 0.20223765432098764,
+      "headerPixelDiffRatio": 0.016289149888143176,
+      "footerPixelDiffRatio": 0.08295348460600518,
+      "chromePixelDiffRatio": 0.04962131724707418,
+      "viewportPixelDiffRatioMac": 0.20223765432098764
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "tablet",
-      "pixelDiffRatio": 0.17239149305555557,
-      "headerPixelDiffRatio": 0.21032395287958114,
-      "footerPixelDiffRatio": 0.13973030985865315,
-      "chromePixelDiffRatio": 0.17502713136911713,
-      "viewportPixelDiffRatioMac": 0.17239149305555557
+      "pixelDiffRatio": 0.14501880787037036,
+      "headerPixelDiffRatio": 0.15902459642233857,
+      "footerPixelDiffRatio": 0.1422965077442397,
+      "chromePixelDiffRatio": 0.15066055208328913,
+      "viewportPixelDiffRatioMac": 0.14501880787037036
     },
     {
       "path": "/2024/06/the-charlie-landers-foundation",
       "bp": "mobile",
-      "pixelDiffRatio": 0.23131555555555555,
-      "headerPixelDiffRatio": 0.1602931937172775,
-      "footerPixelDiffRatio": 0.23480076948743403,
-      "chromePixelDiffRatio": 0.19754698160235576,
-      "viewportPixelDiffRatioMac": 0.23131555555555555
+      "pixelDiffRatio": 0.18221925925925925,
+      "headerPixelDiffRatio": 0.09664223385689354,
+      "footerPixelDiffRatio": 0.22348707977871057,
+      "chromePixelDiffRatio": 0.16006465681780205,
+      "viewportPixelDiffRatioMac": 0.18221925925925925
     }
   ]
 }

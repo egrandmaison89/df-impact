@@ -3,6 +3,7 @@ type: module
 description: 'WordPress/Yoast-style head tags, production URLs, and JSON-LD for parity harness metaMatch.'
 package: 'Dana-Farber Impact'
 core_version_requirement: ^10.3 || ^11
+weight: 100
 dependencies:
   - drupal:metatag
   - metatag:metatag_open_graph

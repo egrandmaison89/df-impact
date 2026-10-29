@@ -36,8 +36,18 @@ services:
     tags:
       - { name: event_subscriber }
 
+  df_setup.topic_category_archive_paginate:
+    class: Drupal\df_setup\EventSubscriber\TopicCategoryArchivePaginateSubscriber
+    tags:
+      - { name: event_subscriber }
+
   df_setup.path_processor.topic_archive:
     class: Drupal\df_setup\PathProcessor\TopicTermArchivePathProcessor
     arguments: ['@entity_type.manager']
     tags:
       - { name: path_processor_outbound, priority: 200 }
+
+  df_setup.path_processor.topic_category_archive_inbound:
+    class: Drupal\df_setup\PathProcessor\TopicCategoryArchiveInboundPathProcessor
+    tags:
+      - { name: path_processor_inbound, priority: 250 }

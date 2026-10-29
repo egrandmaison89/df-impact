@@ -4,6 +4,18 @@
 (function ($, Drupal) {
   'use strict';
 
+  function applyReducedMotionHeroVideos() {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    $('.homepage-banner video, .wp-block-cover__video-background').each(function () {
+      var video = this;
+      if (reduced) {
+        video.pause();
+        video.removeAttribute('autoplay');
+        video.currentTime = 0;
+      }
+    });
+  }
+
   function initMegaMenu($root) {
     $root.find('.mega-menu').each(function () {
       var $menu = $(this);
@@ -20,6 +32,14 @@
       initMegaMenu($context);
       if (context === document) {
         initMegaMenu($(document));
+        applyReducedMotionHeroVideos();
+        var motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (motionQuery.addEventListener) {
+          motionQuery.addEventListener('change', applyReducedMotionHeroVideos);
+        }
+        else if (motionQuery.addListener) {
+          motionQuery.addListener(applyReducedMotionHeroVideos);
+        }
       }
 
       $(window)
@@ -40,6 +60,18 @@
       $('.mega-sub-menu', $context).each(function () {
         $(this).css('display', 'none');
       });
+
+      $('.mega-toggle-label', $context)
+        .off('click.dfImpactWpChromeMenu')
+        .on('click.dfImpactWpChromeMenu', function (e) {
+          e.preventDefault();
+          var $wrap = $(this).closest('.mega-menu-wrap');
+          var $menu = $wrap.find('.mega-menu').first();
+          $wrap.toggleClass('mega-menu-open');
+          $menu.toggleClass('mega-menu-open');
+          var open = $wrap.hasClass('mega-menu-open');
+          $(this).attr('aria-expanded', open ? 'true' : 'false');
+        });
     },
   };
 })(jQuery, Drupal);

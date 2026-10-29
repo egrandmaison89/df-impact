@@ -109,9 +109,9 @@ display:
         metatag_display_extender:
           metatags:
             title: 'Issues - Impact Magazine'
-            description: 'Browse all past and current issues of the Impact Magazine by Dana-Farber Cancer Institute.'
+            description: 'Browse all past and current issues of the Impact Magazine by Dana-Farber Cancer Institute and the Jimmy Fund.'
             og_title: 'Issues - Impact Magazine'
-            og_description: 'Browse all past and current issues of the Impact Magazine by Dana-Farber Cancer Institute.'
+            og_description: 'Browse all past and current issues of the Impact Magazine by Dana-Farber Cancer Institute and the Jimmy Fund.'
             og_image: 'https://danafarberimpact.org/wp-content/uploads/2026/08/Fall2026-Cover.jpg'
             og_type: website
             og_site_name: 'Impact Magazine'

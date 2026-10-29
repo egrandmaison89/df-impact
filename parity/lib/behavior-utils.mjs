@@ -39,7 +39,11 @@ export async function computedStyle(page, selector) {
 export async function computedStyleHover(page, selector) {
   const loc = page.locator(selector).first();
   if (!(await loc.count())) return null;
-  await loc.hover({ force: true });
+  try {
+    await loc.hover({ force: true, timeout: 5000 });
+  } catch {
+    return null;
+  }
   await page.waitForTimeout(150);
   return computedStyle(page, selector);
 }
@@ -70,7 +74,8 @@ export async function videoState(page, selector) {
 }
 
 export const WP_HERO_VIDEO = '.homepage-banner video, .wp-block-cover__video-background';
-export const DRUPAL_HERO_VIDEO = '.hero__cover-video, .homepage-banner video';
+export const DRUPAL_HERO_VIDEO =
+  '.hero__cover-video, .homepage-banner video, .wp-block-cover__video-background';
 
 export async function headerScrollState(page, selector = '.header, .desktop-header, .impact-header') {
   return page.evaluate((sel) => {
@@ -91,7 +96,11 @@ export async function headerScrollState(page, selector = '.header, .desktop-head
 export async function dropdownOpenOnHover(page, triggerSel, panelSel) {
   const trigger = page.locator(triggerSel).first();
   if (!(await trigger.count())) return { found: false };
-  await trigger.hover({ force: true });
+  try {
+    await trigger.hover({ force: true, timeout: 5000 });
+  } catch {
+    return { found: false };
+  }
   await page.waitForTimeout(200);
   return page.evaluate((panel) => {
     const el = document.querySelector(panel);

@@ -1,44 +1,82 @@
 # Mac visual parity — live status
 
-**Branch:** `cursor/phase4-chrome-behavior-0b67`  
-**Updated:** 2026-10-28 (ET)  
-**Parallel agents:** `cursor/templates-inbrief-archives` (not on remote yet), `cursor/meta-head-behavior-0751` (**merged locally**)
+**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5** only). **PR #7** redundant — close.
 
-## Scope (this agent only)
+**Updated:** 2026-10-28 late ET (diff-driven chrome + issue/article/pediatrics)
 
-Article/homepage/issue pixel tune, WP image derivatives, chrome ≤5%, Mac measurement authority.
+---
 
-## Latest scores (Mac pack, DDEV)
+## Score medians (Mac pack vs DDEV) — latest
 
-| Area | Desktop | Tablet | Mobile |
-|------|--------:|-------:|-------:|
-| **article** viewport | **31.5%** | 34.4% | 28.1% |
-| **homepage** viewport | 61.1% | 49.0% | 47.3% |
-| **issue** viewport | **65.6%** ↓ from 71.1% | 53.1% | 45.3% |
-| **chrome-global** (13 URLs) | **12.7%** | **17.3%** | **17.9%** ↓ |
+| Template | Viewport D | Viewport T | Viewport M | Chrome D | Chrome T | Chrome M |
+|----------|----------:|-----------:|-----------:|---------:|---------:|---------:|
+| **homepage** | **31.9%** (was 32.6) | 33.7% | 32.4% | **4.9%** (was 12.9) | 16.1% | 17.7% |
+| **issue** | **67.5%** (was 68.0) | 65.3% | 62.6% | **3.4%** (was 11.6) | 12.8% | 13.0% |
+| **article** | **31.0%** (was 31.7) | 35.2% | 26.7% | **4.9%** | 14.6% | 15.6% |
+| **in_brief** | **19.2%** | 13.2% | 15.3% | **5.0%** | 15.1% | 15.8% |
+| **landing_page** | **33.7%** | 40.1% | 37.5% | **4.9%** | 14.0% | 15.4% |
+| **archive** | **29.5%** | 56.0% | 36.8% | **5.0%** | 14.0% | 15.3% |
 
-Gate **≤5% chrome** not met; mobile chrome improved after footer `wp-images` URL fix.
+Command: `DRUPAL_BASE_URL=http://df-impact.ddev.site PARITY_TEMPLATE=<name> npm run parity:compare-template`
 
-## Done (recent commits)
+---
 
-- [x] Merged `wp-assets-vendor-cdf8` + `meta-head-behavior-0751` into phase4
-- [x] Article lead + card/issue banner image styles; vendored derivatives
-- [x] Issue cover: `wp_issue_banner_1024x396`, cover img dimensions/object-fit
-- [x] Footer chrome: point badge logos at `sites/default/files/wp-images/*`
-- [x] Article first paragraph `has-drop-cap` when body stripped
-- [x] `mac-visual/STATUS.md` (this file)
+## Item log (overnight diff-driven pass)
 
-## In progress
+### 1. Header chrome ≤5% desktop — **done (desktop)**
 
-- [ ] Smoke baseline (25-url) run `2026-10-29T00-53-07-976Z` — `/tmp/parity-smoke.log`
-- [ ] Chrome ≤5%: header font/menu AA; footer badge files vs pack PNG bytes
-- [ ] Homepage PostX grids + hero (viewport ~61% desktop)
-- [ ] Article couple-commits tablet viewport outlier (~51%)
-- [ ] 738-url run — still running alongside smoke; poll latest `parity/reports/runs/*/evaluation.json`
+**Root cause (computed styles):** Drupal `.wp-site-blocks` used `border-box` width 1440px; WP uses `content-box` width 1296px + 72px padding → `.desktop-header` bled to **1584px**, logo **+144px** X.
+
+**Fix:** `drupal-overrides.css` — `box-sizing: content-box` + `width: calc(100vw - 2*outer)`.
+
+**Tooling:** `parity/scripts/compare-chrome-styles.mjs` (ref file:// vs Drupal, font audit).
+
+**Stall:** Tablet/mobile chrome ~13–16% (mega menu typography / gtranslate select rasterization).
+
+### 2. Issue template ~67% — **partial**
+
+**Fixes:** PostX cards `fit=768×551` (not 870×570); photon-first card URLs; article **issue_promo** twig → PostX DOM (2 promo cards restored); grid `ultp-heading-filter` shell.
+
+**Stall:** Viewport median ~**67.5%** unchanged — remaining diff is card raster parity (local wp-images vs i0.wp.com), promo excerpt copy, possible article set/order at 5 items. Needs media.json mapping expansion or vendored `-1024x734`-style card files.
+
+### 3. Article lead 1024×734 — **partial**
+
+**Fix:** `df_impact_wp_i0_derivative_url()` photon `resize=1024,734` preferred over image styles.
+
+**Re-measure:** article D **31.0%** (was 31.7). Body typography / drop-cap HTML still open.
+
+### 4. `/about`, `/about-impact` — **not started this pass** (~33.7% landing median).
+
+### 5. Pediatrics + archive — **partial**
+
+**Fix:** `df_setup_update_10026` creates **topics** term Pediatrics → `/category/pediatrics` **200** (was 404). Empty listing until articles tagged.
+
+**Pager:** WP `/category/{slug}/page/N` already **200** (paginate subscriber).
+
+### 6. Meta merge `b4e15df2` — **done**
+
+Merged `origin/cursor/meta-head-behavior-0751` → `b9aa06d2`. Visual regression: homepage chrome D **~4.95%** (unchanged).
+
+**`parity:head:refpack` (2026-10-29):** **61.9%** metaMatch (**13/21**), 19/21 Drupal reachable — report `parity/reports/head-meta/compare-1793244440548.json`. (Full 738-URL smoke metaMatch **~14.5%** uses a different baseline harness.)
+
+---
+
+## 738-URL run `2026-10-29T00-20-11-819Z`
+
+| Metric | Value |
+|--------|------:|
+| Tests passed | 691 |
+| urlParityPercent | **98.70%** |
+| metaMatchPercent | **~14.5%** |
+| failureCount | 753 |
+
+Log: `/tmp/parity-full-738.log`
+
+---
 
 ## Next
 
-1. `git pull origin cursor/phase4-chrome-behavior-0b67` + merge cloud PRs when they land  
-2. `PARITY_TEMPLATE=* npm run parity:compare-template` after each merge  
-3. Smoke: `cd parity && PARITY_WP_BASELINE=df-impact-2026-10-28 npm run parity:smoke:baseline`  
-4. Do **not** port in-brief/archives/landing/meta — only verify and pixel-fix templates above
+1. Merge meta `b4e15df2`; run `npm run parity:head:refpack`; report metaMatch.
+2. Issue viewport: vendored card JPEGs or full photon on all grid images; compare promo excerpt text.
+3. Landing `/about`, `/about-impact`: Gutenberg block parity from reference pack.
+4. Mobile/tablet chrome ≤5%: mega-menu link computed styles vs `maxmegamenu_style.css`.

@@ -11,9 +11,26 @@ body {
   margin: 0;
 }
 
+/*
+ * WP blockmag uses content-box on .wp-site-blocks (1296px + 72px padding = 1440).
+ * Drupal/global border-box was stretching to 1440 content + bleed → 1584px chrome.
+ */
 .wp-site-blocks {
-  width: 100%;
+  box-sizing: content-box !important;
+  width: calc(100vw - 2 * var(--wp--custom--spacing--outer, 72px)) !important;
   max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--wp--custom--spacing--outer, 72px);
+  padding-right: var(--wp--custom--spacing--outer, 72px);
+}
+
+@media (max-width: 768px) {
+  .wp-site-blocks {
+    width: calc(100vw - 40px) !important;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 
 .visually-hidden {

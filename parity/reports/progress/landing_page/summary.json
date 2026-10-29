@@ -1,0 +1,115 @@
+{
+  "component": "landing_page",
+  "drupalBase": "http://df-impact.ddev.site",
+  "refRenderer": "mac-pack-viewport-png",
+  "pages": 4,
+  "rectTolerancePx": 2,
+  "structuralPackPassAll": true,
+  "structuralRefDrupalPassAll": true,
+  "medians": {
+    "chrome_median_desktop": 0.12885612988305922,
+    "viewport_median_mac_desktop": 0.3444483024691358,
+    "chrome_median_tablet": 0.17165042687075793,
+    "viewport_median_mac_tablet": 0.4096079282407407,
+    "chrome_median_mobile": 0.17621482550322531,
+    "viewport_median_mac_mobile": 0.40598814814814815
+  },
+  "summary": [
+    {
+      "path": "/about",
+      "bp": "desktop",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/about",
+      "bp": "tablet",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/about",
+      "bp": "mobile",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/about-impact",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.3444483024691358,
+      "headerPixelDiffRatio": 0.1593214019388516,
+      "footerPixelDiffRatio": 0.09524319844535895,
+      "chromePixelDiffRatio": 0.1272823001921053,
+      "viewportPixelDiffRatioMac": 0.3444483024691358
+    },
+    {
+      "path": "/about-impact",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.4096079282407407,
+      "headerPixelDiffRatio": 0.21032395287958114,
+      "footerPixelDiffRatio": 0.14159289079686846,
+      "chromePixelDiffRatio": 0.1759584218382248,
+      "viewportPixelDiffRatioMac": 0.4096079282407407
+    },
+    {
+      "path": "/about-impact",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.40598814814814815,
+      "headerPixelDiffRatio": 0.1602931937172775,
+      "footerPixelDiffRatio": 0.1921364572891731,
+      "chromePixelDiffRatio": 0.17621482550322531,
+      "viewportPixelDiffRatioMac": 0.40598814814814815
+    },
+    {
+      "path": "/browse-issues",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.2868302469135802,
+      "headerPixelDiffRatio": 0.15929809843400447,
+      "footerPixelDiffRatio": 0.098414161332114,
+      "chromePixelDiffRatio": 0.12885612988305922,
+      "viewportPixelDiffRatioMac": 0.2868302469135802
+    },
+    {
+      "path": "/browse-issues",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.27566984953703705,
+      "headerPixelDiffRatio": 0.21032395287958114,
+      "footerPixelDiffRatio": 0.12456580599766648,
+      "chromePixelDiffRatio": 0.1674448794386238,
+      "viewportPixelDiffRatioMac": 0.27566984953703705
+    },
+    {
+      "path": "/browse-issues",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.31607703703703705,
+      "headerPixelDiffRatio": 0.1602931937172775,
+      "footerPixelDiffRatio": 0.19212675946102925,
+      "chromePixelDiffRatio": 0.17620997658915338,
+      "viewportPixelDiffRatioMac": 0.31607703703703705
+    },
+    {
+      "path": "/past-issues",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.7442121913580247,
+      "headerPixelDiffRatio": 0.1653010812826249,
+      "footerPixelDiffRatio": 0.2199228632844452,
+      "chromePixelDiffRatio": 0.19261197228353505,
+      "viewportPixelDiffRatioMac": 0.7442121913580247
+    },
+    {
+      "path": "/past-issues",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.5546368634259259,
+      "headerPixelDiffRatio": 0.21032395287958114,
+      "footerPixelDiffRatio": 0.1329769008619347,
+      "chromePixelDiffRatio": 0.17165042687075793,
+      "viewportPixelDiffRatioMac": 0.5546368634259259
+    },
+    {
+      "path": "/past-issues",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.4447348148148148,
+      "headerPixelDiffRatio": 0.1602931937172775,
+      "footerPixelDiffRatio": 0.20872020862964327,
+      "chromePixelDiffRatio": 0.18450670117346038,
+      "viewportPixelDiffRatioMac": 0.4447348148148148
+    }
+  ]
+}

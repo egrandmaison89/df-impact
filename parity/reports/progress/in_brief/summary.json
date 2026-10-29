@@ -1,0 +1,91 @@
+{
+  "component": "in_brief",
+  "drupalBase": "http://df-impact.ddev.site",
+  "refRenderer": "mac-pack-viewport-png",
+  "pages": 4,
+  "rectTolerancePx": 2,
+  "structuralPackPassAll": true,
+  "structuralRefDrupalPassAll": true,
+  "medians": {
+    "chrome_median_desktop": 0.1849613244932175,
+    "viewport_median_mac_desktop": 0.22534722222222223,
+    "chrome_median_tablet": 0.15802986971128255,
+    "viewport_median_mac_tablet": 0.13806278935185184,
+    "chrome_median_mobile": 0.20645925867883946,
+    "viewport_median_mac_mobile": 0.21402666666666667
+  },
+  "summary": [
+    {
+      "path": "/in-brief",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.22534722222222223,
+      "headerPixelDiffRatio": 0.1527777777777778,
+      "footerPixelDiffRatio": 0.21714487120865722,
+      "chromePixelDiffRatio": 0.1849613244932175,
+      "viewportPixelDiffRatioMac": 0.22534722222222223
+    },
+    {
+      "path": "/in-brief",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.13806278935185184,
+      "headerPixelDiffRatio": 0.21513688917975568,
+      "footerPixelDiffRatio": 0.10092285024280943,
+      "chromePixelDiffRatio": 0.15802986971128255,
+      "viewportPixelDiffRatioMac": 0.13806278935185184
+    },
+    {
+      "path": "/in-brief",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.21402666666666667,
+      "headerPixelDiffRatio": 0.20194066317626527,
+      "footerPixelDiffRatio": 0.21097785418141368,
+      "chromePixelDiffRatio": 0.20645925867883946,
+      "viewportPixelDiffRatioMac": 0.21402666666666667
+    },
+    {
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "desktop",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "tablet",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/2026/09/american-association-for-cancer-research-2",
+      "bp": "mobile",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/2023/09/american-association-for-cancer-research",
+      "bp": "desktop",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/2023/09/american-association-for-cancer-research",
+      "bp": "tablet",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/2023/09/american-association-for-cancer-research",
+      "bp": "mobile",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/2022/03/in-brief-spring-2022-roundup",
+      "bp": "desktop",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/2022/03/in-brief-spring-2022-roundup",
+      "bp": "tablet",
+      "error": "missing reference viewport"
+    },
+    {
+      "path": "/2022/03/in-brief-spring-2022-roundup",
+      "bp": "mobile",
+      "error": "missing reference viewport"
+    }
+  ]
+}

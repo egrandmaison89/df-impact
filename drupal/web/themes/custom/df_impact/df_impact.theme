@@ -990,6 +990,9 @@ function df_impact_issue_banner_image_url(string $uri): string {
   }
   $file_system = \Drupal::service('file_system');
   $real = $file_system->realpath($uri);
+  if ($real !== FALSE && is_file($real)) {
+    return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+  }
   if ($real === FALSE || !is_file($real)) {
     $live = df_impact_wp_live_url_for_missing_file_uri($uri);
     if ($live !== NULL) {

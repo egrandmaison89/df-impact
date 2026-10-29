@@ -1,0 +1,4803 @@
+{
+  "generatedAt": "2026-10-29T12:13:51.314Z",
+  "tag": "before",
+  "runId": "before-1793275744948",
+  "wpBaseline": "parity/cache (pass-2 live WP HTML)",
+  "styleRunDir": "/workspace/parity/reports/computed-style-diff/before-1793275744948",
+  "styleSummary": {
+    "generatedAt": "2026-10-29T12:12:37.226Z",
+    "wpBase": "https://danafarberimpact.org",
+    "wpSource": "cache",
+    "drupalBase": "http://127.0.0.1:8888",
+    "jobCount": 33,
+    "totalMismatches": 2918,
+    "totalComparableMismatches": 2918,
+    "byTemplate": {
+      "issue": {
+        "runs": 9,
+        "mismatchesAll": 971,
+        "comparableRuns": 9,
+        "mismatchesComparable": 971,
+        "medianMismatchComparable": 113
+      },
+      "article_pull_quote": {
+        "runs": 9,
+        "mismatchesAll": 690,
+        "comparableRuns": 9,
+        "mismatchesComparable": 690,
+        "medianMismatchComparable": 72
+      },
+      "article_no_hero": {
+        "runs": 3,
+        "mismatchesAll": 285,
+        "comparableRuns": 3,
+        "mismatchesComparable": 285,
+        "medianMismatchComparable": 94
+      },
+      "article_gallery": {
+        "runs": 3,
+        "mismatchesAll": 258,
+        "comparableRuns": 3,
+        "mismatchesComparable": 258,
+        "medianMismatchComparable": 77
+      },
+      "article_video_embed": {
+        "runs": 3,
+        "mismatchesAll": 237,
+        "comparableRuns": 3,
+        "mismatchesComparable": 237,
+        "medianMismatchComparable": 73
+      },
+      "article_long_form": {
+        "runs": 3,
+        "mismatchesAll": 253,
+        "comparableRuns": 3,
+        "mismatchesComparable": 253,
+        "medianMismatchComparable": 75
+      },
+      "article_custom_blocks": {
+        "runs": 3,
+        "mismatchesAll": 224,
+        "comparableRuns": 3,
+        "mismatchesComparable": 224,
+        "medianMismatchComparable": 76
+      }
+    },
+    "results": [
+      {
+        "template": "issue",
+        "path": "/fall-2025-issue",
+        "bp": "desktop",
+        "mismatchCount": 115,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 7856.4375,
+            "wp": 11346.3125,
+            "drupal": 3489.875
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 92.453125,
+            "wp": 240.5,
+            "drupal": 148.046875
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 144,
+            "wp": 1440,
+            "drupal": 1296
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 7678.984375,
+            "wp": 10373.5,
+            "drupal": 2694.515625
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "y",
+            "delta": 40.578125,
+            "wp": 835.53125,
+            "drupal": 794.953125
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "w",
+            "delta": 812,
+            "wp": 1440,
+            "drupal": 628
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "h",
+            "delta": 607.640625,
+            "wp": 1165.1875,
+            "drupal": 557.546875
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "y",
+            "delta": 40.578125,
+            "wp": 835.53125,
+            "drupal": 794.953125
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "w",
+            "delta": 822,
+            "wp": 1450,
+            "drupal": 628
+          }
+        ]
+      },
+      {
+        "template": "issue",
+        "path": "/fall-2025-issue",
+        "bp": "tablet",
+        "mismatchCount": 107,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 4495.140625,
+            "wp": 11525.265625,
+            "drupal": 7030.125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 78.671875,
+            "wp": 269.5,
+            "drupal": 190.828125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 4285.96875,
+            "wp": 9799.5,
+            "drupal": 5513.53125
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "y",
+            "delta": 92.671875,
+            "wp": 864.53125,
+            "drupal": 771.859375
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "w",
+            "delta": 722,
+            "wp": 1450,
+            "drupal": 728
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "h",
+            "delta": 517.703125,
+            "wp": 1040,
+            "drupal": 522.296875
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 4388.640625,
+            "wp": 10093,
+            "drupal": 5704.359375
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          }
+        ]
+      },
+      {
+        "template": "issue",
+        "path": "/fall-2025-issue",
+        "bp": "mobile",
+        "mismatchCount": 113,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 5996.078125,
+            "wp": 12013.890625,
+            "drupal": 6017.8125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 78.671875,
+            "wp": 269.5,
+            "drupal": 190.828125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 5603.875,
+            "wp": 9825.09375,
+            "drupal": 4221.21875
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "y",
+            "delta": 92.671875,
+            "wp": 864.53125,
+            "drupal": 771.859375
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "w",
+            "delta": 1115,
+            "wp": 1450,
+            "drupal": 335
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "h",
+            "delta": 799.65625,
+            "wp": 1040,
+            "drupal": 240.34375
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 5706.546875,
+            "wp": 10118.59375,
+            "drupal": 4412.046875
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          }
+        ]
+      },
+      {
+        "template": "issue",
+        "path": "/spring-2024-issue",
+        "bp": "desktop",
+        "mismatchCount": 114,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 7336.265625,
+            "wp": 10800.3125,
+            "drupal": 3464.046875
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 92.453125,
+            "wp": 240.5,
+            "drupal": 148.046875
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 144,
+            "wp": 1440,
+            "drupal": 1296
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 7158.8125,
+            "wp": 9827.5,
+            "drupal": 2668.6875
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "y",
+            "delta": 40.390625,
+            "wp": 835.53125,
+            "drupal": 795.140625
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "w",
+            "delta": 812,
+            "wp": 1440,
+            "drupal": 628
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "h",
+            "delta": 607.640625,
+            "wp": 1165.1875,
+            "drupal": 557.546875
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "y",
+            "delta": 40.390625,
+            "wp": 835.53125,
+            "drupal": 795.140625
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "w",
+            "delta": 822,
+            "wp": 1450,
+            "drupal": 628
+          }
+        ]
+      },
+      {
+        "template": "issue",
+        "path": "/spring-2024-issue",
+        "bp": "tablet",
+        "mismatchCount": 106,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 3949.140625,
+            "wp": 10979.265625,
+            "drupal": 7030.125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 78.671875,
+            "wp": 269.5,
+            "drupal": 190.828125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 3739.96875,
+            "wp": 9253.5,
+            "drupal": 5513.53125
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "y",
+            "delta": 92.671875,
+            "wp": 864.53125,
+            "drupal": 771.859375
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "w",
+            "delta": 722,
+            "wp": 1450,
+            "drupal": 728
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "h",
+            "delta": 517.703125,
+            "wp": 1040,
+            "drupal": 522.296875
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 3842.640625,
+            "wp": 9547,
+            "drupal": 5704.359375
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          }
+        ]
+      },
+      {
+        "template": "issue",
+        "path": "/spring-2024-issue",
+        "bp": "mobile",
+        "mismatchCount": 112,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 5346.078125,
+            "wp": 11311.890625,
+            "drupal": 5965.8125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 78.671875,
+            "wp": 269.5,
+            "drupal": 190.828125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 4953.875,
+            "wp": 9123.09375,
+            "drupal": 4169.21875
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "y",
+            "delta": 92.671875,
+            "wp": 864.53125,
+            "drupal": 771.859375
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "w",
+            "delta": 1115,
+            "wp": 1450,
+            "drupal": 335
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "h",
+            "delta": 799.65625,
+            "wp": 1040,
+            "drupal": 240.34375
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 5056.546875,
+            "wp": 9416.59375,
+            "drupal": 4360.046875
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          }
+        ]
+      },
+      {
+        "template": "issue",
+        "path": "/summer-2023-issue",
+        "bp": "desktop",
+        "mismatchCount": 114,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 7310.25,
+            "wp": 10748.3125,
+            "drupal": 3438.0625
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 92.453125,
+            "wp": 240.5,
+            "drupal": 148.046875
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 144,
+            "wp": 1440,
+            "drupal": 1296
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 7132.796875,
+            "wp": 9775.5,
+            "drupal": 2642.703125
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "y",
+            "delta": 40.390625,
+            "wp": 835.53125,
+            "drupal": 795.140625
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "w",
+            "delta": 812,
+            "wp": 1440,
+            "drupal": 628
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item",
+            "dim": "h",
+            "delta": 633.640625,
+            "wp": 1165.1875,
+            "drupal": 531.546875
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "y",
+            "delta": 40.390625,
+            "wp": 835.53125,
+            "drupal": 795.140625
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "w",
+            "delta": 822,
+            "wp": 1450,
+            "drupal": 628
+          }
+        ]
+      },
+      {
+        "template": "issue",
+        "path": "/summer-2023-issue",
+        "bp": "tablet",
+        "mismatchCount": 76,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 878.265625,
+            "wp": 6125.859375,
+            "drupal": 7004.125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 691.21875,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 906.265625,
+            "wp": 4581.265625,
+            "drupal": 5487.53125
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 906.265625,
+            "wp": 4772.09375,
+            "drupal": 5678.359375
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 691.21875,
+            "drupal": 728
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 28,
+            "wp": 1353.765625,
+            "drupal": 1325.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 0,
+            "drupal": -18.390625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 906.265625,
+            "wp": 4772.09375,
+            "drupal": 5678.359375
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 768,
+            "drupal": 804.78125
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          }
+        ]
+      },
+      {
+        "template": "issue",
+        "path": "/summer-2023-issue",
+        "bp": "mobile",
+        "mismatchCount": 114,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 5346.078125,
+            "wp": 11233.890625,
+            "drupal": 5887.8125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 78.671875,
+            "wp": 269.5,
+            "drupal": 190.828125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 4953.875,
+            "wp": 9045.09375,
+            "drupal": 4091.21875
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "y",
+            "delta": 92.671875,
+            "wp": 864.53125,
+            "drupal": 771.859375
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "w",
+            "delta": 1115,
+            "wp": 1450,
+            "drupal": 335
+          },
+          {
+            "selector": ".ultp-block-items-wrap .ultp-block-item img",
+            "dim": "h",
+            "delta": 799.65625,
+            "wp": 1040,
+            "drupal": 240.34375
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 5056.546875,
+            "wp": 9338.59375,
+            "drupal": 4282.046875
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          }
+        ]
+      },
+      {
+        "template": "article_pull_quote",
+        "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+        "bp": "desktop",
+        "mismatchCount": 106,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 353.671875,
+            "wp": 3510.09375,
+            "drupal": 3156.421875
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 52,
+            "wp": 20,
+            "drupal": 72
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 92.453125,
+            "wp": 442.375,
+            "drupal": 349.921875
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 104,
+            "wp": 1400,
+            "drupal": 1296
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 200.21875,
+            "wp": 2359.40625,
+            "drupal": 2159.1875
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 292.671875,
+            "wp": 2801.78125,
+            "drupal": 2509.109375
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 144,
+            "wp": 1440,
+            "drupal": 1296
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 61,
+            "wp": 708.3125,
+            "drupal": 647.3125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 292.671875,
+            "wp": 2801.78125,
+            "drupal": 2509.109375
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "x",
+            "delta": 23,
+            "wp": 95,
+            "drupal": 72
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "y",
+            "delta": 292.671875,
+            "wp": 2851.78125,
+            "drupal": 2559.109375
+          }
+        ]
+      },
+      {
+        "template": "article_pull_quote",
+        "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+        "bp": "tablet",
+        "mismatchCount": 56,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 111.359375,
+            "wp": 4954.9375,
+            "drupal": 4843.578125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 691.21875,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 138.90625,
+            "wp": 3340.640625,
+            "drupal": 3201.734375
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 139.359375,
+            "wp": 3657.171875,
+            "drupal": 3517.8125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 691.21875,
+            "drupal": 728
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 28,
+            "wp": 1297.765625,
+            "drupal": 1325.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 0,
+            "drupal": -18.390625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 139.359375,
+            "wp": 3657.171875,
+            "drupal": 3517.8125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 768,
+            "drupal": 804.78125
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          }
+        ]
+      },
+      {
+        "template": "article_pull_quote",
+        "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+        "bp": "mobile",
+        "mismatchCount": 90,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 19.4375,
+            "wp": 7423.09375,
+            "drupal": 7403.65625
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 78.671875,
+            "wp": 472,
+            "drupal": 393.328125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 180.765625,
+            "wp": 5223.796875,
+            "drupal": 5404.5625
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 102.09375,
+            "wp": 5695.796875,
+            "drupal": 5797.890625
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 121.53125,
+            "wp": 1727.296875,
+            "drupal": 1605.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 8,
+            "wp": 0,
+            "drupal": -8
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 102.09375,
+            "wp": 5695.796875,
+            "drupal": 5797.890625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 16,
+            "wp": 375,
+            "drupal": 391
+          }
+        ]
+      },
+      {
+        "template": "article_no_hero",
+        "path": "/2023/01/boston-red-sox-jimmy-fund-award",
+        "bp": "desktop",
+        "mismatchCount": 111,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 1008.671875,
+            "wp": 2266.65625,
+            "drupal": 1257.984375
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 52,
+            "wp": 20,
+            "drupal": 72
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 95.453125,
+            "wp": 389.9375,
+            "drupal": 294.484375
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 104,
+            "wp": 1400,
+            "drupal": 1296
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 852.21875,
+            "wp": 1168.40625,
+            "drupal": 316.1875
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 947.671875,
+            "wp": 1558.34375,
+            "drupal": 610.671875
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 144,
+            "wp": 1440,
+            "drupal": 1296
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 61,
+            "wp": 708.3125,
+            "drupal": 647.3125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 947.671875,
+            "wp": 1558.34375,
+            "drupal": 610.671875
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "x",
+            "delta": 23,
+            "wp": 95,
+            "drupal": 72
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "y",
+            "delta": 947.671875,
+            "wp": 1608.34375,
+            "drupal": 660.671875
+          }
+        ]
+      },
+      {
+        "template": "article_no_hero",
+        "path": "/2023/01/boston-red-sox-jimmy-fund-award",
+        "bp": "tablet",
+        "mismatchCount": 80,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 849.75,
+            "wp": 2802.703125,
+            "drupal": 1952.953125
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 870.25,
+            "wp": 1497.4375,
+            "drupal": 627.1875
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 20.5,
+            "wp": 1305.265625,
+            "drupal": 1325.765625
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 102.671875,
+            "wp": 356.125,
+            "drupal": 253.453125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 767.578125,
+            "wp": 1141.3125,
+            "drupal": 373.734375
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 0,
+            "drupal": -18.390625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 870.25,
+            "wp": 1497.4375,
+            "drupal": 627.1875
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 768,
+            "drupal": 804.78125
+          }
+        ]
+      },
+      {
+        "template": "article_no_hero",
+        "path": "/2023/01/boston-red-sox-jimmy-fund-award",
+        "bp": "mobile",
+        "mismatchCount": 94,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 1854.4375,
+            "wp": 4356.40625,
+            "drupal": 2501.96875
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 102.671875,
+            "wp": 394.75,
+            "drupal": 292.078125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 1630.234375,
+            "wp": 2234.359375,
+            "drupal": 604.125
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 1732.90625,
+            "wp": 2629.109375,
+            "drupal": 896.203125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 121.53125,
+            "wp": 1727.296875,
+            "drupal": 1605.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 8,
+            "wp": 0,
+            "drupal": -8
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 1732.90625,
+            "wp": 2629.109375,
+            "drupal": 896.203125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 16,
+            "wp": 375,
+            "drupal": 391
+          }
+        ]
+      },
+      {
+        "template": "article_pull_quote",
+        "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+        "bp": "desktop",
+        "mismatchCount": 106,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 353.671875,
+            "wp": 3510.09375,
+            "drupal": 3156.421875
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 52,
+            "wp": 20,
+            "drupal": 72
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 92.453125,
+            "wp": 442.375,
+            "drupal": 349.921875
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 104,
+            "wp": 1400,
+            "drupal": 1296
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 200.21875,
+            "wp": 2359.40625,
+            "drupal": 2159.1875
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 292.671875,
+            "wp": 2801.78125,
+            "drupal": 2509.109375
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 144,
+            "wp": 1440,
+            "drupal": 1296
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 61,
+            "wp": 708.3125,
+            "drupal": 647.3125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 292.671875,
+            "wp": 2801.78125,
+            "drupal": 2509.109375
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "x",
+            "delta": 23,
+            "wp": 95,
+            "drupal": 72
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "y",
+            "delta": 292.671875,
+            "wp": 2851.78125,
+            "drupal": 2559.109375
+          }
+        ]
+      },
+      {
+        "template": "article_pull_quote",
+        "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+        "bp": "tablet",
+        "mismatchCount": 56,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 111.359375,
+            "wp": 4954.9375,
+            "drupal": 4843.578125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 691.21875,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 138.90625,
+            "wp": 3340.640625,
+            "drupal": 3201.734375
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 139.359375,
+            "wp": 3657.171875,
+            "drupal": 3517.8125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 691.21875,
+            "drupal": 728
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 28,
+            "wp": 1297.765625,
+            "drupal": 1325.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 0,
+            "drupal": -18.390625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 139.359375,
+            "wp": 3657.171875,
+            "drupal": 3517.8125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 768,
+            "drupal": 804.78125
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          }
+        ]
+      },
+      {
+        "template": "article_pull_quote",
+        "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+        "bp": "mobile",
+        "mismatchCount": 72,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 79.484375,
+            "wp": 7324.171875,
+            "drupal": 7403.65625
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 8,
+            "wp": 28,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 31.953125,
+            "wp": 425.28125,
+            "drupal": 393.328125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 16,
+            "wp": 319,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 27.4375,
+            "wp": 5377.125,
+            "drupal": 5404.5625
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 8,
+            "wp": 28,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 4.515625,
+            "wp": 5802.40625,
+            "drupal": 5797.890625
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 16,
+            "wp": 319,
+            "drupal": 335
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 84,
+            "wp": 1521.765625,
+            "drupal": 1605.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 8,
+            "wp": 0,
+            "drupal": -8
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 4.515625,
+            "wp": 5802.40625,
+            "drupal": 5797.890625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 16,
+            "wp": 375,
+            "drupal": 391
+          }
+        ]
+      },
+      {
+        "template": "article_pull_quote",
+        "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+        "bp": "desktop",
+        "mismatchCount": 57,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 190.5,
+            "wp": 3346.921875,
+            "drupal": 3156.421875
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 5.046875,
+            "wp": 344.875,
+            "drupal": 349.921875
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 195.546875,
+            "wp": 2354.734375,
+            "drupal": 2159.1875
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 190.5,
+            "wp": 2699.609375,
+            "drupal": 2509.109375
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 190.5,
+            "wp": 2699.609375,
+            "drupal": 2509.109375
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "y",
+            "delta": 190.5,
+            "wp": 2749.609375,
+            "drupal": 2559.109375
+          },
+          {
+            "selector": ".wp-block-columns",
+            "dim": "y",
+            "delta": 190.5,
+            "wp": 2749.609375,
+            "drupal": 2559.109375
+          },
+          {
+            "selector": ".desktop-header",
+            "dim": "h",
+            "delta": 5.046875,
+            "wp": 143,
+            "drupal": 148.046875
+          },
+          {
+            "selector": "header",
+            "dim": "h",
+            "delta": 5.046875,
+            "wp": 143,
+            "drupal": 148.046875
+          },
+          {
+            "selector": "h1",
+            "dim": "y",
+            "delta": 5.046875,
+            "wp": 216,
+            "drupal": 221.046875
+          },
+          {
+            "selector": ".header-logo",
+            "dim": "y",
+            "delta": 33.5,
+            "wp": 53.5,
+            "drupal": 20
+          },
+          {
+            "selector": ".header-logo",
+            "dim": "w",
+            "delta": 60.546875,
+            "wp": 339.453125,
+            "drupal": 400
+          }
+        ]
+      },
+      {
+        "template": "article_pull_quote",
+        "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+        "bp": "tablet",
+        "mismatchCount": 75,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 246.921875,
+            "wp": 5090.5,
+            "drupal": 4843.578125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 78.671875,
+            "wp": 394.75,
+            "drupal": 316.078125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 188.75,
+            "wp": 3390.484375,
+            "drupal": 3201.734375
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 267.421875,
+            "wp": 3785.234375,
+            "drupal": 3517.8125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 20.5,
+            "wp": 1305.265625,
+            "drupal": 1325.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 0,
+            "drupal": -18.390625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 267.421875,
+            "wp": 3785.234375,
+            "drupal": 3517.8125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 768,
+            "drupal": 804.78125
+          }
+        ]
+      },
+      {
+        "template": "article_pull_quote",
+        "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+        "bp": "mobile",
+        "mismatchCount": 72,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 79.484375,
+            "wp": 7324.171875,
+            "drupal": 7403.65625
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 8,
+            "wp": 28,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 31.953125,
+            "wp": 425.28125,
+            "drupal": 393.328125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 16,
+            "wp": 319,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 27.4375,
+            "wp": 5377.125,
+            "drupal": 5404.5625
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 8,
+            "wp": 28,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 4.515625,
+            "wp": 5802.40625,
+            "drupal": 5797.890625
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 16,
+            "wp": 319,
+            "drupal": 335
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 84,
+            "wp": 1521.765625,
+            "drupal": 1605.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 8,
+            "wp": 0,
+            "drupal": -8
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 4.515625,
+            "wp": 5802.40625,
+            "drupal": 5797.890625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 16,
+            "wp": 375,
+            "drupal": 391
+          }
+        ]
+      },
+      {
+        "template": "article_gallery",
+        "path": "/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk",
+        "bp": "desktop",
+        "mismatchCount": 108,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 584.8125,
+            "wp": 3891.296875,
+            "drupal": 3306.484375
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 52,
+            "wp": 20,
+            "drupal": 72
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 99.109375,
+            "wp": 396.59375,
+            "drupal": 297.484375
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 104,
+            "wp": 1400,
+            "drupal": 1296
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 424.703125,
+            "wp": 2786.390625,
+            "drupal": 2361.6875
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 523.8125,
+            "wp": 3182.984375,
+            "drupal": 2659.171875
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 144,
+            "wp": 1440,
+            "drupal": 1296
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 61,
+            "wp": 708.3125,
+            "drupal": 647.3125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 523.8125,
+            "wp": 3182.984375,
+            "drupal": 2659.171875
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "x",
+            "delta": 23,
+            "wp": 95,
+            "drupal": 72
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "y",
+            "delta": 523.8125,
+            "wp": 3232.984375,
+            "drupal": 2709.171875
+          }
+        ]
+      },
+      {
+        "template": "article_gallery",
+        "path": "/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk",
+        "bp": "tablet",
+        "mismatchCount": 77,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 78.78125,
+            "wp": 5029.859375,
+            "drupal": 4951.078125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 46.375,
+            "wp": 362.453125,
+            "drupal": 316.078125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 52.90625,
+            "wp": 3362.140625,
+            "drupal": 3309.234375
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 99.28125,
+            "wp": 3724.59375,
+            "drupal": 3625.3125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 20.5,
+            "wp": 1305.265625,
+            "drupal": 1325.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 0,
+            "drupal": -18.390625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 99.28125,
+            "wp": 3724.59375,
+            "drupal": 3625.3125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 768,
+            "drupal": 804.78125
+          }
+        ]
+      },
+      {
+        "template": "article_gallery",
+        "path": "/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk",
+        "bp": "mobile",
+        "mismatchCount": 73,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 24.59375,
+            "wp": 6746.125,
+            "drupal": 6770.71875
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 8,
+            "wp": 28,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 16,
+            "wp": 319,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 59.75,
+            "wp": 4831.375,
+            "drupal": 4771.625
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 8,
+            "wp": 28,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 59.40625,
+            "wp": 5224.359375,
+            "drupal": 5164.953125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 16,
+            "wp": 319,
+            "drupal": 335
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 84,
+            "wp": 1521.765625,
+            "drupal": 1605.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 8,
+            "wp": 0,
+            "drupal": -8
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 59.40625,
+            "wp": 5224.359375,
+            "drupal": 5164.953125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 16,
+            "wp": 375,
+            "drupal": 391
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "h",
+            "delta": 28,
+            "wp": 1143.265625,
+            "drupal": 1171.265625
+          }
+        ]
+      },
+      {
+        "template": "article_video_embed",
+        "path": "/2023/01/dana-farber-joins-with-parker-institute-for-cancer-immunotherapy-to-accelerate-cures-for-the-worlds-gravest-cancers",
+        "bp": "desktop",
+        "mismatchCount": 107,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 276.609375,
+            "wp": 3717.53125,
+            "drupal": 3440.921875
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 52,
+            "wp": 20,
+            "drupal": 72
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 92.453125,
+            "wp": 442.375,
+            "drupal": 349.921875
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 104,
+            "wp": 1400,
+            "drupal": 1296
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 123.15625,
+            "wp": 2566.84375,
+            "drupal": 2443.6875
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 215.609375,
+            "wp": 3009.21875,
+            "drupal": 2793.609375
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 144,
+            "wp": 1440,
+            "drupal": 1296
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 61,
+            "wp": 708.3125,
+            "drupal": 647.3125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 215.609375,
+            "wp": 3009.21875,
+            "drupal": 2793.609375
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "x",
+            "delta": 23,
+            "wp": 95,
+            "drupal": 72
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "y",
+            "delta": 215.609375,
+            "wp": 3059.21875,
+            "drupal": 2843.609375
+          }
+        ]
+      },
+      {
+        "template": "article_video_embed",
+        "path": "/2023/01/dana-farber-joins-with-parker-institute-for-cancer-immunotherapy-to-accelerate-cures-for-the-worlds-gravest-cancers",
+        "bp": "tablet",
+        "mismatchCount": 57,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 158.078125,
+            "wp": 5320.625,
+            "drupal": 5478.703125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 691.21875,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 130.53125,
+            "wp": 3667.703125,
+            "drupal": 3798.234375
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 130.078125,
+            "wp": 4022.859375,
+            "drupal": 4152.9375
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 691.21875,
+            "drupal": 728
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 28,
+            "wp": 1297.765625,
+            "drupal": 1325.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 0,
+            "drupal": -18.390625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 130.078125,
+            "wp": 4022.859375,
+            "drupal": 4152.9375
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 768,
+            "drupal": 804.78125
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 38.390625,
+            "drupal": 20
+          }
+        ]
+      },
+      {
+        "template": "article_video_embed",
+        "path": "/2023/01/dana-farber-joins-with-parker-institute-for-cancer-immunotherapy-to-accelerate-cures-for-the-worlds-gravest-cancers",
+        "bp": "mobile",
+        "mismatchCount": 73,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 327.578125,
+            "wp": 7966.765625,
+            "drupal": 8294.34375
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 8,
+            "wp": 28,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 31.953125,
+            "wp": 463.90625,
+            "drupal": 431.953125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 16,
+            "wp": 319,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 275.53125,
+            "wp": 5981.09375,
+            "drupal": 6256.625
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 8,
+            "wp": 28,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 243.578125,
+            "wp": 6445,
+            "drupal": 6688.578125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 16,
+            "wp": 319,
+            "drupal": 335
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 84,
+            "wp": 1521.765625,
+            "drupal": 1605.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 8,
+            "wp": 0,
+            "drupal": -8
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 243.578125,
+            "wp": 6445,
+            "drupal": 6688.578125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 16,
+            "wp": 375,
+            "drupal": 391
+          }
+        ]
+      },
+      {
+        "template": "article_long_form",
+        "path": "/2022/11/richard-and-susan-smith-family-receives-institutes-highest-honor-the-sidney-farber-medical-research-award",
+        "bp": "desktop",
+        "mismatchCount": 106,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 196.171875,
+            "wp": 3985.59375,
+            "drupal": 3789.421875
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 52,
+            "wp": 20,
+            "drupal": 72
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 92.453125,
+            "wp": 442.375,
+            "drupal": 349.921875
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 104,
+            "wp": 1400,
+            "drupal": 1296
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 42.71875,
+            "wp": 2834.90625,
+            "drupal": 2792.1875
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 72,
+            "wp": 0,
+            "drupal": 72
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 135.171875,
+            "wp": 3277.28125,
+            "drupal": 3142.109375
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 144,
+            "wp": 1440,
+            "drupal": 1296
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 61,
+            "wp": 708.3125,
+            "drupal": 647.3125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 135.171875,
+            "wp": 3277.28125,
+            "drupal": 3142.109375
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "x",
+            "delta": 23,
+            "wp": 95,
+            "drupal": 72
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "y",
+            "delta": 135.171875,
+            "wp": 3327.28125,
+            "drupal": 3192.109375
+          }
+        ]
+      },
+      {
+        "template": "article_long_form",
+        "path": "/2022/11/richard-and-susan-smith-family-receives-institutes-highest-honor-the-sidney-farber-medical-research-award",
+        "bp": "tablet",
+        "mismatchCount": 75,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 44.078125,
+            "wp": 5866.5,
+            "drupal": 5910.578125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 78.671875,
+            "wp": 394.75,
+            "drupal": 316.078125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 102.25,
+            "wp": 4166.484375,
+            "drupal": 4268.734375
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 23.578125,
+            "wp": 4561.234375,
+            "drupal": 4584.8125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 20.5,
+            "wp": 1305.265625,
+            "drupal": 1325.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 0,
+            "drupal": -18.390625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 23.578125,
+            "wp": 4561.234375,
+            "drupal": 4584.8125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 768,
+            "drupal": 804.78125
+          }
+        ]
+      },
+      {
+        "template": "article_long_form",
+        "path": "/2022/11/richard-and-susan-smith-family-receives-institutes-highest-honor-the-sidney-farber-medical-research-award",
+        "bp": "mobile",
+        "mismatchCount": 72,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 282.5,
+            "wp": 9182.84375,
+            "drupal": 9465.34375
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 8,
+            "wp": 28,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 31.953125,
+            "wp": 463.90625,
+            "drupal": 431.953125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 16,
+            "wp": 319,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 230.453125,
+            "wp": 7197.171875,
+            "drupal": 7427.625
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 8,
+            "wp": 28,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 198.5,
+            "wp": 7661.078125,
+            "drupal": 7859.578125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 16,
+            "wp": 319,
+            "drupal": 335
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 84,
+            "wp": 1521.765625,
+            "drupal": 1605.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 8,
+            "wp": 0,
+            "drupal": -8
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 198.5,
+            "wp": 7661.078125,
+            "drupal": 7859.578125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 16,
+            "wp": 375,
+            "drupal": 391
+          }
+        ]
+      },
+      {
+        "template": "article_custom_blocks",
+        "path": "/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th",
+        "bp": "desktop",
+        "mismatchCount": 58,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 1605.375,
+            "wp": 5788.359375,
+            "drupal": 4182.984375
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 5.046875,
+            "wp": 292.4375,
+            "drupal": 297.484375
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 1610.421875,
+            "wp": 4848.609375,
+            "drupal": 3238.1875
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 1605.375,
+            "wp": 5141.046875,
+            "drupal": 3535.671875
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 1605.375,
+            "wp": 5141.046875,
+            "drupal": 3535.671875
+          },
+          {
+            "selector": ".wp-block-footer-widget-area-columns",
+            "dim": "y",
+            "delta": 1605.375,
+            "wp": 5191.046875,
+            "drupal": 3585.671875
+          },
+          {
+            "selector": ".wp-block-columns",
+            "dim": "y",
+            "delta": 1605.375,
+            "wp": 5191.046875,
+            "drupal": 3585.671875
+          },
+          {
+            "selector": ".desktop-header",
+            "dim": "h",
+            "delta": 5.046875,
+            "wp": 143,
+            "drupal": 148.046875
+          },
+          {
+            "selector": "header",
+            "dim": "h",
+            "delta": 5.046875,
+            "wp": 143,
+            "drupal": 148.046875
+          },
+          {
+            "selector": "h1",
+            "dim": "y",
+            "delta": 5.046875,
+            "wp": 216,
+            "drupal": 221.046875
+          },
+          {
+            "selector": ".header-logo",
+            "dim": "y",
+            "delta": 33.5,
+            "wp": 53.5,
+            "drupal": 20
+          },
+          {
+            "selector": ".header-logo",
+            "dim": "w",
+            "delta": 60.546875,
+            "wp": 339.453125,
+            "drupal": 400
+          }
+        ]
+      },
+      {
+        "template": "article_custom_blocks",
+        "path": "/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th",
+        "bp": "tablet",
+        "mismatchCount": 76,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 1785.6875,
+            "wp": 7425.765625,
+            "drupal": 5640.078125
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 78.671875,
+            "wp": 394.75,
+            "drupal": 316.078125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 1727.515625,
+            "wp": 5725.75,
+            "drupal": 3998.234375
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 1806.1875,
+            "wp": 6120.5,
+            "drupal": 4314.3125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 768,
+            "drupal": 728
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 20.5,
+            "wp": 1305.265625,
+            "drupal": 1325.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 18.390625,
+            "wp": 0,
+            "drupal": -18.390625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 1806.1875,
+            "wp": 6120.5,
+            "drupal": 4314.3125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 36.78125,
+            "wp": 768,
+            "drupal": 804.78125
+          }
+        ]
+      },
+      {
+        "template": "article_custom_blocks",
+        "path": "/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th",
+        "bp": "mobile",
+        "mismatchCount": 90,
+        "wpStatus": 200,
+        "drStatus": 200,
+        "wpComparable": true,
+        "wpShellReason": null,
+        "wpAttempts": 1,
+        "topBoxDeltas": [
+          {
+            "selector": ".wp-site-blocks",
+            "dim": "h",
+            "delta": 2429.171875,
+            "wp": 9632.265625,
+            "drupal": 7203.09375
+          },
+          {
+            "selector": "main",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "main",
+            "dim": "y",
+            "delta": 78.671875,
+            "wp": 433.375,
+            "drupal": 354.703125
+          },
+          {
+            "selector": "main",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          },
+          {
+            "selector": "main",
+            "dim": "h",
+            "delta": 2228.96875,
+            "wp": 7471.59375,
+            "drupal": 5242.625
+          },
+          {
+            "selector": "footer",
+            "dim": "x",
+            "delta": 20,
+            "wp": 0,
+            "drupal": 20
+          },
+          {
+            "selector": "footer",
+            "dim": "y",
+            "delta": 2307.640625,
+            "wp": 7904.96875,
+            "drupal": 5597.328125
+          },
+          {
+            "selector": "footer",
+            "dim": "w",
+            "delta": 40,
+            "wp": 375,
+            "drupal": 335
+          },
+          {
+            "selector": "footer",
+            "dim": "h",
+            "delta": 121.53125,
+            "wp": 1727.296875,
+            "drupal": 1605.765625
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "x",
+            "delta": 8,
+            "wp": 0,
+            "drupal": -8
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "y",
+            "delta": 2307.640625,
+            "wp": 7904.96875,
+            "drupal": 5597.328125
+          },
+          {
+            "selector": ".footer-dark",
+            "dim": "w",
+            "delta": 16,
+            "wp": 375,
+            "drupal": 391
+          }
+        ]
+      }
+    ]
+  },
+  "aggregateTop": [
+    {
+      "key": ".wp-site-blocks :: rect.h",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": 5788.359375,
+          "drupal": 4182.984375,
+          "delta": 1605.375
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 9632.265625,
+          "drupal": 7203.09375,
+          "delta": 2429.171875
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 7425.765625,
+          "drupal": 5640.078125,
+          "delta": 1785.6875
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": ".wp-site-blocks :: height",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": "5788.36px",
+          "drupal": "4182.98px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": "9632.27px",
+          "drupal": "7203.09px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": "7425.77px",
+          "drupal": "5640.08px"
+        }
+      ],
+      "kinds": [
+        "style"
+      ]
+    },
+    {
+      "key": ".wp-site-blocks :: imgNatural",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 339.453125,
+            "renderedH": 35,
+            "aspectNatural": 0,
+            "aspectRendered": 9.698660714285714,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 878,
+            "naturalHeight": 235,
+            "renderedW": 400,
+            "renderedH": 107.046875,
+            "aspectNatural": 3.7361702127659573,
+            "aspectRendered": 3.736680776528974,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 374,
+            "naturalHeight": 100,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.74,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 768,
+            "naturalHeight": 206,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.7281553398058254,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        }
+      ],
+      "kinds": [
+        "imgNatural"
+      ]
+    },
+    {
+      "key": "main :: rect.h",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": 4848.609375,
+          "drupal": 3238.1875,
+          "delta": 1610.421875
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 7471.59375,
+          "drupal": 5242.625,
+          "delta": 2228.96875
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 5725.75,
+          "drupal": 3998.234375,
+          "delta": 1727.515625
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": "main :: height",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": "4848.61px",
+          "drupal": "3238.19px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": "7471.59px",
+          "drupal": "5242.62px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": "5725.75px",
+          "drupal": "3998.23px"
+        }
+      ],
+      "kinds": [
+        "style"
+      ]
+    },
+    {
+      "key": "footer :: rect.y",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": 5141.046875,
+          "drupal": 3535.671875,
+          "delta": 1605.375
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 7904.96875,
+          "drupal": 5597.328125,
+          "delta": 2307.640625
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 6120.5,
+          "drupal": 4314.3125,
+          "delta": 1806.1875
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": ".footer-dark :: rect.y",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": 5141.046875,
+          "drupal": 3535.671875,
+          "delta": 1605.375
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 7904.96875,
+          "drupal": 5597.328125,
+          "delta": 2307.640625
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 6120.5,
+          "drupal": 4314.3125,
+          "delta": 1806.1875
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": ".wp-block-footer-widget-area-columns :: rect.y",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": 5191.046875,
+          "drupal": 3585.671875,
+          "delta": 1605.375
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 7949.96875,
+          "drupal": 5642.328125,
+          "delta": 2307.640625
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 6165.5,
+          "drupal": 4359.3125,
+          "delta": 1806.1875
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": ".wp-block-columns :: rect.y",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": 5191.046875,
+          "drupal": 3585.671875,
+          "delta": 1605.375
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 7949.96875,
+          "drupal": 5642.328125,
+          "delta": 2307.640625
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 6165.5,
+          "drupal": 4359.3125,
+          "delta": 1806.1875
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": ".desktop-header :: imgNatural",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 339.453125,
+            "renderedH": 35,
+            "aspectNatural": 0,
+            "aspectRendered": 9.698660714285714,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 878,
+            "naturalHeight": 235,
+            "renderedW": 400,
+            "renderedH": 107.046875,
+            "aspectNatural": 3.7361702127659573,
+            "aspectRendered": 3.736680776528974,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 374,
+            "naturalHeight": 100,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.74,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 768,
+            "naturalHeight": 206,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.7281553398058254,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        }
+      ],
+      "kinds": [
+        "imgNatural"
+      ]
+    },
+    {
+      "key": "header :: imgNatural",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 339.453125,
+            "renderedH": 35,
+            "aspectNatural": 0,
+            "aspectRendered": 9.698660714285714,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 878,
+            "naturalHeight": 235,
+            "renderedW": 400,
+            "renderedH": 107.046875,
+            "aspectNatural": 3.7361702127659573,
+            "aspectRendered": 3.736680776528974,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 374,
+            "naturalHeight": 100,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.74,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 768,
+            "naturalHeight": 206,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.7281553398058254,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        }
+      ],
+      "kinds": [
+        "imgNatural"
+      ]
+    },
+    {
+      "key": ".header-logo :: imgNatural",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 339.453125,
+            "renderedH": 35,
+            "aspectNatural": 0,
+            "aspectRendered": 9.698660714285714,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 878,
+            "naturalHeight": 235,
+            "renderedW": 400,
+            "renderedH": 107.046875,
+            "aspectNatural": 3.7361702127659573,
+            "aspectRendered": 3.736680776528974,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 374,
+            "naturalHeight": 100,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.74,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 768,
+            "naturalHeight": 206,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.7281553398058254,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        }
+      ],
+      "kinds": [
+        "imgNatural"
+      ]
+    },
+    {
+      "key": ".header-logo img :: imgNatural",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 339.453125,
+            "renderedH": 35,
+            "aspectNatural": 0,
+            "aspectRendered": 9.698660714285714,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 878,
+            "naturalHeight": 235,
+            "renderedW": 400,
+            "renderedH": 107.046875,
+            "aspectNatural": 3.7361702127659573,
+            "aspectRendered": 3.736680776528974,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 374,
+            "naturalHeight": 100,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.74,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 768,
+            "naturalHeight": 206,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.7281553398058254,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        }
+      ],
+      "kinds": [
+        "imgNatural"
+      ]
+    },
+    {
+      "key": ".copyright :: rect.y",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": 5727.359375,
+          "drupal": 4121.984375,
+          "delta": 1605.375
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 9416.265625,
+          "drupal": 7037.59375,
+          "delta": 2378.671875
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 7342.015625,
+          "drupal": 5530.578125,
+          "delta": 1811.4375
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": ".copyright :: width",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": "603.375px",
+          "drupal": "727px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": "289.5px",
+          "drupal": "335px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": "603.375px",
+          "drupal": "727px"
+        }
+      ],
+      "kinds": [
+        "style"
+      ]
+    },
+    {
+      "key": ".mobile-header :: imgNatural",
+      "count": 27,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 0,
+            "aspectRendered": 0,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 878,
+            "naturalHeight": 235,
+            "renderedW": 0,
+            "renderedH": 0,
+            "aspectNatural": 3.7361702127659573,
+            "aspectRendered": 0,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?w=878&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 173.4375,
+            "renderedH": 63,
+            "aspectNatural": 0,
+            "aspectRendered": 2.7529761904761907,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 374,
+            "naturalHeight": 100,
+            "renderedW": 150.796875,
+            "renderedH": 40.4375,
+            "aspectNatural": 3.74,
+            "aspectRendered": 3.729134466769706,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": {
+            "naturalWidth": 0,
+            "naturalHeight": 0,
+            "renderedW": 307.109375,
+            "renderedH": 31.5,
+            "aspectNatural": 0,
+            "aspectRendered": 9.749503968253968,
+            "src": "http://127.0.0.1:8888/sites/default/files/wp-images/ImpactDFJF_HeaderLogo_878.png"
+          },
+          "drupal": {
+            "naturalWidth": 768,
+            "naturalHeight": 206,
+            "renderedW": 387.78125,
+            "renderedH": 104,
+            "aspectNatural": 3.7281553398058254,
+            "aspectRendered": 3.7286658653846154,
+            "src": "https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png?resize=768%2C206&ssl=1"
+          }
+        }
+      ],
+      "kinds": [
+        "imgNatural"
+      ]
+    },
+    {
+      "key": "header :: height",
+      "count": 26,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": "143px",
+          "drupal": "148.047px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": "269.5px",
+          "drupal": "190.828px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": "269.5px",
+          "drupal": "190.828px"
+        }
+      ],
+      "kinds": [
+        "style"
+      ]
+    },
+    {
+      "key": "h1 :: rect.y",
+      "count": 26,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": 216,
+          "drupal": 221.046875,
+          "delta": 5.046875
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 293.5,
+          "drupal": 214.828125,
+          "delta": 78.671875
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 293.5,
+          "drupal": 214.828125,
+          "delta": 78.671875
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": "h2 :: rect.y",
+      "count": 26,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": 5191.046875,
+          "drupal": 3585.671875,
+          "delta": 1605.375
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 7949.96875,
+          "drupal": 5642.328125,
+          "delta": 2307.640625
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 6165.5,
+          "drupal": 4359.3125,
+          "delta": 1806.1875
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": "header :: rect.h",
+      "count": 25,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:desktop",
+          "wp": 143,
+          "drupal": 148.046875,
+          "delta": 5.046875
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 269.5,
+          "drupal": 190.828125,
+          "delta": 78.671875
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 269.5,
+          "drupal": 190.828125,
+          "delta": 78.671875
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": ".wp-site-blocks :: width",
+      "count": 25,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": "375px",
+          "drupal": "335px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": "768px",
+          "drupal": "728px"
+        },
+        {
+          "job": "article_gallery:/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk:desktop",
+          "wp": "1440px",
+          "drupal": "1296px"
+        }
+      ],
+      "kinds": [
+        "style"
+      ]
+    },
+    {
+      "key": ".wp-site-blocks :: padding",
+      "count": 25,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": "0px",
+          "drupal": "0px 20px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": "0px",
+          "drupal": "0px 20px"
+        },
+        {
+          "job": "article_gallery:/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk:desktop",
+          "wp": "0px",
+          "drupal": "0px 72px"
+        }
+      ],
+      "kinds": [
+        "style"
+      ]
+    },
+    {
+      "key": "main :: rect.x",
+      "count": 25,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 0,
+          "drupal": 20,
+          "delta": 20
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 0,
+          "drupal": 20,
+          "delta": 20
+        },
+        {
+          "job": "article_gallery:/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk:desktop",
+          "wp": 20,
+          "drupal": 72,
+          "delta": 52
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": "main :: rect.w",
+      "count": 25,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": 375,
+          "drupal": 335,
+          "delta": 40
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": 768,
+          "drupal": 728,
+          "delta": 40
+        },
+        {
+          "job": "article_gallery:/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk:desktop",
+          "wp": 1400,
+          "drupal": 1296,
+          "delta": 104
+        }
+      ],
+      "kinds": [
+        "rect"
+      ]
+    },
+    {
+      "key": "main :: width",
+      "count": 25,
+      "samples": [
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:mobile",
+          "wp": "375px",
+          "drupal": "335px"
+        },
+        {
+          "job": "article_custom_blocks:/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th:tablet",
+          "wp": "768px",
+          "drupal": "728px"
+        },
+        {
+          "job": "article_gallery:/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk:desktop",
+          "wp": "1400px",
+          "drupal": "1296px"
+        }
+      ],
+      "kinds": [
+        "style"
+      ]
+    }
+  ],
+  "issuePaths": [
+    "/fall-2025-issue",
+    "/spring-2024-issue",
+    "/summer-2023-issue"
+  ],
+  "articleJobs": [
+    {
+      "template": "article_hero",
+      "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+      "variant": "hero"
+    },
+    {
+      "template": "article_no_hero",
+      "path": "/2023/01/boston-red-sox-jimmy-fund-award",
+      "variant": "no_hero"
+    },
+    {
+      "template": "article_sidebar",
+      "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+      "variant": "sidebar"
+    },
+    {
+      "template": "article_pull_quote",
+      "path": "/2022/11/back-in-the-saddle-again-2022-pmc-raises-record-69-million-thats-900-million-since-1980",
+      "variant": "pull_quote"
+    },
+    {
+      "template": "article_gallery",
+      "path": "/2022/11/back-on-course-with-the-boston-marathon-jimmy-fund-walk",
+      "variant": "gallery"
+    },
+    {
+      "template": "article_video_embed",
+      "path": "/2023/01/dana-farber-joins-with-parker-institute-for-cancer-immunotherapy-to-accelerate-cures-for-the-worlds-gravest-cancers",
+      "variant": "video_embed"
+    },
+    {
+      "template": "article_long_form",
+      "path": "/2022/11/richard-and-susan-smith-family-receives-institutes-highest-honor-the-sidney-farber-medical-research-award",
+      "variant": "long_form"
+    },
+    {
+      "template": "article_custom_blocks",
+      "path": "/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th",
+      "variant": "custom_blocks"
+    }
+  ],
+  "regionReports": [
+    {
+      "path": "/fall-2025-issue",
+      "bp": "desktop",
+      "overallDiffPercent": 60.6,
+      "regions": [
+        {
+          "id": "hero_banner",
+          "label": "Hero / banner",
+          "y": "148-705",
+          "diffPercent": 100,
+          "shareOfViewport": 61.9,
+          "contributionToOverallPercent": 61.9
+        },
+        {
+          "id": "in_this_issue_heading",
+          "label": "In This Issue heading",
+          "y": "744-795",
+          "diffPercent": 87.2,
+          "shareOfViewport": 5.7,
+          "contributionToOverallPercent": 4.9
+        },
+        {
+          "id": "card_grid",
+          "label": "PostX card grid",
+          "y": "794-900",
+          "diffPercent": 87.2,
+          "shareOfViewport": 11.8,
+          "contributionToOverallPercent": 10.3
+        },
+        {
+          "id": "promo_row",
+          "label": "Promo row",
+          "y": "794-900",
+          "diffPercent": 87.2,
+          "shareOfViewport": 11.8,
+          "contributionToOverallPercent": 10.3
+        },
+        {
+          "id": "in_brief_band",
+          "label": "In Brief band",
+          "y": "900-900",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        },
+        {
+          "id": "footer",
+          "label": "Footer (in viewport)",
+          "y": "900-900",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        }
+      ],
+      "cascade": {
+        "mode": "per_element",
+        "bestShiftPx": 44,
+        "diffImprovementIfAligned": 0,
+        "hotBandCount": 40,
+        "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+      }
+    },
+    {
+      "path": "/fall-2025-issue",
+      "bp": "tablet",
+      "overallDiffPercent": 71.79,
+      "regions": [
+        {
+          "id": "hero_banner",
+          "label": "Hero / banner",
+          "y": "190-672",
+          "diffPercent": 99.6,
+          "shareOfViewport": 47.1,
+          "contributionToOverallPercent": 46.9
+        },
+        {
+          "id": "in_this_issue_heading",
+          "label": "In This Issue heading",
+          "y": "711-762",
+          "diffPercent": 78.6,
+          "shareOfViewport": 5,
+          "contributionToOverallPercent": 3.9
+        },
+        {
+          "id": "card_grid",
+          "label": "PostX card grid",
+          "y": "761-1024",
+          "diffPercent": 94.1,
+          "shareOfViewport": 25.7,
+          "contributionToOverallPercent": 24.2
+        },
+        {
+          "id": "promo_row",
+          "label": "Promo row",
+          "y": "761-1024",
+          "diffPercent": 94.1,
+          "shareOfViewport": 25.7,
+          "contributionToOverallPercent": 24.2
+        },
+        {
+          "id": "in_brief_band",
+          "label": "In Brief band",
+          "y": "1024-1024",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        },
+        {
+          "id": "footer",
+          "label": "Footer (in viewport)",
+          "y": "1024-1024",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        }
+      ],
+      "cascade": {
+        "mode": "per_element",
+        "bestShiftPx": -80,
+        "diffImprovementIfAligned": 0,
+        "hotBandCount": 40,
+        "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+      }
+    },
+    {
+      "path": "/fall-2025-issue",
+      "bp": "mobile",
+      "overallDiffPercent": 68.26,
+      "regions": [
+        {
+          "id": "hero_banner",
+          "label": "Hero / banner",
+          "y": "190-672",
+          "diffPercent": 98.9,
+          "shareOfViewport": 59.4,
+          "contributionToOverallPercent": 58.7
+        },
+        {
+          "id": "in_this_issue_heading",
+          "label": "In This Issue heading",
+          "y": "711-762",
+          "diffPercent": 54.5,
+          "shareOfViewport": 6.3,
+          "contributionToOverallPercent": 3.4
+        },
+        {
+          "id": "card_grid",
+          "label": "PostX card grid",
+          "y": "761-812",
+          "diffPercent": 70.1,
+          "shareOfViewport": 6.3,
+          "contributionToOverallPercent": 4.4
+        },
+        {
+          "id": "promo_row",
+          "label": "Promo row",
+          "y": "761-812",
+          "diffPercent": 70.1,
+          "shareOfViewport": 6.3,
+          "contributionToOverallPercent": 4.4
+        },
+        {
+          "id": "in_brief_band",
+          "label": "In Brief band",
+          "y": "812-812",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        },
+        {
+          "id": "footer",
+          "label": "Footer (in viewport)",
+          "y": "812-812",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        }
+      ],
+      "cascade": {
+        "mode": "per_element",
+        "bestShiftPx": -64,
+        "diffImprovementIfAligned": 0,
+        "hotBandCount": 40,
+        "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+      }
+    },
+    {
+      "path": "/spring-2024-issue",
+      "bp": "desktop",
+      "overallDiffPercent": 50.65,
+      "regions": [
+        {
+          "id": "hero_banner",
+          "label": "Hero / banner",
+          "y": "148-706",
+          "diffPercent": 99.1,
+          "shareOfViewport": 62,
+          "contributionToOverallPercent": 61.4
+        },
+        {
+          "id": "in_this_issue_heading",
+          "label": "In This Issue heading",
+          "y": "745-796",
+          "diffPercent": 87.2,
+          "shareOfViewport": 5.7,
+          "contributionToOverallPercent": 4.9
+        },
+        {
+          "id": "card_grid",
+          "label": "PostX card grid",
+          "y": "795-900",
+          "diffPercent": 87.2,
+          "shareOfViewport": 11.7,
+          "contributionToOverallPercent": 10.2
+        },
+        {
+          "id": "promo_row",
+          "label": "Promo row",
+          "y": "795-900",
+          "diffPercent": 87.2,
+          "shareOfViewport": 11.7,
+          "contributionToOverallPercent": 10.2
+        },
+        {
+          "id": "in_brief_band",
+          "label": "In Brief band",
+          "y": "900-900",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        },
+        {
+          "id": "footer",
+          "label": "Footer (in viewport)",
+          "y": "900-900",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        }
+      ],
+      "cascade": {
+        "mode": "per_element",
+        "bestShiftPx": 44,
+        "diffImprovementIfAligned": 0,
+        "hotBandCount": 40,
+        "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+      }
+    },
+    {
+      "path": "/spring-2024-issue",
+      "bp": "tablet",
+      "overallDiffPercent": 58.45,
+      "regions": [
+        {
+          "id": "hero_banner",
+          "label": "Hero / banner",
+          "y": "190-672",
+          "diffPercent": 99.3,
+          "shareOfViewport": 47.1,
+          "contributionToOverallPercent": 46.7
+        },
+        {
+          "id": "in_this_issue_heading",
+          "label": "In This Issue heading",
+          "y": "711-762",
+          "diffPercent": 78.6,
+          "shareOfViewport": 5,
+          "contributionToOverallPercent": 3.9
+        },
+        {
+          "id": "card_grid",
+          "label": "PostX card grid",
+          "y": "761-1024",
+          "diffPercent": 94.1,
+          "shareOfViewport": 25.7,
+          "contributionToOverallPercent": 24.2
+        },
+        {
+          "id": "promo_row",
+          "label": "Promo row",
+          "y": "761-1024",
+          "diffPercent": 94.1,
+          "shareOfViewport": 25.7,
+          "contributionToOverallPercent": 24.2
+        },
+        {
+          "id": "in_brief_band",
+          "label": "In Brief band",
+          "y": "1024-1024",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        },
+        {
+          "id": "footer",
+          "label": "Footer (in viewport)",
+          "y": "1024-1024",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        }
+      ],
+      "cascade": {
+        "mode": "per_element",
+        "bestShiftPx": -80,
+        "diffImprovementIfAligned": 0,
+        "hotBandCount": 40,
+        "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+      }
+    },
+    {
+      "path": "/spring-2024-issue",
+      "bp": "mobile",
+      "overallDiffPercent": 51.33,
+      "regions": [
+        {
+          "id": "hero_banner",
+          "label": "Hero / banner",
+          "y": "190-672",
+          "diffPercent": 98.5,
+          "shareOfViewport": 59.4,
+          "contributionToOverallPercent": 58.5
+        },
+        {
+          "id": "in_this_issue_heading",
+          "label": "In This Issue heading",
+          "y": "711-762",
+          "diffPercent": 54.5,
+          "shareOfViewport": 6.3,
+          "contributionToOverallPercent": 3.4
+        },
+        {
+          "id": "card_grid",
+          "label": "PostX card grid",
+          "y": "761-812",
+          "diffPercent": 70.1,
+          "shareOfViewport": 6.3,
+          "contributionToOverallPercent": 4.4
+        },
+        {
+          "id": "promo_row",
+          "label": "Promo row",
+          "y": "761-812",
+          "diffPercent": 70.1,
+          "shareOfViewport": 6.3,
+          "contributionToOverallPercent": 4.4
+        },
+        {
+          "id": "in_brief_band",
+          "label": "In Brief band",
+          "y": "812-812",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        },
+        {
+          "id": "footer",
+          "label": "Footer (in viewport)",
+          "y": "812-812",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        }
+      ],
+      "cascade": {
+        "mode": "per_element",
+        "bestShiftPx": -64,
+        "diffImprovementIfAligned": 0,
+        "hotBandCount": 40,
+        "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+      }
+    },
+    {
+      "path": "/summer-2023-issue",
+      "bp": "desktop",
+      "overallDiffPercent": 47.39,
+      "regions": [
+        {
+          "id": "hero_banner",
+          "label": "Hero / banner",
+          "y": "148-706",
+          "diffPercent": 98.9,
+          "shareOfViewport": 62,
+          "contributionToOverallPercent": 61.3
+        },
+        {
+          "id": "in_this_issue_heading",
+          "label": "In This Issue heading",
+          "y": "745-796",
+          "diffPercent": 87.2,
+          "shareOfViewport": 5.7,
+          "contributionToOverallPercent": 4.9
+        },
+        {
+          "id": "card_grid",
+          "label": "PostX card grid",
+          "y": "795-900",
+          "diffPercent": 87.2,
+          "shareOfViewport": 11.7,
+          "contributionToOverallPercent": 10.2
+        },
+        {
+          "id": "promo_row",
+          "label": "Promo row",
+          "y": "795-900",
+          "diffPercent": 87.2,
+          "shareOfViewport": 11.7,
+          "contributionToOverallPercent": 10.2
+        },
+        {
+          "id": "in_brief_band",
+          "label": "In Brief band",
+          "y": "900-900",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        },
+        {
+          "id": "footer",
+          "label": "Footer (in viewport)",
+          "y": "900-900",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        }
+      ],
+      "cascade": {
+        "mode": "per_element",
+        "bestShiftPx": 44,
+        "diffImprovementIfAligned": 0,
+        "hotBandCount": 40,
+        "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+      }
+    },
+    {
+      "path": "/summer-2023-issue",
+      "bp": "tablet",
+      "overallDiffPercent": 51.11,
+      "regions": [
+        {
+          "id": "hero_banner",
+          "label": "Hero / banner",
+          "y": "190-672",
+          "diffPercent": 97.9,
+          "shareOfViewport": 47.1,
+          "contributionToOverallPercent": 46.1
+        },
+        {
+          "id": "in_this_issue_heading",
+          "label": "In This Issue heading",
+          "y": "711-762",
+          "diffPercent": 7.8,
+          "shareOfViewport": 5,
+          "contributionToOverallPercent": 0.4
+        },
+        {
+          "id": "card_grid",
+          "label": "PostX card grid",
+          "y": "761-1024",
+          "diffPercent": 90.8,
+          "shareOfViewport": 25.7,
+          "contributionToOverallPercent": 23.3
+        },
+        {
+          "id": "promo_row",
+          "label": "Promo row",
+          "y": "761-1024",
+          "diffPercent": 90.8,
+          "shareOfViewport": 25.7,
+          "contributionToOverallPercent": 23.3
+        },
+        {
+          "id": "in_brief_band",
+          "label": "In Brief band",
+          "y": "1024-1024",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        },
+        {
+          "id": "footer",
+          "label": "Footer (in viewport)",
+          "y": "1024-1024",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        }
+      ],
+      "cascade": {
+        "mode": "per_element",
+        "bestShiftPx": 120,
+        "diffImprovementIfAligned": 0,
+        "hotBandCount": 40,
+        "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+      }
+    },
+    {
+      "path": "/summer-2023-issue",
+      "bp": "mobile",
+      "overallDiffPercent": 40.99,
+      "regions": [
+        {
+          "id": "hero_banner",
+          "label": "Hero / banner",
+          "y": "190-672",
+          "diffPercent": 98.3,
+          "shareOfViewport": 59.4,
+          "contributionToOverallPercent": 58.4
+        },
+        {
+          "id": "in_this_issue_heading",
+          "label": "In This Issue heading",
+          "y": "711-762",
+          "diffPercent": 54.5,
+          "shareOfViewport": 6.3,
+          "contributionToOverallPercent": 3.4
+        },
+        {
+          "id": "card_grid",
+          "label": "PostX card grid",
+          "y": "761-812",
+          "diffPercent": 70.1,
+          "shareOfViewport": 6.3,
+          "contributionToOverallPercent": 4.4
+        },
+        {
+          "id": "promo_row",
+          "label": "Promo row",
+          "y": "761-812",
+          "diffPercent": 70.1,
+          "shareOfViewport": 6.3,
+          "contributionToOverallPercent": 4.4
+        },
+        {
+          "id": "in_brief_band",
+          "label": "In Brief band",
+          "y": "812-812",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        },
+        {
+          "id": "footer",
+          "label": "Footer (in viewport)",
+          "y": "812-812",
+          "diffPercent": 0,
+          "shareOfViewport": 0,
+          "contributionToOverallPercent": 0
+        }
+      ],
+      "cascade": {
+        "mode": "per_element",
+        "bestShiftPx": -64,
+        "diffImprovementIfAligned": 0,
+        "hotBandCount": 40,
+        "reason": "Diffs stay high across many bands; vertical shift does not explain most pixels (content/style per region)."
+      }
+    }
+  ]
+}

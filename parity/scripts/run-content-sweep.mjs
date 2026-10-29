@@ -49,10 +49,13 @@ function withTimeout(promise, ms, label) {
   ]);
 }
 const limit = Number(process.env.CONTENT_SWEEP_LIMIT || 0);
-const pathFilter = (process.env.CONTENT_SWEEP_PATHS || '')
-  .split(',')
-  .map((p) => normalizePath(p.trim()))
-  .filter(Boolean);
+const pathFilterRaw = (process.env.CONTENT_SWEEP_PATHS || '').trim();
+const pathFilter = pathFilterRaw
+  ? pathFilterRaw
+      .split(',')
+      .map((p) => normalizePath(p.trim()))
+      .filter(Boolean)
+  : [];
 
 const urls = (manifest.urls || []).filter(isContentParityUrl);
 let selected = urls;
@@ -63,6 +66,17 @@ const entries = (limit > 0 ? selected.slice(0, limit) : selected).map((entry) =>
   entry,
   path: publicPath(entry),
 }));
+if (entries.length < 10) {
+  console.error(
+    'content-sweep: unexpected URL count',
+    JSON.stringify({
+      entries: entries.length,
+      pathFilter,
+      limit,
+      contentSweepPaths: process.env.CONTENT_SWEEP_PATHS,
+    }),
+  );
+}
 
 async function fetchHtml(url, label) {
   let lastErr = null;
@@ -208,10 +222,10 @@ async function processOne({ entry, path: p }) {
 
   const wpM = extractContentMetrics(wpHtml);
   const drM = extractContentMetrics(drHtml);
-  row.textSimilarity =
-    isIssue
-      ? textSimilarity(wpM.text, drM.text)
-      : wordJaccardSimilarity(wpM.text, drM.text);
+  const useTextSimilarity = isIssue || row.template === 'archive';
+  row.textSimilarity = useTextSimilarity
+    ? textSimilarity(wpM.text, drM.text)
+    : wordJaccardSimilarity(wpM.text, drM.text);
   row.h1Match = !wpM.h1 || wpM.h1 === drM.h1 || drM.h1.includes(wpM.h1) || wpM.h1.includes(drM.h1);
   row.titleMatch =
     !wpM.title ||

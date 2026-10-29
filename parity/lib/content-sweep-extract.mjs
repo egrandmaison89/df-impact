@@ -145,6 +145,8 @@ function normalizeText(s) {
     /sorry, but nothing matched your search terms\.?\s*please try again with some different keywords\.?/gi,
     'search landing empty state',
   );
+  t = t.replace(/\bcontinue reading\b/gi, '');
+  t = t.replace(/…/g, '...');
   return t;
 }
 

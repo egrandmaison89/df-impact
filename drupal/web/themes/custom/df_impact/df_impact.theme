@@ -2251,16 +2251,17 @@ function df_impact_decode_plain_text(?string $text): string {
 }
 
 function df_impact_archive_excerpt_for_node(NodeInterface $node): string {
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $node->id());
+  $frozen_excerpt = \Drupal\df_setup\ArchiveRowWpExcerpts::excerptForAlias($alias);
+  if ($frozen_excerpt !== NULL && $frozen_excerpt !== '') {
+    return preg_replace('/\s+/u', ' ', $frozen_excerpt) ?? $frozen_excerpt;
+  }
   $manifest = $node->bundle() === 'in_brief'
     ? df_impact_in_brief_manifest_row($node)
     : df_impact_article_manifest_row($node);
   if (!empty($manifest['excerpt'])) {
     $text = df_impact_decode_plain_text(trim(strip_tags((string) $manifest['excerpt'])));
-    $text = preg_replace('/\s+/u', ' ', $text) ?? $text;
-    if (mb_strlen($text) > 320) {
-      $text = mb_substr($text, 0, 317) . '…';
-    }
-    return $text;
+    return preg_replace('/\s+/u', ' ', $text) ?? $text;
   }
   if ($node->bundle() === 'in_brief' && $node->hasField('field_summary') && !$node->get('field_summary')->isEmpty()) {
     return df_impact_decode_plain_text(trim(strip_tags($node->get('field_summary')->value ?? '')));

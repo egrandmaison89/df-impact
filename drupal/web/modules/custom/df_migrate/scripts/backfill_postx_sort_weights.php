@@ -10,6 +10,7 @@
  * Usage: drush scr modules/custom/df_migrate/scripts/backfill_postx_sort_weights.php
  */
 
+use Drupal\df_migrate\IssuePageWpFixture;
 use Drupal\node\Entity\Node;
 
 $pack_root = realpath('/var/www/parity/reference-pack')
@@ -131,6 +132,8 @@ function df_postx_parse_homepage_sections(string $html): array {
 $issue_updated = 0;
 $home_updated = 0;
 
+$fixture_index = IssuePageWpFixture::indexByAlias();
+
 if (is_readable($issues_json)) {
   $issues = json_decode(file_get_contents($issues_json), TRUE);
   if (is_array($issues)) {
@@ -140,11 +143,21 @@ if (is_readable($issues_json)) {
         continue;
       }
       $slug = trim($alias, '/');
-      $html = df_postx_issue_page_html($slug, $pack_root, $use_live_wp);
-      if ($html === '') {
+      $norm = '/' . $slug . '/';
+      $wp_ids = [];
+      if (isset($fixture_index[$norm]['main_grid_wp_post_ids']) && is_array($fixture_index[$norm]['main_grid_wp_post_ids'])) {
+        $wp_ids = array_map('intval', $fixture_index[$norm]['main_grid_wp_post_ids']);
+      }
+      if ($wp_ids === []) {
+        $html = df_postx_issue_page_html($slug, $pack_root, $use_live_wp);
+        if ($html === '') {
+          continue;
+        }
+        $wp_ids = df_postx_parse_issue_main_grid_post_ids($html);
+      }
+      if ($wp_ids === []) {
         continue;
       }
-      $wp_ids = df_postx_parse_issue_main_grid_post_ids($html);
       foreach ($wp_ids as $index => $wp_id) {
         $nid = df_postx_nid_for_wp_id($wp_id);
         if ($nid === NULL) {

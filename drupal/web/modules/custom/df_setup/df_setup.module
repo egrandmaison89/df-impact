@@ -240,6 +240,28 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
     }
   }
 
+  if ($view_id === 'browse_issues') {
+    $year_alias = $query->ensureTable('node__field_year');
+    $season_alias = $query->ensureTable('node__field_season');
+    if ($year_alias && $season_alias) {
+      $query->orderby = [];
+      $year_expr = "CAST({$year_alias}.field_year_value AS UNSIGNED)";
+      $formula = "CASE LOWER({$season_alias}.field_season_value) "
+        . "WHEN 'fall' THEN ({$year_expr} * 10 + 4) "
+        . "WHEN 'autumn' THEN ({$year_expr} * 10 + 4) "
+        . "WHEN 'summer' THEN ({$year_expr} * 10 + 3) "
+        . "WHEN 'spring' THEN ({$year_expr} * 10 + 2) "
+        . "WHEN 'winter' THEN (({$year_expr} + 1) * 10 + 1) "
+        . "ELSE 0 END";
+      $query->addOrderBy(NULL, $formula, 'DESC', 'issue_browse_sort');
+      $query->addWhereExpression(
+        0,
+        "LOWER({$season_alias}.field_season_value) NOT IN ('late fall')"
+      );
+    }
+    return;
+  }
+
   if (!in_array($view_id, ['homepage_digital_exclusives', 'digital_exclusives_archive'], TRUE)) {
     return;
   }

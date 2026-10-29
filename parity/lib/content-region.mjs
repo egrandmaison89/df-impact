@@ -87,6 +87,9 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     clone.querySelectorAll('.ultp-block-title, .ultp-block-excerpt, .ultp-block-item').forEach((el) => {
       el.append(document.createTextNode(' '));
     });
+    clone.querySelectorAll('.about-impact-page__staff-column p, .about-impact-page__staff-column h3').forEach((el) => {
+      el.append(document.createTextNode(' '));
+    });
     return clone;
   }
 

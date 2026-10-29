@@ -16,6 +16,7 @@
  *   drush scr modules/custom/df_migrate/scripts/backfill_issue_page_from_wordpress.php -- --only-nid=123
  */
 
+use Drupal\df_migrate\IssuePageWpFixture;
 use Drupal\df_migrate\Plugin\migrate\process\DownloadImage;
 use Drupal\file\FileInterface;
 use Drupal\media\Entity\Media;
@@ -64,6 +65,7 @@ foreach ($nids as $nid) {
 
   if ($skip_existing
     && !$issue->get('field_banner_image')->isEmpty()
+    && !$issue->get('field_cover_image')->isEmpty()
     && !$issue->get('field_leadership_message')->isEmpty()
     && !$issue->get('field_issue_promo_2')->isEmpty()) {
     echo "Skip (complete): {$issue->label()} (nid $nid)\n";
@@ -71,12 +73,46 @@ foreach ($nids as $nid) {
   }
 
   $need_banner = !$skip_existing || $issue->get('field_banner_image')->isEmpty();
+  $need_cover = !$skip_existing || $issue->get('field_cover_image')->isEmpty();
   $need_promos = !$skip_existing
     || $issue->get('field_leadership_message')->isEmpty()
     || $issue->get('field_issue_promo_2')->isEmpty();
 
-  if (!$need_banner && !$need_promos) {
+  if (!$need_banner && !$need_cover && !$need_promos) {
     continue;
+  }
+
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $nid);
+  $fixture = IssuePageWpFixture::rowForPathAlias($alias);
+  if (is_array($fixture) && empty($fixture['wp_archive_error'])) {
+    $dirty_fixture = df_issue_page_apply_fixture_row($issue, $fixture, $need_banner, $need_cover, $need_promos, $dry_run);
+    if ($dirty_fixture && !$dry_run) {
+      try {
+        $issue->save();
+        $updated++;
+        echo "Fixture applied: {$issue->label()} (nid $nid)\n";
+      }
+      catch (\Throwable $e) {
+        fwrite(STDERR, "  Fixture save failed: " . $e->getMessage() . "\n");
+        $errors++;
+      }
+    }
+    elseif ($dirty_fixture && $dry_run) {
+      echo "[dry-run] Fixture would update {$issue->label()} (nid $nid)\n";
+    }
+    if (!$need_banner || !$issue->get('field_banner_image')->isEmpty()) {
+      $need_banner = FALSE;
+    }
+    if (!$need_cover || !$issue->get('field_cover_image')->isEmpty()) {
+      $need_cover = FALSE;
+    }
+    if (!$need_promos
+      || (!$issue->get('field_leadership_message')->isEmpty() && !$issue->get('field_issue_promo_2')->isEmpty())) {
+      $need_promos = FALSE;
+    }
+    if (!$need_banner && !$need_cover && !$need_promos) {
+      continue;
+    }
   }
 
   echo "Fetch: $wp_url\n";
@@ -566,6 +602,84 @@ function df_issue_page_canonical_url(string $url): string {
     return $out;
   }
   return $url;
+}
+
+/**
+ * Applies tracked fixture row (banner, cover, promos) without live HTTP.
+ */
+function df_issue_page_apply_fixture_row(
+  NodeInterface $issue,
+  array $fixture,
+  bool $need_banner,
+  bool $need_cover,
+  bool $need_promos,
+  bool $dry_run,
+): bool {
+  $dirty = FALSE;
+  if ($need_banner && !empty($fixture['banner_url']) && is_string($fixture['banner_url'])) {
+    $banner_url = df_issue_page_canonical_url($fixture['banner_url']);
+    echo ($dry_run ? '[dry-run] ' : '') . "  Fixture banner <= $banner_url\n";
+    if (!$dry_run) {
+      $fid = DownloadImage::getOrCreateFileFromUrl($banner_url);
+      if ($fid !== NULL) {
+        $mid = df_issue_page_get_or_create_media($fid, $issue->label() . ' issue banner');
+        if ($mid !== NULL) {
+          $issue->set('field_banner_image', ['target_id' => $mid]);
+          $dirty = TRUE;
+        }
+      }
+    }
+    else {
+      $dirty = TRUE;
+    }
+  }
+  if ($need_cover && !empty($fixture['cover_url']) && is_string($fixture['cover_url'])) {
+    $cover_url = df_issue_page_canonical_url($fixture['cover_url']);
+    if (str_contains($cover_url, '/wp-content/uploads/')) {
+      echo ($dry_run ? '[dry-run] ' : '') . "  Fixture cover <= $cover_url\n";
+      if (!$dry_run) {
+        $fid = DownloadImage::getOrCreateFileFromUrl($cover_url);
+        if ($fid !== NULL) {
+          $mid = df_issue_page_get_or_create_media($fid, $issue->label() . ' issue cover');
+          if ($mid !== NULL) {
+            $issue->set('field_cover_image', ['target_id' => $mid]);
+            $dirty = TRUE;
+          }
+        }
+      }
+      else {
+        $dirty = TRUE;
+      }
+    }
+  }
+  if ($need_promos && !empty($fixture['promo_wp_post_ids']) && is_array($fixture['promo_wp_post_ids'])) {
+    $promo_nids = [];
+    foreach ($fixture['promo_wp_post_ids'] as $wp_id) {
+      $mapped = df_issue_page_wp_post_id_to_node_id((int) $wp_id);
+      if ($mapped !== NULL && !in_array($mapped, $promo_nids, TRUE)) {
+        $promo_nids[] = $mapped;
+      }
+      if (count($promo_nids) >= 2) {
+        break;
+      }
+    }
+    if ($promo_nids !== []) {
+      echo ($dry_run ? '[dry-run] ' : '') . '  Fixture promos => ' . implode(', ', $promo_nids) . "\n";
+      if (!$dry_run) {
+        if (!empty($promo_nids[0])) {
+          $issue->set('field_leadership_message', ['target_id' => $promo_nids[0]]);
+        }
+        if (!empty($promo_nids[1])) {
+          $issue->set('field_issue_promo_2', ['target_id' => $promo_nids[1]]);
+        }
+        $dirty = TRUE;
+      }
+      else {
+        $dirty = TRUE;
+      }
+    }
+  }
+  return $dirty;
 }
 
 function df_issue_page_get_or_create_media(int $fid, string $alt): ?int {

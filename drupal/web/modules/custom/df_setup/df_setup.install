@@ -998,8 +998,9 @@ function df_setup_update_10026(): string {
 /**
  * Issue landing: PostX NULLS-LAST sort, promo exclusions, WP backfills.
  *
- * Run `node parity/scripts/fetch-wp-issue-pages.mjs` before deploy backfills when
- * live WP blocks server-side HTTP (SiteGround captcha).
+ * Uses committed `df_migrate/data/issue_page_wp_fixture.json` (regenerate via
+ * `node parity/scripts/build-issue-page-fixture.mjs` after refreshing cache).
+ * Live WP is fallback only when a fixture row is missing.
  */
 function df_setup_update_10027(): string {
   $parts = [];

@@ -20,12 +20,27 @@ body {
 }
 
 /* Mega flyout hover (Max Mega Menu). Sticky header comes from WP pack (`header { position: sticky }`). */
-@media (min-width: 768px) {
+@media (min-width: 769px) {
   #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link,
   .header__nav-link {
     background-color: rgb(255, 255, 255);
+    box-sizing: border-box;
+  }
+
+  #mega-menu-wrap-max_mega_menu_1 {
+    box-sizing: border-box;
+  }
+
+  #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 117px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
 }
+
 
 @media (min-width: 769px) {
   #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children:hover > ul.mega-sub-menu,
@@ -112,6 +127,36 @@ body {
 
 .ss-inline-share-wrapper.ss-left-inline-content {
   padding-bottom: 8px;
+}
+
+/*
+ * Pass-2 WP cache baseline: main/footer sit at ~20px inset, max ~1400px wide (global WP inline CSS),
+ * not the 1296px padded column inside .wp-site-blocks alone.
+ */
+@media (min-width: 769px) {
+  .wp-site-blocks:has(main .issue-page) > main#wp--skip-link--target,
+  .wp-site-blocks:has(main .issue-page) > footer {
+    box-sizing: border-box;
+    max-width: 1400px;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px) - 40px) !important;
+    margin-left: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-header {
+    display: block !important;
+  }
+
+  .wp-site-blocks:has(main .issue-page) > main#wp--skip-link--target,
+  .wp-site-blocks:has(main .issue-page) > footer {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }
 
 /* Article/in-brief: floated lead images must expand <main> height (WP block layout). */
@@ -202,10 +247,10 @@ main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-image 
 
 @media (max-width: 768px) {
   .wp-site-blocks .mobile-header.alignfull {
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    width: calc(100% + 40px) !important;
-    max-width: none;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+    width: 100vw !important;
+    max-width: 100vw;
     padding-left: 0 !important;
     padding-right: 0 !important;
     box-sizing: border-box;

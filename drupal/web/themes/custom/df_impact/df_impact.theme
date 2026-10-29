@@ -381,15 +381,23 @@ function df_impact_preprocess_page(&$variables) {
   $origin = $request->getSchemeAndHttpHost() . $request->getBasePath();
   // Migrated media lives under public://wp-images (not WP uploads path segments).
   $variables['wp_uploads_base'] = rtrim($origin, '/') . '/sites/default/files/wp-images/';
-  // Match Mac reference-pack header logo (i0.wp.com derivatives, not local theme stub).
-  $logo_base = 'https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png';
-  $variables['wp_logo_url'] = $logo_base . '?ssl=1';
-  $variables['wp_logo_srcset'] = implode(', ', [
-    $logo_base . '?w=878&ssl=1 878w',
-    $logo_base . '?resize=300%2C80&ssl=1 300w',
-    $logo_base . '?resize=150%2C40&ssl=1 150w',
-    $logo_base . '?resize=768%2C206&ssl=1 768w',
-  ]);
+  $logo_uri = 'public://wp-images/ImpactDFJF_HeaderLogo_878.png';
+  $logo_real = \Drupal::service('file_system')->realpath($logo_uri);
+  if ($logo_real !== FALSE && is_file($logo_real)) {
+    $local_logo = \Drupal::service('file_url_generator')->generateAbsoluteString($logo_uri);
+    $variables['wp_logo_url'] = $local_logo;
+    $variables['wp_logo_srcset'] = '';
+  }
+  else {
+    $logo_base = 'https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/03/ImpactDFJF_HeaderLogo_878.png';
+    $variables['wp_logo_url'] = $logo_base . '?ssl=1';
+    $variables['wp_logo_srcset'] = implode(', ', [
+      $logo_base . '?w=878&ssl=1 878w',
+      $logo_base . '?resize=300%2C80&ssl=1 300w',
+      $logo_base . '?resize=150%2C40&ssl=1 150w',
+      $logo_base . '?resize=768%2C206&ssl=1 768w',
+    ]);
+  }
 
   // Add the current year for copyright.
   $variables['current_year'] = date('Y');
@@ -990,6 +998,9 @@ function df_impact_issue_banner_image_url(string $uri): string {
   }
   $file_system = \Drupal::service('file_system');
   $real = $file_system->realpath($uri);
+  if ($real !== FALSE && is_file($real)) {
+    return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+  }
   if ($real === FALSE || !is_file($real)) {
     $live = df_impact_wp_live_url_for_missing_file_uri($uri);
     if ($live !== NULL) {
@@ -1238,6 +1249,24 @@ function df_impact_article_wp_lead_block_meta(NodeInterface $node): array {
 }
 
 /**
+ * Inline style for WP is-resized lead figures (width + height when export omits style).
+ */
+function df_impact_article_lead_inline_style(array $layout): ?string {
+  if (!empty($layout['style_width']) && is_string($layout['style_width'])) {
+    return $layout['style_width'];
+  }
+  $width = (int) ($layout['width'] ?? 0);
+  $height = (int) ($layout['height'] ?? 0);
+  if ($width > 0 && $height > 0) {
+    return 'width:' . $width . 'px;height:' . $height . 'px';
+  }
+  if ($width > 0) {
+    return 'width:' . $width . 'px';
+  }
+  return NULL;
+}
+
+/**
  * Prefer vendored WP intermediate files (e.g. *-1024x734.jpg) for pixel parity.
  */
 function df_impact_path_basename_key(string $path): string {
@@ -1271,6 +1300,14 @@ function df_impact_wp_vendored_derivative_url(string $uri, string $suffix): ?str
  * Styled URL for article lead images (1024×734 WP large derivative).
  */
 function df_impact_article_lead_image_url(string $uri): string {
+  $resolved = df_impact_resolve_wp_images_uri($uri);
+  if ($resolved !== NULL) {
+    $uri = $resolved;
+  }
+  $real = \Drupal::service('file_system')->realpath($uri);
+  if ($real !== FALSE && is_file($real)) {
+    return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+  }
   $photon = df_impact_wp_i0_derivative_url($uri, '1024', '734');
   if ($photon) {
     return $photon;
@@ -1328,8 +1365,9 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
     }
     $fallback['#attributes']['width'] = (string) $layout['width'];
     $fallback['#attributes']['height'] = (string) $layout['height'];
-    if ($layout['style_width']) {
-      $fallback['#attributes']['style'] = 'width:' . $layout['style_width'];
+    $inline_style = df_impact_article_lead_inline_style($layout);
+    if ($inline_style !== NULL) {
+      $fallback['#attributes']['style'] = $inline_style;
     }
     return [
       '#type' => 'inline_template',
@@ -1345,7 +1383,7 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
 
   return [
     '#type' => 'inline_template',
-    '#template' => '<figure class="wp-block-image {{ align_class }} {{ size_class }} is-resized"><img decoding="async" loading="lazy" class="wp-image-lead" src="{{ src }}" alt="{{ alt }}" width="{{ width }}" height="{{ height }}"{% if style_width %} style="width:{{ style_width }}"{% endif %}>{% if caption %}<figcaption class="wp-element-caption">{{ caption }}</figcaption>{% endif %}</figure>',
+    '#template' => '<figure class="wp-block-image {{ align_class }} {{ size_class }} is-resized"><img decoding="async" loading="lazy" class="wp-image-lead" src="{{ src }}" alt="{{ alt }}" width="{{ width }}" height="{{ height }}"{% if inline_style %} style="{{ inline_style }}"{% endif %}>{% if caption %}<figcaption class="wp-element-caption">{{ caption }}</figcaption>{% endif %}</figure>',
     '#context' => [
       'align_class' => $align_class,
       'size_class' => $size_class,
@@ -1353,7 +1391,7 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
       'alt' => $alt,
       'width' => $layout['width'],
       'height' => $layout['height'],
-      'style_width' => $layout['style_width'],
+      'inline_style' => df_impact_article_lead_inline_style($layout),
       'caption' => $caption,
     ],
   ];

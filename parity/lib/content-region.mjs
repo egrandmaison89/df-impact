@@ -26,6 +26,7 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     '.ultp-pagination-wrap',
     '.pagination-block-html',
     '.ultp-block-readmore',
+    '.ultp-loading',
     '.js-in-brief-load-more',
     '.tabs',
     '.related-posts',

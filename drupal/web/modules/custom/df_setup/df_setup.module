@@ -256,6 +256,16 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
     }
   }
 
+  if ($view_id === 'issue_articles' && in_array($display, ['block_1', 'default'], TRUE)) {
+    $alias = $query->ensureTable('node__field_postx_sort_weight');
+    if ($alias) {
+      $weight_field = "{$alias}.field_postx_sort_weight_value";
+      $query->orderby = [];
+      $query->addOrderBy(NULL, "COALESCE({$weight_field}, 9999)", 'ASC', 'issue_postx_sort_nulls_last');
+      $query->addOrderBy('node_field_data', 'created', 'DESC');
+    }
+  }
+
   if ($view_id === 'homepage_digital_exclusives') {
     $alias = $query->ensureTable('node__field_homepage_sort_weight');
     if ($alias) {

@@ -1,5 +1,7 @@
-parity/reports/
-!parity/reports/progress/
-parity/reports/progress/**/*
-!parity/reports/progress/**/STATUS.md
+reports/playwright-results.json
+reports/computed-style-diff/
 reports/progress/mac-visual/qa-evidence/**/*.png
+
+# Generated run output — keep hand-maintained STATUS docs only.
+reports/**
+!reports/progress/**/STATUS.md

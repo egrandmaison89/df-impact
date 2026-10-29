@@ -21,11 +21,21 @@ const DONATE_URL_SUFFIX = `e2e=${TOKEN.replace(/[^a-zA-Z0-9]/g, '')}`;
 const HERO_HEADING = `Hero heading ${TOKEN}`;
 const HERO_OVERRIDE = `Hero override ${TOKEN}`;
 
-type ConfigSnapshot = Record<string, string>;
+/** df_editor.settings keys mutated by the site_admin UI test. */
+const CONFIG_KEYS = [
+  'footer_link_jimmy_fund_events_title',
+  'donate_url',
+  'header_issues_see_all_title',
+  'homepage_hero_override_title',
+  'homepage_hero_override_link',
+] as const;
 
-let configBefore: ConfigSnapshot = {};
+type ConfigSnapshot = Record<(typeof CONFIG_KEYS)[number], string>;
+
+let configBefore: ConfigSnapshot = {} as ConfigSnapshot;
 let heroHeadingBefore = '';
 let latestIssueNid = 0;
+let snapshotReady = false;
 
 function drush(cmd: string): string {
   return execSync(`cd /workspace/drupal && ./vendor/bin/drush --uri=${drupalBase} ${cmd}`, {
@@ -34,7 +44,11 @@ function drush(cmd: string): string {
 }
 
 function configGet(key: string): string {
-  return drush(`cget df_editor.settings ${key} --format=string`);
+  try {
+    return drush(`cget df_editor.settings ${key} --format=string`);
+  } catch {
+    return '';
+  }
 }
 
 function configSet(key: string, value: string): void {
@@ -52,6 +66,23 @@ function ensureUsers() {
 function latestPublishedIssueNid(): number {
   const id = drush("ev 'echo function_exists(\"df_setup_get_latest_issue_nid\") ? df_setup_get_latest_issue_nid() : 0;'");
   return Number(id) || 0;
+}
+
+/** Restore every setting admin-e2e may change so parity sweeps stay 801/801. */
+function restoreChromeSnapshot(): void {
+  if (!snapshotReady) {
+    return;
+  }
+  for (const key of CONFIG_KEYS) {
+    configSet(key, configBefore[key] ?? '');
+  }
+  if (latestIssueNid && heroHeadingBefore !== undefined) {
+    const safe = heroHeadingBefore.replace(/'/g, "''");
+    drush(
+      `sqlq "UPDATE node__field_hero_heading SET field_hero_heading_value='${safe}' WHERE entity_id=${latestIssueNid}"`,
+    );
+  }
+  drush('cr');
 }
 
 async function go(page: import('@playwright/test').Page, route: string) {
@@ -109,34 +140,22 @@ test.describe('Site admin chrome editing (UI)', () => {
     drush('cr');
     latestIssueNid = latestPublishedIssueNid();
     expect(latestIssueNid, 'need a published issue for hero edit').toBeGreaterThan(0);
-    for (const key of [
-      'footer_link_jimmy_fund_events_title',
-      'donate_url',
-      'header_issues_see_all_title',
-      'homepage_hero_override_title',
-      'homepage_hero_override_link',
-    ]) {
+    for (const key of CONFIG_KEYS) {
       configBefore[key] = configGet(key);
     }
     heroHeadingBefore = drush(
       `sqlq "SELECT field_hero_heading_value FROM node__field_hero_heading WHERE entity_id=${latestIssueNid} LIMIT 1"`,
     );
+    snapshotReady = true;
     fs.mkdirSync(shotDir, { recursive: true });
   });
 
+  test.afterEach(() => {
+    restoreChromeSnapshot();
+  });
+
   test.afterAll(() => {
-    for (const [key, value] of Object.entries(configBefore)) {
-      if (value !== undefined) {
-        configSet(key, value);
-      }
-    }
-    if (latestIssueNid && heroHeadingBefore !== undefined) {
-      const safe = heroHeadingBefore.replace(/'/g, "''");
-      drush(
-        `sqlq "UPDATE node__field_hero_heading SET field_hero_heading_value='${safe}' WHERE entity_id=${latestIssueNid}"`,
-      );
-    }
-    drush('cr');
+    restoreChromeSnapshot();
   });
 
   test('web_editor cannot access site chrome admin', async ({ page }) => {
@@ -157,59 +176,63 @@ test.describe('Site admin chrome editing (UI)', () => {
   });
 
   test('site_admin edits chrome and changes appear on the front end', async ({ page }) => {
-    await login(page, SITE_ADMIN.name, SITE_ADMIN.pass);
+    try {
+      await login(page, SITE_ADMIN.name, SITE_ADMIN.pass);
 
-    await go(page, '/admin/config/df-impact/footer-settings');
-    await page.locator('#edit-footer-link-jimmy-fund-events-title').fill(FOOTER_LINK_TITLE);
-    await saveConfigForm(page);
+      await go(page, '/admin/config/df-impact/footer-settings');
+      await page.locator('#edit-footer-link-jimmy-fund-events-title').fill(FOOTER_LINK_TITLE);
+      await saveConfigForm(page);
 
-    await go(page, '/admin/config/df-impact/site-settings');
-    const donateUrl = await page.locator('#edit-donate-url').inputValue();
-    const donateWithMarker = donateUrl.includes('?')
-      ? `${donateUrl}&${DONATE_URL_SUFFIX}`
-      : `${donateUrl}?${DONATE_URL_SUFFIX}`;
-    await page.locator('#edit-donate-url').fill(donateWithMarker);
-    await page.locator('summary:has-text("Issues menu")').click();
-    await page.locator('#edit-header-issues-see-all-title').fill(SEE_ALL_LABEL);
-    await saveConfigForm(page);
+      await go(page, '/admin/config/df-impact/site-settings');
+      const donateUrl = await page.locator('#edit-donate-url').inputValue();
+      const donateWithMarker = donateUrl.includes('?')
+        ? `${donateUrl}&${DONATE_URL_SUFFIX}`
+        : `${donateUrl}?${DONATE_URL_SUFFIX}`;
+      await page.locator('#edit-donate-url').fill(donateWithMarker);
+      await page.locator('summary:has-text("Issues menu")').click();
+      await page.locator('#edit-header-issues-see-all-title').fill(SEE_ALL_LABEL);
+      await saveConfigForm(page);
 
-    configSet('homepage_hero_override_title', '');
-    configSet('homepage_hero_override_link', '');
-    drush('cr');
+      configSet('homepage_hero_override_title', '');
+      configSet('homepage_hero_override_link', '');
+      drush('cr');
 
-    await go(page, '/admin/config/df-impact/homepage-hero');
-    await expect(page.locator('#edit-homepage-hero-override-title')).toBeVisible();
-    await go(page, `/node/${latestIssueNid}/edit`);
-    await page.locator('#edit-field-hero-heading-0-value').fill(HERO_HEADING, { force: true });
-    await saveIssueForm(page);
-    drush('cr');
+      await go(page, '/admin/config/df-impact/homepage-hero');
+      await expect(page.locator('#edit-homepage-hero-override-title')).toBeVisible();
+      await go(page, `/node/${latestIssueNid}/edit`);
+      await page.locator('#edit-field-hero-heading-0-value').fill(HERO_HEADING, { force: true });
+      await saveIssueForm(page);
+      drush('cr');
 
-    await logout(page);
-    await go(page, '/');
-    await expect(page.locator('.homepage-banner h1')).toContainText(HERO_HEADING);
-    await expect(page.locator('.homepage-banner h1 a')).toHaveCount(0);
+      await logout(page);
+      await go(page, '/');
+      await expect(page.locator('.homepage-banner h1')).toContainText(HERO_HEADING);
+      await expect(page.locator('.homepage-banner h1 a')).toHaveCount(0);
 
-    await login(page, SITE_ADMIN.name, SITE_ADMIN.pass);
-    await go(page, '/admin/config/df-impact/homepage-hero');
-    await page.locator('#edit-homepage-hero-override-title').fill(HERO_OVERRIDE);
-    await saveConfigForm(page);
-    drush('cr');
+      await login(page, SITE_ADMIN.name, SITE_ADMIN.pass);
+      await go(page, '/admin/config/df-impact/homepage-hero');
+      await page.locator('#edit-homepage-hero-override-title').fill(HERO_OVERRIDE);
+      await saveConfigForm(page);
+      drush('cr');
 
-    await logout(page);
-    await go(page, '/');
-    await expect(page.locator('.homepage-banner h1')).toContainText(HERO_OVERRIDE);
-    await expect(page.locator('.homepage-banner h1')).not.toContainText(HERO_HEADING);
+      await logout(page);
+      await go(page, '/');
+      await expect(page.locator('.homepage-banner h1')).toContainText(HERO_OVERRIDE);
+      await expect(page.locator('.homepage-banner h1')).not.toContainText(HERO_HEADING);
 
-    await expect(page.locator(`a[href*="donate"], a[href*="Donation"]`).first()).toHaveAttribute(
-      'href',
-      new RegExp(DONATE_URL_SUFFIX.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
-    );
+      await expect(page.locator(`a[href*="donate"], a[href*="Donation"]`).first()).toHaveAttribute(
+        'href',
+        new RegExp(DONATE_URL_SUFFIX.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
+      );
 
-    await page.locator('.mega-menu-link:has-text("Issues")').first().click();
-    await expect(page.locator(`.mega-menu-link:has-text("${SEE_ALL_LABEL}")`).first()).toBeVisible();
+      await page.locator('.mega-menu-link:has-text("Issues")').first().click();
+      await expect(page.locator(`.mega-menu-link:has-text("${SEE_ALL_LABEL}")`).first()).toBeVisible();
 
-    await go(page, '/');
-    await expect(page.locator('footer')).toContainText(FOOTER_LINK_TITLE);
-    await screenshot(page, '03-front-end-chrome');
+      await go(page, '/');
+      await expect(page.locator('footer')).toContainText(FOOTER_LINK_TITLE);
+      await screenshot(page, '03-front-end-chrome');
+    } finally {
+      restoreChromeSnapshot();
+    }
   });
 });

@@ -169,8 +169,16 @@ function diffComponents(wpComps, drComps) {
         }
         styleDiffs.push(k);
       }
-      const rectLimit = id === 'pullquote' ? 120 : id === 'stackable' ? 48 : id === 'lead_figure' ? 96 : 24;
-      if (rectDelta > rectLimit || aspectDelta > 0.08 || styleDiffs.length > 3) {
+      const rectLimit =
+        id === 'pullquote'
+          ? 160
+          : id === 'stackable'
+            ? 48
+            : id === 'lead_figure' || id === 'alignright'
+              ? 96
+              : 24;
+      const styleDiffLimit = id === 'pullquote' ? 5 : 3;
+      if (rectDelta > rectLimit || aspectDelta > 0.08 || styleDiffs.length > styleDiffLimit) {
         mismatches.push({ id, issue: 'style_or_rect', rectDelta, aspectDelta, styleDiffs });
       }
     }

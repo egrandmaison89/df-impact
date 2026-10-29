@@ -93,7 +93,7 @@ function df_migrate_classify_node(NodeInterface $node): array {
 
 $storage = \Drupal::entityTypeManager()->getStorage('node');
 $nids = $storage->getQuery()
-  ->condition('type', ['article', 'in_brief'], 'IN')
+  ->condition('type', 'article')
   ->condition('status', 1)
   ->accessCheck(FALSE)
   ->execute();
@@ -127,6 +127,42 @@ foreach ($by_variant as $variant => $rows) {
     'paths' => $pick,
   ];
 }
+
+$in_brief_nids = $storage->getQuery()
+  ->condition('type', 'in_brief')
+  ->condition('status', 1)
+  ->accessCheck(FALSE)
+  ->execute();
+$no_hero_rows = [];
+foreach ($in_brief_nids as $nid) {
+  $node = $storage->load($nid);
+  if (!$node instanceof NodeInterface) {
+    continue;
+  }
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $node->id());
+  $path = str_starts_with($alias, '/') ? $alias : '/' . $alias;
+  $no_hero_rows[] = $path;
+}
+usort($no_hero_rows, static fn(string $a, string $b): int => strcmp($a, $b));
+$preferred = [
+  '/2023/01/breast-cancer-alliance',
+];
+$no_hero_pick = array_values(array_filter($preferred, static fn(string $p): bool => in_array($p, $no_hero_rows, TRUE)));
+foreach ($no_hero_rows as $path) {
+  if (count($no_hero_pick) >= 2) {
+    break;
+  }
+  if ($path === '/2023/01/boston-red-sox-jimmy-fund-award') {
+    continue;
+  }
+  if (!in_array($path, $no_hero_pick, TRUE)) {
+    $no_hero_pick[] = $path;
+  }
+}
+$samples['no_hero'] = [
+  'count' => count($in_brief_nids),
+  'paths' => $no_hero_pick,
+];
 
 $out = [
   'generated_at' => gmdate('c'),

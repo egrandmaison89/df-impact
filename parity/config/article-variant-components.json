@@ -2,14 +2,14 @@
   "hero": [
     {
       "id": "lead_figure",
-      "selector": "main .entry-content.wp-block-post-content > figure.wp-block-image.size-large.is-resized:not(.header-logo) img, main .article__body.wp-block-post-content > figure.wp-block-image.size-large.is-resized img"
+      "selector": "main .entry-content.wp-block-post-content figure.wp-block-image.size-large.is-resized:not(.header-logo) img, main .article__body.wp-block-post-content figure.wp-block-image.size-large.is-resized img"
     }
   ],
   "no_hero": [],
   "sidebar": [
     {
       "id": "alignright",
-      "selector": "main .entry-content.wp-block-post-content > figure.wp-block-image.alignright.is-resized img, main .article__body.wp-block-post-content > figure.wp-block-image.alignright.is-resized img"
+      "selector": "main .entry-content.wp-block-post-content figure.wp-block-image.alignright.is-resized img, main .article__body.wp-block-post-content figure.wp-block-image.alignright.is-resized img"
     }
   ],
   "pull_quote": [

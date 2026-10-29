@@ -1367,9 +1367,31 @@ function df_impact_article_lead_image_url(string $uri): string {
 /**
  * Build WP-like lead figure (align, dimensions, figcaption) for article full view.
  */
+function df_impact_article_first_wp_image_align(NodeInterface $node): ?string {
+  if (!$node->hasField('body') || $node->get('body')->isEmpty()) {
+    return NULL;
+  }
+  $body = (string) $node->get('body')->value;
+  if (!preg_match('/<!-- wp:image (\{.*?\}) -->/s', $body, $match)) {
+    return NULL;
+  }
+  $json = json_decode($match[1], TRUE);
+  if (!is_array($json)) {
+    return NULL;
+  }
+  $align = $json['align'] ?? NULL;
+  return is_string($align) && $align !== '' ? $align : NULL;
+}
+
 function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
   if ($node->bundle() !== 'article') {
     return NULL;
+  }
+  if ($node->hasField('field_featured_image') && $node->get('field_featured_image')->isEmpty()) {
+    $float_align = df_impact_article_first_wp_image_align($node);
+    if (in_array($float_align, ['left', 'right'], TRUE)) {
+      return NULL;
+    }
   }
   $layout = df_impact_article_wp_lead_block_meta($node);
   $align_class = $layout['align'] === 'left' ? 'alignleft' : 'alignright';

@@ -32,7 +32,13 @@ for (const [template, entry] of Object.entries(samples)) {
 }
 
 fs.mkdirSync(outDir, { recursive: true });
-const envBase = { ...process.env, PARITY_SERIAL: '1', REPORT_RUN_ID: runId, DRUPAL_BASE_URL: drupalBase };
+const envBase = {
+  ...process.env,
+  PARITY_SERIAL: '1',
+  REPORT_RUN_ID: runId,
+  DRUPAL_BASE_URL: drupalBase,
+  PARITY_WP_SOURCE: process.env.PARITY_WP_SOURCE || 'refpack',
+};
 delete envBase.PARITY_TEMPLATE;
 delete envBase.PARITY_BP;
 delete envBase.PARITY_PATH;

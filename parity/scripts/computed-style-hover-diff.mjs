@@ -12,11 +12,16 @@ import { stabilizeParityViewport } from '../lib/capture-stabilize.mjs';
 import { computedStyle, computedStyleHover, scrollSelectorIntoView } from '../lib/behavior-utils.mjs';
 import { WP_PROFILE, DRUPAL_PROFILE } from '../lib/behavior-profiles.mjs';
 import { compareHoverStyles, styleFieldMatch } from '../lib/behavior-compare.mjs';
+import { startRefPackServer } from './lib/ref-pack-server.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
-const wpBase = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
+const WP_SOURCE = (process.env.PARITY_WP_SOURCE || 'live').toLowerCase();
+const wpBaseLive = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(/\/$/, '');
+const packRoot = path.join(parityRoot, 'reference-pack');
+let refPackServer = null;
+let refPackBase = null;
 const runId = process.env.REPORT_RUN_ID || `hover-cs-${Date.now()}`;
 const outDir = path.join(parityRoot, 'reports', 'computed-style-hover', runId);
 const vp = { width: 1440, height: 900 };
@@ -35,6 +40,26 @@ const HOVER_TARGETS = [
 function wpParityPath(p) {
   if (p === '/digital-exclusives') return '/category/digital-exclusives';
   return p;
+}
+
+const REF_PACK_SLUG_OVERRIDES = { '/digital-exclusives': 'category_digital-exclusives' };
+
+function pathToPackSlug(p) {
+  const normalized = p.replace(/\/+$/, '') || '/';
+  if (REF_PACK_SLUG_OVERRIDES[normalized]) return REF_PACK_SLUG_OVERRIDES[normalized];
+  if (p === '/' || p === '') return 'root';
+  if (p === '/homepage') return 'homepage';
+  const m = p.match(/^\/(\d{4})\/(\d{2})\/(.+?)\/?$/);
+  if (m) return `${m[1]}_${m[2]}_${m[3]}`;
+  return p.replace(/^\/|\/$/g, '').replace(/\//g, '_');
+}
+
+async function ensureRefPackServer() {
+  if (refPackBase) return refPackBase;
+  const started = startRefPackServer(packRoot, { drupalBase });
+  refPackServer = started.server;
+  refPackBase = started.baseUrl;
+  return refPackBase;
 }
 
 function pathSlug(p) {
@@ -88,10 +113,22 @@ async function compareJob(browser, template, p) {
   await wpPage.setViewportSize(vp);
   await drPage.setViewportSize(vp);
 
-  const wpPath = wpParityPath(p);
-  const wpUrl = `${wpBase}${wpPath === '/' ? '' : wpPath}`;
   const drUrl = `${drupalBase}${p === '/' ? '' : p}`;
-  const wpStatus = await gotoWp(wpPage, wpUrl);
+  let wpUrl;
+  let wpStatus;
+  if (WP_SOURCE === 'refpack') {
+    const base = await ensureRefPackServer();
+    wpUrl = `${base}/rendered/${pathToPackSlug(p)}/desktop/`;
+    const resp = await wpPage.goto(wpUrl, { waitUntil: 'domcontentloaded', timeout: 120000 }).catch(() => null);
+    await wpPage.waitForTimeout(800);
+    await dismissOverlays(wpPage);
+    await stabilizeParityViewport(wpPage);
+    wpStatus = resp?.status() ?? 0;
+  } else {
+    const wpPath = wpParityPath(p);
+    wpUrl = `${wpBaseLive}${wpPath === '/' ? '' : wpPath}`;
+    wpStatus = await gotoWp(wpPage, wpUrl);
+  }
   const drStatus = await gotoDr(drPage, drUrl);
 
   const targetResults = [];
@@ -170,6 +207,9 @@ for (const job of jobs) {
   await new Promise((r) => setTimeout(r, 1200));
 }
 await browser.close();
+if (refPackServer) {
+  refPackServer.close();
+}
 
 const byTemplate = {};
 for (const r of results) {

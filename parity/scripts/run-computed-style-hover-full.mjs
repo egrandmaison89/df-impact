@@ -10,7 +10,12 @@ const runId = process.env.REPORT_RUN_ID || `hover-cs-full-${Date.now()}`;
 
 const r = spawnSync('node', ['scripts/computed-style-hover-diff.mjs'], {
   cwd: parityRoot,
-  env: { ...process.env, REPORT_RUN_ID: runId, PARITY_SERIAL: '1' },
+  env: {
+    ...process.env,
+    REPORT_RUN_ID: runId,
+    PARITY_SERIAL: '1',
+    PARITY_WP_SOURCE: process.env.PARITY_WP_SOURCE || 'refpack',
+  },
   encoding: 'utf8',
   stdio: 'inherit',
 });

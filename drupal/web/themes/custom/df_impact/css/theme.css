@@ -1347,9 +1347,15 @@ article.post .wp-block-post-terms {
 }
 
 /* PostX “In This Issue” grid — WP style4 crop (768×551), layout-only parity. */
+.issue-page .ultp-block-items-wrap .ultp-block-row,
 .issue-page .ultp-block-70af6c .ultp-block-row {
   column-gap: 40px;
   row-gap: 40px;
+}
+
+.issue-page .ultp-block-items-wrap .ultp-block-item {
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 .issue-page .ultp-block-70af6c .ultp-block-image {

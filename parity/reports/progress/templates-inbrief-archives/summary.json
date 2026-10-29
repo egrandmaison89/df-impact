@@ -7,64 +7,43 @@
   "structuralPackPassAll": false,
   "structuralRefDrupalPassAll": false,
   "medians": {
-    "chrome_median_linux_desktop": 0.14326430573073143,
-    "viewport_median_mac_desktop": 0.2903094135802469,
-    "chrome_median_linux_tablet": 0.1675096972548038,
-    "viewport_median_mac_tablet": 0.31441695601851855,
-    "chrome_median_linux_mobile": 0.22142711510134228,
-    "viewport_median_mac_mobile": 0.3554311111111111
+    "chrome_median_linux_desktop": 0.13930944203034198,
+    "viewport_median_mac_desktop": 0.28228395061728395,
+    "chrome_median_linux_tablet": 0.16506614178787737,
+    "viewport_median_mac_tablet": 0.3145486111111111,
+    "chrome_median_linux_mobile": 0.2166878095148344,
+    "viewport_median_mac_mobile": 0.3556622222222222
   },
   "summary": [
     {
       "path": "/in-brief",
       "bp": "desktop",
       "structuralPackPass": false,
-      "structuralPackFailures": 6,
+      "structuralPackFailures": 2,
       "structuralContentPackPass": false,
-      "structuralContentPackFailures": 21,
+      "structuralContentPackFailures": 20,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 55,
+      "structuralRefDrupalFailures": 47,
       "textSimilarity": 0.9971181556195965,
-      "headerPixelDiffRatioLinux": 0.16427417350236143,
+      "headerPixelDiffRatioLinux": 0.15636185682326623,
       "footerPixelDiffRatioLinux": 0.1222803307422649,
-      "chromePixelDiffRatioLinux": 0.14327725212231315,
-      "viewportPixelDiffRatioLinux": 0.1692283950617284,
-      "viewportPixelDiffRatioMac": 0.23079166666666667,
+      "chromePixelDiffRatioLinux": 0.13932109378276555,
+      "viewportPixelDiffRatioLinux": 0.16839351851851853,
+      "viewportPixelDiffRatioMac": 0.2227662037037037,
       "structuralPackSample": [
         {
-          "selector": "header",
-          "kind": "style",
-          "key": "max-width",
-          "expected": "1490px",
-          "actual": "100%"
-        },
-        {
-          "selector": ".desktop-header",
-          "kind": "rect",
-          "dim": "x",
-          "expected": 0,
-          "actual": 72
-        },
-        {
-          "selector": ".desktop-header",
-          "kind": "rect",
-          "dim": "w",
-          "expected": 1440,
-          "actual": 1296
-        },
-        {
           "selector": ".desktop-header",
           "kind": "style",
-          "key": "margin",
-          "expected": "0px -72px",
+          "key": "padding",
+          "expected": "0px 72px",
           "actual": "0px"
         },
         {
-          "selector": ".desktop-header",
-          "kind": "style",
-          "key": "max-width",
-          "expected": "none",
-          "actual": "100%"
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 27568.375,
+          "actual": 15516.09375
         }
       ],
       "structuralRefSample": [
@@ -90,18 +69,18 @@
           "actual": 148.046875
         },
         {
-          "selector": "header",
-          "kind": "ref_vs_drupal_style",
-          "key": "max-width",
-          "expected": "1490px",
-          "actual": "100%"
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
         },
         {
           "selector": ".desktop-header",
-          "kind": "rect",
-          "dim": "x",
-          "expected": 0,
-          "actual": 72
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
         }
       ]
     },
@@ -113,13 +92,13 @@
       "structuralContentPackPass": false,
       "structuralContentPackFailures": 25,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 26,
+      "structuralRefDrupalFailures": 23,
       "textSimilarity": 0.9971181556195965,
-      "headerPixelDiffRatioLinux": 0.18980421029668412,
-      "footerPixelDiffRatioLinux": 0.14577829856654273,
-      "chromePixelDiffRatioLinux": 0.1677912544316134,
-      "viewportPixelDiffRatioLinux": 0.14369936342592593,
-      "viewportPixelDiffRatioMac": 0.1216724537037037,
+      "headerPixelDiffRatioLinux": 0.1850185427574171,
+      "footerPixelDiffRatioLinux": 0.1456789254453158,
+      "chromePixelDiffRatioLinux": 0.16534873410136647,
+      "viewportPixelDiffRatioLinux": 0.1426490162037037,
+      "viewportPixelDiffRatioMac": 0.1218041087962963,
       "structuralPackSample": [
         {
           "selector": "header",
@@ -200,13 +179,13 @@
       "structuralContentPackPass": false,
       "structuralContentPackFailures": 26,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 25,
+      "structuralRefDrupalFailures": 22,
       "textSimilarity": 0.9971181556195965,
-      "headerPixelDiffRatioLinux": 0.17396160558464224,
-      "footerPixelDiffRatioLinux": 0.26877002665576905,
-      "chromePixelDiffRatioLinux": 0.22136581612020564,
-      "viewportPixelDiffRatioLinux": 0.18650074074074074,
-      "viewportPixelDiffRatioMac": 0.18302518518518518,
+      "headerPixelDiffRatioLinux": 0.1646631762652705,
+      "footerPixelDiffRatioLinux": 0.2686307107895495,
+      "chromePixelDiffRatioLinux": 0.21664694352740999,
+      "viewportPixelDiffRatioLinux": 0.18432592592592592,
+      "viewportPixelDiffRatioMac": 0.1832562962962963,
       "structuralPackSample": [
         {
           "selector": "header",
@@ -283,52 +262,31 @@
       "path": "/browse-issues",
       "bp": "desktop",
       "structuralPackPass": false,
-      "structuralPackFailures": 6,
+      "structuralPackFailures": 2,
       "structuralContentPackPass": false,
-      "structuralContentPackFailures": 8,
+      "structuralContentPackFailures": 7,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 55,
+      "structuralRefDrupalFailures": 47,
       "textSimilarity": 1,
-      "headerPixelDiffRatioLinux": 0.16424828071919795,
+      "headerPixelDiffRatioLinux": 0.1563385533184191,
       "footerPixelDiffRatioLinux": 0.11897458578249538,
-      "chromePixelDiffRatioLinux": 0.14161143325084666,
-      "viewportPixelDiffRatioLinux": 0.1681327160493827,
-      "viewportPixelDiffRatioMac": 0.2903094135802469,
+      "chromePixelDiffRatioLinux": 0.13765656955045724,
+      "viewportPixelDiffRatioLinux": 0.16729783950617283,
+      "viewportPixelDiffRatioMac": 0.28228395061728395,
       "structuralPackSample": [
         {
-          "selector": "header",
-          "kind": "style",
-          "key": "max-width",
-          "expected": "1490px",
-          "actual": "100%"
-        },
-        {
-          "selector": ".desktop-header",
-          "kind": "rect",
-          "dim": "x",
-          "expected": 0,
-          "actual": 72
-        },
-        {
-          "selector": ".desktop-header",
-          "kind": "rect",
-          "dim": "w",
-          "expected": 1440,
-          "actual": 1296
-        },
-        {
           "selector": ".desktop-header",
           "kind": "style",
-          "key": "margin",
-          "expected": "0px -72px",
+          "key": "padding",
+          "expected": "0px 72px",
           "actual": "0px"
         },
         {
-          "selector": ".desktop-header",
-          "kind": "style",
-          "key": "max-width",
-          "expected": "none",
-          "actual": "100%"
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 2467.828125,
+          "actual": 3265.8125
         }
       ],
       "structuralRefSample": [
@@ -354,18 +312,18 @@
           "actual": 148.046875
         },
         {
-          "selector": "header",
-          "kind": "ref_vs_drupal_style",
-          "key": "max-width",
-          "expected": "1490px",
-          "actual": "100%"
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
         },
         {
           "selector": ".desktop-header",
-          "kind": "rect",
-          "dim": "x",
-          "expected": 0,
-          "actual": 72
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
         }
       ]
     },
@@ -377,13 +335,13 @@
       "structuralContentPackPass": false,
       "structuralContentPackFailures": 15,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 26,
+      "structuralRefDrupalFailures": 23,
       "textSimilarity": 1,
-      "headerPixelDiffRatioLinux": 0.18980421029668412,
-      "footerPixelDiffRatioLinux": 0.14521518421292348,
-      "chromePixelDiffRatioLinux": 0.1675096972548038,
-      "viewportPixelDiffRatioLinux": 0.1434982638888889,
-      "viewportPixelDiffRatioMac": 0.31441695601851855,
+      "headerPixelDiffRatioLinux": 0.1850185427574171,
+      "footerPixelDiffRatioLinux": 0.14511374081833767,
+      "chromePixelDiffRatioLinux": 0.16506614178787737,
+      "viewportPixelDiffRatioLinux": 0.14244791666666667,
+      "viewportPixelDiffRatioMac": 0.3145486111111111,
       "structuralPackSample": [
         {
           "selector": "header",
@@ -415,7 +373,7 @@
           "kind": "rect",
           "dim": "y",
           "expected": 3613.484375,
-          "actual": 5785.328125
+          "actual": 6056.328125
         }
       ],
       "structuralRefSample": [
@@ -452,7 +410,7 @@
           "kind": "rect",
           "dim": "y",
           "expected": 1790.5,
-          "actual": 5785.328125
+          "actual": 6056.328125
         }
       ]
     },
@@ -464,13 +422,13 @@
       "structuralContentPackPass": false,
       "structuralContentPackFailures": 17,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 25,
+      "structuralRefDrupalFailures": 22,
       "textSimilarity": 1,
-      "headerPixelDiffRatioLinux": 0.17396160558464224,
-      "footerPixelDiffRatioLinux": 0.2688926246180423,
-      "chromePixelDiffRatioLinux": 0.22142711510134228,
-      "viewportPixelDiffRatioLinux": 0.18613925925925925,
-      "viewportPixelDiffRatioMac": 0.364397037037037,
+      "headerPixelDiffRatioLinux": 0.1646631762652705,
+      "footerPixelDiffRatioLinux": 0.2687124427643983,
+      "chromePixelDiffRatioLinux": 0.2166878095148344,
+      "viewportPixelDiffRatioLinux": 0.18396444444444446,
+      "viewportPixelDiffRatioMac": 0.36462814814814815,
       "structuralPackSample": [
         {
           "selector": "header",
@@ -539,7 +497,7 @@
           "kind": "rect",
           "dim": "y",
           "expected": 2379,
-          "actual": 5763.71875
+          "actual": 6034.71875
         }
       ]
     },
@@ -547,52 +505,31 @@
       "path": "/category/digital-exclusives",
       "bp": "desktop",
       "structuralPackPass": false,
-      "structuralPackFailures": 6,
+      "structuralPackFailures": 2,
       "structuralContentPackPass": false,
-      "structuralContentPackFailures": 10,
+      "structuralContentPackFailures": 9,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 55,
+      "structuralRefDrupalFailures": 47,
       "textSimilarity": 0.98989898989899,
-      "headerPixelDiffRatioLinux": 0.16424828071919795,
+      "headerPixelDiffRatioLinux": 0.1563385533184191,
       "footerPixelDiffRatioLinux": 0.1222803307422649,
-      "chromePixelDiffRatioLinux": 0.14326430573073143,
-      "viewportPixelDiffRatioLinux": 0.1692283950617284,
-      "viewportPixelDiffRatioMac": 0.3053587962962963,
+      "chromePixelDiffRatioLinux": 0.13930944203034198,
+      "viewportPixelDiffRatioLinux": 0.16839351851851853,
+      "viewportPixelDiffRatioMac": 0.29733333333333334,
       "structuralPackSample": [
         {
-          "selector": "header",
-          "kind": "style",
-          "key": "max-width",
-          "expected": "1490px",
-          "actual": "100%"
-        },
-        {
-          "selector": ".desktop-header",
-          "kind": "rect",
-          "dim": "x",
-          "expected": 0,
-          "actual": 72
-        },
-        {
-          "selector": ".desktop-header",
-          "kind": "rect",
-          "dim": "w",
-          "expected": 1440,
-          "actual": 1296
-        },
-        {
           "selector": ".desktop-header",
           "kind": "style",
-          "key": "margin",
-          "expected": "0px -72px",
+          "key": "padding",
+          "expected": "0px 72px",
           "actual": "0px"
         },
         {
-          "selector": ".desktop-header",
-          "kind": "style",
-          "key": "max-width",
-          "expected": "none",
-          "actual": "100%"
+          "selector": "footer",
+          "kind": "rect",
+          "dim": "y",
+          "expected": 4587.078125,
+          "actual": 3660.125
         }
       ],
       "structuralRefSample": [
@@ -618,18 +555,18 @@
           "actual": 148.046875
         },
         {
-          "selector": "header",
-          "kind": "ref_vs_drupal_style",
-          "key": "max-width",
-          "expected": "1490px",
-          "actual": "100%"
+          "selector": ".desktop-header",
+          "kind": "rect",
+          "dim": "h",
+          "expected": 240.5,
+          "actual": 148.046875
         },
         {
           "selector": ".desktop-header",
-          "kind": "rect",
-          "dim": "x",
-          "expected": 0,
-          "actual": 72
+          "kind": "ref_vs_drupal_style",
+          "key": "margin",
+          "expected": "0px",
+          "actual": "0px -72px"
         }
       ]
     },
@@ -641,13 +578,13 @@
       "structuralContentPackPass": false,
       "structuralContentPackFailures": 16,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 26,
+      "structuralRefDrupalFailures": 23,
       "textSimilarity": 0.98989898989899,
-      "headerPixelDiffRatioLinux": 0.18980421029668412,
-      "footerPixelDiffRatioLinux": 0.14369830772545705,
-      "chromePixelDiffRatioLinux": 0.16675125901107057,
-      "viewportPixelDiffRatioLinux": 0.1440306712962963,
-      "viewportPixelDiffRatioMac": 0.5202690972222223,
+      "headerPixelDiffRatioLinux": 0.1850185427574171,
+      "footerPixelDiffRatioLinux": 0.14360403924883564,
+      "chromePixelDiffRatioLinux": 0.16431129100312636,
+      "viewportPixelDiffRatioLinux": 0.14298032407407407,
+      "viewportPixelDiffRatioMac": 0.5204007523148149,
       "structuralPackSample": [
         {
           "selector": "header",
@@ -728,13 +665,13 @@
       "structuralContentPackPass": false,
       "structuralContentPackFailures": 18,
       "structuralRefDrupalPass": false,
-      "structuralRefDrupalFailures": 25,
+      "structuralRefDrupalFailures": 22,
       "textSimilarity": 0.98989898989899,
-      "headerPixelDiffRatioLinux": 0.17396160558464224,
-      "footerPixelDiffRatioLinux": 0.269307261946804,
-      "chromePixelDiffRatioLinux": 0.22163443376572312,
-      "viewportPixelDiffRatioLinux": 0.18667851851851852,
-      "viewportPixelDiffRatioMac": 0.3554311111111111,
+      "headerPixelDiffRatioLinux": 0.1646631762652705,
+      "footerPixelDiffRatioLinux": 0.26916785933346965,
+      "chromePixelDiffRatioLinux": 0.21691551779937007,
+      "viewportPixelDiffRatioLinux": 0.1845037037037037,
+      "viewportPixelDiffRatioMac": 0.3556622222222222,
       "structuralPackSample": [
         {
           "selector": "header",

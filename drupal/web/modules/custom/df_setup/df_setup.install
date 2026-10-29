@@ -102,13 +102,12 @@ function df_setup_about_impact_gutenberg_body(): string {
 <div class="wp-block-columns alignwide is-layout-flex wp-block-columns-is-layout-flex" style="gap:40px">
 <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
 <p><strong>Senior Vice President and Chief Philanthropy Officer</strong><br>Melany N. Duval</p>
-<p><strong>Vice President, Philanthropy Communications &amp; Marketing</strong><br>Zuhirah Khaldun-Diarra</p>
 <p><strong>Assistant Vice President, Integrated Philanthropy Marketing</strong><br>Brian Beirne</p>
 <p><strong>Editor</strong><br>Tarice Gray</p>
 <p><strong>Assistant Editor</strong><br>Hannah White Hannah</p>
 </div>
 <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
-<p><strong>Creative Director</strong><br>Claudia de Piante</p>
+<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>
 <p><strong>Art Directors</strong><br>Grace Howard, Sharon Veino</p>
 <p><strong>Print Production Manager</strong><br>Danielle Gray</p>
 <p><strong>Photography Manager</strong><br>Jessamyn Martin</p>
@@ -1004,23 +1003,35 @@ function df_setup_update_10026(): string {
 }
 
 /**
- * Replaces About Impact BEM body with WordPress Gutenberg block markup.
+ * About Impact: WordPress Gutenberg block body (after content-sweep 10028 staff + h1).
  */
-function df_setup_update_10027(): string {
+function df_setup_update_10029(): string {
   return _df_setup_apply_about_impact_gutenberg_body();
 }
 
 /**
- * About Impact body refresh (intro flow + staff wp-block-columns).
+ * About Impact: idempotent staff sync on Gutenberg body (matches WP reference).
  */
-function df_setup_update_10028(): string {
-  return _df_setup_apply_about_impact_gutenberg_body();
+function df_setup_update_10030(): string {
+  $node = _df_setup_load_about_impact_node();
+  if ($node === NULL) {
+    _df_setup_ensure_about_impact_page();
+    return 'Created About Impact page; run update 10029 for Gutenberg body.';
+  }
+  $body = (string) $node->get('body')->value;
+  $synced = _df_setup_sync_about_impact_staff_body($body);
+  if ($synced === $body) {
+    return 'About Impact staff block already synced.';
+  }
+  $node->set('body', ['value' => $synced, 'format' => 'full_html']);
+  $node->save();
+  return 'About Impact staff block synced on Gutenberg body.';
 }
 
 /**
- * Writes Gutenberg About Impact body onto the canonical node.
+ * Loads the canonical About Impact page node, if present.
  */
-function _df_setup_apply_about_impact_gutenberg_body(): string {
+function _df_setup_load_about_impact_node(): ?Node {
   $storage = \Drupal::entityTypeManager()->getStorage('node');
   $nids = $storage->getQuery()
     ->condition('type', 'page')
@@ -1029,15 +1040,78 @@ function _df_setup_apply_about_impact_gutenberg_body(): string {
     ->range(0, 1)
     ->execute();
   if (!$nids) {
+    return NULL;
+  }
+  $node = $storage->load(reset($nids));
+  return $node instanceof Node ? $node : NULL;
+}
+
+/**
+ * Whether the About body already uses the Gutenberg block structure.
+ */
+function _df_setup_about_impact_body_is_gutenberg(string $body): bool {
+  return str_contains($body, 'wp-block-columns-is-layout-flex')
+    && str_contains($body, 'Division of Philanthropy')
+    && str_contains($body, 'alignright');
+}
+
+/**
+ * Content-sweep staff corrections (safe after df_setup_update_10028).
+ */
+function _df_setup_sync_about_impact_staff_body(string $body): string {
+  $body = preg_replace(
+    '/<p><strong>Vice President, Philanthropy Communications &amp; Marketing<\/strong><br>Zuhirah Khaldun-Diarra<\/p>\s*/',
+    '',
+    $body,
+  ) ?? $body;
+  $body = str_replace(
+    '<p><strong>Creative Director</strong><br>Claudia de Piante</p>',
+    '<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>',
+    $body,
+  );
+  $body = str_replace(
+    '<p><strong>Creative Director</strong><br>Claudia De Piante</p>',
+    '<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>',
+    $body,
+  );
+  return $body;
+}
+
+/**
+ * Whether staff block matches the WordPress reference (post content-sweep).
+ */
+function _df_setup_about_impact_staff_is_synced(string $body): bool {
+  if (str_contains($body, 'Vice President, Philanthropy Communications &amp; Marketing')
+    && str_contains($body, 'Zuhirah Khaldun-Diarra')) {
+    return FALSE;
+  }
+  if (str_contains($body, '<strong>Creative Director</strong><br>Claudia de Piante</p>')) {
+    return FALSE;
+  }
+  return str_contains($body, 'Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>');
+}
+
+/**
+ * Writes Gutenberg About Impact body onto the canonical node.
+ */
+function _df_setup_apply_about_impact_gutenberg_body(): string {
+  $node = _df_setup_load_about_impact_node();
+  if ($node === NULL) {
     _df_setup_ensure_about_impact_page();
     return 'Created About Impact page with Gutenberg body.';
   }
-  $node = $storage->load(reset($nids));
-  if (!$node instanceof Node) {
-    return 'About Impact node missing.';
+  $existing = (string) $node->get('body')->value;
+  if (_df_setup_about_impact_body_is_gutenberg($existing)
+    && _df_setup_about_impact_staff_is_synced($existing)) {
+    return 'About Impact Gutenberg body already present.';
+  }
+  $body = df_setup_about_impact_gutenberg_body();
+  if (_df_setup_about_impact_body_is_gutenberg($existing)
+    && !_df_setup_about_impact_staff_is_synced($existing)) {
+    $body = _df_setup_sync_about_impact_staff_body($existing);
   }
   $node->set('body', [
-    'value' => df_setup_about_impact_gutenberg_body(),
+    'value' => $body,
     'format' => 'full_html',
   ]);
   $node->save();

@@ -32,14 +32,15 @@ Extended to body, excerpt, alt/caption, menu, taxonomy, meta. `audit_entity_left
 
 | Path | Text |
 | --- | ---: |
-| `/in-brief` | ~92% |
+| `/in-brief` | **92.1%** (linux ref; 15 vs 16 issue sections) |
+| `/browse-issues` | **83.3%** (linux ref; issue grid copy) |
+| `/category/cancer-research` | **100%** |
+| `/category/digital-exclusives` | **40.8%** (Drupal archive row count vs ref HTML — content/view follow-up) |
+| `/about-impact` | **96.8%** |
 | `/2023/09/american-association-for-cancer-research` | **100%** |
-| `/2026/09/american-association-for-cancer-research-2` | **100%** |
-| `/category/cancer-research` | **100%** (extract excludes Continue Reading) |
-| `/about`, `/about-impact` | ~97% |
-| `/issues` | ~94% |
-| `/browse-issues` | ~86% |
-| `/past-issues` | ~10% (ref pack is stale promo page, not issue grid) |
+| `/past-issues` | ~10% (ref pack stale; out of scope) |
+
+Text harness: `PARITY_COMPARE_LINUX=1 PACK_COMPARE_PATHS=… node parity/scripts/compare-reference-pack.mjs`
 
 Linux viewport pixel diffs remain dominated by phase4 chrome (~16%); out of scope per brief.
 

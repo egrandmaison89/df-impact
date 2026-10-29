@@ -46,6 +46,7 @@
     "parity:header-chrome": "node scripts/compare-header-chrome.mjs",
     "parity:computed-style-diff:serial": "PARITY_SERIAL=1 node scripts/computed-style-diff.mjs",
     "parity:computed-style-diff:full": "node scripts/run-computed-style-full.mjs",
+    "parity:computed-style-diff:full:live-wp": "PARITY_WP_SOURCE=live node scripts/run-computed-style-full.mjs",
     "parity:computed-style-hover": "node scripts/computed-style-hover-diff.mjs",
     "parity:computed-style-hover:full": "node scripts/run-computed-style-hover-full.mjs",
     "parity:analyze-cs-drift": "node scripts/analyze-cs-baseline-drift.mjs",

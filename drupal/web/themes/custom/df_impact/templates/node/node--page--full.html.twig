@@ -5,15 +5,12 @@
  */
 #}
 {% if is_about_impact_node %}
-  <article{{ attributes.addClass('page-node', 'about-impact-page') }} aria-labelledby="about-impact-title">
-    <div class="about-impact-page__inner">
-      {{ title_prefix }}
-      <h1 id="about-impact-title" class="wp-block-heading blue-border-header has-text-color has-montserrat-font-family about-impact-page__title">{{ label }}</h1>
-      {{ title_suffix }}
-
-      <div class="about-impact-page__body">
-        {{ content.body }}
-      </div>
+  {# WordPress serves Gutenberg block markup for /about and /about-impact (see reference-pack). #}
+  <article{{ attributes.addClass('page-node', 'wp-singular', 'page', 'about-impact-page') }}>
+    {{ title_prefix }}
+    {{ title_suffix }}
+    <div class="entry-content wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+      {{ content.body }}
     </div>
   </article>
 {% else %}

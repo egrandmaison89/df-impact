@@ -1238,6 +1238,24 @@ function df_impact_article_wp_lead_block_meta(NodeInterface $node): array {
 }
 
 /**
+ * Inline style for WP is-resized lead figures (width + height when export omits style).
+ */
+function df_impact_article_lead_inline_style(array $layout): ?string {
+  if (!empty($layout['style_width']) && is_string($layout['style_width'])) {
+    return $layout['style_width'];
+  }
+  $width = (int) ($layout['width'] ?? 0);
+  $height = (int) ($layout['height'] ?? 0);
+  if ($width > 0 && $height > 0) {
+    return 'width:' . $width . 'px;height:' . $height . 'px';
+  }
+  if ($width > 0) {
+    return 'width:' . $width . 'px';
+  }
+  return NULL;
+}
+
+/**
  * Prefer vendored WP intermediate files (e.g. *-1024x734.jpg) for pixel parity.
  */
 function df_impact_path_basename_key(string $path): string {
@@ -1328,8 +1346,9 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
     }
     $fallback['#attributes']['width'] = (string) $layout['width'];
     $fallback['#attributes']['height'] = (string) $layout['height'];
-    if ($layout['style_width']) {
-      $fallback['#attributes']['style'] = 'width:' . $layout['style_width'];
+    $inline_style = df_impact_article_lead_inline_style($layout);
+    if ($inline_style !== NULL) {
+      $fallback['#attributes']['style'] = $inline_style;
     }
     return [
       '#type' => 'inline_template',
@@ -1345,7 +1364,7 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
 
   return [
     '#type' => 'inline_template',
-    '#template' => '<figure class="wp-block-image {{ align_class }} {{ size_class }} is-resized"><img decoding="async" loading="lazy" class="wp-image-lead" src="{{ src }}" alt="{{ alt }}" width="{{ width }}" height="{{ height }}"{% if style_width %} style="width:{{ style_width }}"{% endif %}>{% if caption %}<figcaption class="wp-element-caption">{{ caption }}</figcaption>{% endif %}</figure>',
+    '#template' => '<figure class="wp-block-image {{ align_class }} {{ size_class }} is-resized"><img decoding="async" loading="lazy" class="wp-image-lead" src="{{ src }}" alt="{{ alt }}" width="{{ width }}" height="{{ height }}"{% if inline_style %} style="{{ inline_style }}"{% endif %}>{% if caption %}<figcaption class="wp-element-caption">{{ caption }}</figcaption>{% endif %}</figure>',
     '#context' => [
       'align_class' => $align_class,
       'size_class' => $size_class,
@@ -1353,7 +1372,7 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
       'alt' => $alt,
       'width' => $layout['width'],
       'height' => $layout['height'],
-      'style_width' => $layout['style_width'],
+      'inline_style' => df_impact_article_lead_inline_style($layout),
       'caption' => $caption,
     ],
   ];

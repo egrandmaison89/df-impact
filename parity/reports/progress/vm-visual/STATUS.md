@@ -4,7 +4,23 @@
 **Drupal:** `http://127.0.0.1:8888` (MariaDB `dfimpact`, host Drush).  
 **Method:** `npm run parity:computed-style-diff` (live WP vs Drupal, desktop/tablet/mobile).
 
-**Updated:** 2026-10-29 (pass 2 — About Gutenberg, archive row **y**, hover CS harness, DE WP path)
+**Updated:** 2026-10-29 (pass 3 — About hooks **10028–10030** on content-sweep, browse covers, refpack CS)
+
+---
+
+## Pass 3 — About hooks (stacked above PR #22 **10027** / PR #23 **10028**)
+
+| Hook | Role |
+|------|------|
+| **`df_setup_update_10028`** | PR #23 content-sweep staff sync + visible About **h1** (merged from `cursor/content-sweep-ce7f`; renumbered from upstream **10027** on that branch). |
+| **`df_setup_update_10029`** | Gutenberg About body (idempotent; skips when markers + staff already synced). |
+| **`df_setup_update_10030`** | Staff sync on Gutenberg markup (safe after **10028** / **10029**). |
+
+**Template:** About Impact keeps PR #23 **h1** + Gutenberg **`entry-content`** wrapper (`node--page--full.html.twig`).
+
+**WP side for gates:** `PARITY_WP_SOURCE=refpack` (committed `parity/reference-pack/**/rendered.html`) in `computed-style-diff` + hover full runners — avoids SiteGround captcha on live WP.
+
+**Browse / PostX:** `/browse-issues` cover figures via season/year → WP uploads URLs when media fields empty (**15** `figure.issue-cover`); PostX row gap rules extended to `.ultp-block-items-wrap`.
 
 ---
 

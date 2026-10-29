@@ -174,12 +174,15 @@ async function openFormTab(page: import('@playwright/test').Page, label: string)
   ).first();
   if (await anchor.count()) {
     await anchor.click();
-    await page.locator(`#edit-group-${group}`).waitFor({ state: 'attached', timeout: 30_000 }).catch(() => {});
+    await page
+      .locator(`#edit-group-${group}`)
+      .waitFor({ state: 'visible', timeout: 30_000 });
     return;
   }
   const tab = page.getByRole('tab', { name: label });
   if (await tab.count()) {
     await tab.click();
+    await page.locator(`#edit-group-${group}`).waitFor({ state: 'visible', timeout: 30_000 }).catch(() => {});
   }
 }
 
@@ -237,8 +240,6 @@ async function fillArticleFieldsViaDom(
       set('#edit-title-0-value', title);
       set('#edit-field-byline-0-value', byline);
       set('#edit-field-excerpt-0-value', excerpt);
-      set('#edit-field-issue-0-target-id', `${issueTitle} (${issueNid})`);
-      set('#edit-field-topics-target-id', topicLabel);
       set('#edit-body-0-value', body);
     },
     {
@@ -264,6 +265,19 @@ async function setIssueReference(page: import('@playwright/test').Page, title: s
       }
     },
     { selector: '#edit-field-issue-0-target-id', v: value },
+  );
+}
+
+async function setTopicsReference(page: import('@playwright/test').Page, topicLabel: string) {
+  await page.evaluate(
+    ({ selector, v }) => {
+      const el = document.querySelector(selector) as HTMLInputElement | null;
+      if (el) {
+        el.value = v;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    },
+    { selector: '#edit-field-topics-target-id', v: topicLabel },
   );
 }
 
@@ -361,8 +375,13 @@ test.describe('Web editor issue launch (UI)', () => {
       await go(page, '/node/add/article');
       await expect(page.locator('body')).toContainText('Create Article');
       await openFormTab(page, 'Content');
-      await page.locator('#edit-title-0-value').waitFor({ state: 'attached', timeout: 90_000 });
-      await page.locator('#edit-field-featured-image-open-button').waitFor({ state: 'attached', timeout: 90_000 });
+      await page.locator('#edit-title-0-value').waitFor({ state: 'visible', timeout: 90_000 });
+      await page
+        .locator('#edit-field-featured-image-open-button')
+        .waitFor({ state: 'visible', timeout: 90_000 });
+      await page.locator('#edit-title-0-value').fill(title);
+      await addMediaFromLibrary(page, 'edit-field-featured-image-open-button');
+      await waitForFeaturedImage(page);
       await fillArticleFieldsViaDom(page, {
         title,
         issueTitle: ISSUE_TITLE,
@@ -370,10 +389,9 @@ test.describe('Web editor issue launch (UI)', () => {
         excerpt: `Excerpt for ${title}`,
         topicLabel,
       });
-      await addMediaFromLibrary(page, 'edit-field-featured-image-open-button');
-      await waitForFeaturedImage(page);
       await openFormTab(page, 'Publication & placement');
       await setIssueReference(page, ISSUE_TITLE, issueNid!);
+      await setTopicsReference(page, topicLabel);
       await openFormTab(page, 'SEO & Summary');
       await saveNodeForm(page);
       await screenshot(page, `05-article-saved-${articleNids.length + 1}`);

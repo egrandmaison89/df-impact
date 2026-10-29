@@ -2,7 +2,7 @@
 
 Branch: `cursor/visual-chrome-pagination-d748`  
 Phase4 base: `dc4e7355` (includes #34)  
-HEAD: `a9554b4a34ded6f3392b0dc973b9e62c75a2f194`  
+HEAD: `e9ed79bb` (gates on `a9554b4` code + STATUS commit)  
 Verified: fresh VM bootstrap (drop DB + migrate recovery + `updb` replay 10027–10035 for schema marker), `DRUPAL_BASE_URL=http://127.0.0.1:8888`
 
 ## Gate table

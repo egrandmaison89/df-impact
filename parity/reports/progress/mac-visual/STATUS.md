@@ -1,8 +1,8 @@
 # Mac visual parity — live status
 
-**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Mac** = pixels + gates; merged **Meta #10**, **Templates #13**, **VM #12**, **VM #14** (`f80dbbbd` + `origin/cursor/vm-visual-parity-2b1b`).
+**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Mac** = pixels + gates; merged **Meta #10**, **Templates #13**, **VM #14**, **Editor #15** (`cursor/editor-workflow-ce7f`).
 
-**Updated:** 2026-10-29 ~1:48 AM ET
+**Updated:** 2026-10-29 ~1:50 AM ET
 
 **Stash:** `mac-wip` (local report PNG backup; not committed).
 

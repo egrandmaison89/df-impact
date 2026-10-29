@@ -122,7 +122,7 @@ function _df_editor_ensure_header_primary_menu(): void {
   if ($latest_nid) {
     $issue = Node::load($latest_nid);
     if ($issue) {
-      $latest_url = $issue->toUrl()->toUri();
+      $latest_url = 'entity:node/' . $issue->id();
     }
   }
 

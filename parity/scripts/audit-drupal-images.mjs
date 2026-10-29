@@ -39,21 +39,49 @@ async function fetchHtml(url) {
 }
 
 function uriFromPublicUrl(src) {
-  const normalized = src.replace(/^https?:\/\/[^/]+/i, '').replace(/^\/+/, '');
+  let normalized = src.replace(/^https?:\/\/[^/]+/i, '').replace(/^\/+/, '');
+  normalized = normalized.replace(/&amp;/g, '&').split('?')[0];
   if (normalized.startsWith('sites/default/files/')) {
     return normalized.slice('sites/default/files/'.length);
   }
   return null;
 }
 
+/** Resolve image style URL to a source under wp-images/ or wp-content/uploads/. */
+function resolveStyleSourceRel(rel) {
+  const m = rel.match(/^styles\/[^/]+\/public\/(wp-images|wp-content\/uploads)\/(.+)$/);
+  if (!m) return null;
+  return `${m[1]}/${decodeURIComponent(m[2])}`;
+}
+
+function globSourceExists(relPath) {
+  const dir = path.dirname(relPath);
+  const stem = path.basename(relPath).toLowerCase();
+  const baseDir = path.join(filesRoot, dir);
+  if (!fs.existsSync(baseDir)) return false;
+  const entries = fs.readdirSync(baseDir);
+  const hit = entries.find((name) => name.toLowerCase() === stem || name.toLowerCase().startsWith(`${stem}.`));
+  if (hit && fs.statSync(path.join(baseDir, hit)).size > 128) return true;
+  const fuzzy = entries.find((name) => name.toLowerCase().replace(/[^a-z0-9]/g, '') === stem.replace(/[^a-z0-9]/g, ''));
+  return Boolean(fuzzy && fs.statSync(path.join(baseDir, fuzzy)).size > 128);
+}
+
 function localFileOk(src) {
-  const rel = uriFromPublicUrl(src);
+  let rel = uriFromPublicUrl(src);
   if (!rel) return null;
+  const styled = resolveStyleSourceRel(rel);
+  if (styled) {
+    if (globSourceExists(styled)) return true;
+    rel = styled;
+  }
   const full = path.join(filesRoot, rel);
   try {
     const st = fs.statSync(full);
-    return st.isFile() && st.size > 64;
+    return st.isFile() && st.size > 128;
   } catch {
+    if (rel.startsWith('wp-images/')) {
+      return globSourceExists(rel);
+    }
     return false;
   }
 }

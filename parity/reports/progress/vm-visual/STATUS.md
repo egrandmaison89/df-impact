@@ -4,7 +4,37 @@
 **Drupal:** `http://127.0.0.1:8888` (MariaDB `dfimpact`, host Drush).  
 **Method:** `npm run parity:computed-style-diff` (live WP vs Drupal, desktop/tablet/mobile).
 
-**Updated:** 2026-10-29 (merge phase4 @ `b51df612`, header logo x, Social Snap JS, gates)
+**Updated:** 2026-10-29 (PR **#20** — CS drift autopsy, footer/archive/landing fixes, `full-cs-post-footer` run)
+
+---
+
+## Desktop Σ “went up” — apples-to-apples (PR #20)
+
+**Question:** Baseline `post-merge-pr11` desktop Σ (homepage **74**, issue **120**, article **69**, archive **188**) vs `full-cs-2026-10-29` (homepage **100**, issue **167**, article **124**, archive **295**).
+
+| Check | Result |
+|-------|--------|
+| **`parity-selectors.json`** | **Unchanged** — **38** selectors (15 chrome + 23 content); fingerprint matches baseline commit `9f1e8b49`. |
+| **Sample paths** | **Article set grew:** baseline included **Charlie Landers** only among extras; current `template-samples.json` adds **wheeling** + **AACR 2026** article paths. Use `PARITY_SAMPLES_JSON=template-samples-pr11-article.json` to reproduce baseline article path set. |
+| **WP comparability** | Baseline **`post-merge-pr11`** often had **`wpStatus` 0/202** → low Σ (many `missing` rows, not real parity). **`full-cs-2026-10-29`** with retries → **`wpStatus` 200** on most paths → honest Σ. |
+| **Overlap 17 paths (desktop)** | Raw Σ baseline **635** → current **846**. **Comparable-only** (wp 200): baseline **172** → current **767** (baseline barely had comparable WP). |
+| **Real CSS regression (bisect)** | Desktop **footer template-part bleed** (commit `229b67ec`) → Drupal **`footer` x=0** vs WP **x≈72** on issue/landing/archive when WP 200. **Fix:** bleed **`.footer-dark.alignfull`** like header; restore **72px** horizontal padding on `.footer-dark`; tablet/mobile keep template-part bleed. |
+| **Not selector growth** | Archive/landing/footer **x/w** deltas dominated inflated totals once WP loaded; article **main y** on couple is **content/layout** when WP comparable, not header regression. |
+
+**Drift JSON:** `npm run parity:analyze-cs-drift` → `parity/reports/computed-style-diff/drift-post-merge-pr11-vs-full-cs-2026-10-29.json`.
+
+**Post-fix run:** `REPORT_RUN_ID=full-cs-post-footer` — **60/60** jobs (`aggregate.json`); **`/digital-exclusives`** archive paths still retry-pending in aggregate metadata but desktop Σ uses completed jobs only.
+
+| Template | Baseline `post-merge-pr11` | `full-cs-2026-10-29` | **`full-cs-post-footer`** |
+|----------|-------------------------:|---------------------:|--------------------------:|
+| **homepage** | 74 | 100 | **70** |
+| **issue** | 120 | 167 | **122** |
+| **article** | 69* | 124 | **70** |
+| **in_brief** | 98 | 108 | **93** |
+| **landing_page** | 133 | 155 | **106** |
+| **archive** | 188 | 295 | **202** (comparable **157**) |
+
+\*Baseline article Σ **69** on 2 paths; current harness uses **3** article paths.
 
 ---
 
@@ -64,12 +94,12 @@ GitHub showed ~**256k deletions** because an earlier merge of PR **#10** dropped
 
 | Template | Baseline desktop Σ | `full-cs-2026-10-29` desktop Σ | Δ | Notes |
 |----------|-------------------:|---------------------------------:|--:|-------|
-| **homepage** | 74 | **100** | +26 | Two paths (`/`, `/homepage`); hero/grid when WP 200 |
-| **issue** | 120 | **167** | +47 | PostX card **y/h**, issue banner **h1** |
-| **article** | 69 | **124** | +55 | Share block + title band; couple desktop **40** per-path |
-| **in_brief** | 98 | **88** | −10 | **`/in-brief` desktop** job hung (WP); 2/3 paths counted |
-| **landing_page** | 133 | **155** | +22 | `/about` Gutenberg blocks; **`/browse-issues` mobile** missing |
-| **archive** | 188 | **295** | +107 | Query row **y/h**, pagination; footer tablet **w** (fix landed mid-run — re-run pending) |
+| **homepage** | 74 | **100** → **70** post-footer | — | Footer + honest WP 200; see drift section |
+| **issue** | 120 | **167** → **122** post-footer | — | Footer **x/w** regression reverted; PostX **y/h** remains |
+| **article** | 69 | **124** → **70** post-footer | — | 3 sample paths; couple **main y** when WP comparable |
+| **in_brief** | 98 | **108** → **93** post-footer | — | |
+| **landing_page** | 133 | **155** → **106** post-footer | — | `/about` custom BEM vs WP Gutenberg columns (open) |
+| **archive** | 188 | **295** → **202** post-footer | — | Row **64.8px** rhythm + image height; first-row **y** ~46px open |
 
 **All breakpoints Σ (same run):** homepage **480**, issue **718**, article **524**, in_brief **521**, landing_page **632**, archive **1214**.
 
@@ -89,9 +119,13 @@ GitHub showed ~**256k deletions** because an earlier merge of PR **#10** dropped
 
 ## Fix log
 
+### Archive query rows — **2026-10-29**
+
+Live WP row **margin/padding-bottom ≈64.8px** and uncapped featured image height (Drupal had **30px** + **`max-height:260px`**). Topic archive twig uses standard **`wp-block-post`** (no Drupal-only **`archive-row`** class). Spot: cancer-research desktop **61 → 37** mismatches post-fix.
+
 ### Archive row thumbnails — **done**
 
-`df_impact_archive_row_image_meta()` serves WP `_1450.jpg` URLs; `archive-row` class on topic archive twig.
+`df_impact_archive_row_image_meta()` serves WP `_1450.jpg` URLs.
 
 ### Computed-style harness — **done**
 

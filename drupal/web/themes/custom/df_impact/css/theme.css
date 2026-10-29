@@ -897,6 +897,39 @@
   text-underline-offset: 2px;
 }
 
+.de-archive .pager__item a,
+.de-archive .pager__item span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.65rem;
+  border: 1px solid #00629b;
+  border-radius: 0;
+  background: #00629b;
+  color: #fff;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.5s ease;
+}
+
+.de-archive .pager__item a:hover,
+.de-archive .pager__item a:focus-visible {
+  background: transparent;
+  color: #00629b;
+}
+
+main .wp-block-button a.wp-block-button__link.has-background {
+  transition: all 0.3s ease-in-out;
+}
+
+main .wp-block-button a.wp-block-button__link.has-background:hover,
+main .wp-block-button a.wp-block-button__link.has-background:focus-visible {
+  color: #00629b;
+  background-color: transparent !important;
+}
+
 @media (max-width: 767px) {
   .de-archive-card {
     grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);

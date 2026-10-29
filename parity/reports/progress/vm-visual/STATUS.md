@@ -4,7 +4,7 @@
 **Drupal:** `http://127.0.0.1:8888` (MariaDB `dfimpact`, host Drush).  
 **Method:** `npm run parity:computed-style-diff` (live WP vs Drupal, desktop/tablet/mobile).
 
-**Updated:** 2026-10-29 (Jetpack related JSON, main offset, meta/templates merges)
+**Updated:** 2026-10-29 (gate regression fix, main y/h progress, refpack 21/21)
 
 ---
 
@@ -28,14 +28,23 @@ GitHub showed ~**256k deletions** because an earlier merge of PR **#10** dropped
 | PR **#11** | `cursor/templates-inbrief-archives-185b` | Re-merged @ `7de8f98b` — `archive_listings` library, slug→wp-images fallback, archive row classes |
 | PR **#10** | `cursor/meta-head-behavior-0751` | Re-merged @ `380a9429` — behavior harness + sticky header CSS (after prior partial merge) |
 
-### Gates after merges (VM)
+### Gates (frozen refpack — no live WP for refpack meta)
 
-| Gate | After PR #10 | After PR #11 + `/about` `/home` aliases |
-|------|-------------|-------------------------------------------|
-| `parity:head:refpack` | **21/21** metaPass (100%) | **21/21** (`compare-1793248825676.json`) |
-| `parity:head:manifest` | 771/773 metaPass (pre-alias) | **773/773** (100%, `manifest-1793248913523.json`) |
-| `parity:url:check` | 799/801 (404 on `/about`, `/home`) | **801/801** (100%, `check-1793248902907.json`) |
-| `verify-wp-port-assets.sh` | — | **19/19 OK** |
+| Gate | After bad merge (VM) | Root cause | After fix (`f80dbbbd`) |
+|------|---------------------|------------|-------------------------|
+| `parity:head:refpack` | **11/21** (`compare-1793251428009`) | **Drupal 500** on most paths: `unset($variables['row']['#contextual_links'])` on `ResultRow` in `df_impact_preprocess_views_view_fields()` | **21/21** (`compare-1793251907739.json`, `HEAD_REFPACK_CHECK_WP=0`) |
+| `parity:url:check` | **764/801** | Same **500** cascade (non-200 Drupal) | **801/801** (`check-1793251875412.json`, `URL_PARITY_DRUPAL_ONLY=1`) |
+| `parity:head:manifest` | (not re-run when red) | — | **773/773** (`manifest-1793251910500.json`) |
+
+**Refpack failures when red (Drupal status + meta delta):**
+
+| Path | drStatus | Issue |
+|------|----------|--------|
+| `/` … most refpack paths | **500** | PHP fatal in views preprocess (above) |
+| `/digital-exclusives` | **200** | Stale refpack baseline was WP **404** meta; Drupal serves category archive via `WordpressLegacyPathSubscriber` — fixed by mapping slug `digital-exclusives` → `category_digital-exclusives` frozen HTML in `compare-head-meta.mjs` |
+| `/2022/03/in-brief-spring-2022-roundup` | **404** | Matches frozen WP 404 baseline; **metaMatch OK** (counts toward 21/21, not in `drupalReachable`) |
+
+**Header scroll CSS:** Removed `.desktop-header.scrolled` / `.impact-header.scrolled` width overrides from `drupal-overrides.css` (reintroduced during meta merge). Shadow only on `.header--scrolled`; logo shrink stays on `.header-logo.scrolled` via `wp-chrome-behaviors.js` (meta **adde8d85** intent).
 
 **Note:** Applied legacy aliases via `df_setup_update_10022()` + `/home` alias; extended `df_sync_static_page_aliases()` so future `df-migrate:sync-wordpress-paths` keeps `/about` and `/home`.
 
@@ -49,10 +58,11 @@ Report: `parity/reports/computed-style-diff/post-merge-pr11/summary.json`
 |----------|--------------------------------:|------------------------------|
 | **homepage** | **74** | Hero/grids vs short page when WP returns **202** captcha shell; chrome OK when both 200 |
 | **issue** | **120** | PostX card **y/h** + image **w/h** on `fall-2026-issue`; issue banner **h1 x** on overlay |
-| **article** | **69** → **43** (Charlie L sample, WP 200) | **main y** aligned on sample after title-above-`<main>` + 46px spacer; **main h** + content still short vs WP |
+| **article** | **69** → **40** (couple sample, WP 200) | **main y Δ≈6px** (`post-main-alignwide`); **main h Δ≈312px** (was inflated when sample hit **in_brief** at Charlie L path — now second sample is `/2026/09/american-association-for-cancer-research-2`) |
 | **in_brief** | **98** | Same title/`<main>` split + spacer (re-measure pending) |
 | **landing_page** | **133** → TBD | `/about-impact` body now raw Gutenberg `entry-content` (dropped custom about layout shell) |
-| **archive** | **188** → TBD | Templates merge: `archive_listings` CSS + `type-post hentry archive-row` + improved thumb resolver |
+| **archive** | **188** → **24** (DE category only run; WP `wpStatus:0` VM egress) | Templates merge: `archive_listings` CSS + row classes; full archive pass blocked on live WP fetch |
+| **homepage tablet** | — | **87** mismatches, WP comparable (`post-tablet-home`) — chrome/layout follow-up |
 
 **Baseline (pre-content, `/` desktop):** **31** mismatches → **50** after full homepage content (migrations complete).
 

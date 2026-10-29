@@ -1177,6 +1177,55 @@ function _df_setup_about_impact_staff_is_synced(string $body): bool {
 /**
  * Writes Gutenberg About Impact body onto the canonical node.
  */
+/**
+ * Idempotent content-sweep convergence (About + truncated article bodies).
+ */
+/**
+ * Replays integrator hooks after migrations (bootstrap / fresh DB).
+ */
+function _df_setup_run_post_migrate_integrator_convergence(): string {
+  $parts = [];
+  foreach ([10027, 10029, 10030, 10034, 10035] as $hook) {
+    $fn = 'df_setup_update_' . $hook;
+    if (\function_exists($fn)) {
+      $parts[] = $fn();
+    }
+  }
+  require_once __DIR__ . '/df_setup.post_update.php';
+  foreach (\get_defined_functions()['user'] as $fn) {
+    if (!\str_starts_with($fn, 'df_setup_post_update_')) {
+      continue;
+    }
+    if (\str_contains($fn, 'seed_issue_covers') || \str_contains($fn, 'seed_issue_banners')) {
+      $sandbox = NULL;
+      $parts[] = $fn($sandbox);
+    }
+    else {
+      $parts[] = $fn();
+    }
+  }
+  return implode(' | ', $parts);
+}
+
+function _df_setup_converge_content_sweep_reference_bodies(): string {
+  $about = _df_setup_apply_about_impact_gutenberg_body();
+  $script = DRUPAL_ROOT . '/modules/custom/df_migrate/scripts/df_content_sweep_body_backfill.php';
+  if (!is_readable($script)) {
+    return $about . '; article backfill script missing.';
+  }
+  require_once $script;
+  $result = df_migrate_content_sweep_body_backfill();
+  if (!empty($result['error'])) {
+    return $about . '; article backfill failed: ' . $result['error'];
+  }
+  return sprintf(
+    '%s; article bodies scanned=%d updated=%d.',
+    $about,
+    (int) ($result['scanned'] ?? 0),
+    (int) ($result['updated'] ?? 0),
+  );
+}
+
 function _df_setup_apply_about_impact_gutenberg_body(): string {
   $node = _df_setup_load_about_impact_node();
   if ($node === NULL) {

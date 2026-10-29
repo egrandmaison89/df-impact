@@ -84,7 +84,7 @@ for m in df_taxonomy_topics df_taxonomy_cancer_types df_taxonomy_channels df_med
 done
 
 "${DRUSH[@]}" df-migrate:sync-wordpress-paths
-"${DRUSH[@]}" php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); _df_setup_ensure_home_landing(); echo _df_setup_backfill_latest_issue_hero_media();"
+"${DRUSH[@]}" php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); echo _df_setup_run_post_migrate_integrator_convergence();"
 "${DRUSH[@]}" cr
 
 echo "Done. Start server: cd drupal && ./vendor/bin/drush -r web serve 127.0.0.1:8888"

@@ -92,8 +92,8 @@ final class DfEditorCommands extends DrushCommands {
     if (isset($form['df_homepage_hero']) && ($form['df_homepage_hero']['#access'] ?? TRUE) !== FALSE) {
       throw new \RuntimeException('Web editor must not see df_homepage_hero on the issue form.');
     }
-    if (!isset($form['field_hero_heading'])) {
-      throw new \RuntimeException('Web editor must see field_hero_heading on the issue form.');
+    if (isset($form['field_hero_heading']) && ($form['field_hero_heading']['#access'] ?? TRUE) !== FALSE) {
+      throw new \RuntimeException('Web editor must not see field_hero_heading on the issue form.');
     }
     foreach (['field_hero_video', 'field_hero_poster'] as $key) {
       if (isset($form[$key])) {

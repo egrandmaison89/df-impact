@@ -1890,10 +1890,21 @@ function df_impact_build_homepage_hero(?NodeInterface $issue): ?array {
   if ($issue->hasField('field_hero_heading') && !$issue->get('field_hero_heading')->isEmpty()) {
     $heading = $issue->get('field_hero_heading')->value;
   }
+  $title_link = NULL;
+  $config = \Drupal::config('df_editor.settings');
+  $override_title = trim((string) $config->get('homepage_hero_override_title'));
+  if ($override_title !== '') {
+    $heading = $override_title;
+    $link = trim((string) $config->get('homepage_hero_override_link'));
+    if ($link !== '') {
+      $title_link = $link;
+    }
+  }
   return [
     'video_url' => $video_url,
     'poster_url' => $poster_url,
     'title' => $heading,
+    'title_link' => $title_link,
   ];
 }
 

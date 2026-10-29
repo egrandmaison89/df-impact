@@ -50,6 +50,15 @@ function nodeNidByTitle(title: string): number {
   return Number(id);
 }
 
+/** Site admins set hero heading; web editors cannot see the field in the UI. */
+function setIssueHeroHeading(nid: number, heading: string): void {
+  const safe = heading.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  execSync(
+    `cd /workspace/drupal && ./vendor/bin/drush --uri=${drupalBase} ev "\\$n = \\\\Drupal\\\\node\\\\Entity\\\\Node::load(${nid}); if (\\$n) { \\$n->set('field_hero_heading', '${safe}'); \\$n->save(); }"`,
+    { stdio: 'inherit' },
+  );
+}
+
 function cleanupNodes() {
   const nids = [...(issueNid ? [issueNid] : []), ...articleNids];
   if (!nids.length) return;
@@ -355,21 +364,11 @@ test.describe('Web editor issue launch (UI)', () => {
     await page.locator('#edit-title-0-value').fill(ISSUE_TITLE);
     await page.locator('#edit-field-season').selectOption('winter');
     await page.locator('#edit-field-year-0-value').fill(String(YEAR));
-    await page.locator('#edit-field-hero-heading-0-value').fill(HERO_HEADING, { force: true });
+    await expect(page.locator('#edit-field-hero-heading-0-value')).toHaveCount(0);
     await screenshot(page, '03-issue-form-filled');
 
     await addMediaFromLibrary(page, 'edit-field-cover-image-open-button');
     await addMediaFromLibrary(page, 'edit-field-banner-image-open-button');
-    await page.evaluate(
-      ({ heading }) => {
-        const el = document.querySelector('#edit-field-hero-heading-0-value') as HTMLInputElement | null;
-        if (el) {
-          el.value = heading;
-          el.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-      },
-      { heading: HERO_HEADING },
-    );
     await screenshot(page, '03b-issue-media-selected');
     await saveNodeForm(page);
     if (await page.locator('.messages--error').count()) {
@@ -383,6 +382,7 @@ test.describe('Web editor issue launch (UI)', () => {
       }, { timeout: 60_000 })
       .toBeGreaterThan(0);
     issueNid = savedIssueNid;
+    setIssueHeroHeading(issueNid, HERO_HEADING);
     await screenshot(page, '04-issue-saved-draft');
 
     const topicLabel = `Cancer Research (${topicTermId()})`;

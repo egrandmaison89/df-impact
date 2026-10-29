@@ -47,3 +47,33 @@ df_editor.settings:
     social_instagram_url:
       type: string
       label: 'Instagram URL'
+    footer_dei_html:
+      type: text
+      label: 'Footer inclusion & equity HTML'
+    footer_copyright_html:
+      type: text
+      label: 'Footer copyright and legal links HTML'
+    gtranslate_disclaimer_text:
+      type: text
+      label: 'Translate widget disclaimer'
+    header_issues_see_all_title:
+      type: label
+      label: 'Issues menu “see all” label'
+    donate_button_label:
+      type: label
+      label: 'Donate button label'
+    homepage_hero_override_title:
+      type: string
+      label: 'Homepage hero override heading'
+    homepage_hero_override_link:
+      type: string
+      label: 'Homepage hero override link URL'
+    footer_badge_us_news_media_id:
+      type: integer
+      label: 'Footer U.S. News badge media ID'
+    footer_badge_us_news_children_media_id:
+      type: integer
+      label: 'Footer U.S. News children badge media ID'
+    footer_badge_charity_navigator_media_id:
+      type: integer
+      label: 'Footer Charity Navigator badge media ID'

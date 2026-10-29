@@ -33,15 +33,21 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 
 1. **#23** whole — **merged** (`ceff3720` ← `193ffdcf`)
 2. **#25** whole — **merged** (`5b423ed8` ← `4884c8ab`); pass-3 live-WP CS 60/60
-3. **#29** whole — **merged** (`83f35352` ← `efe645952`); sweep-801 follow-up (`/topics` + `/late-fall-2022-issue` WP 404s, immunotherapy, About body post_update)
-4. **#28** whole — article variants (**#24 already merged**; do not double-merge) — when agent ready
-5. **#10** whole — **stacked on #25** (`is_light` + post_update) — when agent ready
-6. **#30** — Eric QA (links / images / translate icon) — when agent ready
-7. **#31** — Eric QA (share / pagination / In Brief / tablet spacing) — when agent ready
+3. **#29** whole — **merged** (`83f35352` ← `efe645952`); sweep-801 follow-up
+4. **DB convergence** — **merged** on phase4 (`e0a4f1f4`); `_df_setup_run_post_migrate_integrator_convergence()` + About canonical body
+5. **#32** whole — **merged** (`ef3e2714` ← `cursor/admin-chrome-e2e-ce7f`); site-admin header/footer/hero + `admin-e2e` Playwright
+6. **#34** whole — **merged** (`91b165bf`); admin-e2e teardown + `system.site:page.front: /homepage` + `FixHomeFrontPageConfigSubscriber` (cim-safe `/` 200)
+7. **#31** whole — Eric QA (share / pagination / In Brief / tablet spacing) — **owns** the single **main/footer inset** block in `drupal-overrides.css` — when agent ready (green gate table)
+8. **#28** whole — article variants — **rebase after #31**; drop duplicate main/footer inset CSS — when agent ready
+9. **#10** whole — **stacked on #25** (`is_light`) — when agent ready
+10. **#30** — Eric QA (links / images / translate icon) — when agent ready
+11. **#33** — not ready (agent will report)
 
-**After #29:** **#28 → #10 → #30 → #31** (each **whole merge once**; wait for branch agent “ready”; same post-merge gates below).
+**Next:** **#31 → #28 → #10 → #30 → #33** (whole merge once each only when that PR’s agent reports ready with a **green gate table**).
 
-**Done on phase4:** **#22/#27** (`6622635f`, `fcf27bd2`), **#24** (`7c27d051`), **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`).
+**Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`).
+
+**Generated parity gate output** (`parity/reports/content-sweep/`, smoke, url-parity, etc.) is **gitignored** — do not commit sweep JSON/CSV from PR branches.
 
 **Post_updates (combined on phase4):** #23 four + #25 `seed_issue_covers`, `seed_issue_banners` (+ #10 `is_light` when merged).
 
@@ -65,7 +71,14 @@ Whole merge at **`83f35352`** from **`cursor/sweep-801-followup-ce7f`** @ **`efe
 
 ## Post-merge checklist (DB at schema 10035)
 
-Run after **every** whole merge onto phase4 (#29, #28, #10, Eric QA PRs, etc.).
+Run after **every** whole merge onto phase4 (#29, #31, #28, #10, Eric QA PRs, etc.).
+
+**After #31 merge:** exactly one main/footer inset block in overrides (`#28` must not re-add its copy when rebased):
+
+```bash
+grep -c 'main/footer sit at' drupal/web/themes/custom/df_impact/css/drupal-overrides.css
+# expect: 1
+```
 
 ```bash
 cd drupal
@@ -74,7 +87,7 @@ cd drupal
 ./vendor/bin/drush updatedb:status    # must show no pending updates
 ./vendor/bin/drush php:script web/modules/custom/df_setup/scripts/verify_df_setup_schema.php
 ./vendor/bin/drush php:script web/modules/custom/df_setup/scripts/verify_df_setup_post_updates.php
-# If anonymous GET / is 404 after cim: drush php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); _df_setup_ensure_home_landing();" && drush cr
+# After #34: `cim` should leave `page.front` as `/node/NID` via FixHomeFrontPageConfigSubscriber (sync ships `/homepage`).
 
 cd ../parity
 npm run parity:smoke:200                              # 0 fails
@@ -84,6 +97,7 @@ PARITY_CONTENT_SWEEP_NO_LIVE_WP=1 npm run parity:content:sweep   # 801/801 text9
 npm run parity:issue-live-text:cache                    # 15/15 (0 below98)
 npm run parity:content:sweep:issues:cache               # 15/15 text98
 npx playwright test --project=editor-e2e                # green
+npx playwright test --project=admin-e2e               # green (after #32)
 cd ../drupal && ./vendor/bin/drush -r web df-editor:test-issue-e2e   # 10/10
 ```
 

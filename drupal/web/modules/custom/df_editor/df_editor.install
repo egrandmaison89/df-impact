@@ -20,6 +20,7 @@ function df_editor_install(): void {
   _df_editor_ensure_hero_heading_field();
   _df_editor_ensure_header_primary_menu();
   _df_editor_backfill_hero_headings();
+  _df_editor_ensure_chrome_settings_defaults(FALSE);
 }
 
 /**
@@ -178,4 +179,38 @@ function _df_editor_backfill_hero_headings(): void {
     $node->set('field_hero_heading', 'Stories From Our Community of Support');
     $node->save();
   }
+}
+
+/**
+ * Default copy for editable site chrome (matches frozen WP reference markup).
+ *
+ * @return array<string, string>
+ */
+function _df_editor_chrome_settings_default_map(): array {
+  return [
+    'footer_dei_html' => 'At Dana-Farber we are committed to an inclusive community where human differences are valued and celebrated, and where all are welcome. <a href="https://www.dana-farber.org/inclusion-diversity-and-equity/" data-type="URL" data-id="https://www.dana-farber.org/inclusion-diversity-and-equity/" target="_blank" rel="noreferrer noopener">We work every day</a> to create an innovative, caring, and inclusive environment where each patient, family, and staff member feels valued and respected.',
+    'footer_copyright_html' => 'Copyright © 2026 Dana-Farber Cancer Institute | <a href="https://www.jimmyfund.org/dana-farbers-jimmy-fund-fundraising-website-privacy-policy" data-type="link" data-id="https://www.jimmyfund.org/dana-farbers-jimmy-fund-fundraising-website-privacy-policy" target="_blank" rel="noreferrer noopener">Privacy Policy</a> | <a href="https://www.jimmyfund.org/terms-use" data-type="link" data-id="https://www.jimmyfund.org/terms-use" target="_blank" rel="noreferrer noopener">Terms of Use</a> | <a href="https://www.jimmyfund.org/website-accessibility-statement" data-type="link" data-id="https://www.jimmyfund.org/website-accessibility-statement" target="_blank" rel="noreferrer noopener">Accessibility</a>',
+    'gtranslate_disclaimer_text' => 'Please note that some translations using Google Translate may not be accurately represented and downloaded documents cannot be translated. Dana-Farber and the Jimmy Fund assume no liability for inaccuracies that may result from using this third-party tool, which is for website translation.',
+    'header_issues_see_all_title' => 'See All Issues',
+    'donate_button_label' => 'Donate',
+  ];
+}
+
+/**
+ * Ensures chrome-related config keys exist without overwriting non-empty values.
+ */
+function _df_editor_ensure_chrome_settings_defaults(bool $force): string {
+  $editable = \Drupal::configFactory()->getEditable('df_editor.settings');
+  $set = 0;
+  foreach (_df_editor_chrome_settings_default_map() as $key => $default) {
+    $current = trim((string) $editable->get($key));
+    if ($force || $current === '') {
+      $editable->set($key, $default);
+      $set++;
+    }
+  }
+  if ($set > 0) {
+    $editable->save();
+  }
+  return "Chrome settings defaults: {$set} key(s) ensured.";
 }

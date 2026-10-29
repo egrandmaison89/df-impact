@@ -24,6 +24,17 @@ drupal/migration-data/wp_chrome_reference.json
 parity/node_modules/
 parity/reports/runs/
 parity/reports/latest-report.html
+parity/reports/content-sweep/
+parity/reports/smoke-200/
+parity/reports/url-parity/
+parity/reports/template-samples-http/
+parity/reports/head-meta/
+parity/reports/computed-style-diff/
+parity/reports/behavior/
+parity/reports/progress/
+parity/reports/editor-e2e/
+parity/reports/playwright-results.json
+parity/reports/vm-integrator-before/
 parity/test-results/
 parity/playwright-report/
 parity/baselines/*

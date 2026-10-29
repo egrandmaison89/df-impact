@@ -5,18 +5,54 @@ This guide is for **web editors** publishing a new magazine issue and its storie
 ## What you can change
 
 - Create and edit **issues** and **articles**
-- Set each issue’s **Homepage hero heading** (the large headline on the public homepage when your issue is the newest published issue)
 - Set **Listing excerpt** on articles (archive/search teasers)
 - Publish an issue and **all attached articles in one step** from the Issue dashboard or the issue edit form
 
+The **homepage hero heading**, **hero video**, and **hero poster** are managed by **site admins** only (see below). When a new issue is published, the public homepage headline automatically follows the newest published issue’s hero heading unless a site admin has set a site-wide override.
+
 ## What only site admins can change
 
-- **Impact site settings** (`/admin/config/df-impact/site-settings`)
-- **Footer settings** (`/admin/config/df-impact/footer-settings`)
-- **Homepage hero video and poster** (global chrome on the current issue — `/admin/config/df-impact/homepage-hero`)
-- Menus, blocks, and other structural configuration
+Web editors cannot open the admin routes below (HTTP 403). Site admins manage global chrome here:
 
-If you need a homepage video or poster updated, ask a site admin.
+| Area | Where to edit | Notes |
+|------|----------------|-------|
+| **Header logo** | [Impact site settings](/admin/config/df-impact/site-settings) | Logo URL and optional srcset |
+| **Donate button** | Site settings | Label and Jimmy Fund donation URL |
+| **Issues menu label** | Site settings | “See all issues” text in the Issues flyout; issue links follow publish order |
+| **Translate disclaimer** | Site settings | Info popup next to the language selector |
+| **Footer About links, address, disclaimer** | [Footer settings](/admin/config/df-impact/footer-settings) | Three About-column links, address HTML, patient-stories disclaimer |
+| **Footer DEI + legal bar** | Footer settings | Inclusion paragraph and copyright / Privacy / Terms / Accessibility HTML |
+| **Footer social** | Footer settings | Facebook, X, Instagram URLs |
+| **Footer trust badges** | Footer settings | Optional image media for U.S. News and Charity Navigator badges (defaults match migrated WP artwork) |
+| **Footer categories** | Structure → Taxonomy → Topics | Category links in the footer follow published topic terms (fixed display order) |
+| **Homepage hero** | [Homepage hero](/admin/config/df-impact/homepage-hero) | Optional site-wide heading override (+ optional link); default heading/video/poster from the **newest published issue** (link on the form opens that issue) |
+| **Menus & snippets** | Structure → Menus; DF site snippets | `header-primary` menu is reserved for future chrome; Issues flyout is issue-driven |
+
+If you need a homepage **video**, **poster**, **headline**, logo, footer legal copy, or Donate URL updated, ask a site admin.
+
+### GTranslate language list (developers)
+
+The visible language dropdown is **not** editable in the Drupal admin UI. It is defined in theme markup and init JS to match the WordPress reference pack:
+
+- Static `<select>` options: `drupal/web/themes/custom/df_impact/templates/includes/wp-gtranslate-static.html.twig` (included from the WP chrome header).
+- Widget settings (default language, wrapper selector): `drupal/web/themes/custom/df_impact/js/gtranslate-init.js` (`window.gtranslateSettings`).
+
+Site admins can change only the **disclaimer text** next to the selector via **Site settings**. Changing which languages appear requires a theme/code update.
+
+## Admin quick reference (site admins)
+
+1. **Configuration → Impact → Site settings** — header logo, Donate, Issues “see all” label, translate disclaimer, shortcut to homepage hero settings.
+2. **Configuration → Impact → Footer settings** — footer links, address, disclaimers, DEI paragraph, legal bar, social URLs, trust badge images.
+3. **Configuration → Impact → Homepage hero** — optional heading override; link to edit the current issue’s hero **video**, **poster**, and default **heading** field.
+4. **Content → Issue dashboard** — publish workflow; publishing changes which issue drives the homepage hero and Issues menu order.
+
+Automated UI checks:
+
+```bash
+cd parity && npx playwright test --project=admin-e2e
+```
+
+Run three consecutive green passes before merge when changing chrome RBAC or forms.
 
 ## Recommended launch workflow
 
@@ -24,9 +60,10 @@ If you need a homepage video or poster updated, ask a site admin.
 
 1. Go to **Content → Add content → Issue** (`/node/add/issue`).
 2. Enter **Title**, **Season**, and **Year** (for example *Winter 2028*).
-3. Fill **Homepage hero heading** — this is the headline visitors see on the homepage when this issue is live.
-4. Add **Cover image** and **Banner image** (required). Click **Add media** on each field, choose artwork from the library (or upload), then **Insert selected**.
-5. Save as **Draft** (use the sticky **Save** bar at the top if the bottom button is blocked).
+3. Add **Cover image** and **Banner image** (required). Click **Add media** on each field, choose artwork from the library (or upload), then **Insert selected**.
+4. Save as **Draft** (use the sticky **Save** bar at the top if the bottom button is blocked).
+
+Ask a site admin to set the **Homepage hero heading** (and video/poster if needed) on the issue when you are close to launch.
 
 ### 2. Create three (or more) articles
 

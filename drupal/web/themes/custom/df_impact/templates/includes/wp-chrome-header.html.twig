@@ -18,7 +18,7 @@
 <div class="wp-block-group is-nowrap is-layout-flex wp-container-core-group-is-layout-1ffebe42 wp-block-group-is-layout-flex" style="padding-right:5px">
 {% include '@df_impact/includes/wp-gtranslate-static.html.twig' with { wrapper_id: 'gt-wrapper-23849622' } only %}
 <span class="disclaimer-popup"><i class="fa fa-info-circle" aria-hidden="true"></i>
-  <span class="popup-text">Please note that some translations using Google Translate may not be accurately represented and downloaded documents cannot be translated. Dana-Farber and the Jimmy Fund assume no liability for inaccuracies that may result from using this third-party tool, which is for website translation.</span>
+  <span class="popup-text">{{ gtranslate_disclaimer_text|default('Please note that some translations using Google Translate may not be accurately represented and downloaded documents cannot be translated. Dana-Farber and the Jimmy Fund assume no liability for inaccuracies that may result from using this third-party tool, which is for website translation.') }}</span>
 </span>
 </div>
 
@@ -27,13 +27,13 @@
 {% for item in header_issue_links %}
 <li class="mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page"><a class="mega-menu-link" href="{{ item.url }}">{{ item.title }}</a></li>
 {% endfor %}
-<li class="mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page mega-menu-item-5751" id="mega-menu-item-5751"><a class="mega-menu-link" href="{{ path('view.browse_issues.page_1') }}">See All Issues</a></li>
+<li class="mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page mega-menu-item-5751" id="mega-menu-item-5751"><a class="mega-menu-link" href="{{ path('view.browse_issues.page_1') }}">{{ header_issues_see_all_title|default('See All Issues') }}</a></li>
 </ul>
 </li><li class="header-search astm-search-menu is-menu popup menu-item"><a href="#" role="button" aria-label="Search Icon Link"><svg width="20" height="20" class="search-icon" role="img" viewBox="2 9 20 5" focusable="false" aria-label="Search">
 						<path class="search-icon-path" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg></a></li></ul></div>
 
 <div class="wp-block-buttons header-button-section is-layout-flex wp-block-buttons-is-layout-flex">
-<div class="wp-block-button"><a class="wp-block-button__link has-white-color has-text-color has-background has-medium-font-size has-custom-font-size wp-element-button" href="{{ donate_url }}" style="border-radius:5px;background-color:#00629b;padding-top:10px;padding-right:20px;padding-bottom:10px;padding-left:20px;font-style:normal;font-weight:700;text-transform:none" target="_blank" rel="noreferrer noopener" data-analytics-linktype="cta" data-analytics-region="header" data-analytics-category="donation" data-analytics-text="donate">Donate</a></div>
+<div class="wp-block-button"><a class="wp-block-button__link has-white-color has-text-color has-background has-medium-font-size has-custom-font-size wp-element-button" href="{{ donate_url }}" style="border-radius:5px;background-color:#00629b;padding-top:10px;padding-right:20px;padding-bottom:10px;padding-left:20px;font-style:normal;font-weight:700;text-transform:none" target="_blank" rel="noreferrer noopener" data-analytics-linktype="cta" data-analytics-region="header" data-analytics-category="donation" data-analytics-text="donate">{{ donate_button_label|default('Donate') }}</a></div>
 </div>
 </div>
 </div>
@@ -46,7 +46,7 @@
 <div class="wp-block-group is-content-justification-right is-nowrap is-layout-flex wp-container-core-group-is-layout-e65e5dc4 wp-block-group-is-layout-flex" style="margin-bottom:0px;padding-right:5px;padding-bottom:0px">
 {% include '@df_impact/includes/wp-gtranslate-static.html.twig' with { wrapper_id: 'gt-wrapper-47575491' } only %}
 <span class="disclaimer-popup-mobile"><i class="fa fa-info-circle" aria-hidden="true"></i>
-  <span class="popup-text">Please note that some translations using Google Translate may not be accurately represented and downloaded documents cannot be translated. Dana-Farber and the Jimmy Fund assume no liability for inaccuracies that may result from using this third-party tool, which is for website translation.</span>
+  <span class="popup-text">{{ gtranslate_disclaimer_text|default('Please note that some translations using Google Translate may not be accurately represented and downloaded documents cannot be translated. Dana-Farber and the Jimmy Fund assume no liability for inaccuracies that may result from using this third-party tool, which is for website translation.') }}</span>
 </span>
 </div>
 
@@ -61,13 +61,13 @@
 {% for item in header_issue_links %}
 <li class="mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page"><a class="mega-menu-link" href="{{ item.url }}">{{ item.title }}</a></li>
 {% endfor %}
-<li class="mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page"><a class="mega-menu-link" href="{{ path('view.browse_issues.page_1') }}">See All Issues</a></li>
+<li class="mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page"><a class="mega-menu-link" href="{{ path('view.browse_issues.page_1') }}">{{ header_issues_see_all_title|default('See All Issues') }}</a></li>
 </ul>
 </li><li class="header-search astm-search-menu is-menu popup menu-item"><a href="#" role="button" aria-label="Search Icon Link"><svg width="20" height="20" class="search-icon" role="img" viewBox="2 9 20 5" focusable="false" aria-label="Search">
 						<path class="search-icon-path" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg></a></li></ul></div>
 
 <div class="wp-block-buttons header-button-section is-layout-flex wp-block-buttons-is-layout-flex">
-<div class="wp-block-button"><a class="wp-block-button__link has-white-color has-text-color has-background has-medium-font-size has-custom-font-size wp-element-button" href="{{ donate_url }}" style="border-radius:5px;background-color:#00629b;padding-top:10px;padding-right:20px;padding-bottom:10px;padding-left:20px;font-style:normal;font-weight:700;text-transform:none" target="_blank" rel="noreferrer noopener" data-analytics-linktype="cta" data-analytics-region="header" data-analytics-category="donation" data-analytics-text="donate">Donate</a></div>
+<div class="wp-block-button"><a class="wp-block-button__link has-white-color has-text-color has-background has-medium-font-size has-custom-font-size wp-element-button" href="{{ donate_url }}" style="border-radius:5px;background-color:#00629b;padding-top:10px;padding-right:20px;padding-bottom:10px;padding-left:20px;font-style:normal;font-weight:700;text-transform:none" target="_blank" rel="noreferrer noopener" data-analytics-linktype="cta" data-analytics-region="header" data-analytics-category="donation" data-analytics-text="donate">{{ donate_button_label|default('Donate') }}</a></div>
 </div>
 </div>
 </div>

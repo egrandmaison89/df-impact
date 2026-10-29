@@ -535,6 +535,22 @@ function df_impact_preprocess_node(&$variables) {
     $variables['in_brief_excerpt'] = df_impact_in_brief_plain_excerpt($node);
     $variables['in_brief_byline'] = df_impact_in_brief_byline($node);
     $variables['in_brief_listing_excerpt'] = df_impact_in_brief_listing_excerpt($node);
+    if ($node->hasField('field_summary') && !$node->get('field_summary')->isEmpty()) {
+      $summary = (string) $node->get('field_summary')->value;
+      if ($variables['in_brief_image_url']) {
+        $summary = df_impact_article_strip_leading_wp_image_block($summary);
+      }
+      $summary = df_impact_article_add_drop_cap_class($summary);
+      if (isset($variables['content']['field_summary'])) {
+        $variables['content']['field_summary']['#access'] = FALSE;
+      }
+      $variables['in_brief_body'] = [
+        '#type' => 'processed_text',
+        '#text' => $summary,
+        '#format' => $node->get('field_summary')->format ?? 'full_html',
+        '#langcode' => $node->language()->getId(),
+      ];
+    }
     $variables['in_brief_issue_url'] = NULL;
     $variables['in_brief_issue_label'] = NULL;
     if ($node->hasField('field_issue') && !$node->get('field_issue')->isEmpty()) {

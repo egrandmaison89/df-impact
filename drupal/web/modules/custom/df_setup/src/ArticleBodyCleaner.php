@@ -61,6 +61,7 @@ final class ArticleBodyCleaner {
 
     $html = $this->rewriteInternalLinks($html);
     $html = $this->convertOembedsToIframes($html);
+    $html = $this->stripWordPressShortcodes($html);
 
     $html = preg_replace("/^\s+/", '', $html) ?? $html;
     $html = preg_replace("/\s+$/", '', $html) ?? $html;
@@ -257,7 +258,7 @@ final class ArticleBodyCleaner {
    * Rewrites WordPress absolute URLs in anchors to local paths.
    */
   private function rewriteInternalLinks(string $html): string {
-    if ($html === '' || !str_contains($html, 'danafarberimpact.org')) {
+    if ($html === '' || (!str_contains($html, 'danafarberimpact.org') && !str_contains($html, '/wp-content/'))) {
       return $html;
     }
 
@@ -295,7 +296,15 @@ final class ArticleBodyCleaner {
    */
   public function mapExternalUrlToLocal(string $href): ?string {
     $href = trim($href);
-    if ($href === '' || !str_contains($href, 'danafarberimpact.org')) {
+    if ($href === '') {
+      return NULL;
+    }
+
+    if (str_starts_with($href, '/wp-content/uploads/')) {
+      return '/sites/default/files/wp-images/' . basename($href);
+    }
+
+    if (!str_contains($href, 'danafarberimpact.org')) {
       return NULL;
     }
 
@@ -317,11 +326,40 @@ final class ArticleBodyCleaner {
       return '/issues/' . $season . '-' . $year;
     }
 
+    if (preg_match('~^/(\d{4})/(\d{2})/([^/?#]+)/?$~', $path, $m)) {
+      return '/' . $m[1] . '/' . $m[2] . '/' . $m[3];
+    }
+
     if (preg_match(self::DATED_POST_PATTERN, $href, $m)) {
       return '/stories/' . $m[1];
     }
 
+    if (preg_match('#/wp-content/uploads/(.+)$#i', $path, $m)) {
+      return '/sites/default/files/wp-images/' . basename($m[1]);
+    }
+
     return NULL;
+  }
+
+  /**
+   * Removes leftover WordPress shortcodes after migration (caption, embed, etc.).
+   */
+  public function stripWordPressShortcodes(string $html): string {
+    if ($html === '' || !str_contains($html, '[')) {
+      return $html;
+    }
+    $patterns = [
+      '/\[caption[^\]]*\].*?\[\/caption\]/is',
+      '/\[embed[^\]]*\].*?\[\/embed\]/is',
+      '/\[gallery[^\]]*\].*?\[\/gallery\]/is',
+      '/\[audio[^\]]*\].*?\[\/audio\]/is',
+      '/\[video[^\]]*\].*?\[\/video\]/is',
+      '/\[(?:caption|embed|gallery|audio|video|playlist)[^\]]*\]/i',
+    ];
+    foreach ($patterns as $pattern) {
+      $html = preg_replace($pattern, '', $html) ?? $html;
+    }
+    return $html;
   }
 
   private function findIssueNid(string $season, int $year): ?int {

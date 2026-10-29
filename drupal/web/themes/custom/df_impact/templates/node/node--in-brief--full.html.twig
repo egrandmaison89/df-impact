@@ -21,8 +21,10 @@
         <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">By {{ in_brief_byline }}</p>
       {% endif %}
 
-      {% if in_brief_listing_excerpt %}
-        <p class="has-drop-cap wp-block-paragraph">{{ in_brief_listing_excerpt }}</p>
+      {% if in_brief_body is defined and in_brief_body %}
+        {{ in_brief_body }}
+      {% elseif content.field_summary %}
+        {{ content.field_summary }}
       {% endif %}
     </div>
   </div>

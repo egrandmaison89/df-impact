@@ -1,0 +1,46 @@
+{
+  "component": "issue",
+  "drupalBase": "http://df-impact.ddev.site",
+  "refRenderer": "mac-pack-viewport-png",
+  "pages": 1,
+  "rectTolerancePx": 2,
+  "structuralPackPassAll": true,
+  "structuralRefDrupalPassAll": true,
+  "medians": {
+    "chrome_median_desktop": 0.12690188965531526,
+    "viewport_median_mac_desktop": 0.7104930555555555,
+    "chrome_median_tablet": 0.16617904392976574,
+    "viewport_median_mac_tablet": 0.6118967013888889,
+    "chrome_median_mobile": 0.19343219026675848,
+    "viewport_median_mac_mobile": 0.5309214814814814
+  },
+  "summary": [
+    {
+      "path": "/summer-2025-issue",
+      "bp": "desktop",
+      "pixelDiffRatio": 0.7104930555555555,
+      "headerPixelDiffRatio": 0.04267337807606264,
+      "footerPixelDiffRatio": 0.2111304012345679,
+      "chromePixelDiffRatio": 0.12690188965531526,
+      "viewportPixelDiffRatioMac": 0.7104930555555555
+    },
+    {
+      "path": "/summer-2025-issue",
+      "bp": "tablet",
+      "pixelDiffRatio": 0.6118967013888889,
+      "headerPixelDiffRatio": 0.21513688917975568,
+      "footerPixelDiffRatio": 0.11722119867977578,
+      "chromePixelDiffRatio": 0.16617904392976574,
+      "viewportPixelDiffRatioMac": 0.6118967013888889
+    },
+    {
+      "path": "/summer-2025-issue",
+      "bp": "mobile",
+      "pixelDiffRatio": 0.5309214814814814,
+      "headerPixelDiffRatio": 0.20194066317626527,
+      "footerPixelDiffRatio": 0.1849237173572517,
+      "chromePixelDiffRatio": 0.19343219026675848,
+      "viewportPixelDiffRatioMac": 0.5309214814814814
+    }
+  ]
+}

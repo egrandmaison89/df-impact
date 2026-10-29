@@ -10,7 +10,7 @@
     "parity:smoke": "PARITY_SAMPLE=1 PARITY_LIMIT=25 node scripts/run-parity.mjs",
     "parity:smoke:baseline": "PARITY_SAMPLE=1 PARITY_LIMIT=25 PARITY_WP_BASELINE=df-impact-2026-10-28 PARITY_REQUIRE_BASELINE=1 node scripts/run-parity.mjs",
     "parity:behavior:baseline": "PARITY_WP_BASELINE=df-impact-2026-10-28 PARITY_BEHAVIOR_PATHS=/homepage node scripts/run-behavior-parity.mjs",
-    "parity:compare-ref-pack": "env -u PACK_COMPARE_PATHS node scripts/compare-reference-pack.mjs",
+    "parity:compare-ref-pack": "node scripts/compare-reference-pack.mjs",
     "parity:capture-baseline": "node scripts/capture-wp-baseline.mjs",
     "parity:capture-baseline:smoke": "PARITY_SAMPLE=1 node scripts/capture-wp-baseline.mjs",
     "parity:package-baseline-lite": "node scripts/package-baseline-lite.mjs",

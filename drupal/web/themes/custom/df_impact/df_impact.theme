@@ -213,6 +213,9 @@ function df_impact_preprocess_views_view(array &$variables): void {
     return;
   }
   $homepage_views = ['homepage_digital_exclusives', 'homepage_highlights', 'issue_articles'];
+  if ($view->id() === 'issue_articles') {
+    $variables['title'] = '';
+  }
   if (in_array($view->id(), $homepage_views, TRUE)) {
     $variables['title'] = '';
   }
@@ -236,8 +239,11 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     $variables['issue_thumbnail'] = df_impact_build_issue_browse_thumbnail($node);
     return;
   }
-  if ($view_id === 'issue_articles' && ($view->current_display ?? '') === 'homepage_latest') {
-    df_impact_preprocess_homepage_article_card_fields($variables);
+  if ($view_id === 'issue_articles') {
+    $display = $view->current_display ?? '';
+    if ($display === 'homepage_latest' || $display === 'block_1') {
+      df_impact_preprocess_homepage_article_card_fields($variables);
+    }
     return;
   }
 
@@ -423,6 +429,9 @@ function df_impact_preprocess_node(&$variables) {
 
   // Issue full: promo cards below In Brief (WordPress layout).
   if ($node->bundle() === 'issue' && $variables['view_mode'] === 'full') {
+    $banner = df_impact_issue_banner_meta($node);
+    $variables['issue_banner_url'] = $banner['url'] ?? NULL;
+    $variables['issue_banner_alt'] = $banner['alt'] ?? $node->label();
     $variables['issue_promo_cards'] = [];
     $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
     foreach (['field_leadership_message', 'field_issue_promo_2'] as $field_name) {
@@ -433,6 +442,17 @@ function df_impact_preprocess_node(&$variables) {
       if ($referenced instanceof NodeInterface) {
         $variables['issue_promo_cards'][] = $view_builder->view($referenced, 'issue_promo');
       }
+    }
+  }
+
+  if ($node->bundle() === 'page' && $variables['view_mode'] === 'issue_promo') {
+    $banner = df_impact_issue_banner_meta($node);
+    $variables['issue_promo_image_url'] = $banner['url'] ?? NULL;
+    $variables['issue_promo_image_alt'] = $banner['alt'] ?? $node->label();
+    $variables['issue_promo_excerpt'] = '';
+    if ($node->hasField('body') && !$node->get('body')->isEmpty()) {
+      $text = strip_tags($node->get('body')->value ?? '');
+      $variables['issue_promo_excerpt'] = text_summary($text, NULL, 280);
     }
   }
 
@@ -702,6 +722,34 @@ function df_impact_preprocess_homepage_article_card_fields(array &$variables): v
  *
  * @return array{url: string, alt: string}|null
  */
+/**
+ * Banner image for issue / promo page nodes.
+ *
+ * @return array{url: string, alt: string}|null
+ */
+function df_impact_issue_banner_meta(NodeInterface $node): ?array {
+  foreach (['field_banner_image', 'field_cover_image'] as $field_name) {
+    if (!$node->hasField($field_name) || $node->get($field_name)->isEmpty()) {
+      continue;
+    }
+    $media = $node->get($field_name)->entity;
+    if ($media && $media->hasField('field_media_image') && !$media->get('field_media_image')->isEmpty()) {
+      $file = $media->get('field_media_image')->entity;
+      if ($file) {
+        $alt = (string) $media->get('field_media_image')->alt;
+        if ($alt === '') {
+          $alt = $node->label();
+        }
+        return [
+          'url' => \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri()),
+          'alt' => $alt,
+        ];
+      }
+    }
+  }
+  return NULL;
+}
+
 function df_impact_article_card_image_meta(NodeInterface $node): ?array {
   if ($node->bundle() !== 'article') {
     return NULL;

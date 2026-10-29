@@ -17,7 +17,7 @@
       </div>
     {% endif %}
     <div class="ultp-block-content">
-      <h2 class="ultp-block-title"><a href="{{ article_url }}">{{ fields.title.content|render|striptags|trim }}</a></h2>
+      <h2 class="ultp-block-title"><a href="{{ article_url }}">{{ article_card_title|default(fields.title.content|render|striptags|trim) }}</a></h2>
     </div>
   </div>
 </div>

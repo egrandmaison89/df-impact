@@ -131,6 +131,13 @@ function cloneRoot($, root) {
 function normalizeText(s) {
   let t = (s || '')
     .replace(/\u00a0/g, ' ')
+    .replace(/&lt;\/?sup&gt;/gi, '')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/<sup>\s*®\s*<\/sup>/gi, '®')
+    .replace(/<\/sup>/gi, '')
+    .replace(/<sup>/gi, '')
     .replace(/['']/g, "'")
     .replace(/[""]/g, '"')
     .replace(/([a-z])([A-Z])/g, '$1 $2')

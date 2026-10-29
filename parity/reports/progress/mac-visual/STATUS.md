@@ -1,6 +1,6 @@
 # Mac visual parity — live status
 
-**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Not merged:** PR #16 (superseded), **PR #18** (secondary surfaces — wait for agent retarget + front-page verify).
+**Branch:** `cursor/phase4-chrome-behavior-0b67` (PR **#5**). **Merged:** PR **#18** `cursor/secondary-surfaces-ce7f` (`b6905482`). **Not merged:** PR #16 (superseded).
 
 **Updated:** 2026-10-29 ~2:32 AM ET
 
@@ -19,16 +19,38 @@
 
 ---
 
+## PR #18 secondary surfaces (DDEV)
+
+| Step | Result |
+|------|--------|
+| `pm:enable df_secondary` | enabled |
+| `cim` / `cr` | OK |
+| `search-api:index df_impact_content` | **459** items |
+| `simple-sitemap:generate` | **19/19** queue items |
+
+| URL | Result |
+|-----|--------|
+| `/` | **200** |
+| `/homepage` | **200** |
+| `/home` | **200** |
+| `/?s=cancer` | **200** (search) |
+| `/feed` | **200** |
+| `/robots.txt` | **200** |
+| `/?p=8390` | **301** → `/2025/06/john-t-…` (**200** follow) |
+| `/?p=8386` | **301** → `/stories/pici-…` (**403** — node unpublished) |
+
+---
+
 ## DDEV gates (latest)
 
 | Gate | Result | Report / run |
 |------|--------|----------------|
 | wp-port assets | **20/20** | `scripts/repro/verify-wp-port-assets.sh` |
-| `parity:head:refpack` | **21/21** | `compare-1793255133954.json` |
-| `parity:head:manifest` | **773/773** | `manifest-1793255171345.json` |
-| `parity:url:check` | **801/801** | `check-1793255172763.json` |
-| `parity:template-samples:http` | **19/19** @ **200** | `check-1793255173103.json` |
-| `parity:smoke:200` | **pass** (40 paths) | `smoke-1793255174327.json` |
+| `parity:head:refpack` | **21/21** | `compare-1793256215357.json` |
+| `parity:head:manifest` | **773/773** | `manifest-1793256253158.json` |
+| `parity:url:check` | **801/801** | `check-1793256254467.json` |
+| `parity:template-samples:http` | **19/19** @ **200** | `check-1793256254784.json` |
+| `parity:smoke:200` | **pass** (40 paths) | `smoke-1793256256004.json` |
 | `parity:behavior:smoke` (lite) | **pass** (3/3) | `behavior/2026-10-29T06-32-43-899Z/` |
 
 ---
@@ -61,7 +83,7 @@ Capture: `npm run parity:qa:capture` — manifest **`2026-10-29T06:18:41.902Z`**
 | 5 | In Brief legibility | **pass** | `05-in-brief-band/drupal-1440.png` ↔ `05-in-brief-band/wp-1440.png` on `/fall-2026-issue` |
 | 6 | browse-issues image sizes | **pass** | `06-browse-issues-images/drupal-1440.png` ↔ `06-browse-issues-images/wp-1440.png` |
 | 7 | HTML entities | **pass** | `07-html-entities/drupal-1440.png` ↔ `07-html-entities/wp-1440.png`; **0** `&#039;` on issue probe |
-| 8 | Broken images | **pass** | `08-broken-images/drupal-1440.png` ↔ `08-broken-images/wp-1440.png` (homepage grid) |
+| 8 | Broken images | **pass** | Screenshots: `08-broken-images/drupal-1440.png` ↔ `wp-1440.png`. **Image pipeline (DDEV):** wp-images magic-byte stubs **137 → 41** (1673 files; `restore-bad-wp-images.mjs` **96/109** restored, 13 unmappable); `repair_drupal_images.php` OK. **Full audit** (`audit-drupal-images.mjs`, 801 paths): **WP-fixable broken = 0** (`latest-summary.json` → `audit-2026-10-29T06-41-14-384Z.json`; 36 broken on Drupal **and** WP) |
 | 9 | No Home breadcrumb / pencils | **pass** | `09-breadcrumb-edit/drupal-1440.png` ↔ `09-breadcrumb-edit/wp-1440.png` on `/browse-issues`; **0** breadcrumb block in HTML |
 | 10 | More Stories with images | **pass** | `10-more-stories/drupal-1440.png` ↔ `10-more-stories/wp-1440.png` (couple-commits article) |
 | 11 | Category spacing | **pass** | `11-category-spacing/drupal-1440.png` ↔ `11-category-spacing/wp-1440.png` (couple-commits article) |
@@ -81,6 +103,6 @@ Capture: `npm run parity:qa:capture` — manifest **`2026-10-29T06:18:41.902Z`**
 
 1. **Homepage ~32% viewport D:** hero + grid pixels.
 2. **Issue ~67% viewport D:** PostX cards / banner.
-3. **PR #18:** hold until retargeted off front-page.
+3. **Secondary surfaces:** merged PR #18; monitor search/RSS/sitemap on deploy.
 
 VM STATUS: `parity/reports/progress/vm-visual/STATUS.md`.

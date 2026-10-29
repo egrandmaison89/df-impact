@@ -53,7 +53,7 @@ function df_migrate_content_sweep_body_backfill(): array {
     }
     $featured = $cleaner->getFeaturedAbsoluteUrl($node);
     $cleaned = $cleaner->cleanArticleHtml($export_body, $featured);
-    $plain_clean = strlen(trim(strip_tags($cleaned['html']));
+    $plain_clean = strlen(trim(strip_tags($cleaned['html'])));
     if ($plain_clean <= $plain_current + 20) {
       continue;
     }
@@ -71,5 +71,7 @@ function df_migrate_content_sweep_body_backfill(): array {
   return ['scanned' => $scanned, 'updated' => $updated];
 }
 
-$result = df_migrate_content_sweep_body_backfill();
-echo json_encode(['generated_at' => date('c'), ...$result], JSON_PRETTY_PRINT) . "\n";
+if (PHP_SAPI === 'cli' && !empty($_SERVER['SCRIPT_FILENAME']) && realpath((string) $_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
+  $result = df_migrate_content_sweep_body_backfill();
+  echo json_encode(['generated_at' => date('c'), ...$result], JSON_PRETTY_PRINT) . "\n";
+}

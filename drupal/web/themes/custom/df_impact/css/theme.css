@@ -1853,6 +1853,29 @@
   color: #fff;
 }
 
+/* WP parity: In Brief band + homepage banner CTAs (hover/focus) */
+.homepage-banner-button a:hover,
+.in-brief-button a:hover,
+.homepage-banner-button a:focus-visible,
+.in-brief-button a:focus-visible {
+  background-color: #fff !important;
+}
+
+main .ultp-block-item .ultp-block-title a:hover,
+main .ultp-block-item .ultp-block-title a:focus-visible {
+  color: rgba(104, 160, 193, 1);
+}
+
+.view-topic-archive .pager__item a:focus-visible,
+.de-archive .pager__item a:focus-visible,
+.issue-page__articles .pager__item a:focus-visible {
+  color: var(--color-primary);
+}
+
+.view-topic-archive .de-archive-card__topics a:focus-visible {
+  color: rgba(104, 160, 193, 1);
+}
+
 /* --- Search Results --- */
 .search-results {
   max-width: var(--container-max);

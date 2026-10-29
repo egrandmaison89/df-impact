@@ -10,7 +10,7 @@ import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
 import { fileURLToPath } from 'node:url';
 import { startRefPackServer } from './lib/ref-pack-server.mjs';
-import { preparePage } from '../lib/page-utils.mjs';
+import { extractMainText, preparePage, textSimilarity } from '../lib/page-utils.mjs';
 import { stabilizeParityViewport } from '../lib/capture-stabilize.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -20,6 +20,18 @@ const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').repl
 const component = process.env.PROGRESS_COMPONENT || 'chrome-global';
 const outRoot = path.join(parityRoot, 'reports', 'progress', component);
 const RECT_TOLERANCE = Number(process.env.PARITY_RECT_TOLERANCE_PX || 2);
+/** After navigation `load`, wait for fonts/lazy images (see stabilizeParityViewport). */
+const PARITY_GOTO_TIMEOUT_MS = Number(process.env.PARITY_GOTO_TIMEOUT_MS || 120000);
+const PARITY_SETTLE_AFTER_LOAD_MS = Number(process.env.PARITY_SETTLE_AFTER_LOAD_MS || 800);
+
+/**
+ * Navigate without networkidle (pack pages pull third-party assets that never settle).
+ */
+async function gotoParityPage(page, url) {
+  await page.goto(url, { waitUntil: 'load', timeout: PARITY_GOTO_TIMEOUT_MS }).catch(() => {});
+  await page.waitForTimeout(PARITY_SETTLE_AFTER_LOAD_MS);
+  await stabilizeParityViewport(page);
+}
 
 const STYLE_KEYS = [
   'display',
@@ -160,6 +172,40 @@ function compareStyles(spec, live, selector, failures) {
 
 const chromeSelectorSet = new Set(extraSelectors);
 
+/** Pack computed-styles keys that describe template content (not global chrome). */
+const CONTENT_STRUCTURAL_SELECTORS = new Set([
+  'main',
+  'h1',
+  'h2',
+  'h3',
+  'p',
+  'a',
+  '.wp-block-button__link',
+]);
+
+async function structuralGateContentPack(page, packSlug, bp) {
+  const csPath = path.join(packRoot, packSlug, bp, 'computed-styles.json');
+  const failures = [];
+  if (!fs.existsSync(csPath)) {
+    return { checked: 0, failures, pass: true };
+  }
+  const expected = JSON.parse(fs.readFileSync(csPath, 'utf8')).styles || {};
+  let checked = 0;
+  for (const [selector, spec] of Object.entries(expected)) {
+    if (!CONTENT_STRUCTURAL_SELECTORS.has(selector)) continue;
+    if (!spec?.rect) continue;
+    const live = await measureElement(page, selector);
+    if (!live) {
+      failures.push({ selector, kind: 'missing_element' });
+      continue;
+    }
+    checked++;
+    compareRect(spec.rect, live.rect, selector, failures);
+    compareStyles(spec, live, selector, failures);
+  }
+  return { checked, failures, pass: failures.length === 0 };
+}
+
 async function structuralGate(page, packSlug, bp) {
   const csPath = path.join(packRoot, packSlug, bp, 'computed-styles.json');
   const failures = [];
@@ -264,14 +310,12 @@ async function runMacPackCompare() {
       const refPage = await browser.newPage();
       await preparePage(refPage);
       await refPage.setViewportSize({ width, height: 900 });
-      await refPage.goto(`file://${refHtml}`, { waitUntil: 'domcontentloaded', timeout: 120000 });
-      await stabilizeParityViewport(refPage);
+      await gotoParityPage(refPage, `file://${refHtml}`);
 
       const drPage = await browser.newPage();
       await preparePage(drPage);
       await drPage.setViewportSize({ width, height: 900 });
-      await drPage.goto(`${drupalBase}${drPath}`, { waitUntil: 'networkidle', timeout: 120000 }).catch(() => {});
-      await stabilizeParityViewport(drPage);
+      await gotoParityPage(drPage, `${drupalBase}${drPath}`);
 
       const refHeader = await screenshotHeaderRegion(refPage, bp, packSlug, width);
       const drHeader = await screenshotHeaderRegion(drPage, bp, packSlug, width);
@@ -335,17 +379,20 @@ try {
       const refPage = await browser.newPage();
       await preparePage(refPage);
       await refPage.setViewportSize({ width, height: 900 });
-      await refPage.goto(refUrl, { waitUntil: 'networkidle', timeout: 120000 });
-      await stabilizeParityViewport(refPage);
+      await gotoParityPage(refPage, refUrl);
 
       const drPage = await browser.newPage();
       await preparePage(drPage);
       await drPage.setViewportSize({ width, height: 900 });
-      await drPage.goto(`${drupalBase}${drPath}`, { waitUntil: 'networkidle', timeout: 120000 }).catch(() => {});
-      await stabilizeParityViewport(drPage);
+      await gotoParityPage(drPage, `${drupalBase}${drPath}`);
 
       const structuralPack = await structuralGate(drPage, packSlug, bp);
+      const structuralContentPack = await structuralGateContentPack(drPage, packSlug, bp);
       const structuralRef = await structuralGateRefVsDrupal(refPage, drPage, packSlug, bp);
+
+      const refText = (await extractMainText(refPage))?.text || '';
+      const drText = (await extractMainText(drPage))?.text || '';
+      const textSim = textSimilarity(refText, drText);
 
       const refHeader = await screenshotHeaderRegion(refPage, bp, packSlug, width);
       const drHeader = await screenshotHeaderRegion(drPage, bp, packSlug, width);
@@ -388,8 +435,11 @@ try {
         bp,
         structuralPackPass: structuralPack.pass,
         structuralPackFailures: structuralPack.failures.length,
+        structuralContentPackPass: structuralContentPack.pass,
+        structuralContentPackFailures: structuralContentPack.failures.length,
         structuralRefDrupalPass: structuralRef.pass,
         structuralRefDrupalFailures: structuralRef.failures.length,
+        textSimilarity: textSim,
         headerPixelDiffRatioLinux: headerLinux,
         footerPixelDiffRatioLinux: footerLinux,
         chromePixelDiffRatioLinux: chromeLinux,

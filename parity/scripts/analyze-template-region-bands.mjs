@@ -142,8 +142,12 @@ function detectCascade(bands, overall, shift) {
 }
 
 function profileKeyForPath(p) {
-  if (p.includes('-issue')) return 'issue';
-  if (p.startsWith('/category/') || p === '/digital-exclusives' || p === '/issues') return 'archive';
+  const normalized = p.replace(/\/$/, '') || '/';
+  if (normalized === '/browse-issues' || normalized === '/past-issues') return 'landing';
+  if (/\/[^/]+-issue$/.test(normalized)) return 'issue';
+  if (normalized.startsWith('/category/') || normalized === '/digital-exclusives' || normalized === '/issues') {
+    return 'archive';
+  }
   return 'landing';
 }
 
@@ -153,6 +157,7 @@ const progressDir =
   path.join(parityRoot, 'reports', 'progress', process.env.PROGRESS_COMPONENT || profileKeyForPath(pagePath), `${packSlug}_${bp}`);
 const outDir = path.join(parityRoot, 'reports', 'progress', 'mac-visual', 'qa-evidence', analyzeId);
 fs.mkdirSync(outDir, { recursive: true });
+fs.mkdirSync(progressDir, { recursive: true });
 
 const wpPath = path.join(progressDir, 'wp-viewport-mac.png');
 const drPath = path.join(progressDir, 'drupal-viewport.png');
@@ -198,8 +203,11 @@ const regionBounds = await page.evaluate((defs) => {
   return { docH, regions: out };
 }, regionsDef);
 
+if (process.env.ANALYZE_FORCE_DRUPAL === '1' && fs.existsSync(drPath)) {
+  fs.unlinkSync(drPath);
+}
 if (!fs.existsSync(drPath)) {
-  await page.screenshot({ path: drPath, fullPage: true });
+  await page.screenshot({ path: drPath, fullPage: false });
 }
 if (!fs.existsSync(wpPath)) {
   if (fs.existsSync(refVp)) fs.copyFileSync(refVp, wpPath);
@@ -297,6 +305,47 @@ if (regions.filter((r) => r.shareOfViewport > 1).length === 0) {
   }
 }
 
+function diffStatsShifted(wpData, drData, w, h, y0, y1, dy) {
+  let cnt = 0;
+  let tot = 0;
+  for (let y = y0; y < y1; y++) {
+    const yb = y + dy;
+    if (yb < 0 || yb >= h) continue;
+    for (let x = 0; x < w; x++) {
+      const ia = (w * y + x) * 4;
+      const ib = (w * yb + x) * 4;
+      tot++;
+      if (wpData[ia] !== drData[ib] || wpData[ia + 1] !== drData[ib + 1] || wpData[ia + 2] !== drData[ib + 2]) {
+        cnt++;
+      }
+    }
+  }
+  return tot ? cnt / tot : 0;
+}
+
+const heroRegion = regions.find((r) => r.id === 'hero_banner');
+const heroY1 = heroRegion ? parseInt(heroRegion.y.split('-')[1], 10) : 0;
+const downstream = regions.filter((r) => {
+  const y0 = parseInt(r.y.split('-')[0], 10);
+  return y0 >= heroY1 - 2 && r.id !== 'hero_banner';
+});
+const downstreamShift = {
+  shiftPx: shift.dy,
+  heroBottomPx: heroY1,
+  regions: downstream.map((r) => {
+    const [y0s, y1s] = r.y.split('-').map((n) => parseInt(n, 10));
+    const raw = r.diffPercent / 100;
+    const aligned = diffStatsShifted(wp.data, dr.data, w, h, y0s, y1s, shift.dy);
+    return {
+      id: r.id,
+      label: r.label,
+      diffPercentRaw: r.diffPercent,
+      diffPercentAfterVerticalShift: +(aligned * 100).toFixed(1),
+      offsetOnlyLikely: raw > 0.5 && aligned < raw * 0.85,
+    };
+  }),
+};
+
 const report = {
   generatedAt: new Date().toISOString(),
   path: pagePath,
@@ -308,6 +357,7 @@ const report = {
   qaEvidenceDir: path.relative(parityRoot, outDir),
   cascade,
   regions,
+  downstreamShiftCompensation: downstreamShift,
   topScanBands: [...bands].sort((a, b) => b.ratio - a.ratio).slice(0, 8).map((b) => ({
     y: `${b.y0}-${b.y1}`,
     diffPercent: +(b.ratio * 100).toFixed(1),

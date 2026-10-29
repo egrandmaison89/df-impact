@@ -1324,6 +1324,10 @@ article.post .wp-block-post-terms {
 .issue-page .issue-page-banner.wp-block-cover {
   width: 100%;
   min-height: 481px;
+  height: 481px;
+  max-height: 481px;
+  aspect-ratio: unset;
+  overflow: hidden;
   contain: layout;
 }
 
@@ -1333,6 +1337,68 @@ article.post .wp-block-post-terms {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 50% 50%;
+}
+
+/* Issue hero title — live WP uses .issue-page-header float, not .issue-page-banner margin-top. */
+.issue-page .issue-page-banner .ultp-heading-wrap .ultp-heading-inner {
+  margin-top: 0;
+}
+
+.issue-page .issue-page-banner .wp-block-cover__inner-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-height: 481px;
+  padding: 183px clamp(20px, 5vw, 72px) 36px clamp(20px, 3vw, 40px);
+  box-sizing: border-box;
+}
+
+.issue-page .issue-page-header {
+  width: 495px;
+  max-width: 100%;
+  float: none;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.issue-page .issue-page-header h1,
+.issue-page .issue-page-header .ultp-heading-inner {
+  background-color: rgba(0, 98, 155, 0.5);
+  padding: 10px;
+  margin-top: 0;
+}
+
+@media (max-width: 991px) {
+  .issue-page .issue-page-header {
+    width: min(495px, 55vw);
+  }
+
+  .issue-page .issue-page-banner .wp-block-cover__inner-container {
+    padding-top: 187px;
+  }
+
+  .issue-page .ultp-block-73dec1 .ultp-heading-wrap .ultp-heading-inner,
+  .issue-page .ultp-block-73dec1 .ultp-heading-wrap .ultp-heading-inner a {
+    font-size: clamp(42px, 8vw, 65px);
+  }
+}
+
+@media (max-width: 767px) {
+  .issue-page .issue-page-banner.wp-block-cover {
+    height: 481px;
+    max-height: 481px;
+  }
+
+  .issue-page .issue-page-header {
+    width: auto;
+    max-width: none;
+  }
+
+  .issue-page .issue-page-banner .wp-block-cover__inner-container {
+    justify-content: flex-start;
+    padding: 196px 20px 24px 28px;
+  }
 }
 
 /* PostX “In This Issue” grid — WP style4 crop (768×551), layout-only parity. */

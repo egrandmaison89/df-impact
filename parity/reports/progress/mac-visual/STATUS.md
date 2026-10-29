@@ -4,7 +4,33 @@
 
 **Issue pixels:** integrator owns **layout/CSS only** (banner, band heights, PostX gaps/cards). **Content** (sections, views, article order) is on a separate templates PR — re-measure Mac medians after that lands.
 
-**Updated:** 2026-10-29 ~3:45 AM ET (integrator run: PR **#21** merge confirmed `a4df69ad`, `cim`/`cr`, full gates, region heatmaps refreshed)
+**Updated:** 2026-10-29 ~9:15 AM UTC (VM integrator: Mac private worker down — hero/archive CSS + region-analyzer fix measured on **Linux VM** `http://127.0.0.1:8888`, not Mac pack)
+
+### Mac worker outage + VM integrator (2026-10-29)
+
+The private Mac visual agent could not run (worker error every run). Uncommitted Mac patch (`mac-hero-theme-clean`) was applied on **`cursor/phase4-chrome-behavior-0b67`** from this cloud VM:
+
+- **Kept:** issue hero/cover CSS + `node--issue--full.html.twig` (`aspect-ratio:unset`, 481px cover, title panel flex).
+- **Kept:** topic-archive tablet CSS in `drupal-overrides.css`.
+- **Reverted:** browse-issues `@media (768–1024)` 33.333% column rule (Mac had regressed landing tablet 31% → 38%).
+- **Fixed:** `parity:analyze:regions` progress-dir profile (`/browse-issues` → `landing/`, not `issue/`); `ANALYZE_FORCE_DRUPAL`, viewport-height capture, downstream shift stats; **no** `parity:probe:issue-hero` npm script (script not in repo).
+
+**VM ref-pack viewport % (Mac pack PNG, before → after patch, same VM):**
+
+| Path | Desktop | Tablet | Mobile |
+|------|---------|--------|--------|
+| `/fall-2026-issue` | 59.37 → **59.37** | 51.90 → **51.90** | 48.25 → **48.25** |
+| `/spring-2026-issue` | 67.61 → **67.61** | 65.47 → **65.47** | 62.81 → **62.81** |
+| `/browse-issues` | 28.24 → **28.24** | 31.47 → **31.47** | 36.49 → **36.49** |
+| `/category/cancer-research` | 29.95 → **29.95** | 55.96 → **55.96** | 36.54 → **36.54** |
+
+Region analyzer with corrected `landing/browse-issues_tablet`: **31.54%** overall (was mis-filed under `issue/` at 27.03%).
+
+**Computed-style-diff** (`/fall-2026-issue` desktop, live WP **200** both sides): **38 → 38** mismatches (no VM delta; Mac-reported 59%→14% region drop not reproduced vs frozen pack).
+
+**Gates (VM, post-`cim`/`cr`, Home node republished):** wp-port **20/20**; `parity:head:refpack` **21/21**; `parity:head:manifest` **773/773**; `parity:url:check` **801/801**; `parity:template-samples:http` **19/19**; `parity:smoke:200` **0** fails; `parity:behavior:smoke` **pass** (0 mismatches).
+
+**Prior integrator (~3:45 AM ET):** PR **#21** merge confirmed `a4df69ad`, `cim`/`cr`, full gates, region heatmaps refreshed.
 
 ---
 

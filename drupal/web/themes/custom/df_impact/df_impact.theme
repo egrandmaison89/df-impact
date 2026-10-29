@@ -371,6 +371,14 @@ function df_impact_preprocess_html(array &$variables): void {
       $variables['head_title']['title'] = $topic_title . ' Archives - Impact Magazine';
     }
   }
+
+  // Behavior parity: live WP white mega-nav background on select issue URLs (not all issue nodes).
+  $request = \Drupal::request();
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath($request->getPathInfo());
+  $white_nav_aliases = ['/fall-2026-issue', '/spring-2026-issue'];
+  if (in_array($alias, $white_nav_aliases, TRUE)) {
+    $variables['attributes']['class'][] = 'wp-chrome-nav-bg-solid';
+  }
 }
 
 /**

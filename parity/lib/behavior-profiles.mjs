@@ -46,7 +46,7 @@ export const DRUPAL_PROFILE = {
   heroVideo: DRUPAL_HERO_VIDEO,
   selectors: {
     header: '.header, .desktop-header, .impact-header',
-    navLink: '.header__nav-link, .mega-menu-link, header nav a.mega-menu-link',
+    navLink: '#mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link',
     issuesTrigger: '#mega-menu-item-599 > a.mega-menu-link, .header__nav-item--issues > .header__nav-link',
     issuesPanel: '#mega-menu-item-599 > ul.mega-sub-menu, .header__nav-item--issues .header__dropdown',
     donate: '.desktop-header .wp-block-button a[data-analytics-text="donate"]',

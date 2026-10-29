@@ -30,10 +30,11 @@ Gate **≤5% chrome** not met; mobile chrome improved after footer `wp-images` U
 
 ## In progress
 
-- [ ] Chrome ≤5%: header font/menu AA, footer badge pixel match vs pack PNGs
-- [ ] Homepage PostX grids + hero poster (viewport ~61% desktop)
+- [ ] Smoke baseline (25-url) run `2026-10-29T00-53-07-976Z` — `/tmp/parity-smoke.log`
+- [ ] Chrome ≤5%: header font/menu AA; footer badge files vs pack PNG bytes
+- [ ] Homepage PostX grids + hero (viewport ~61% desktop)
 - [ ] Article couple-commits tablet viewport outlier (~51%)
-- [ ] 738-url run — poll `parity/reports/runs/2026-10-29T00-20-11-819Z/evaluation.json`
+- [ ] 738-url run — still running alongside smoke; poll latest `parity/reports/runs/*/evaluation.json`
 
 ## Next
 

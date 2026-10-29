@@ -24,7 +24,7 @@ Base: `cursor/phase4-chrome-behavior-0b67` | **Stacked on PR #25** `cursor/guten
 
 - **Assertion:** `cross.diff.zero_mismatch_rows` (includes `headerLayout600`, `headerLayout2000` on every chrome-header template path × 3 breakpoints).
 - **Capture gate:** WP timeouts → `cross.wp.snapshot` and `captured: false`; summarize exits **1** until `caseCount === expectedCases` (currently **51** = 17 paths × 3 BPs) and `incompleteCaseCount === 0`. Retry: `PARITY_BEHAVIOR_RUN_ID=<run> node scripts/retry-behavior-incomplete.mjs`.
-- **Nav `backgroundColor` @768/375:** Evidence run `parity/scripts/sample-wp-nav-bg.mjs` (3×) → `reports/behavior/wp-nav-bg-evidence/`. **Full `navDefault` compare restored** (no tablet/mobile field omission); Drupal uses PR #25 white nav bg `@media (min-width: 768px)`.
+- **Nav `backgroundColor` @768/375:** Evidence `reports/behavior/wp-nav-bg-evidence/EVIDENCE.md` (3 runs; **two stable values** by URL — not one global). **Full `navDefault` compare** on all breakpoints. Drupal `navLink` selector aligned with WP (`#mega-menu-max_mega_menu_1 …`); white bg only on `body.path-browse-issues` + `body.wp-chrome-nav-bg-solid` (fall/spring 2026 issue aliases).
 - **Hover compare:** `hover.changed` parity + color/bg/transform when either side changes (~3/255 tolerance).
 - **Body link hover:** content paths only (`/YYYY/MM/`, `/in-brief`, `-issue`).
 
@@ -52,7 +52,7 @@ Base: `cursor/phase4-chrome-behavior-0b67` | **Stacked on PR #25** `cursor/guten
 | --- | --- |
 | `parity:head:manifest` | **773/773** |
 | `parity:url:check` | **801/801** |
-| `parity:behavior:templates` | **Active:** `2026-10-29T10-cross14-final` (tmux `behavior-cross14`, merged PR #25 + fixes). Superseded: cross7/cross11/cross12. |
+| `parity:behavior:templates` | **Active:** `2026-10-29T12-cross17-final` (tmux `behavior-cross17`, nav selector + path-scoped bg). Prior: cross16 (nav tablet mismatches, incomplete WP timeouts). |
 | `parity:smoke:200` | **40 paths, 0 fails** (`reports/smoke-200/smoke-1793267221975.json`) |
 | Embeds backfill | VM run 2026-10-29: **before** 16 fields (15 article, 1 in_brief) with vimeo/youtube markers; **after** 1 in_brief field updated (articles already iframe-backed). Script: `drush php:script modules/custom/df_migrate/scripts/df_backfill_all_embeds.php` |
 
@@ -61,4 +61,4 @@ Base: `cursor/phase4-chrome-behavior-0b67` | **Stacked on PR #25** `cursor/guten
 - Harness: `pagerHover`, `categoryLinkHover`, `inBriefButtonHover`, `cardHover` in cross-site diff (optional when DOM missing).
 - Theme: `theme.css` — In Brief band + banner CTA hover/focus; ultp card title link hover; archive pager/category `:focus-visible`.
 
-Updated: 2026-10-29T10:05Z
+Updated: 2026-10-29T12:20Z

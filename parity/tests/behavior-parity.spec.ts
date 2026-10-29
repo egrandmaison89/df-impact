@@ -10,12 +10,7 @@ import {
   behaviorOutDir,
   prepareBehaviorPage,
 } from '../lib/behavior-utils.mjs';
-import {
-  buildCrossSiteReport,
-  compareVideo,
-  dropdownVisible,
-  hoverChanged,
-} from '../lib/behavior-compare.mjs';
+import { buildCrossSiteReport } from '../lib/behavior-compare.mjs';
 import {
   captureReducedMotionHero,
   captureSiteBehavior,
@@ -67,6 +62,14 @@ function recordAssertion(stats: AssertionStat[], name: string, pass: boolean) {
   }
 }
 
+function wpSnapshotReady(pathNorm: string, snap: Record<string, unknown> | null) {
+  if (!snap) return false;
+  const isHome = pathNorm === '/' || pathNorm === '/homepage';
+  if (isHome && !(snap.hero as { found?: boolean } | undefined)?.found) return false;
+  if (!(snap.navDefault as object | null)) return false;
+  return true;
+}
+
 function drupalUrl(pathNorm: string) {
   if (pathNorm === '/homepage') return `${drupalBase}/homepage`;
   return `${drupalBase}${pathNorm.startsWith('/') ? pathNorm : `/${pathNorm}`}`;
@@ -99,22 +102,33 @@ for (const pathNorm of paths) {
 
       let wpSnap = null;
       if (hitWp) {
-        try {
-          await wpPage.goto(wpUrl(pathNorm), { waitUntil: 'load', timeout: 120000 });
-          await dismissOverlays(wpPage);
-          await waitForFonts(wpPage);
-          await wpPage.waitForSelector(WP_PROFILE.heroVideo, { timeout: 25000 }).catch(() => {});
-          await wpPage
-            .waitForSelector(WP_PROFILE.selectors.navLink, { timeout: 15000 })
-            .catch(() => {});
-          await wpPage.waitForTimeout(800);
-          wpSnap = await captureSiteBehavior(wpPage, WP_PROFILE, bp);
-          report.wp = wpSnap;
-          if (pathNorm === '/homepage' || pathNorm === '/') {
-            await wpPage.screenshot({ path: path.join(outBase, 'wp-scroll.png'), fullPage: false });
+        const target = wpUrl(pathNorm);
+        let lastErr: unknown;
+        for (let attempt = 0; attempt < 3 && !wpSnap; attempt += 1) {
+          try {
+            if (attempt > 0) {
+              await wpPage.waitForTimeout(2000 * attempt);
+            }
+            await wpPage.goto(target, { waitUntil: 'load', timeout: 120000 });
+            await dismissOverlays(wpPage);
+            await waitForFonts(wpPage);
+            if (pathNorm === '/homepage' || pathNorm === '/') {
+              await wpPage.waitForSelector(WP_PROFILE.heroVideo, { timeout: 30000 }).catch(() => {});
+            }
+            await wpPage.waitForSelector(WP_PROFILE.selectors.navLink, { timeout: 20000 }).catch(() => {});
+            await wpPage.waitForTimeout(800);
+            wpSnap = await captureSiteBehavior(wpPage, WP_PROFILE, bp);
+            report.wp = wpSnap;
+            if (pathNorm === '/homepage' || pathNorm === '/') {
+              await wpPage.screenshot({ path: path.join(outBase, 'wp-scroll.png'), fullPage: false });
+            }
+          } catch (e) {
+            lastErr = e;
+            report.wpError = String(e);
           }
-        } catch (e) {
-          report.wpError = String(e);
+        }
+        if (!wpSnap && lastErr) {
+          report.wpError = String(lastErr);
         }
       }
 
@@ -136,85 +150,15 @@ for (const pathNorm of paths) {
         pathNorm.includes('/in-brief') ||
         pathNorm.includes('-issue');
 
-      if (crossSite && wpSnap && drSnap) {
+      if (crossSite && wpSnap && drSnap && wpSnapshotReady(pathNorm, wpSnap)) {
         const cross = buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap);
         report.crossSite = cross;
         if (!cross.match) globalStats.crossMismatches += 1;
         writeJson(path.join(outBase, 'wp-drupal-behavior-diff.json'), cross);
-        writeJson(path.join(outBase, 'behavior.json'), { ...report, assertions: [] });
 
-        const heroCmp = compareVideo(wpSnap.hero, drSnap.hero);
-        recordAssertion(assertionLog, 'cross.hero.video', heroCmp.ok || !isHome);
-        if (isHome) {
-          recordAssertion(assertionLog, 'cross.hero.autoplay', wpSnap.hero?.autoplay === drSnap.hero?.autoplay);
-          recordAssertion(assertionLog, 'cross.hero.muted', wpSnap.hero?.muted === drSnap.hero?.muted);
-          recordAssertion(assertionLog, 'cross.hero.loop', wpSnap.hero?.loop === drSnap.hero?.loop);
-          recordAssertion(
-            assertionLog,
-            'cross.hero.playsInline',
-            wpSnap.hero?.playsInline === drSnap.hero?.playsInline,
-          );
-        }
-
-        recordAssertion(
-          assertionLog,
-          'cross.header.scroll_class',
-          Boolean(drSnap.headerAfterScroll?.scrolled),
-        );
-
-        if (bp.label === 'desktop') {
-          recordAssertion(
-            assertionLog,
-            'cross.nav.hover',
-            hoverChanged(wpSnap.navDefault, wpSnap.navHover) === hoverChanged(drSnap.navDefault, drSnap.navHover) ||
-              hoverChanged(drSnap.navDefault, drSnap.navHover),
-          );
-          recordAssertion(
-            assertionLog,
-            'cross.issues.dropdown',
-            dropdownVisible(wpSnap.issuesDropdown) === dropdownVisible(drSnap.issuesDropdown),
-          );
-          recordAssertion(assertionLog, 'cross.donate.present', !!wpSnap.donateDefault && !!drSnap.donateDefault);
-          recordAssertion(
-            assertionLog,
-            'cross.donate.hover',
-            hoverChanged(wpSnap.donateDefault, wpSnap.donateHover) &&
-              hoverChanged(drSnap.donateDefault, drSnap.donateHover),
-          );
-          recordAssertion(
-            assertionLog,
-            'cross.footer.hover',
-            hoverChanged(wpSnap.footerLinkHover ? wpSnap.navDefault : null, wpSnap.footerLinkHover) ||
-              !!drSnap.footerLinkHover?.color,
-          );
-          if (isContent) {
-            recordAssertion(assertionLog, 'cross.body.link.hover', !!drSnap.bodyLinkHover?.color);
-          } else {
-            recordAssertion(assertionLog, 'cross.body.link.hover.n/a', true);
-          }
-        } else {
-          recordAssertion(assertionLog, 'cross.nav.hover.n/a_mobile', true);
-        }
-
-        if (bp.label === 'mobile') {
-          recordAssertion(
-            assertionLog,
-            'cross.mobile.menu',
-            wpSnap.mobileMenu?.opened === drSnap.mobileMenu?.opened ||
-              (drSnap.mobileMenu?.opened === true && wpSnap.mobileMenu?.opened !== false),
-          );
-        }
-
-        recordAssertion(
-          assertionLog,
-          'cross.widgets.inventory',
-          typeof wpSnap.widgets?.carousels === 'number' && typeof drSnap.widgets?.carousels === 'number',
-        );
-        recordAssertion(
-          assertionLog,
-          'cross.reveal.inventory',
-          (wpSnap.reveal?.count ?? 0) === 0 || (drSnap.reveal?.count ?? 0) >= 0,
-        );
+        recordAssertion(assertionLog, 'cross.diff.zero_mismatch_rows', cross.match);
+      } else if (crossSite && (!wpSnap || !wpSnapshotReady(pathNorm, wpSnap))) {
+        recordAssertion(assertionLog, 'cross.wp.snapshot', false);
       } else if (drSnap) {
         // Drupal-only fallback (legacy gate).
         if (isHome) {

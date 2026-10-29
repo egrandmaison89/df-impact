@@ -1,0 +1,75 @@
+{
+  "runId": "2026-10-29T03-05-53-056Z",
+  "generatedAt": "2026-10-29T03:06:08.175Z",
+  "caseCount": 1,
+  "passCount": 0,
+  "failCount": 1,
+  "passRate": 0,
+  "failuresBySection": {
+    "footerHover": 1,
+    "issuesDropdown": 1,
+    "headerScroll": 1,
+    "widgets": 1
+  },
+  "failures": [
+    {
+      "path": "/homepage",
+      "breakpoint": "desktop",
+      "mismatchCount": 4,
+      "mismatches": [
+        {
+          "section": "footerHover",
+          "diffs": [
+            {
+              "field": "color",
+              "wp": "rgb(0, 98, 155)",
+              "dr": "rgb(46, 126, 172)"
+            }
+          ]
+        },
+        {
+          "section": "issuesDropdown",
+          "diffs": [
+            {
+              "field": "dropdown.visible",
+              "wp": false,
+              "dr": true,
+              "wpRaw": {
+                "found": true,
+                "display": "block",
+                "visibility": "hidden",
+                "opacity": "1"
+              },
+              "drRaw": {
+                "found": true,
+                "display": "block",
+                "visibility": "visible",
+                "opacity": "1"
+              }
+            }
+          ]
+        },
+        {
+          "section": "headerScroll",
+          "diffs": [
+            {
+              "field": "scroll.class",
+              "wp": false,
+              "dr": true
+            }
+          ]
+        },
+        {
+          "section": "widgets",
+          "diffs": [
+            {
+              "field": "widgets.accordions",
+              "wp": 4,
+              "dr": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

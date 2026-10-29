@@ -63,6 +63,19 @@ export function compareVideo(wp, dr) {
   return { ok: diffs.length === 0, diffs };
 }
 
+export function compareHoverStyles(wpDefault, wpHover, drDefault, drHover) {
+  const diffs = [];
+  const wpChanged = hoverChanged(wpDefault, wpHover);
+  const drChanged = hoverChanged(drDefault, drHover);
+  if (wpChanged !== drChanged) {
+    diffs.push({ field: 'hover.changed', wp: wpChanged, dr: drChanged });
+  }
+  if (wpChanged && drChanged && wpHover && drHover && !colorsClose(wpHover.color, drHover.color, 22)) {
+    diffs.push({ field: 'color', wp: wpHover.color, dr: drHover.color });
+  }
+  return { ok: diffs.length === 0, diffs };
+}
+
 export function compareStyles(wp, dr, fields = ['color', 'backgroundColor', 'transform']) {
   const diffs = [];
   if (!wp && !dr) return { ok: true, diffs };
@@ -108,15 +121,31 @@ export function compareDropdown(wp, dr) {
   };
 }
 
+function headerScrollEffect(before, after) {
+  if (!after?.found) return false;
+  if (after.scrolled) return true;
+  if (before?.height && after?.height && after.height < before.height - 0.5) return true;
+  const bShadow = before?.boxShadow || 'none';
+  const aShadow = after?.boxShadow || 'none';
+  if (bShadow === 'none' && aShadow !== 'none') return true;
+  return false;
+}
+
 export function compareScrollHeader(wpBefore, wpAfter, drBefore, drAfter) {
   const diffs = [];
-  const wpScroll = Boolean(wpAfter?.scrolled);
-  const drScroll = Boolean(drAfter?.scrolled);
-  if (wpBefore?.found && drBefore?.found && wpScroll !== drScroll) {
-    diffs.push({ field: 'scroll.class', wp: wpScroll, dr: drScroll });
+  const wpEffect = headerScrollEffect(wpBefore, wpAfter);
+  const drEffect = headerScrollEffect(drBefore, drAfter);
+  if (wpBefore?.found && drBefore?.found && wpEffect !== drEffect) {
+    diffs.push({
+      field: 'scroll.effect',
+      wp: wpEffect,
+      dr: drEffect,
+      wpAfter: wpAfter?.scrolled,
+      drAfter: drAfter?.scrolled,
+    });
   }
-  if (drBefore?.found && !drScroll) {
-    diffs.push({ field: 'scroll.class.dr', wp: wpScroll, dr: drScroll });
+  if (drBefore?.found && !drEffect) {
+    diffs.push({ field: 'scroll.effect.dr', wp: wpEffect, dr: drEffect });
   }
   return { ok: diffs.length === 0, diffs };
 }
@@ -142,19 +171,52 @@ export function compareWidgets(wp, dr) {
   return { ok: diffs.length === 0, diffs };
 }
 
+function optionalStyleCompare(wp, dr) {
+  if (!wp && !dr) return { ok: true, diffs: [] };
+  return compareStyles(wp, dr);
+}
+
+function optionalHoverCompare(wpDef, wpHover, drDef, drHover) {
+  if (!wpDef && !wpHover && !drDef && !drHover) return { ok: true, diffs: [] };
+  if (!wpDef || !drDef) {
+    return { ok: false, diffs: [{ field: 'present', wp: !!wpDef, dr: !!drDef }] };
+  }
+  return compareHoverStyles(wpDef, wpHover, drDef, drHover);
+}
+
 /** Flatten mismatches for JSON report. */
 export function buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap) {
   const sections = {};
   const allDiffs = [];
+  const isHome = pathNorm === '/' || pathNorm === '/homepage';
+  const isContent =
+    /\/\d{4}\/\d{2}\//.test(pathNorm) ||
+    pathNorm.includes('/in-brief') ||
+    pathNorm.includes('-issue');
 
-  sections.hero = compareVideo(wpSnap.hero, drSnap.hero);
+  sections.hero = isHome ? compareVideo(wpSnap.hero, drSnap.hero) : { ok: true, diffs: [] };
   sections.navDefault = compareStyles(wpSnap.navDefault, drSnap.navDefault);
-  sections.navHover = compareStyles(wpSnap.navHover, drSnap.navHover);
-  sections.donateDefault = compareStyles(wpSnap.donateDefault, drSnap.donateDefault);
-  sections.donateHover = compareStyles(wpSnap.donateHover, drSnap.donateHover);
-  sections.footerHover = compareStyles(wpSnap.footerLinkHover, drSnap.footerLinkHover);
-  sections.bodyLinkHover = compareStyles(wpSnap.bodyLinkHover, drSnap.bodyLinkHover);
-  sections.issuesDropdown = compareDropdown(wpSnap.issuesDropdown, drSnap.issuesDropdown);
+  sections.navHover = compareHoverStyles(wpSnap.navDefault, wpSnap.navHover, drSnap.navDefault, drSnap.navHover);
+  sections.donateDefault = optionalStyleCompare(wpSnap.donateDefault, drSnap.donateDefault);
+  sections.donateHover = optionalHoverCompare(
+    wpSnap.donateDefault,
+    wpSnap.donateHover,
+    drSnap.donateDefault,
+    drSnap.donateHover,
+  );
+  sections.footerHover = optionalHoverCompare(
+    wpSnap.footerDefault,
+    wpSnap.footerLinkHover,
+    drSnap.footerDefault,
+    drSnap.footerLinkHover,
+  );
+  sections.bodyLinkHover = isContent
+    ? compareHoverStyles(wpSnap.cardDefault, wpSnap.bodyLinkHover, drSnap.cardDefault, drSnap.bodyLinkHover)
+    : { ok: true, diffs: [] };
+  sections.issuesDropdown =
+    bp.label === 'desktop'
+      ? compareDropdown(wpSnap.issuesDropdown, drSnap.issuesDropdown)
+      : { ok: true, diffs: [] };
   sections.headerScroll = compareScrollHeader(
     wpSnap.headerBeforeScroll,
     wpSnap.headerAfterScroll,
@@ -163,6 +225,19 @@ export function buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap) {
   );
   sections.reveal = compareReveal(wpSnap.reveal, drSnap.reveal);
   sections.widgets = compareWidgets(wpSnap.widgets, drSnap.widgets);
+  sections.cardHover = compareHoverStyles(wpSnap.cardDefault, wpSnap.cardHover, drSnap.cardDefault, drSnap.cardHover);
+  sections.buttonHover = compareHoverStyles(
+    wpSnap.buttonDefault,
+    wpSnap.buttonHover,
+    drSnap.buttonDefault,
+    drSnap.buttonHover,
+  );
+  if (bp.label === 'mobile') {
+    const wpOpen = Boolean(wpSnap.mobileMenu?.opened);
+    const drOpen = Boolean(drSnap.mobileMenu?.opened);
+    sections.mobileMenu =
+      wpOpen === drOpen ? { ok: true, diffs: [] } : { ok: false, diffs: [{ field: 'mobile.open', wp: wpOpen, dr: drOpen }] };
+  }
 
   for (const [name, result] of Object.entries(sections)) {
     if (!result.ok) {

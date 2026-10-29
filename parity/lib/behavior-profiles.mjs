@@ -16,18 +16,16 @@ export const WP_PROFILE = {
   selectors: {
     header: '.desktop-header, .impact-header, .header',
     navLink: '#mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link',
-    issuesTrigger:
-      '#mega-menu-item-599, #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children > a.mega-menu-link',
-    issuesPanel: '#mega-menu-item-599 ul.mega-sub-menu, ul.mega-sub-menu',
-    donate:
-      'a.homepage-banner-button, .desktop-header a.wp-block-button__link, .header__donate, a[data-analytics-text="donate"]',
-    footerLink: 'footer .copyright a, footer a',
+    issuesTrigger: '#mega-menu-item-599 > a.mega-menu-link',
+    issuesPanel: '#mega-menu-item-599 > ul.mega-sub-menu',
+    donate: '.desktop-header .wp-block-button a[data-analytics-text="donate"]',
+    footerLink: 'footer .copyright a',
     bodyLink: 'main .entry-content a, main .wp-block-post-content a, main a',
     search: '.header__search-link, .astm-search-menu a, .is-search-icon',
     menuToggle: '.mobile-header .mega-toggle-label, .mega-menu-toggle',
     drawer: '.mobile-header .mega-menu-wrap, .mega-menu-wrap',
     card: 'main .ultp-block-item, main .wp-block-post, main article',
-    button: 'main a.wp-block-button__link, main .wp-block-button__link',
+    button: 'main .wp-block-button a.wp-block-button__link.has-background',
   },
   reveal: '.ultp-animation, .homepage-section, [class*="ultp-animation"]',
 };
@@ -38,29 +36,33 @@ export const DRUPAL_PROFILE = {
   selectors: {
     header: '.header, .desktop-header, .impact-header',
     navLink: '.header__nav-link, .mega-menu-link, header nav a.mega-menu-link',
-    issuesTrigger: '.header__nav-item--issues, .mega-menu-item-has-children, #mega-menu-item-599',
-    issuesPanel: '.header__dropdown, .mega-sub-menu',
-    donate:
-      '.header__donate, .homepage-banner-button a, a.homepage-banner-button, a[data-analytics-text="donate"], .desktop-header a.wp-block-button__link',
-    footerLink: 'footer a, .copyright a',
+    issuesTrigger: '#mega-menu-item-599 > a.mega-menu-link, .header__nav-item--issues > .header__nav-link',
+    issuesPanel: '#mega-menu-item-599 > ul.mega-sub-menu, .header__nav-item--issues .header__dropdown',
+    donate: '.desktop-header .wp-block-button a[data-analytics-text="donate"]',
+    footerLink: 'footer .copyright a',
     bodyLink: 'main .entry-content a, main .wp-block-post-content a, main a.has-underline-text-decoration',
     search: '.header__search-link, .header-search a, .is-search-icon, .astm-search-menu a',
     menuToggle: '.mobile-header .mega-toggle-label, .header__menu-toggle, .mega-menu-toggle',
     drawer: '.header__drawer, .mobile-header .mega-menu-wrap, #mega-menu-max_mega_menu_1',
     card: 'main .ultp-block-item, main .views-row, main article',
-    button: 'main a.wp-block-button__link, main .wp-block-button__link',
+    button: 'main .wp-block-button a.wp-block-button__link.has-background',
   },
   reveal: '.df-reveal, .df-reveal--visible, .ultp-animation, .homepage-section',
 };
 
 export async function widgetInventory(page) {
   return page.evaluate(() => {
-    const carousels = document.querySelectorAll(
-      '[data-slick], .slick-slider, .swiper, .swiper-container, .ultp-slider, .owl-carousel',
-    ).length;
-    const accordions = document.querySelectorAll(
-      '.accordion, [class*="accordion"], details.accordion, .wp-block-details',
-    ).length;
+    const isConsent = (el) =>
+      Boolean(
+        el.closest(
+          '#onetrust-pc-sdk, #onetrust-banner-sdk, #cookiebanner, .cookiebot, #CybotCookiebotDialog',
+        ),
+      );
+    const scope = document.querySelector('main') || document.querySelector('.wp-site-blocks') || document.body;
+    const carousels = [...scope.querySelectorAll('[data-slick], .slick-slider, .swiper, .ultp-slider, .owl-carousel')]
+      .filter((el) => !isConsent(el)).length;
+    const accordions = [...scope.querySelectorAll('details.wp-block-details, .wp-block-details.is-style-default')]
+      .filter((el) => !isConsent(el)).length;
     return { carousels, accordions };
   });
 }
@@ -75,6 +77,7 @@ export async function captureSiteBehavior(page, profile, bp) {
   data.headerBeforeScroll = await headerScrollState(page, s.header);
   data.donateDefault = await computedStyle(page, s.donate);
   data.donateHover = await computedStyleHover(page, s.donate);
+  data.footerDefault = await computedStyle(page, s.footerLink);
   data.footerLinkHover = await computedStyleHover(page, s.footerLink);
   data.bodyLinkHover = await computedStyleHover(page, s.bodyLink);
   data.cardDefault = await computedStyle(page, s.card);
@@ -91,8 +94,8 @@ export async function captureSiteBehavior(page, profile, bp) {
       ? await dropdownOpenOnHover(page, s.issuesTrigger, s.issuesPanel)
       : { found: false, skipped: true };
 
-  await page.evaluate(() => window.scrollTo(0, 120));
-  await page.waitForTimeout(250);
+  await page.evaluate(() => window.scrollTo(0, 200));
+  await page.waitForTimeout(300);
   data.headerScrollStyle = await computedStyle(page, s.header);
   data.headerAfterScroll = await headerScrollState(page, s.header);
 

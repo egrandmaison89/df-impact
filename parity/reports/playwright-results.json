@@ -158,7 +158,7 @@
       "specs": [
         {
           "title": "behavior /homepage @ desktop",
-          "ok": true,
+          "ok": false,
           "tags": [],
           "tests": [
             {
@@ -180,13 +180,32 @@
                 {
                   "workerIndex": 0,
                   "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 35599,
-                  "errors": [],
+                  "status": "failed",
+                  "duration": 101759,
+                  "error": {
+                    "message": "Error: cross.wp.snapshot\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m",
+                    "stack": "Error: cross.wp.snapshot\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m\n    at recordAssertion (/workspace/parity/tests/behavior-parity.spec.ts:61:24)\n    at /workspace/parity/tests/behavior-parity.spec.ts:161:9",
+                    "location": {
+                      "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                      "column": 24,
+                      "line": 61
+                    },
+                    "snippet": "  59 |   if (pass) globalStats.passed += 1;\n  60 |   if (process.env.PARITY_BEHAVIOR_STRICT === '1' || crossSite) {\n> 61 |     expect(pass, name).toBeTruthy();\n     |                        ^\n  62 |   }\n  63 | }\n  64 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                        "column": 24,
+                        "line": 61
+                      },
+                      "message": "Error: cross.wp.snapshot\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m\n\n  59 |   if (pass) globalStats.passed += 1;\n  60 |   if (process.env.PARITY_BEHAVIOR_STRICT === '1' || crossSite) {\n> 61 |     expect(pass, name).toBeTruthy();\n     |                        ^\n  62 |   }\n  63 | }\n  64 |\n    at recordAssertion (/workspace/parity/tests/behavior-parity.spec.ts:61:24)\n    at /workspace/parity/tests/behavior-parity.spec.ts:161:9"
+                    }
+                  ],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T03:07:02.826Z",
+                  "startTime": "2026-10-29T03:20:51.156Z",
                   "annotations": [
                     {
                       "type": "serial",
@@ -197,15 +216,31 @@
                       }
                     }
                   ],
-                  "attachments": []
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/workspace/parity/test-results/behavior-parity-behavior-homepage-desktop-behavior/error-context.md"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/workspace/parity/test-results/behavior-parity-behavior-homepage-desktop-behavior/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/workspace/parity/tests/behavior-parity.spec.ts",
+                    "column": 24,
+                    "line": 61
+                  }
                 }
               ],
-              "status": "expected"
+              "status": "unexpected"
             }
           ],
           "id": "79008d2b98d0c0e30b34-8008921b99d256f389ea",
           "file": "behavior-parity.spec.ts",
-          "line": 84,
+          "line": 87,
           "column": 9
         },
         {
@@ -230,34 +265,25 @@
               "projectName": "behavior",
               "results": [
                 {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 22428,
+                  "workerIndex": -1,
+                  "parallelIndex": -1,
+                  "status": "skipped",
+                  "duration": 0,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T03:07:38.534Z",
-                  "annotations": [
-                    {
-                      "type": "serial",
-                      "location": {
-                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
-                        "line": 0,
-                        "column": 0
-                      }
-                    }
-                  ],
+                  "startTime": "2026-10-29T03:22:33.065Z",
+                  "annotations": [],
                   "attachments": []
                 }
               ],
-              "status": "expected"
+              "status": "skipped"
             }
           ],
           "id": "79008d2b98d0c0e30b34-88f15b4121ef2379fad8",
           "file": "behavior-parity.spec.ts",
-          "line": 84,
+          "line": 87,
           "column": 9
         },
         {
@@ -282,34 +308,25 @@
               "projectName": "behavior",
               "results": [
                 {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 34165,
+                  "workerIndex": -1,
+                  "parallelIndex": -1,
+                  "status": "skipped",
+                  "duration": 0,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-29T03:08:00.971Z",
-                  "annotations": [
-                    {
-                      "type": "serial",
-                      "location": {
-                        "file": "/workspace/parity/tests/behavior-parity.spec.ts",
-                        "line": 0,
-                        "column": 0
-                      }
-                    }
-                  ],
+                  "startTime": "2026-10-29T03:22:33.065Z",
+                  "annotations": [],
                   "attachments": []
                 }
               ],
-              "status": "expected"
+              "status": "skipped"
             }
           ],
           "id": "79008d2b98d0c0e30b34-fc6cf9664856929a31ad",
           "file": "behavior-parity.spec.ts",
-          "line": 84,
+          "line": 87,
           "column": 9
         }
       ]
@@ -317,11 +334,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-10-29T03:07:02.304Z",
-    "duration": 92914.752,
-    "expected": 3,
-    "skipped": 0,
-    "unexpected": 0,
+    "startTime": "2026-10-29T03:20:50.841Z",
+    "duration": 102241.337,
+    "expected": 0,
+    "skipped": 2,
+    "unexpected": 1,
     "flaky": 0
   }
 }

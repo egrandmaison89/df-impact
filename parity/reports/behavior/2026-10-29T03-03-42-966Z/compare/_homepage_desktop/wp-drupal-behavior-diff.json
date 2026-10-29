@@ -1,0 +1,222 @@
+{
+  "path": "/homepage",
+  "breakpoint": "desktop",
+  "match": false,
+  "mismatchCount": 9,
+  "mismatches": [
+    {
+      "section": "hero",
+      "diffs": [
+        {
+          "field": "found",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    {
+      "section": "navDefault",
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    {
+      "section": "navHover",
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    {
+      "section": "donateDefault",
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    {
+      "section": "donateHover",
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    {
+      "section": "footerHover",
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    {
+      "section": "bodyLinkHover",
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    {
+      "section": "issuesDropdown",
+      "diffs": [
+        {
+          "field": "dropdown.visible",
+          "wp": false,
+          "dr": true,
+          "wpRaw": {
+            "found": false
+          },
+          "drRaw": {
+            "found": true,
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1"
+          }
+        }
+      ]
+    },
+    {
+      "section": "headerScroll",
+      "diffs": [
+        {
+          "field": "scroll.class",
+          "dr": true
+        },
+        {
+          "field": "header.position",
+          "dr": "sticky"
+        }
+      ]
+    }
+  ],
+  "sections": {
+    "hero": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "found",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    "navDefault": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    "navHover": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    "donateDefault": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    "donateHover": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    "footerHover": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    "bodyLinkHover": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "present",
+          "wp": false,
+          "dr": true
+        }
+      ]
+    },
+    "issuesDropdown": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "dropdown.visible",
+          "wp": false,
+          "dr": true,
+          "wpRaw": {
+            "found": false
+          },
+          "drRaw": {
+            "found": true,
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1"
+          }
+        }
+      ]
+    },
+    "headerScroll": {
+      "ok": false,
+      "diffs": [
+        {
+          "field": "scroll.class",
+          "dr": true
+        },
+        {
+          "field": "header.position",
+          "dr": "sticky"
+        }
+      ]
+    },
+    "reveal": {
+      "ok": true,
+      "diffs": []
+    },
+    "widgets": {
+      "ok": true,
+      "diffs": []
+    }
+  }
+}

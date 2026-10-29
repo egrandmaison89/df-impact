@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for df_secondary.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_install().
+ */
+function df_secondary_install(): void {
+  // Sitemap generation is handled in CI/deploy (drush simple-sitemap:generate).
+}

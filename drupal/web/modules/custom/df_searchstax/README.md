@@ -1,10 +1,10 @@
 # DF SearchStax
 
-Production SearchStax integration for the `/search` route.
+Production SearchStax **indexing** integration (no public search UI route; WP parity search uses `/search` Search API view and `/?s=`).
 
 ## What it provides
 
-- Dedicated SearchStax page route: `/search`
+- Admin settings only (public SearchStax UI route removed; use Search API `/search` for WP `/?s=` parity)
 - SearchStax UI kit widgets (input, article results, server-side Issue/Category filters, pagination, sorting, related searches, promotions)
 - Optional advanced widgets (smart answers, feedback modal, location search, popular searches)
 - Admin settings form: `/admin/config/search/df-searchstax`

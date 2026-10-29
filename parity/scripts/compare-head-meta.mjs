@@ -61,12 +61,24 @@ for (const slug of slugs) {
   let error = null;
   const fetchPath = pagePath === '/' ? '/' : pagePath;
   try {
-    const res = await fetch(`${drupalBase}${fetchPath}`, {
+    let res = await fetch(`${drupalBase}${fetchPath}`, {
       redirect: 'manual',
       headers: { Accept: 'text/html' },
     });
     drStatus = res.status;
-    const html = await res.text();
+    let html = await res.text();
+    if (res.status >= 300 && res.status < 400) {
+      const location = res.headers.get('location');
+      if (location) {
+        const followUrl = location.startsWith('http') ? location : `${drupalBase}${location.startsWith('/') ? location : `/${location}`}`;
+        res = await fetch(followUrl, {
+          redirect: 'follow',
+          headers: { Accept: 'text/html' },
+        });
+        drStatus = res.status;
+        html = await res.text();
+      }
+    }
     if (res.status >= 200 && res.status < 400) {
       drupalReachable += 1;
       drMeta = pickMetaFromHtml(html);

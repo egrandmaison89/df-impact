@@ -12,6 +12,7 @@ use Drupal\df_editor\IssuePublisher;
 use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Issue launch dashboard for web editors.
@@ -36,8 +37,18 @@ final class IssueDashboardController extends ControllerBase {
   /**
    * Lists the next draft issue, attached articles, preview, and publish action.
    */
-  public function dashboard(): array {
-    $issue = $this->loadNextDraftIssue();
+  public function dashboard(Request $request): array {
+    $issue = NULL;
+    $requested_nid = (int) $request->query->get('issue', 0);
+    if ($requested_nid > 0) {
+      $candidate = $this->entityTypeManager()->getStorage('node')->load($requested_nid);
+      if ($candidate instanceof NodeInterface && $candidate->bundle() === 'issue') {
+        $issue = $candidate;
+      }
+    }
+    if (!$issue instanceof NodeInterface) {
+      $issue = $this->loadNextDraftIssue();
+    }
     $build = [
       '#title' => $this->t('Issue dashboard'),
       '#attached' => ['library' => ['df_editor/issue_dashboard']],

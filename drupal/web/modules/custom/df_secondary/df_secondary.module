@@ -150,6 +150,12 @@ function df_secondary_views_pre_render(ViewExecutable $view): void {
   if ($view->id() !== 'df_impact_search') {
     return;
   }
+  $term = trim((string) (\Drupal::request()->query->get('s') ?? ''));
+  if ($term === '') {
+    $view->result = [];
+    $view->total_rows = 0;
+    $view->execute_time = 0;
+  }
   if ($view->total_rows === 0 && !empty($view->empty['area_text_custom'])) {
     return;
   }

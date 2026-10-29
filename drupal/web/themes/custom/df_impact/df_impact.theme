@@ -2210,7 +2210,7 @@ function df_impact_article_fallback_image_src(string $url): ?string {
     }
   }
   $hostless = preg_replace('#^https?://[^/]+/#', '', $clean) ?? $clean;
-  if (preg_match('~^([^/?#]+)/?$~', $hostless, $slug_match)) {
+  if ($hostless !== '' && preg_match('~^([^/?#\\[\\]]+)/?$~', $hostless, $slug_match)) {
     $stem = strtolower(pathinfo($slug_match[1], PATHINFO_FILENAME));
     $index = df_impact_media_source_url_index();
     if (!empty($index[$stem]) && is_string($index[$stem])) {
@@ -2489,7 +2489,8 @@ function df_impact_archive_excerpt_for_node(NodeInterface $node): string {
     return df_impact_decode_plain_text(trim(strip_tags($node->get('field_summary')->value ?? '')));
   }
   if ($node->hasField('field_excerpt') && !$node->get('field_excerpt')->isEmpty()) {
-    return trim(strip_tags($node->get('field_excerpt')->value ?? ''));
+    $text = df_impact_decode_plain_text(trim(strip_tags($node->get('field_excerpt')->value ?? '')));
+    return preg_replace('/\s+/u', ' ', $text) ?? $text;
   }
   if ($node->hasField('body') && !$node->get('body')->isEmpty()) {
     $text = strip_tags($node->get('body')->value ?? '');

@@ -92,7 +92,10 @@ final class DfEditorCommands extends DrushCommands {
     if (isset($form['df_homepage_hero']) && ($form['df_homepage_hero']['#access'] ?? TRUE) !== FALSE) {
       throw new \RuntimeException('Web editor must not see df_homepage_hero on the issue form.');
     }
-    foreach (['field_hero_heading', 'field_hero_video', 'field_hero_poster'] as $key) {
+    if (!isset($form['field_hero_heading'])) {
+      throw new \RuntimeException('Web editor must see field_hero_heading on the issue form.');
+    }
+    foreach (['field_hero_video', 'field_hero_poster'] as $key) {
       if (isset($form[$key])) {
         throw new \RuntimeException("Web editor must not see top-level $key on the issue form.");
       }
@@ -142,6 +145,31 @@ final class DfEditorCommands extends DrushCommands {
     }
 
     $this->logger()->success('df-editor:test-publish-workflow passed (latest issue restored to ' . ($before_latest ?? 'none') . ').');
+  }
+
+  /**
+   * Eric editor E2E: Winter 2027 issue, public surfaces, RBAC, cleanup.
+   */
+  #[CLI\Command(name: 'df-editor:test-issue-e2e')]
+  #[CLI\Usage(name: 'df-editor:test-issue-e2e', description: 'Run full web_editor issue publish verification')]
+  public function testIssueE2e(): void {
+    $script = DRUPAL_ROOT . '/modules/custom/df_migrate/scripts/test_web_editor_issue_e2e.php';
+    if (!is_readable($script)) {
+      throw new \RuntimeException('Missing test_web_editor_issue_e2e.php');
+    }
+    if (!defined('DF_EDITOR_E2E_SKIP_AUTO_RUN')) {
+      define('DF_EDITOR_E2E_SKIP_AUTO_RUN', TRUE);
+    }
+    require_once $script;
+    $results = df_migrate_web_editor_issue_e2e();
+    foreach ($results as $check => $passed) {
+      $label = $passed ? 'PASS' : 'FAIL';
+      $this->logger()->notice("$label $check");
+      if (!$passed) {
+        throw new \RuntimeException("Check failed: $check");
+      }
+    }
+    $this->logger()->success('df-editor:test-issue-e2e passed (' . count($results) . ' checks).');
   }
 
 }

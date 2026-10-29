@@ -45,6 +45,7 @@ function _df_setup_ensure_home_landing(): void {
       'title' => 'Home',
       'uid' => 1,
       'status' => 1,
+      'moderation_state' => 'published',
       'body' => [
         'value' => '',
         'format' => 'basic_html',
@@ -57,6 +58,12 @@ function _df_setup_ensure_home_landing(): void {
     $node = $storage->load(reset($nids));
     if ($node instanceof Node) {
       $node->set('path', ['alias' => '/homepage', 'pathauto' => $pathauto_skip]);
+      if ($node->hasField('moderation_state') && $node->get('moderation_state')->value !== 'published') {
+        $node->set('moderation_state', 'published');
+      }
+      if (!$node->isPublished()) {
+        $node->setPublished();
+      }
       $node->save();
     }
   }
@@ -1146,8 +1153,6 @@ function df_setup_update_10030(): string {
 
 /**
  * Search parity (PR #24): enable df_secondary and move Search API view off /search.
- *
- * Hook 10034+ so #23 can use 10031–10033 (merge #25 before #23).
  */
 function df_setup_update_10034(): string {
   $messages = [];

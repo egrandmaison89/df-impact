@@ -1,11 +1,13 @@
 {#
   WordPress Better Search results (/?s= parity; body classes via df_secondary).
 #}
+{% if search_has_query or rows %}
 <div class="wp-block-group alignfull no-margin-top header-media-inner-post is-layout-constrained wp-block-group-is-layout-constrained">
   <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow" style="margin-top:40px;margin-bottom:40px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
     <h1 class="wp-block-heading alignwide blue-border-header has-text-color has-montserrat-font-family" style="color:#003354;padding-top:0;padding-right:20px;padding-bottom:0;padding-left:15px;font-size:38px;font-style:normal;font-weight:600;text-transform:none">{{ 'Search Results'|t }}</h1>
   </div>
 </div>
+{% endif %}
 {% if rows %}
   <main class="wp-block-query is-layout-constrained wp-block-query-is-layout-constrained">
     {{ rows }}
@@ -17,4 +19,6 @@
   </main>
 {% elseif search_has_query %}
   <main class="wp-block-query is-layout-constrained wp-block-query-is-layout-constrained search-no-results"></main>
+{% else %}
+  <main class="wp-block-query is-layout-constrained wp-block-query-is-layout-constrained search-landing-empty"></main>
 {% endif %}

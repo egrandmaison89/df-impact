@@ -49,15 +49,43 @@ final class IssuePublisher {
       ->accessCheck(FALSE)
       ->execute();
 
-    $published = [];
+    $articles = [];
     foreach ($storage->loadMultiple($article_nids) as $article) {
-      if (!$article instanceof NodeInterface) {
-        continue;
+      if ($article instanceof NodeInterface) {
+        $articles[] = $article;
       }
+    }
+    usort($articles, static fn (NodeInterface $a, NodeInterface $b): int => (int) $a->getCreatedTime() <=> (int) $b->getCreatedTime());
+
+    $homepage_weight = 1;
+    $postx_weight = 1;
+    $published = [];
+    foreach ($articles as $article) {
+      $this->applyEditorListingWeights($article, $homepage_weight, $postx_weight);
       $this->applyPublishedState($article);
       $published[] = (int) $article->id();
     }
     return $published;
+  }
+
+  /**
+   * Assigns homepage/issue listing weights when editors publish without admin tuning.
+   */
+  private function applyEditorListingWeights(NodeInterface $article, int &$homepage_weight, int &$postx_weight): void {
+    if ($article->hasField('field_homepage_sort_weight')) {
+      $current = $article->get('field_homepage_sort_weight')->value;
+      if ($current === NULL || $current === '' || (int) $current === 0) {
+        $article->set('field_homepage_sort_weight', $homepage_weight);
+        $homepage_weight++;
+      }
+    }
+    if ($article->hasField('field_postx_sort_weight')) {
+      $current = $article->get('field_postx_sort_weight')->value;
+      if ($current === NULL || $current === '' || (int) $current === 0) {
+        $article->set('field_postx_sort_weight', $postx_weight);
+        $postx_weight++;
+      }
+    }
   }
 
   private function applyPublishedState(NodeInterface $node): void {

@@ -27,22 +27,30 @@ function df_editor_form_node_article_form_alter(array &$form, FormStateInterface
   }
   $account = \Drupal::currentUser();
   $widget = &$form['body']['widget'][0];
-  $stored_format = $widget['#default_value']['format'] ?? $widget['#format'] ?? NULL;
+  $stored_format = is_array($widget['#default_value'] ?? NULL)
+    ? ($widget['#default_value']['format'] ?? NULL)
+    : ($widget['#format'] ?? NULL);
 
   if ($account->hasPermission('use text format full_html')) {
     $widget['#format'] = 'full_html';
-    $widget['#default_value']['format'] = $stored_format === 'full_html' ? 'full_html' : ($widget['#default_value']['format'] ?? 'full_html');
+    if (is_array($widget['#default_value'] ?? NULL)) {
+      $widget['#default_value']['format'] = $stored_format === 'full_html' ? 'full_html' : ($widget['#default_value']['format'] ?? 'full_html');
+    }
     $widget['#allowed_formats'] = ['full_html', 'editor_html'];
   }
   elseif ($account->hasPermission('use text format editor_html')) {
     if ($stored_format === 'full_html' && $account->hasPermission('use legacy full html on stored content')) {
       $widget['#format'] = 'full_html';
-      $widget['#default_value']['format'] = 'full_html';
+      if (is_array($widget['#default_value'] ?? NULL)) {
+        $widget['#default_value']['format'] = 'full_html';
+      }
       $widget['#allowed_formats'] = ['full_html'];
     }
     else {
       $widget['#format'] = 'editor_html';
-      $widget['#default_value']['format'] = 'editor_html';
+      if (is_array($widget['#default_value'] ?? NULL)) {
+        $widget['#default_value']['format'] = 'editor_html';
+      }
       $widget['#allowed_formats'] = ['editor_html'];
     }
   }
@@ -174,23 +182,23 @@ function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $
     $form['field_hero_poster']['#weight'] = 21;
   }
   if (isset($form['field_hero_heading'])) {
-    $form['field_hero_heading']['#description'] = (string) t('Large heading over the homepage hero video. Only shown when this issue is the current featured issue on the homepage.');
-    $form['field_hero_heading']['#weight'] = 22;
+    $form['field_hero_heading']['#description'] = (string) t('Large heading over the homepage hero video when this issue is the current featured issue on the homepage.');
+    $form['field_hero_heading']['#weight'] = 12;
   }
 
   $group = [
     '#type' => 'details',
-    '#title' => t('Homepage hero (site admins)'),
+    '#title' => t('Homepage hero video (site admins)'),
     '#open' => TRUE,
     '#weight' => 15,
   ];
-  foreach (['field_hero_video', 'field_hero_poster', 'field_hero_heading'] as $field_name) {
+  foreach (['field_hero_video', 'field_hero_poster'] as $field_name) {
     if (isset($form[$field_name])) {
       $group[$field_name] = $form[$field_name];
       unset($form[$field_name]);
     }
   }
-  if (isset($group['field_hero_video']) || isset($group['field_hero_poster']) || isset($group['field_hero_heading'])) {
+  if (isset($group['field_hero_video']) || isset($group['field_hero_poster'])) {
     $form['df_homepage_hero'] = $group;
     if (!\Drupal::currentUser()->hasPermission('administer df site settings')) {
       $form['df_homepage_hero']['#access'] = FALSE;
@@ -210,6 +218,9 @@ function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $
   if (isset($form['publish_on'])) {
     $form['publish_on']['#description'] = (string) t('Optional: schedule this issue to go live automatically (requires Scheduler).');
     $form['publish_on']['#weight'] = 99;
+  }
+  if (isset($form['field_year']['widget'][0]['value'])) {
+    $form['field_year']['widget'][0]['value']['#max'] = 2105;
   }
 }
 

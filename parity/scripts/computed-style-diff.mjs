@@ -89,6 +89,14 @@ function pathSlug(p) {
   return p.replace(/^\/|\/$/g, '').replace(/\//g, '_') || 'root';
 }
 
+/** Live WP canonical path (legacy slugs that 404 or captcha more often). */
+function wpParityPath(path) {
+  if (path === '/digital-exclusives') {
+    return '/category/digital-exclusives';
+  }
+  return path;
+}
+
 function jobsFromEnv() {
   const filterTemplate = process.env.PARITY_TEMPLATE;
   const filterPath = process.env.PARITY_PATH;
@@ -313,7 +321,8 @@ async function comparePath(browser, job) {
   await wpPage.setViewportSize(vp);
   await drPage.setViewportSize(vp);
 
-  const wpUrl = `${wpBase}${job.path === '/' ? '' : job.path}`;
+  const wpPath = wpParityPath(job.path);
+  const wpUrl = `${wpBase}${wpPath === '/' ? '' : wpPath}`;
   const drUrl = `${drupalBase}${job.path === '/' ? '' : job.path}`;
 
   const wpNav = await gotoWordPressParityPage(wpPage, wpUrl);

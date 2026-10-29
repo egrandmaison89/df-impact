@@ -122,6 +122,10 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
 }
 
 /* Category archive rows (wp-block-query template) — match live WP row rhythm + image height. */
+.view-topic-archive ul.wp-block-post-template {
+  margin-top: 53px;
+}
+
 .wp-block-post-template > .wp-block-post {
   margin-bottom: 64.8px;
   padding-bottom: 64.8px;
@@ -133,10 +137,25 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
 }
 
 .wp-block-post-template > .wp-block-post .wp-block-post-featured-image img {
-  display: block;
+  display: inline;
   width: 100%;
   height: auto;
   object-fit: cover;
+}
+
+/* About landing — wp-block-columns in main (not footer chrome). */
+main .entry-content > .wp-block-group .wp-block-columns.is-layout-flex,
+main .wp-block-post-content > .wp-block-group .wp-block-columns.is-layout-flex {
+  gap: 40px;
+  max-width: 1400px;
+  box-sizing: border-box;
+}
+
+main .entry-content > .wp-block-group .wp-block-columns .wp-block-image img,
+main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-image img {
+  width: 100%;
+  height: auto;
+  max-width: 544px;
 }
 
 /*
@@ -233,6 +252,27 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
 .ss-inline-share-wrapper .ss-social-icons-container a:hover .ss-network-icon svg,
 .ss-inline-share-wrapper .ss-social-icons-container a:focus-visible .ss-network-icon svg {
   opacity: 0.85;
+}
+
+/* Eric hover parity — match extracted WP chrome rules when theme order differs. */
+#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link:hover {
+  color: #68a0c1 !important;
+}
+
+footer .copyright a:hover,
+footer p.copyright a:hover {
+  color: #d5d5da !important;
+}
+
+main a.wp-block-button__link.has-background:hover {
+  background-color: transparent !important;
+  color: #00629b !important;
+  border: 2px solid #00629b !important;
+}
+
+main .wp-block-post a:hover,
+main .ultp-block-item a:hover {
+  opacity: 0.92;
 }
 
 /*

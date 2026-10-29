@@ -1,3 +1,4 @@
 parity/reports/playwright-results.json
 parity/reports/computed-style-diff/
+parity/reports/computed-style-hover/
 reports/progress/mac-visual/qa-evidence/**/*.png

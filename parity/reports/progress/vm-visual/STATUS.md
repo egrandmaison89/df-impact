@@ -1,10 +1,34 @@
 # VM visual parity — live status
 
-**Branch:** `cursor/vm-visual-parity-2b1b` → PR targets `cursor/phase4-chrome-behavior-0b67` (PR **#5**).  
+**Branch:** `cursor/gutenberg-hover-archive-2b1b` → PR targets `cursor/phase4-chrome-behavior-0b67` (PR **#5** base; includes merged PR **#20** work).  
 **Drupal:** `http://127.0.0.1:8888` (MariaDB `dfimpact`, host Drush).  
 **Method:** `npm run parity:computed-style-diff` (live WP vs Drupal, desktop/tablet/mobile).
 
-**Updated:** 2026-10-29 (PR **#20** — CS drift autopsy, footer/archive/landing fixes, `full-cs-post-footer` run)
+**Updated:** 2026-10-29 (pass 2 — About Gutenberg, archive row **y**, hover CS harness, DE WP path)
+
+---
+
+## Pass 2 — desktop Σ (`full-cs-post-footer` → `full-cs-pass2-after`)
+
+| Template | Before (`full-cs-post-footer`) | After (`full-cs-pass2-after`) | Δ |
+|----------|--------------------------------:|------------------------------:|--:|
+| **homepage** | 70 | **68** | −2 |
+| **issue** | 122 | **114** | −8 |
+| **article** | 70 | **67** | −3 |
+| **in_brief** | 93 | **90** | −3 |
+| **landing_page** | 106 | **94** | −12 |
+| **archive** | 202 | **179** | −23 |
+
+**Changes:** About Impact body → Gutenberg (`df_setup_update_10027/10028`); staff **`wp-block-columns`** gap **40px**; intro alignright image flow (matches live WP DOM order for `main .wp-block-columns`). Archive category **h1** + **`ul.wp-block-post-template { margin-top: 53px }`** (cancer-research first-row **y** ≈ **7px** vs WP). **`wpParityPath`**: WP fetch **`/category/digital-exclusives`** for legacy **`/digital-exclusives`** (all archive jobs **200**, no pending). Selector **`main .wp-block-columns`** (content-scoped).
+
+**Hover computed-style** (`npm run parity:computed-style-hover:full`, `REPORT_RUN_ID=hover-pass2-after`): nav/card/button/footer targets; desktop mismatch Σ by template — issue **9**, article **6**, in_brief **6**, landing **8**, archive **8** (homepage jobs skipped when live WP unreachable). Chrome hover CSS in `drupal-overrides.css` (mega-menu, footer, buttons, cards).
+
+### Deferred — integrator / templates agents
+
+| Area | Observation |
+|------|-------------|
+| **Issue PostX `ultp-block-item` y/h** | Still top deltas on **spring/summer** issue paths (content/card layout landing from PR **#21** stack). |
+| **`/browse-issues` main h** | Large **h** gap vs WP when comparable — issue grid/card count + cover images not yet at WP parity (templates/content). |
 
 ---
 

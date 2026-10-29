@@ -142,6 +142,44 @@ function headerScrollEffect(before, after) {
   return false;
 }
 
+function closeNum(a, b, tolerance = 12) {
+  if (a == null && b == null) return true;
+  if (a == null || b == null) return false;
+  return Math.abs(Number(a) - Number(b)) <= tolerance;
+}
+
+export function compareHeaderLayoutBox(wp, dr) {
+  const diffs = [];
+  if (!wp?.found && !dr?.found) return { ok: true, diffs };
+  if (!wp?.found || !dr?.found) {
+    return { ok: false, diffs: [{ field: 'present', wp: !!wp?.found, dr: !!dr?.found }] };
+  }
+  for (const field of ['width', 'height']) {
+    if (!closeNum(wp.header?.[field], dr.header?.[field])) {
+      diffs.push({ field: `header.${field}`, wp: wp.header?.[field], dr: dr.header?.[field] });
+    }
+  }
+  // Allow WP block outer gutter offset; collapse bug shows as width/height skew, not small x drift.
+  if (!closeNum(wp.header?.x, dr.header?.x, 80)) {
+    diffs.push({ field: 'header.x', wp: wp.header?.x, dr: dr.header?.x });
+  }
+  if (wp.logo && dr.logo && !closeNum(wp.logo.width, dr.logo.width, 40)) {
+    diffs.push({ field: 'logo.width', wp: wp.logo.width, dr: dr.logo.width });
+  }
+  if (
+    typeof wp.gtranslateVisibleSelects === 'number' &&
+    typeof dr.gtranslateVisibleSelects === 'number' &&
+    wp.gtranslateVisibleSelects !== dr.gtranslateVisibleSelects
+  ) {
+    diffs.push({
+      field: 'gtranslate.visibleSelects',
+      wp: wp.gtranslateVisibleSelects,
+      dr: dr.gtranslateVisibleSelects,
+    });
+  }
+  return { ok: diffs.length === 0, diffs };
+}
+
 export function compareScrollHeader(wpBefore, wpAfter, drBefore, drAfter) {
   const diffs = [];
   const wpEffect = headerScrollEffect(wpBefore, wpAfter);
@@ -239,6 +277,12 @@ export function buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap) {
     drSnap.headerBeforeScroll,
     drSnap.headerAfterScroll,
   );
+  sections.headerLayout600 = isHome
+    ? compareHeaderLayoutBox(wpSnap.headerScrollDepths?.y600, drSnap.headerScrollDepths?.y600)
+    : { ok: true, diffs: [] };
+  sections.headerLayout2000 = isHome
+    ? compareHeaderLayoutBox(wpSnap.headerScrollDepths?.y2000, drSnap.headerScrollDepths?.y2000)
+    : { ok: true, diffs: [] };
   sections.reveal = compareReveal(wpSnap.reveal, drSnap.reveal);
   sections.widgets = compareWidgets(wpSnap.widgets, drSnap.widgets);
   sections.cardHover = compareHoverStyles(wpSnap.cardDefault, wpSnap.cardHover, drSnap.cardDefault, drSnap.cardHover);

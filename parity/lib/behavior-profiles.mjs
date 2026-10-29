@@ -6,11 +6,13 @@ import {
   DRUPAL_HERO_VIDEO,
   elementPresent,
   headerScrollState,
+  headerLayoutBox,
   revealState,
   videoState,
   WP_HERO_VIDEO,
 } from './behavior-utils.mjs';
 import { ensurePointerClearForSelector } from './page-utils.mjs';
+import { colorsClose } from './behavior-compare.mjs';
 
 export const WP_PROFILE = {
   site: 'wp',
@@ -76,10 +78,30 @@ export async function captureSiteBehavior(page, profile, bp) {
   data.hero = await videoState(page, profile.heroVideo);
   data.navDefault = await computedStyle(page, s.navLink);
   data.headerBeforeScroll = await headerScrollState(page, s.header);
+  data.headerScrollDepths = {};
+  if (data.hero?.found) {
+    for (const y of [600, 2000]) {
+      await page.evaluate((scrollY) => window.scrollTo(0, scrollY), y);
+      await page.waitForTimeout(500);
+      data.headerScrollDepths[`y${y}`] = await headerLayoutBox(page, s.header);
+    }
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(250);
+  }
   await ensurePointerClearForSelector(page, s.footerLink);
   await scrollSelectorIntoView(page, s.footerLink);
   data.footerDefault = await computedStyle(page, s.footerLink);
   data.footerLinkHover = await computedStyleHover(page, s.footerLink);
+  if (
+    profile.site === 'wp' &&
+    data.footerDefault &&
+    data.footerLinkHover &&
+    colorsClose(data.footerDefault.color, data.footerLinkHover.color)
+  ) {
+    await ensurePointerClearForSelector(page, s.footerLink);
+    await scrollSelectorIntoView(page, s.footerLink);
+    data.footerLinkHover = await computedStyleHover(page, s.footerLink);
+  }
   data.navHover = await computedStyleHover(page, s.navLink);
   data.donateDefault = await computedStyle(page, s.donate);
   data.donateHover = await computedStyleHover(page, s.donate);

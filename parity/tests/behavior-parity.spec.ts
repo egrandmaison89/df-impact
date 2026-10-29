@@ -122,6 +122,14 @@ for (const pathNorm of paths) {
             report.wp = wpSnap;
             if (pathNorm === '/homepage' || pathNorm === '/') {
               await wpPage.screenshot({ path: path.join(outBase, 'wp-scroll.png'), fullPage: false });
+              for (const scrollY of [600, 2000]) {
+                await wpPage.evaluate((y) => window.scrollTo(0, y), scrollY);
+                await wpPage.waitForTimeout(450);
+                await wpPage.screenshot({
+                  path: path.join(outBase, `wp-header-scroll-${scrollY}.png`),
+                  fullPage: false,
+                });
+              }
             }
           } catch (e) {
             lastErr = e;
@@ -133,6 +141,8 @@ for (const pathNorm of paths) {
         }
       }
 
+      const isHome = pathNorm === '/' || pathNorm === '/homepage';
+
       await drPage.goto(drupalUrl(pathNorm), { waitUntil: 'domcontentloaded', timeout: 90000 });
       await dismissOverlays(drPage);
       await waitForFonts(drPage);
@@ -140,12 +150,21 @@ for (const pathNorm of paths) {
       const drSnap = await captureSiteBehavior(drPage, DRUPAL_PROFILE, bp);
       report.dr = drSnap;
       await drPage.screenshot({ path: path.join(outBase, 'drupal-scroll.png'), fullPage: false });
+      if (isHome) {
+        for (const scrollY of [600, 2000]) {
+          await drPage.evaluate((y) => window.scrollTo(0, y), scrollY);
+          await drPage.waitForTimeout(450);
+          await drPage.screenshot({
+            path: path.join(outBase, `drupal-header-scroll-${scrollY}.png`),
+            fullPage: false,
+          });
+        }
+      }
 
       if (bp.label === 'mobile' && drSnap.mobileMenu?.opened) {
         await drPage.screenshot({ path: path.join(outBase, 'drupal-drawer-open.png'), fullPage: false });
       }
 
-      const isHome = pathNorm === '/' || pathNorm === '/homepage';
       const isContent =
         /\/\d{4}\/\d{2}\//.test(pathNorm) ||
         pathNorm.includes('/in-brief') ||

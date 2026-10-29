@@ -60,6 +60,7 @@ final class ArticleBodyCleaner {
     }
 
     $html = $this->rewriteInternalLinks($html);
+    $html = $this->convertVideoEmbedsToIframes($html);
 
     $html = preg_replace("/^\s+/", '', $html) ?? $html;
     $html = preg_replace("/\s+$/", '', $html) ?? $html;
@@ -404,6 +405,134 @@ final class ArticleBodyCleaner {
   public static function stemBasename(string $basename): string {
     $basename = preg_replace('/\?.*$/', '', $basename) ?? $basename;
     return strtolower(preg_replace('/-\d+x\d+(?=\.[^.]+$)/', '', $basename) ?? $basename);
+  }
+
+  /**
+   * Replace WP oEmbed placeholder URLs with responsive iframes (Vimeo/YouTube).
+   */
+  private function convertVideoEmbedsToIframes(string $html): string {
+    if ($html === '' || (!str_contains($html, 'wp-block-embed') && !str_contains($html, 'vimeo') && !str_contains($html, 'youtube'))) {
+      return $html;
+    }
+
+    $doc = new \DOMDocument();
+    libxml_use_internal_errors(TRUE);
+    $wrapped = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div id="df-root">' . $html . '</div></body></html>';
+    $doc->loadHTML($wrapped);
+    libxml_clear_errors();
+
+    $xpath = new \DOMXPath($doc);
+    $root = $doc->getElementById('df-root');
+    if (!$root) {
+      return $html;
+    }
+
+    $wrappers = $xpath->query('.//div[contains(@class,"wp-block-embed__wrapper")]', $root);
+    if ($wrappers) {
+      foreach ($wrappers as $wrapper) {
+        if (!$wrapper instanceof \DOMElement) {
+          continue;
+        }
+        if ($wrapper->getElementsByTagName('iframe')->length > 0) {
+          continue;
+        }
+        $url = trim(html_entity_decode($wrapper->textContent ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        $iframe = $this->buildEmbedIframeForUrl($url, $doc);
+        if ($iframe === NULL) {
+          continue;
+        }
+        while ($wrapper->firstChild) {
+          $wrapper->removeChild($wrapper->firstChild);
+        }
+        $wrapper->appendChild($iframe);
+      }
+    }
+
+    $paragraphs = $xpath->query('.//p', $root);
+    if ($paragraphs) {
+      foreach ($paragraphs as $p) {
+        if (!$p instanceof \DOMElement) {
+          continue;
+        }
+        $text = trim(html_entity_decode($p->textContent ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        if ($text === '' || $p->getElementsByTagName('a')->length > 0) {
+          continue;
+        }
+        if (!preg_match('#^https?://#i', $text)) {
+          continue;
+        }
+        $iframe = $this->buildEmbedIframeForUrl($text, $doc);
+        if ($iframe === NULL) {
+          continue;
+        }
+        $figure = $doc->createElement('figure');
+        $figure->setAttribute('class', 'wp-block-embed aligncenter is-type-video wp-block-embed-vimeo');
+        $inner = $doc->createElement('div');
+        $inner->setAttribute('class', 'wp-block-embed__wrapper');
+        $inner->appendChild($iframe);
+        $figure->appendChild($inner);
+        $p->parentNode?->replaceChild($figure, $p);
+      }
+    }
+
+    $out = '';
+    foreach ($root->childNodes as $child) {
+      $out .= $doc->saveHTML($child);
+    }
+    return $out !== '' ? $out : $html;
+  }
+
+  /**
+   * Builds a responsive iframe node for a Vimeo/YouTube URL.
+   */
+  private function buildEmbedIframeForUrl(string $url, \DOMDocument $doc): ?\DOMElement {
+    $url = trim(html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    if ($url === '') {
+      return NULL;
+    }
+
+    $embedSrc = $this->normalizeVideoEmbedSrc($url);
+    if ($embedSrc === NULL) {
+      return NULL;
+    }
+
+    $shell = $doc->createElement('div');
+    $shell->setAttribute('style', 'padding:56.25% 0 0 0;position:relative;');
+
+    $iframe = $doc->createElement('iframe');
+    $iframe->setAttribute('src', $embedSrc);
+    $iframe->setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%;');
+    $iframe->setAttribute('frameborder', '0');
+    $iframe->setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share');
+    $iframe->setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    $iframe->setAttribute('allowfullscreen', 'true');
+    $iframe->setAttribute('title', 'Embedded video');
+
+    $shell->appendChild($iframe);
+    return $shell;
+  }
+
+  /**
+   * Normalizes watch/share URLs to player embed URLs (WP oEmbed parity).
+   */
+  private function normalizeVideoEmbedSrc(string $url): ?string {
+    if (preg_match('#^https?://player\.vimeo\.com/video/\d+#i', $url)) {
+      return html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
+    if (preg_match('#vimeo\.com/(?:video/)?(\d+)(?:/([a-f0-9]+))?#i', $url, $m)) {
+      $src = 'https://player.vimeo.com/video/' . $m[1];
+      if (!empty($m[2])) {
+        $src .= '?h=' . $m[2];
+      }
+      return $src;
+    }
+    if (preg_match('#youtube\.com/embed/([a-zA-Z0-9_-]+)#i', $url, $m)) {
+      return 'https://www.youtube.com/embed/' . $m[1];
+    }
+    if (preg_match('#(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]+)#i', $url, $m)) {
+      return 'https://www.youtube.com/embed/' . $m[1];
+    }
+    return NULL;
   }
 
 }

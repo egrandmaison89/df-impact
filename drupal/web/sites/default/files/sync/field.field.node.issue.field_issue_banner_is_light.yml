@@ -1,0 +1,25 @@
+uuid: 1a2b3c4d-5e6f-7890-abcd-ef1234567890
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_issue_banner_is_light
+    - node.type.issue
+  module:
+    - node
+id: node.issue.field_issue_banner_is_light
+field_name: field_issue_banner_is_light
+entity_type: node
+bundle: issue
+label: 'Light banner overlay (WP is-light)'
+description: 'When enabled, the issue hero cover uses WordPress is-light styling and the mega-menu nav link background matches live WP (solid white at tablet).'
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

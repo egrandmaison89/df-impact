@@ -372,12 +372,16 @@ function df_impact_preprocess_html(array &$variables): void {
     }
   }
 
-  // Behavior parity: live WP white mega-nav background on select issue URLs (not all issue nodes).
-  $request = \Drupal::request();
-  $alias = \Drupal::service('path_alias.manager')->getAliasByPath($request->getPathInfo());
-  $white_nav_aliases = ['/fall-2026-issue', '/spring-2026-issue'];
-  if (in_array($alias, $white_nav_aliases, TRUE)) {
-    $variables['attributes']['class'][] = 'wp-chrome-nav-bg-solid';
+  $route = \Drupal::routeMatch();
+  if ($route->getRouteName() === 'entity.node.canonical') {
+    $node = $route->getParameter('node');
+    if ($node instanceof NodeInterface
+      && $node->bundle() === 'issue'
+      && $node->hasField('field_issue_banner_is_light')
+      && !$node->get('field_issue_banner_is_light')->isEmpty()
+      && (bool) $node->get('field_issue_banner_is_light')->value) {
+      $variables['attributes']['class'][] = 'issue-chrome-nav-solid';
+    }
   }
 }
 
@@ -604,6 +608,10 @@ function df_impact_preprocess_node(&$variables) {
     $variables['issue_banner_alt'] = $banner['alt'] ?? $node->label();
     $variables['issue_banner_width'] = $banner['width'] ?? 1024;
     $variables['issue_banner_height'] = $banner['height'] ?? 396;
+    $variables['issue_banner_is_light'] = TRUE;
+    if ($node->hasField('field_issue_banner_is_light') && !$node->get('field_issue_banner_is_light')->isEmpty()) {
+      $variables['issue_banner_is_light'] = (bool) $node->get('field_issue_banner_is_light')->value;
+    }
     $variables['issue_promo_cards'] = [];
     $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
     foreach (['field_leadership_message', 'field_issue_promo_2'] as $field_name) {

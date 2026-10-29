@@ -20,11 +20,14 @@ body {
 }
 
 /*
- * WP nav link background is path-specific at tablet (768): see parity/reports/behavior/wp-nav-bg-evidence/.
- * Match live WP only where sampled white — not a global tablet override.
+ * WP mega-nav solid background follows page chrome, not viewport:
+ * - /browse-issues listing (reference-pack browse-issues @768)
+ * - Issue landings whose hero cover uses WP block "is-light" (field_issue_banner_is_light)
+ * See parity/reports/behavior/wp-nav-bg-evidence/EVIDENCE.md
  */
 body.path-browse-issues #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link,
-body.wp-chrome-nav-bg-solid #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link {
+body.issue-chrome-nav-solid #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link,
+body:has(main .issue-page-banner.is-light) #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link {
   background-color: rgb(255, 255, 255) !important;
 }
 

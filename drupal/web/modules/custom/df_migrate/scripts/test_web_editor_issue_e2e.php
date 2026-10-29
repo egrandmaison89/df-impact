@@ -106,6 +106,7 @@ function df_migrate_web_editor_issue_e2e(): array {
       'status' => 0,
       'moderation_state' => 'draft',
       'field_hero_heading' => $hero_heading,
+      'field_issue_banner_is_light' => 1,
     ]);
     if ($cover_source instanceof NodeInterface && $cover_source->hasField('field_cover_image') && !$cover_source->get('field_cover_image')->isEmpty()) {
       $issue->set('field_cover_image', $cover_source->get('field_cover_image')->getValue());
@@ -233,6 +234,28 @@ function df_migrate_web_editor_issue_e2e(): array {
       }
     }
     $pass('issue_landing_lists_articles');
+
+    if (!str_contains($landing, 'issue-page-banner is-light')) {
+      $fail('issue_banner_is_light_markup', 'Issue hero must include WP is-light when field_issue_banner_is_light is enabled.');
+    }
+    $pass('issue_banner_is_light_markup');
+
+    $repo_root = dirname(DRUPAL_ROOT, 2);
+    $nav_check = $repo_root . '/parity/scripts/check-drupal-nav-bg.mjs';
+    if (!is_readable($nav_check)) {
+      $fail('issue_nav_bg_tablet_768', 'Missing parity/scripts/check-drupal-nav-bg.mjs');
+    }
+    $cmd = sprintf(
+      'node %s %s 768 %s 2>&1',
+      escapeshellarg($nav_check),
+      escapeshellarg($issue_path),
+      escapeshellarg('rgb(255, 255, 255)'),
+    );
+    $nav_out = shell_exec($cmd);
+    if (!is_string($nav_out) || !str_contains($nav_out, '"ok": true')) {
+      $fail('issue_nav_bg_tablet_768', 'Mega-menu nav bg @768 must be white for is-light issue. ' . trim((string) $nav_out));
+    }
+    $pass('issue_nav_bg_tablet_768');
   }
   finally {
     foreach ($created_nids as $nid) {

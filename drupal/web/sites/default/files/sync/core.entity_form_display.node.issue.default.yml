@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.issue.field_banner_image
+    - field.field.node.issue.field_issue_banner_is_light
     - field.field.node.issue.field_cover_image
     - field.field.node.issue.field_hero_heading
     - field.field.node.issue.field_hero_poster
@@ -38,6 +39,13 @@ content:
     settings:
       media_types:
         - image
+    third_party_settings: {  }
+  field_issue_banner_is_light:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   field_cover_image:
     type: media_library_widget

@@ -1,0 +1,18 @@
+uuid: 8f4e2a1b-3c9d-4e2f-a1b0-6d5e7f8091a2
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_issue_banner_is_light
+field_name: field_issue_banner_is_light
+entity_type: node
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

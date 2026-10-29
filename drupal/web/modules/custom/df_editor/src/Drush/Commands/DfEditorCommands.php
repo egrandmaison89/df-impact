@@ -151,7 +151,7 @@ final class DfEditorCommands extends DrushCommands {
    * Eric editor E2E: Winter 2027 issue, public surfaces, RBAC, cleanup.
    */
   #[CLI\Command(name: 'df-editor:test-issue-e2e')]
-  #[CLI\Usage(name: 'df-editor:test-issue-e2e', description: 'Run full web_editor issue publish verification')]
+  #[CLI\Usage(name: 'df-editor:test-issue-e2e', description: 'Run full web editor issue publish verification')]
   public function testIssueE2e(): void {
     $script = DRUPAL_ROOT . '/modules/custom/df_migrate/scripts/test_web_editor_issue_e2e.php';
     if (!is_readable($script)) {

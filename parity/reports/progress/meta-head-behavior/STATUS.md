@@ -53,4 +53,9 @@ Base: `cursor/phase4-chrome-behavior-0b67` | Integration: PR #12 flow
 | `parity:behavior:templates` | 48-case cross-site (serial, WP backoff); target `totalMismatchRows: 0` |
 | Embeds backfill | VM run 2026-10-29: **before** 16 fields (15 article, 1 in_brief) with vimeo/youtube markers; **after** 1 in_brief field updated (articles already iframe-backed). Script: `drush php:script modules/custom/df_migrate/scripts/df_backfill_all_embeds.php` |
 
-Updated: 2026-10-29T05:25Z
+## Hover/focus (More Stories, pager, category, In Brief band)
+
+- Harness: `pagerHover`, `categoryLinkHover`, `inBriefButtonHover`, `cardHover` in cross-site diff (optional when DOM missing).
+- Theme: `theme.css` — In Brief band + banner CTA hover/focus; ultp card title link hover; archive pager/category `:focus-visible`.
+
+Updated: 2026-10-29T05:35Z

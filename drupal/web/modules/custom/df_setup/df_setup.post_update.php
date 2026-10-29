@@ -186,6 +186,15 @@ function df_setup_post_update_issue_banner_is_light(): string {
   $messages = [df_setup_import_issue_banner_is_light_config()];
   $messages[] = df_setup_ensure_issue_banner_is_light_form_display();
   $messages[] = df_setup_backfill_issue_banner_is_light();
+  if (function_exists('_df_setup_ensure_home_landing')) {
+    require_once DRUPAL_ROOT . '/modules/custom/df_setup/df_setup.install';
+    _df_setup_ensure_home_landing();
+    $messages[] = 'Home front page ensured.';
+  }
+  if (function_exists('_df_setup_backfill_latest_issue_hero_media')) {
+    require_once DRUPAL_ROOT . '/modules/custom/df_setup/df_setup.install';
+    $messages[] = _df_setup_backfill_latest_issue_hero_media(FALSE);
+  }
   return implode(' ', array_filter($messages));
 }
 

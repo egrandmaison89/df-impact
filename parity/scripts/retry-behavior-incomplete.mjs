@@ -50,7 +50,7 @@ const env = {
   PARITY_BEHAVIOR_CROSS_SITE: '1',
 };
 
-const pw = spawnSync('npx', ['playwright', 'test', '--project=behavior'], {
+const pw = spawnSync('npx', ['playwright', 'test', '--project=behavior', '--max-failures=9999'], {
   cwd: parityRoot,
   stdio: 'inherit',
   env,

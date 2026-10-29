@@ -31,22 +31,24 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 
 ## Merge order (whole merges only)
 
-1. **#23** whole — **merged** (`ceff3720` ← `193ffdcf`); post_updates only (no numbered hooks above 10035)
-2. **#25** whole — **on hold** until agent clears (a–c); verify pass-2 live-WP computed-style baseline
-3. **#28** whole — article variants (**#24 already merged**; do not double-merge)
+1. **#23** whole — **merged** (`ceff3720` ← `193ffdcf`)
+2. **#25** whole — **merged** (`5b423ed8` ← `4884c8ab`); pass-3 live-WP CS 60/60
+3. **#28** whole — article variants (**#24 already merged**; do not double-merge) — **next when agent ready**
 4. **#10** whole — **stacked on #25** (`is_light` + post_update)
 
-**Done on phase4:** **#22/#27** (`6622635f`, `fcf27bd2`), **#24** (`7c27d051`), **#23** (`ceff3720`).
+**Done on phase4:** **#22/#27** (`6622635f`, `fcf27bd2`), **#24** (`7c27d051`), **#23** (`ceff3720`), **#25** (`5b423ed8`).
 
-**#23 post_updates (combined on phase4):** `ensure_home_landing_published`, `in_brief_excerpt`, `seed_listing_excerpts`, `restore_in_brief_summary`.
+**Post_updates (combined on phase4):** #23 four + #25 `seed_issue_covers`, `seed_issue_banners` (+ #10 `is_light` when merged).
 
 On `df_setup.module` conflicts with #22, **keep #22’s side**.
 
-## PR #25 hold
+## PR #25 (merged)
 
-Do not merge until agent reports: **(a)** pass-2 vs pass-3 CS on same live-WP baseline, **(b)** trimmed artifacts, **(c)** `head:refpack` explained. Then merge **whole** branch.
+Whole merge at **`5b423ed8`** from `cursor/gutenberg-hover-archive-2b1b` @ **`4884c8ab`**. Hold cleared: pass-3 live-WP CS **60/60**, diff audit (reports-only deletions).
 
-Computed-style acceptance: `npm run parity:computed-style-diff:full:live-wp` (not refpack/pass-3 totals).
+Computed-style acceptance on branch: `npm run parity:computed-style-diff:full:live-wp` (not refpack/pass-3 totals).
+
+**Post-merge:** if `cim` resets `system.site:page.front`, run `_df_setup_ensure_home_landing()` (or re-verify anonymous `/` is **200**).
 
 ## Post-merge checklist (DB at schema 10035)
 

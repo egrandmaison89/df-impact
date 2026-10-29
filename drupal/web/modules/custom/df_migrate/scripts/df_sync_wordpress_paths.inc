@@ -7,6 +7,7 @@
  * Included after full Drupal bootstrap. See df-migrate:sync-wordpress-paths.
  */
 
+use Drupal\df_migrate\InlineImageHtmlProcessor;
 use Drupal\df_migrate\WordpressPathHelper;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
@@ -215,6 +216,7 @@ function df_migrate_run_sync_wordpress_paths(): void {
   echo "Redirects created or already present (this run attempted): $redirect_count\n";
 
   df_sync_static_page_aliases();
+  df_sync_import_basic_pages();
 
   echo "Done.\n";
 }
@@ -222,6 +224,47 @@ function df_migrate_run_sync_wordpress_paths(): void {
 /**
  * Ensures WordPress basic-page paths resolve (not imported via migrate).
  */
+/**
+ * Imports About Impact body HTML from WordPress pages export.
+ */
+function df_sync_import_basic_pages(): void {
+  $json_path = dirname(DRUPAL_ROOT) . '/migration-data/pages_raw.json';
+  if (!is_readable($json_path)) {
+    echo "Basic pages: skipped (missing pages_raw.json)\n";
+    return;
+  }
+  $pages = json_decode((string) file_get_contents($json_path), TRUE);
+  if (!is_array($pages)) {
+    return;
+  }
+  $updated = 0;
+  foreach ($pages as $page) {
+    if (($page['slug'] ?? '') !== 'about-impact') {
+      continue;
+    }
+    $html = $page['content']['rendered'] ?? '';
+    if ($html === '') {
+      continue;
+    }
+    $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties([
+      'type' => 'page',
+      'title' => 'About Impact',
+    ]);
+    $node = $nodes ? reset($nodes) : NULL;
+    if (!$node instanceof Node) {
+      continue;
+    }
+    $node->set('body', [
+      'value' => InlineImageHtmlProcessor::localize($html),
+      'format' => 'full_html',
+    ]);
+    $node->setPublished(TRUE);
+    $node->save();
+    $updated++;
+  }
+  echo "Basic pages updated: $updated\n";
+}
+
 function df_sync_static_page_aliases(): void {
   $storage = \Drupal::entityTypeManager()->getStorage('path_alias');
   $pathauto_skip = PathautoState::SKIP;

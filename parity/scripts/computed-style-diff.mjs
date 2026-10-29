@@ -14,16 +14,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { preparePage, dismissOverlays } from '../lib/page-utils.mjs';
 import { stabilizeParityViewport } from '../lib/capture-stabilize.mjs';
-import { startRefPackServer } from './lib/ref-pack-server.mjs';
+import { loadWpFixtureHtml, prepareWpFixtureHtml, waitForWpFixtureReady } from '../lib/wp-fixture-html.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
-const WP_SOURCE = (process.env.PARITY_WP_SOURCE || 'live').toLowerCase();
-const wpBaseLive = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
+const wpBase = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(/\/$/, '');
-const packRoot = path.join(parityRoot, 'reference-pack');
-let refPackServer = null;
-let refPackBase = null;
 const RECT_TOLERANCE = Number(process.env.PARITY_RECT_TOLERANCE_PX || 2);
 const PARITY_GOTO_TIMEOUT_MS = Number(process.env.PARITY_GOTO_TIMEOUT_MS || 120000);
 const PARITY_SETTLE_AFTER_LOAD_MS = Number(process.env.PARITY_SETTLE_AFTER_LOAD_MS || 800);
@@ -69,10 +65,9 @@ const selectorConfig = JSON.parse(
 );
 const ALL_SELECTORS = [...new Set([...selectorConfig.chrome, ...selectorConfig.content])];
 
-const samplesFile = process.env.PARITY_SAMPLES_JSON
-  ? path.join(parityRoot, 'config', process.env.PARITY_SAMPLES_JSON)
-  : path.join(parityRoot, 'config', 'template-samples.json');
-const samples = JSON.parse(fs.readFileSync(samplesFile, 'utf8'));
+const samples = JSON.parse(
+  fs.readFileSync(path.join(parityRoot, 'config', 'template-samples.json'), 'utf8'),
+);
 
 function normalizeFontFamily(v) {
   return String(v)
@@ -94,45 +89,51 @@ function pathSlug(p) {
   return p.replace(/^\/|\/$/g, '').replace(/\//g, '_') || 'root';
 }
 
-/** Live WP canonical path (legacy slugs that 404 or captcha more often). */
-function wpParityPath(path) {
-  if (path === '/digital-exclusives') {
-    return '/category/digital-exclusives';
-  }
-  return path;
-}
-
-/** WP paths whose reference-pack folder differs from pathToPackSlug. */
-const REF_PACK_SLUG_OVERRIDES = {
-  '/digital-exclusives': 'category_digital-exclusives',
-};
-
-function pathToPackSlug(p) {
-  const normalized = p.replace(/\/+$/, '') || '/';
-  if (REF_PACK_SLUG_OVERRIDES[normalized]) {
-    return REF_PACK_SLUG_OVERRIDES[normalized];
-  }
-  if (p === '/' || p === '') return 'root';
-  if (p === '/homepage') return 'homepage';
-  const m = p.match(/^\/(\d{4})\/(\d{2})\/(.+?)\/?$/);
-  if (m) return `${m[1]}_${m[2]}_${m[3]}`;
-  return p.replace(/^\/|\/$/g, '').replace(/\//g, '_');
-}
-
-async function ensureRefPackServer() {
-  if (refPackBase) {
-    return refPackBase;
-  }
-  const started = await startRefPackServer(packRoot, { drupalBase });
-  refPackBase = started.baseUrl;
-  refPackServer = { close: () => started.close() };
-  return refPackBase;
-}
-
 function jobsFromEnv() {
   const filterTemplate = process.env.PARITY_TEMPLATE;
   const filterPath = process.env.PARITY_PATH;
   const filterBp = process.env.PARITY_BP;
+  const jobSpecsRaw = (process.env.PARITY_JOB_SPECS || '').trim();
+  if (jobSpecsRaw) {
+    const jobs = [];
+    for (const pair of jobSpecsRaw.split(',')) {
+      const idx = pair.indexOf(':');
+      if (idx <= 0) continue;
+      const template = pair.slice(0, idx).trim();
+      const p = pair.slice(idx + 1).trim();
+      if (!template || !p) continue;
+      if (filterTemplate && template !== filterTemplate) continue;
+      if (filterPath && p !== filterPath) continue;
+      for (const bp of Object.keys(viewports)) {
+        if (filterBp && bp !== filterBp) continue;
+        jobs.push({ template, path: p, bp });
+      }
+    }
+    return jobs;
+  }
+  const pathListRaw = (process.env.PARITY_PATHS || '').trim();
+  if (pathListRaw) {
+    const templateByPath = {};
+    const mapRaw = (process.env.PARITY_PATH_TEMPLATES || '').trim();
+    if (mapRaw) {
+      for (const pair of mapRaw.split(',')) {
+        const idx = pair.indexOf(':');
+        if (idx <= 0) continue;
+        const t = pair.slice(0, idx).trim();
+        const p = pair.slice(idx + 1).trim();
+        if (t && p) templateByPath[p] = t;
+      }
+    }
+    const jobs = [];
+    for (const p of pathListRaw.split(',').map((s) => s.trim()).filter(Boolean)) {
+      const template = templateByPath[p] || filterTemplate || 'article';
+      for (const bp of Object.keys(viewports)) {
+        if (filterBp && bp !== filterBp) continue;
+        jobs.push({ template, path: p, bp });
+      }
+    }
+    return jobs;
+  }
   const jobs = [];
   for (const [template, entry] of Object.entries(samples)) {
     if (filterTemplate && template !== filterTemplate) continue;
@@ -353,34 +354,48 @@ async function comparePath(browser, job) {
   await wpPage.setViewportSize(vp);
   await drPage.setViewportSize(vp);
 
+  const wpUrl = `${wpBase}${job.path === '/' ? '' : job.path}`;
   const drUrl = `${drupalBase}${job.path === '/' ? '' : job.path}`;
 
-  let wpUrl;
+  const wpSource = (process.env.PARITY_WP_SOURCE || 'live').toLowerCase();
   let wpNav;
-  if (WP_SOURCE === 'refpack') {
-    const base = await ensureRefPackServer();
-    const slug = pathToPackSlug(job.path);
-    wpUrl = `${base}/rendered/${slug}/${job.bp}/`;
-    const resp = await wpPage
-      .goto(wpUrl, { waitUntil: 'domcontentloaded', timeout: PARITY_GOTO_TIMEOUT_MS })
-      .catch(() => null);
-    await wpPage.waitForTimeout(PARITY_SETTLE_AFTER_LOAD_MS);
-    await dismissOverlays(wpPage);
-    await stabilizeParityViewport(wpPage);
-    const nav = { status: resp?.status() ?? 0, captcha: false };
-    wpNav = {
-      status: nav.status,
-      captcha: false,
-      shellReason: nav.status === 200 ? null : 'refpack_missing',
-      attempts: 1,
-      comparable: nav.status === 200,
-    };
-  } else {
-    const wpPath = wpParityPath(job.path);
-    wpUrl = `${wpBaseLive}${wpPath === '/' ? '' : wpPath}`;
+  let wpFixtureSource = null;
+  if (wpSource === 'cache' || wpSource === 'fixture') {
+    const loaded = loadWpFixtureHtml(job.path);
+    if (!loaded) {
+      wpNav = {
+        status: 0,
+        captcha: true,
+        shellReason: 'missing_fixture',
+        attempts: 1,
+        comparable: false,
+      };
+    }
+    else {
+      await wpPage.setContent(prepareWpFixtureHtml(loaded.html, drupalBase), {
+        waitUntil: 'load',
+        timeout: PARITY_GOTO_TIMEOUT_MS,
+        url: wpUrl,
+      });
+      await waitForWpFixtureReady(wpPage);
+      await wpPage.waitForTimeout(PARITY_SETTLE_AFTER_LOAD_MS);
+      await dismissOverlays(wpPage);
+      await stabilizeParityViewport(wpPage);
+      wpNav = {
+        status: 200,
+        captcha: false,
+        shellReason: null,
+        attempts: 1,
+        comparable: true,
+      };
+      wpFixtureSource = loaded.source;
+    }
+  }
+  else {
     wpNav = await gotoWordPressParityPage(wpPage, wpUrl);
   }
   const drNav = await gotoParityPage(drPage, drUrl);
+  await waitForWpFixtureReady(drPage).catch(() => {});
 
   const perSelector = {};
   const mismatches = [];
@@ -410,6 +425,7 @@ async function comparePath(browser, job) {
     wpShellReason: wpNav.shellReason,
     wpAttempts: wpNav.attempts,
     wpComparable: wpNav.comparable,
+    wpFixtureSource,
     mismatchCount: mismatches.length,
     mismatches,
     topBoxDeltas: mismatches
@@ -505,16 +521,19 @@ for (const bucket of Object.values(byTemplate)) {
   delete bucket.comparableMismatchCounts;
 }
 
-if (refPackServer) {
-  refPackServer.close();
-}
+const totalMismatches = results.reduce((n, r) => n + (r.mismatchCount ?? 0), 0);
+const totalComparableMismatches = results
+  .filter((r) => r.wpComparable)
+  .reduce((n, r) => n + (r.mismatchCount ?? 0), 0);
 
 const summary = {
   generatedAt: new Date().toISOString(),
-  wpSource: WP_SOURCE,
-  wpBase: WP_SOURCE === 'refpack' ? refPackBase : wpBaseLive,
+  wpBase,
+  wpSource: process.env.PARITY_WP_SOURCE || 'live',
   drupalBase,
   jobCount: jobs.length,
+  totalMismatches,
+  totalComparableMismatches,
   byTemplate,
   results: results.map((r) => ({
     template: r.template,

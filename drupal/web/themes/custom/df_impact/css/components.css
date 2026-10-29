@@ -784,12 +784,14 @@
   border-radius: var(--border-radius);
 }
 
-.article__body .wp-block-image.is-resized[style*="width"] {
+.article__body .wp-block-image.is-resized[style*="width"],
+.entry-content.wp-block-post-content > figure.wp-block-image.is-resized[style*="width"] {
   max-width: none;
   width: auto;
 }
 
-.article__body .wp-block-image.is-resized img {
+.article__body .wp-block-image.is-resized img,
+.entry-content.wp-block-post-content > figure.wp-block-image.is-resized img {
   width: auto;
   max-width: 100%;
   height: auto;
@@ -856,7 +858,9 @@
 }
 
 .article__body .wp-block-image.alignright.is-resized,
-.article__body .wp-block-image.alignleft.is-resized {
+.article__body .wp-block-image.alignleft.is-resized,
+.entry-content.wp-block-post-content > figure.wp-block-image.alignright.is-resized,
+.entry-content.wp-block-post-content > figure.wp-block-image.alignleft.is-resized {
   max-width: none;
 }
 
@@ -893,8 +897,37 @@
 }
 
 .article__body .wp-block-embed,
-.article__body .wp-block-embed__wrapper {
+.article__body .wp-block-embed__wrapper,
+.entry-content.wp-block-post-content figure.wp-block-embed-vimeo,
+.entry-content.wp-block-post-content figure.wp-block-embed-youtube,
+.entry-content.wp-block-post-content .wp-block-embed.is-type-video {
   margin: var(--space-lg) 0;
+}
+
+.entry-content.wp-block-post-content figure.wp-block-embed-vimeo,
+.entry-content.wp-block-post-content figure.wp-block-embed-youtube {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.entry-content.wp-block-post-content .wp-block-embed.is-type-video .wp-block-embed__wrapper,
+.article__body .wp-block-embed.is-type-video .wp-block-embed__wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  overflow: hidden;
+}
+
+.entry-content.wp-block-post-content .wp-block-embed.is-type-video .wp-block-embed__wrapper iframe,
+.article__body .wp-block-embed.is-type-video .wp-block-embed__wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  border: 0;
 }
 
 .article__body .wp-block-embed__wrapper iframe {

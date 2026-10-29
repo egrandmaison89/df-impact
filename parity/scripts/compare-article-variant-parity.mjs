@@ -36,9 +36,52 @@ function pathSlug(p) {
   return p.replace(/^\/|\/$/g, '').replace(/\//g, '_') || 'root';
 }
 
+function localWpImagesBaseUrl() {
+  return `${drupalBase}/sites/default/files/wp-images`;
+}
+
+/** Map WP upload / photon URLs to committed wp-images files for offline parity probes. */
+function rewriteWpFixtureMediaUrls(html) {
+  const localBase = localWpImagesBaseUrl();
+  const toLocal = (url) => {
+    const raw = (url || '').trim();
+    if (!raw || raw.startsWith('data:')) {
+      return raw;
+    }
+    try {
+      const normalized = raw.replace(/^https?:\/\/i\d+\.wp\.com\/danafarberimpact\.org/i, 'https://danafarberimpact.org');
+      const u = new URL(normalized, 'https://danafarberimpact.org');
+      if (!u.pathname.includes('/wp-content/uploads/')) {
+        return raw;
+      }
+      const base = path.basename(u.pathname.split('?')[0]);
+      return `${localBase}/${base}`;
+    }
+    catch {
+      return raw;
+    }
+  };
+  return html
+    .replace(/\ssrc="([^"]+)"/gi, (full, src) => ` src="${toLocal(src)}"`)
+    .replace(/\ssrcset="([^"]+)"/gi, (full, srcset) => {
+      const next = srcset
+        .split(',')
+        .map((part) => {
+          const bits = part.trim().split(/\s+/);
+          if (bits[0]) {
+            bits[0] = toLocal(bits[0]);
+          }
+          return bits.join(' ');
+        })
+        .join(', ');
+      return ` srcset="${next}"`;
+    })
+    .replace(/\sdata-src="([^"]+)"/gi, (full, src) => ` data-src="${toLocal(src)}"`);
+}
+
 /** Eager-load lazy WP fixture images so component probes match live layout. */
 function prepareWpFixtureHtml(html) {
-  return html
+  return rewriteWpFixtureMediaUrls(html)
     .replace(/\sloading="lazy"/gi, ' loading="eager"')
     .replace(/\sclass="([^"]*\blazyload\b[^"]*)"/gi, (match, classes) => {
       const next = classes.replace(/\blazyload\b/g, 'lazyloaded');
@@ -86,11 +129,6 @@ async function probeComponents(page, variant) {
           w = Math.round(parseFloat(inlineW[1]));
         }
         if (h === 0 && inlineH) {
-          h = Math.round(parseFloat(inlineH[1]));
-        }
-        // Offline WP fixtures: external src may not decode; trust WP inline dimensions.
-        if (el.naturalWidth === 0 && inlineW && inlineH && (h < 80 || w < 200)) {
-          w = Math.round(parseFloat(inlineW[1]));
           h = Math.round(parseFloat(inlineH[1]));
         }
         if (w > 0 && h === 0 && el.naturalWidth > 0 && el.naturalHeight > 0) {
@@ -228,8 +266,6 @@ for (const variant of VARIANT_KEYS.map((v) => v.trim()).filter(Boolean)) {
               'main .article__body figure.wp-block-image:first-of-type img',
               'main .entry-content .wp-block-image.alignright img',
               'main .article__body .wp-block-image.alignright img',
-              'main .entry-content.wp-block-post-content > figure.wp-block-image.alignright.is-resized img',
-              'main .article__body.wp-block-post-content > figure.wp-block-image.alignright.is-resized img',
             ];
             const imgs = selectors
               .map((sel) => document.querySelector(sel))

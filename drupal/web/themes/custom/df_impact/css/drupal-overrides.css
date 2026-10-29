@@ -20,10 +20,24 @@ body {
 }
 
 /* Mega flyout hover (Max Mega Menu). Sticky header comes from WP pack (`header { position: sticky }`). */
-@media (min-width: 768px) {
+@media (min-width: 769px) {
   #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link,
   .header__nav-link {
     background-color: rgb(255, 255, 255);
+    box-sizing: border-box;
+  }
+
+  #mega-menu-wrap-max_mega_menu_1 {
+    box-sizing: border-box;
+  }
+
+  #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 117px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
 }
 
@@ -85,6 +99,10 @@ body {
 }
 
 @media (max-width: 768px) {
+  .mobile-header {
+    display: block !important;
+  }
+
   .wp-site-blocks .desktop-header {
     display: none !important;
   }
@@ -348,6 +366,14 @@ main .ultp-block-item a:hover {
 
 /* Mobile mega menu open — slide effect (maxmegamenu data-effect-mobile=slide). */
 @media (max-width: 768px) {
+  /*
+   * Duplicate #mega-menu-wrap-max_mega_menu_1 in desktop + mobile chrome: pack CSS
+   * targets the first id (desktop, hidden). Scope mobile MENU toggle to .mobile-header.
+   */
+  .mobile-header .mega-menu-wrap .mega-menu-toggle {
+    display: block !important;
+  }
+
   .mobile-header .mega-menu-wrap:not(.mega-menu-open) .mega-menu {
     display: none !important;
   }

@@ -101,12 +101,18 @@ export async function dropdownOpenOnHover(page, triggerSel, panelSel) {
   } catch {
     return { found: false };
   }
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(350);
   return page.evaluate((panel) => {
     const el = document.querySelector(panel);
     if (!el) return { found: false };
     const cs = getComputedStyle(el);
-    return { found: true, display: cs.display, visibility: cs.visibility, opacity: cs.opacity };
+    return {
+      found: true,
+      display: cs.display,
+      visibility: cs.visibility,
+      opacity: cs.opacity,
+      height: el.getBoundingClientRect().height,
+    };
   }, panelSel);
 }
 

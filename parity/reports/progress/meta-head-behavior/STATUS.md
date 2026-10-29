@@ -1,64 +1,63 @@
 # Meta / head / behavior / URL agent status
 
 Branch: `cursor/meta-head-behavior-0751`  
-Base: `cursor/phase4-chrome-behavior-0b67` (includes **PR #9** merge + `4744fcd9` metatag recursion fix)  
-Follow-up PR: open after push (prior #10 may supersede closed #9 branch)  
-Drupal (VM): `http://127.0.0.1:8888` (`drush serve`, MariaDB `dfimpact`)
+PR: https://github.com/egrandmaison89/df-impact/pull/10  
+Base: `cursor/phase4-chrome-behavior-0b67` (PR #9 merged; watch open **PR #5** on same base for WXR chrome commits)
 
-## Gates (VM verification 2026-10-29, post-base merge)
+Drupal (VM): `http://127.0.0.1:8888`
+
+## Resume checklist (after context summarization)
+
+1. `git pull origin cursor/meta-head-behavior-0751`
+2. `cd drupal/web && ../vendor/bin/drush cr`
+3. Head: `cd parity && DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:head:manifest` → expect **773/773**
+4. Cross-site behavior: `npm run parity:behavior:smoke` then `npm run parity:behavior:templates`
+5. Aggregate diff: `npm run parity:behavior:report-diff` → `reports/behavior/<runId>/wp-drupal-behavior-summary.json`
+6. Fix remaining mismatches in `drupal/web/themes/custom/df_impact/js/wp-chrome-behaviors.js`, `css/drupal-overrides.css`, `js/scroll-reveal.js`
+
+## Gates (VM)
 
 | Gate | Result | Notes |
 | --- | --- | --- |
-| Migrations `df_articles` | **439 / 439** | `migrate_map_df_articles` |
-| Migrations `df_in_brief` | **323 / 323** | Idle |
-| Migrations `df_media_images` | **853 / 853** | `migrate_map_df_media_images`; placeholder + `wp-images` fallback in `WpUploadFile` |
-| `drush df-migrate:sync-wordpress-paths` | **Done** | Article + in-brief aliases |
-| `parity:url:check` (801 URLs) | **100% (801/801)** | Dual-404 counts as match; `URL_PARITY_CONCURRENCY=1` avoids undici crash — `url-parity/check-1793242113685.json` |
-| `parity:head:refpack` (**21** paths) | **100% (21/21)** | External defycancer canonicals, archive titles, JSON-LD from pack overrides, WP-404 slugs vs pack 404 meta — `head-meta/compare-1793242022721.json` |
-| `parity:head:manifest` (773 w/ expected) | **100% (773/773)** | `head-meta/manifest-1793242112444.json` |
-| `parity:behavior:smoke` (`/homepage`) | **3/3 tests, 48/48 assertions** | `reports/behavior/2026-10-29T02-smoke3/run-meta.json` |
-| `parity:behavior:templates` (`PARITY_BEHAVIOR_PATHS=auto`) | **48/48 tests, 588/588 assertions** | Post-base merge — `reports/behavior/2026-10-29T02-48-56-280Z/run-meta.json` |
-| `parity:smoke:baseline` | **Blocked (proven)** | No lite baseline package in VM — ref-pack + manifest head gates |
+| `parity:head:manifest` | **773/773 (100%)** | Latest `head-meta/manifest-1793243108644.json` |
+| `parity:head:refpack` (21) | **21/21** | `compare-1793242022721.json` |
+| `parity:url:check` | **801/801** | Use `URL_PARITY_CONCURRENCY=1` on Mac if undici crashes |
+| Migrations | **439 / 323 / 853** | media map rows |
+| `parity:behavior:templates` (Drupal-only, prior) | 48/48, 588 assertions | `2026-10-29T02-48-56-280Z` |
+| **WP ↔ Drupal behavior (new)** | In progress | Live WP + Drupal Playwright; see below |
 
-### Mac DDEV (user report)
+## WP vs Drupal dynamic behavior parity (overnight work)
 
-| Gate | Mac | VM (this branch) |
-| --- | --- | --- |
-| URL check | 792/801 (98.9%) | 801/801 |
-| Head refpack (21) | 12/21 (57.1%) | 21/21 |
+**Goal:** Same measurements on live WordPress and Drupal, diff report, fix theme JS/CSS.
 
-After pulling this branch: run `node parity/scripts/build-refpack-head-overrides.mjs`, `drush cr`, then refpack + URL gates. Use `URL_PARITY_CONCURRENCY=1` if parallel WP fetch crashes Node.
+**Harness**
 
-### Head gap fixes (for Mac parity)
+- `parity/lib/behavior-profiles.mjs` — per-site selectors + `captureSiteBehavior()`
+- `parity/lib/behavior-compare.mjs` — video/style/dropdown/scroll diffs + `buildCrossSiteReport()`
+- `parity/tests/behavior-parity.spec.ts` — cross-site when `PARITY_BEHAVIOR_CROSS_SITE=1`
+- `parity/scripts/summarize-behavior-wp-diff.mjs` — roll up `wp-drupal-behavior-diff.json`
+- Per case: `reports/behavior/<runId>/compare/<slug>_<bp>/wp-drupal-behavior-diff.json`
 
-1. **External canonicals** — `df_metatag_rewrite_to_production()` preserves `defycancer.dana-farber.org` (`df_metatag_is_external_production_url`).
-2. **Category/archive titles** — digital exclusives view route metatags + `wp_head_overrides.json`.
-3. **JSON-LD** — full Yoast graphs merged into overrides via `parity/scripts/build-refpack-head-overrides.mjs`.
-4. **WP-404 slugs** — ref-pack + Drupal 404 meta compare; URL check **dual404** when both sides 404.
-
-## Manifest head/meta method
-
-See `parity/lib/wp-expected-meta.mjs`, `npm run parity:head:manifest`:
-
-1. **articles.json / in_brief.json** — Yoast title, description, canonical, OG image.
-2. **wp_head_overrides.json** — production canonicals, JSON-LD, archive/home/issue overrides (regenerate from ref-pack with build script).
-3. **reference-pack** desktop `rendered.html` — paths not in JSON exports.
-4. **Comparison** — `metaMatches` in `parity/lib/thresholds.mjs`.
-
-## Commands (repro)
+**npm scripts**
 
 ```bash
-git fetch origin cursor/phase4-chrome-behavior-0b67
-git merge origin/cursor/phase4-chrome-behavior-0b67   # includes 4744fcd9
-
-node parity/scripts/build-refpack-head-overrides.mjs
-cd drupal/web && ../vendor/bin/drush updb -y && ../vendor/bin/drush cr
-
-cd parity
-DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:head:refpack
-DRUPAL_BASE_URL=http://127.0.0.1:8888 npm run parity:head:manifest
-DRUPAL_BASE_URL=http://127.0.0.1:8888 URL_PARITY_CONCURRENCY=1 node scripts/check-url-parity.mjs
-DRUPAL_BASE_URL=http://127.0.0.1:8888 PARITY_BEHAVIOR_PATHS=auto npm run parity:behavior:templates
+npm run parity:behavior:smoke          # /homepage, cross-site
+npm run parity:behavior:templates      # auto paths, cross-site (hits live WP)
+npm run parity:behavior:templates:drupal-only
+npm run parity:behavior:report-diff
 ```
 
-Updated: 2026-10-29 (post PR #9 base merge, 21-slug refpack)
+**Measured:** hero video attrs/src, header scroll class, nav/donate/footer/body/card/button hover computed styles, mega-menu dropdown on hover, mobile menu toggle, scroll-reveal counts, carousel/accordion inventory.
+
+**Theme fixes this pass**
+
+- `wp-chrome-behaviors.js`: hero `play()` when autoplay blocked; scroll → `.scrolled` + `.header--scrolled`; removed inline `mega-sub-menu { display:none }`
+- `drupal-overrides.css`: sticky header, mega flyout `:hover`, footer link hover color, scrolled shadow
+
+**Mac DDEV:** Point `DRUPAL_BASE_URL` at DDEV; WP stays `https://danafarberimpact.org`. Full template run is slow (~25min+ VM) due to live WP loads.
+
+## Manifest head method
+
+`articles.json` / `in_brief.json` / `wp_head_overrides.json` / ref-pack HTML → `parity:head:manifest`. Mac 738-URL run was ~14.5% before overrides + metatag fixes; VM now **100%** on 773 with expectations.
+
+Updated: 2026-10-29T03:08Z

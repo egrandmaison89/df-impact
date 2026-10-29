@@ -33,8 +33,11 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 
 1. **#23** whole — **merged** (`ceff3720` ← `193ffdcf`)
 2. **#25** whole — **merged** (`5b423ed8` ← `4884c8ab`); pass-3 live-WP CS 60/60
-3. **#28** whole — article variants (**#24 already merged**; do not double-merge) — **next when agent ready**
-4. **#10** whole — **stacked on #25** (`is_light` + post_update)
+3. **#29** whole — content-sweep follow-up (`cursor/sweep-801-followup-ce7f`); fixes **794/800** (and integrator **793/800**) sweep gaps — **not ready**; merge only when branch agent reports ready
+4. **#28** whole — article variants (**#24 already merged**; do not double-merge) — when agent ready
+5. **#10** whole — **stacked on #25** (`is_light` + post_update) — after **#28**
+
+**After #25:** **#29 → #28 → #10** (each whole merge; wait for agent “ready” on #29 and #28).
 
 **Done on phase4:** **#22/#27** (`6622635f`, `fcf27bd2`), **#24** (`7c27d051`), **#23** (`ceff3720`), **#25** (`5b423ed8`).
 
@@ -49,6 +52,14 @@ Whole merge at **`5b423ed8`** from `cursor/gutenberg-hover-archive-2b1b` @ **`48
 Computed-style acceptance on branch: `npm run parity:computed-style-diff:full:live-wp` (not refpack/pass-3 totals).
 
 **Post-merge:** if `cim` resets `system.site:page.front`, run `_df_setup_ensure_home_landing()` (or re-verify anonymous `/` is **200**).
+
+## PR #29 (not ready)
+
+Branch **`cursor/sweep-801-followup-ce7f`** — targets content-sweep regression (integrator **793–794/800** text98; `/about`, gift/grant articles, etc.).
+
+**Do not merge** until the branch agent reports ready.
+
+**Integrator requirement before merge:** **revert any `/topics` “fix”** on that branch. Live WordPress returns **404** for `/topics`; **#24’s Drupal 404** for `/topics` is correct. A topics index route or 200 response must not ship in #29.
 
 ## Post-merge checklist (DB at schema 10035)
 

@@ -49,7 +49,9 @@ Authoritative rules for merges onto `cursor/phase4-chrome-behavior-0b67` (PR #5)
 
 **Done on phase4:** **#22/#27**, **#24**, **#23** (`ceff3720`), **#25** (`5b423ed8`), **#29** (`83f35352`), **convergence** (`e0a4f1f4`), **#32** (`ef3e2714`), **#34** (`91b165bf`), **#35** (`caf402c2` + integrator gate follow-up), **#30** (`4f8ca897`), **#31** (`b435badd`), **#10** (`46dfef49`).
 
-**Registry tip (integrator):** **`46dfef49`** on `cursor/phase4-chrome-behavior-0b67`.
+**Registry tip (integrator):** **`2d1122b9`** on `cursor/phase4-chrome-behavior-0b67` (P0: logged-in admin toolbar/tabs; order-safe `in_brief_excerpt` post_update).
+
+**P0 integrator follow-up (`2d1122b9`):** Scope `drupal-overrides.css` admin chrome hiding to `body:not(.user-logged-in)`; enable `df_impact_primary_local_tasks` + show `page.highlighted` for logged-in users only; `_df_setup_repair_link_default_view_formatters()` before `FieldConfig::save()` in `df_setup_post_update_in_brief_excerpt`; admin-e2e toolbar/Edit/`/admin/content` assertions.
 
 **Generated parity gate output** (`parity/reports/content-sweep/`, smoke, url-parity, etc.) is **gitignored** — do not commit sweep JSON/CSV from PR branches.
 

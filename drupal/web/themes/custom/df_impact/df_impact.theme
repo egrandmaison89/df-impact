@@ -545,11 +545,13 @@ function df_impact_preprocess_node(&$variables) {
     }
     $variables['issue_promo_excerpt'] = '';
     if ($node->hasField('field_excerpt') && !$node->get('field_excerpt')->isEmpty()) {
-      $variables['issue_promo_excerpt'] = strip_tags($node->get('field_excerpt')->value ?? '');
+      $raw = strip_tags($node->get('field_excerpt')->value ?? '');
+      $variables['issue_promo_excerpt'] = html_entity_decode($raw, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
     elseif ($node->hasField('body') && !$node->get('body')->isEmpty()) {
       $text = strip_tags($node->get('body')->value ?? '');
-      $variables['issue_promo_excerpt'] = text_summary($text, NULL, 280);
+      $summary = text_summary($text, NULL, 280);
+      $variables['issue_promo_excerpt'] = html_entity_decode($summary, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
   }
 

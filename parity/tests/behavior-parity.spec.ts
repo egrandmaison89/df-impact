@@ -19,7 +19,7 @@ import {
 } from '../lib/behavior-profiles.mjs';
 import { loadTemplateSamplePaths, normalizeBehaviorPath } from '../lib/behavior-paths.mjs';
 import { resolveParityRoot } from '../lib/parity-root.mjs';
-import { dismissOverlays, waitForFonts } from '../lib/page-utils.mjs';
+import { dismissOverlays, gotoWithBoundedSettle, waitForFonts } from '../lib/page-utils.mjs';
 
 const parityRoot = resolveParityRoot();
 const wpBase = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
@@ -29,6 +29,7 @@ const baselineId = process.env.PARITY_WP_BASELINE || '';
 const crossSite =
   process.env.PARITY_BEHAVIOR_CROSS_SITE === '1' ||
   (process.env.PARITY_BEHAVIOR_CROSS_SITE !== '0' && process.env.PARITY_BEHAVIOR_HIT_WP === '1');
+const behaviorLite = process.env.PARITY_BEHAVIOR_LITE === '1';
 
 const hitWp =
   crossSite ||
@@ -85,7 +86,7 @@ for (const pathNorm of paths) {
     test(`behavior ${pathNorm} @ ${bp.label}`, async ({ browser, browserName }) => {
       test.skip(browserName !== 'chromium', 'Chromium only');
       if (crossSite) {
-        test.setTimeout(240_000);
+        test.setTimeout(behaviorLite ? 120_000 : 180_000);
       }
       globalStats.tests += 1;
 
@@ -105,19 +106,19 @@ for (const pathNorm of paths) {
       if (hitWp) {
         const target = wpUrl(pathNorm);
         let lastErr: unknown;
-        for (let attempt = 0; attempt < 3 && !wpSnap; attempt += 1) {
+        for (let attempt = 0; attempt < 2 && !wpSnap; attempt += 1) {
           try {
             if (attempt > 0) {
-              await wpPage.waitForTimeout(2000 * attempt);
+              await wpPage.waitForTimeout(1500);
             }
-            await wpPage.goto(target, { waitUntil: 'domcontentloaded', timeout: 120000 });
-            await dismissOverlays(wpPage);
-            await waitForFonts(wpPage);
+            await gotoWithBoundedSettle(wpPage, target, {
+              timeout: behaviorLite ? 75000 : 90000,
+              settleMs: behaviorLite ? 800 : 1200,
+            });
             if (pathNorm === '/homepage' || pathNorm === '/') {
-              await wpPage.waitForSelector(WP_PROFILE.heroVideo, { timeout: 30000 }).catch(() => {});
+              await wpPage.waitForSelector(WP_PROFILE.heroVideo, { timeout: 15000 }).catch(() => {});
             }
-            await wpPage.waitForSelector(WP_PROFILE.selectors.navLink, { timeout: 20000 }).catch(() => {});
-            await wpPage.waitForTimeout(800);
+            await wpPage.waitForSelector(WP_PROFILE.selectors.navLink, { timeout: 12000 }).catch(() => {});
             wpSnap = await captureSiteBehavior(wpPage, WP_PROFILE, bp);
             report.wp = wpSnap;
             if (pathNorm === '/homepage' || pathNorm === '/') {
@@ -133,10 +134,10 @@ for (const pathNorm of paths) {
         }
       }
 
-      await drPage.goto(drupalUrl(pathNorm), { waitUntil: 'domcontentloaded', timeout: 90000 });
-      await dismissOverlays(drPage);
-      await waitForFonts(drPage);
-      await drPage.waitForTimeout(600);
+      await gotoWithBoundedSettle(drPage, drupalUrl(pathNorm), {
+        timeout: 75000,
+        settleMs: behaviorLite ? 600 : 1000,
+      });
       const drSnap = await captureSiteBehavior(drPage, DRUPAL_PROFILE, bp);
       report.dr = drSnap;
       await drPage.screenshot({ path: path.join(outBase, 'drupal-scroll.png'), fullPage: false });
@@ -170,7 +171,7 @@ for (const pathNorm of paths) {
         recordAssertion(assertionLog, 'header.scroll.shrink_class', !!drSnap.headerAfterScroll?.scrolled);
       }
 
-      if (isHome && drSnap) {
+      if (isHome && drSnap && !behaviorLite) {
         await prepareBehaviorPage(drPage, { reducedMotion: true });
         report.drHeroReducedMotion = await captureReducedMotionHero(drPage, DRUPAL_PROFILE);
         recordAssertion(

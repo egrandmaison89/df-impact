@@ -23,6 +23,15 @@ export async function prepareBehaviorPage(page, { reducedMotion = false } = {}) 
       await route.abort();
       return;
     }
+    // Live WP pulls open-ended media/analytics; behavior smoke only needs DOM + hero video metadata.
+    if (/google-analytics|googletagmanager|doubleclick|facebook\.net|hotjar|clarity\.ms/i.test(url)) {
+      await route.abort();
+      return;
+    }
+    if (/\.(mp4|webm)(\?|$)/i.test(url) && !/danafarberimpact\.org/i.test(url)) {
+      await route.abort();
+      return;
+    }
     await route.continue();
   });
 }

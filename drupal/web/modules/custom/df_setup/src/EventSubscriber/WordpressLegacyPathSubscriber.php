@@ -29,11 +29,6 @@ final class WordpressLegacyPathSubscriber implements EventSubscriberInterface {
     $request = $event->getRequest();
     $path = rtrim($request->getPathInfo(), '/') ?: '/';
 
-    if ($path === '/digital-exclusives') {
-      $this->rebuildRequest($request, '/category/digital-exclusives', []);
-      return;
-    }
-
     if (preg_match('#^/category/([a-z0-9-]+)/page/(\d+)$#i', $path, $matches)) {
       $slug = $matches[1];
       $page = max(0, (int) $matches[2] - 1);

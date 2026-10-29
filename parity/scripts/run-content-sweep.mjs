@@ -19,7 +19,7 @@ import {
 } from '../lib/content-sweep-extract.mjs';
 import { httpGet } from '../lib/http-get.mjs';
 import { wpArchiveExportHtmlForPath, wpExportHtmlForPath } from '../lib/wp-export-baseline.mjs';
-import { loadIssueWpHtml } from '../lib/issue-wp-baseline.mjs';
+import { loadIssueTagArchiveFallbackHtml, loadIssueWpHtml } from '../lib/issue-wp-baseline.mjs';
 import { textSimilarity } from '../lib/page-utils.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -152,6 +152,7 @@ async function processOne({ entry, path: p }) {
   const exportHtml = isIssue ? null : wpExportHtmlForPath(p);
   const archiveExportHtml = !exportHtml ? wpArchiveExportHtmlForPath(p) : null;
   const issueCacheHtml = isIssue ? loadIssueWpHtml(p) : null;
+  const issueTagFallbackHtml = isIssue && !issueCacheHtml ? loadIssueTagArchiveFallbackHtml(p) : null;
   if (frozen) {
     wpHtml = fs.readFileSync(frozen, 'utf8');
     row.wpSource = 'frozen';
@@ -163,6 +164,10 @@ async function processOne({ entry, path: p }) {
     wpHtml = issueCacheHtml;
     row.wpSource = 'issue-cache';
     row.wpStatus = 200;
+  } else if (issueTagFallbackHtml) {
+    wpHtml = issueTagFallbackHtml;
+    row.wpSource = 'issue-tag-frozen';
+    row.wpStatus = 200;
   } else if (exportHtml) {
     wpHtml = exportHtml;
     row.wpSource = 'export';
@@ -171,6 +176,11 @@ async function processOne({ entry, path: p }) {
     wpHtml = archiveExportHtml;
     row.wpSource = 'export-archive';
     row.wpStatus = 200;
+  } else if (isIssue) {
+    row.wpComparable = false;
+    row.wpError = 'no_issue_wp_baseline';
+    row.clusters = ['wp_non_comparable'];
+    return row;
   } else {
     const wpUrl = entry.url || `${wpBase}${p}`;
     const wpRes = await fetchHtml(wpUrl, 'wp');
@@ -238,7 +248,7 @@ async function processOne({ entry, path: p }) {
     row.template === 'archive' || String(p).includes('/page/')
       ? Math.min(maxLinksPerPage, 6)
       : maxLinksPerPage;
-  if (linkCheck) {
+  if (linkCheck && row.template !== 'issue') {
     for (const href of drM.links.slice(0, linkLimit)) {
       if (href.startsWith('http') && !href.includes('danafarberimpact.org') && !href.includes('127.0.0.1')) {
         continue;

@@ -19,7 +19,7 @@ final class WordpressLegacyPathSubscriber implements EventSubscriberInterface {
 
   public static function getSubscribedEvents(): array {
     // Before RouterListener (32) so rewritten /category/* paths match Views routes.
-    return [KernelEvents::REQUEST => [['onRequest', 31]]];
+    return [KernelEvents::REQUEST => [['onRequest', 20]]];
   }
 
   public function onRequest(RequestEvent $event): void {

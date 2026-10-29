@@ -564,8 +564,18 @@ function df_impact_preprocess_node(&$variables) {
     if ($node->hasField('field_issue') && !$node->get('field_issue')->isEmpty()) {
       $issue = $node->get('field_issue')->entity;
       if ($issue instanceof NodeInterface) {
-        $variables['in_brief_issue_url'] = $issue->toUrl()->toString();
-        $variables['in_brief_issue_label'] = $issue->label();
+        $issue_alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $issue->id());
+        $legacy_tag = function_exists('df_setup_legacy_issue_tag_slug_for_request_path')
+          ? df_setup_legacy_issue_tag_slug_for_request_path($issue_alias)
+          : '';
+        $summary_has_tag = $legacy_tag !== ''
+          && $node->hasField('field_summary')
+          && !$node->get('field_summary')->isEmpty()
+          && stripos((string) $node->get('field_summary')->value, '/tag/' . $legacy_tag) !== FALSE;
+        if ($legacy_tag === '' || !$summary_has_tag) {
+          $variables['in_brief_issue_url'] = $issue->toUrl()->toString();
+          $variables['in_brief_issue_label'] = $issue->label();
+        }
       }
     }
   }
@@ -626,7 +636,20 @@ function df_impact_preprocess_node(&$variables) {
     $issue = $node->get('field_issue')->entity;
     if ($issue) {
       $variables['issue_title'] = $issue->label();
-      $variables['issue_url'] = $issue->toUrl()->toString();
+      $issue_alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $issue->id());
+      $legacy_tag = function_exists('df_setup_legacy_issue_tag_slug_for_request_path')
+        ? df_setup_legacy_issue_tag_slug_for_request_path($issue_alias)
+        : '';
+      $body_has_tag = $legacy_tag !== ''
+        && $node->hasField('body')
+        && !$node->get('body')->isEmpty()
+        && stripos((string) $node->get('body')->value, '/tag/' . $legacy_tag) !== FALSE;
+      if ($legacy_tag !== '' && !$body_has_tag) {
+        $variables['issue_url'] = \Drupal\Core\Url::fromUserInput('/tag/' . $legacy_tag)->toString();
+      }
+      elseif ($legacy_tag === '') {
+        $variables['issue_url'] = $issue->toUrl()->toString();
+      }
     }
   }
 
@@ -2340,13 +2363,13 @@ function df_impact_decode_plain_text(?string $text): string {
 }
 
 function df_impact_archive_excerpt_for_node(NodeInterface $node): string {
-  $manifest = df_impact_article_manifest_row($node);
-  if (!empty($manifest['excerpt'])) {
-    return df_impact_decode_plain_text(trim(strip_tags((string) $manifest['excerpt'])));
-  }
   if ($node->hasField('field_excerpt') && !$node->get('field_excerpt')->isEmpty()) {
     $text = df_impact_decode_plain_text(trim(strip_tags($node->get('field_excerpt')->value ?? '')));
     return preg_replace('/\s+/u', ' ', $text) ?? $text;
+  }
+  $manifest = df_impact_article_manifest_row($node);
+  if (!empty($manifest['excerpt'])) {
+    return df_impact_decode_plain_text(trim(strip_tags((string) $manifest['excerpt'])));
   }
   if ($node->hasField('body') && !$node->get('body')->isEmpty()) {
     $text = strip_tags($node->get('body')->value ?? '');

@@ -101,3 +101,35 @@ function df_setup_post_update_seed_issue_covers(&$sandbox): string {
 function df_setup_post_update_seed_issue_banners(&$sandbox): string {
   return _df_setup_backfill_issue_banner_images();
 }
+
+/**
+ * Applies full About Impact Gutenberg body + staff block (#25 on phase4).
+ */
+function df_setup_post_update_ensure_about_impact_body(): string {
+  require_once __DIR__ . '/df_setup.install';
+  return _df_setup_apply_about_impact_gutenberg_body();
+}
+
+/**
+ * Point Late Fall 2022 in-content links at /tag/late-fall-2022 like live WP.
+ */
+function df_setup_post_update_late_fall_2022_tag_links(): string {
+  require_once __DIR__ . '/df_setup.install';
+  return _df_setup_apply_late_fall_2022_link_parity();
+}
+
+/**
+ * Replaces Late Fall 2022 bylines that were nested inside wp:image blocks.
+ */
+function df_setup_post_update_late_fall_2022_byline_placement(): string {
+  require_once __DIR__ . '/df_setup.install';
+  return _df_setup_apply_late_fall_2022_link_parity();
+}
+
+/**
+ * Drops body bylaws where export has no tag link (template carries issue label).
+ */
+function df_setup_post_update_late_fall_2022_export_byline_trim(): string {
+  require_once __DIR__ . '/df_setup.install';
+  return _df_setup_apply_late_fall_2022_link_parity();
+}

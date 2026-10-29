@@ -10,6 +10,9 @@ import { isContentParityUrl, publicPath } from '../lib/manifest-urls.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
 const manifest = JSON.parse(fs.readFileSync(path.join(parityRoot, 'manifest/site-manifest.json'), 'utf8'));
+const wpLive404Paths = JSON.parse(
+  fs.readFileSync(path.join(parityRoot, 'config/wp-live-404-paths.json'), 'utf8'),
+);
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(/\/$/, '');
 const wpBase = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const limit = parseInt(process.env.URL_PARITY_LIMIT || '0', 10);
@@ -55,9 +58,11 @@ async function checkEntry(entry) {
     }
   }
   const dual404 = dr.status === 404 && wp.status === 404;
+  const documentedWp404 = Boolean(wpLive404Paths[p]) && dr.status === 404;
   const ok =
     dr.ok ||
     dual404 ||
+    documentedWp404 ||
     (!drupalOnly &&
       wp.status >= 300 &&
       wp.status < 400 &&

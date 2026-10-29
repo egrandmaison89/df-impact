@@ -29,18 +29,10 @@ body {
   }
 }
 
-.desktop-header.scrolled,
+/* Sticky chrome shadow only — logo shrink uses `.header-logo.scrolled` (wp-chrome-behaviors.js). */
 .desktop-header.header--scrolled,
-.impact-header.scrolled,
 .impact-header.header--scrolled {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-/* `.desktop-header .scrolled` in WP CSS is for `.header-logo.scrolled` only (PR #10). */
-.impact-header.scrolled,
-.desktop-header.scrolled {
-  max-width: none !important;
-  width: 100% !important;
 }
 
 .gtranslate_wrapper select:not(.gt_selector) {

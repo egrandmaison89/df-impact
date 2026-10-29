@@ -3,15 +3,8 @@
 #}
 <article{{ attributes.addClass('article', 'wp-singular', 'post') }}>
 
-  <div style="height:25px" aria-hidden="true" class="wp-block-spacer"></div>
-
-  <div class="wp-block-group alignfull is-content-justification-center is-layout-constrained wp-block-group-is-layout-constrained">
-    <h1 style="color:#003354;font-size:38px" class="alignwide wp-block-post-title has-text-color has-libre-baskerville-font-family">{{ label }}</h1>
-  </div>
-
   <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
-    <main class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow" style="margin-top:0;padding-top:0">
-      <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+    <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
 
         {% if article_lead_figure is defined and article_lead_figure %}
           {{ article_lead_figure }}
@@ -66,8 +59,7 @@
             </nav>
           </div>
         {% endif %}
-      </div>
-    </main>
+    </div>
   </div>
 
 </article>

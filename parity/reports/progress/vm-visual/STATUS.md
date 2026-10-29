@@ -4,7 +4,7 @@
 **Drupal:** `http://127.0.0.1:8888` (MariaDB `dfimpact`, host Drush).  
 **Method:** `npm run parity:computed-style-diff` (live WP vs Drupal, desktop/tablet/mobile).
 
-**Updated:** 2026-10-29 (PR diff remediation + captcha-aware harness)
+**Updated:** 2026-10-29 (gate regression fix, main y/h progress, refpack 21/21)
 
 ---
 
@@ -25,16 +25,26 @@ GitHub showed ~**256k deletions** because an earlier merge of PR **#10** dropped
 | Source | Branch | Result |
 |--------|--------|--------|
 | PR **#10** | `cursor/meta-head-behavior-0751` | Merged; conflicts resolved in `WpUploadFile.php`, `df_setup.install`, `drupal-overrides.css` (kept sticky mega-menu + `.wp-site-blocks` content-box) |
-| PR **#11** | `cursor/templates-inbrief-archives-185b` | Clean merge (`theme.css` global library, in-brief twig, sync paths helper) |
+| PR **#11** | `cursor/templates-inbrief-archives-185b` | Re-merged @ `7de8f98b` — `archive_listings` library, slug→wp-images fallback, archive row classes |
+| PR **#10** | `cursor/meta-head-behavior-0751` | Re-merged @ `380a9429` — behavior harness + sticky header CSS (after prior partial merge) |
 
-### Gates after merges (VM)
+### Gates (frozen refpack — no live WP for refpack meta)
 
-| Gate | After PR #10 | After PR #11 + `/about` `/home` aliases |
-|------|-------------|-------------------------------------------|
-| `parity:head:refpack` | **21/21** metaPass (100%) | **21/21** (`compare-1793248825676.json`) |
-| `parity:head:manifest` | 771/773 metaPass (pre-alias) | **773/773** (100%, `manifest-1793248913523.json`) |
-| `parity:url:check` | 799/801 (404 on `/about`, `/home`) | **801/801** (100%, `check-1793248902907.json`) |
-| `verify-wp-port-assets.sh` | — | **19/19 OK** |
+| Gate | After bad merge (VM) | Root cause | After fix (`f80dbbbd`) |
+|------|---------------------|------------|-------------------------|
+| `parity:head:refpack` | **11/21** (`compare-1793251428009`) | **Drupal 500** on most paths: `unset($variables['row']['#contextual_links'])` on `ResultRow` in `df_impact_preprocess_views_view_fields()` | **21/21** (`compare-1793251907739.json`, `HEAD_REFPACK_CHECK_WP=0`) |
+| `parity:url:check` | **764/801** | Same **500** cascade (non-200 Drupal) | **801/801** (`check-1793251875412.json`, `URL_PARITY_DRUPAL_ONLY=1`) |
+| `parity:head:manifest` | (not re-run when red) | — | **773/773** (`manifest-1793251910500.json`) |
+
+**Refpack failures when red (Drupal status + meta delta):**
+
+| Path | drStatus | Issue |
+|------|----------|--------|
+| `/` … most refpack paths | **500** | PHP fatal in views preprocess (above) |
+| `/digital-exclusives` | **200** | Stale refpack baseline was WP **404** meta; Drupal serves category archive via `WordpressLegacyPathSubscriber` — fixed by mapping slug `digital-exclusives` → `category_digital-exclusives` frozen HTML in `compare-head-meta.mjs` |
+| `/2022/03/in-brief-spring-2022-roundup` | **404** | Matches frozen WP 404 baseline; **metaMatch OK** (counts toward 21/21, not in `drupalReachable`) |
+
+**Header scroll CSS:** Removed `.desktop-header.scrolled` / `.impact-header.scrolled` width overrides from `drupal-overrides.css` (reintroduced during meta merge). Shadow only on `.header--scrolled`; logo shrink stays on `.header-logo.scrolled` via `wp-chrome-behaviors.js` (meta **adde8d85** intent).
 
 **Note:** Applied legacy aliases via `df_setup_update_10022()` + `/home` alias; extended `df_sync_static_page_aliases()` so future `df-migrate:sync-wordpress-paths` keeps `/about` and `/home`.
 
@@ -48,10 +58,11 @@ Report: `parity/reports/computed-style-diff/post-merge-pr11/summary.json`
 |----------|--------------------------------:|------------------------------|
 | **homepage** | **74** | Hero/grids vs short page when WP returns **202** captcha shell; chrome OK when both 200 |
 | **issue** | **120** | PostX card **y/h** + image **w/h** on `fall-2026-issue`; issue banner **h1 x** on overlay |
-| **article** | **69** | **main y +~149px** (WP breadcrumb band); lead/body typography |
-| **in_brief** | **98** | Same **main y +~149px**; content height vs WP |
-| **landing_page** | **133** | `/about` Gutenberg **columns/h2** layout; `browse-issues` grid height |
-| **archive** | **188** | Archive row **thumb w** (`category/digital-exclusives`); `/digital-exclusives` **404** on Drupal (use `/category/digital-exclusives`) |
+| **article** | **69** → **40** (couple sample, WP 200) | **main y Δ≈6px** (`post-main-alignwide`); **main h Δ≈312px** (was inflated when sample hit **in_brief** at Charlie L path — now second sample is `/2026/09/american-association-for-cancer-research-2`) |
+| **in_brief** | **98** | Same title/`<main>` split + spacer (re-measure pending) |
+| **landing_page** | **133** → TBD | `/about-impact` body now raw Gutenberg `entry-content` (dropped custom about layout shell) |
+| **archive** | **188** → **24** (DE category only run; WP `wpStatus:0` VM egress) | Templates merge: `archive_listings` CSS + row classes; full archive pass blocked on live WP fetch |
+| **homepage tablet** | — | **87** mismatches, WP comparable (`post-tablet-home`) — chrome/layout follow-up |
 
 **Baseline (pre-content, `/` desktop):** **31** mismatches → **50** after full homepage content (migrations complete).
 
@@ -80,16 +91,17 @@ Desktop `.desktop-header` **1440×148**, `.header-logo` **x=15** matches live WP
 | Item | Status |
 |------|--------|
 | Remove Drupal breadcrumb / tabs / contextual pencils on public pages | **done** — breadcrumb block off; `preprocess_breadcrumb` empty; hide `.contextual` + tabs in `drupal-overrides.css`; drop `title_prefix` on article/in-brief |
-| **More stories** Jetpack grid + 350×200 images | **done** — `node--article--full.html.twig` + `df_impact_article_more_story_*()`; skips bogus `featured_image_url` paths |
+| **More stories** Jetpack grid + 350×200 images | **done** — `wp_jetpack_related_posts.json` from migration `jetpack-related-posts` (439 rows, 317 with 3 refs); `drush df-migrate:backfill-jetpack-related`; **in_brief** targets allowed on `field_related_articles`. Verified titles: couple / rasmussen / v-foundation vs export |
+| **main y ~149px** | **partial** — `page--node--article|in-brief.html.twig` title above `<main>`; 46px spacer; Charlie L **main y** no longer in top deltas (`post-main-spacer46`) |
 | Category links (`wp-block-post-terms`) | **done** — comma separators + `/category/{slug}`; removed pill `.article__tag` styling |
 
 ## Next (visual list)
 
-1. Issue PostX grid: card image rendered size + vertical rhythm (`ultp-block-item`).
-2. Landing `/about`: Gutenberg column blocks vs raw body.
-4. Archive: row height + featured image box (re-measure after thumbnail URL fix).
-5. `/digital-exclusives` same-path route (or drop from samples; canonical is `/category/digital-exclusives`).
-6. Tablet/mobile chrome + gtranslate.
+1. **main h** / article body height vs WP (Charlie L Δ~684px on `main` height — content or selector scope).
+2. Issue PostX grid: card image rendered size + vertical rhythm (`ultp-block-item`).
+3. Full desktop computed-style pass after WP egress stable (many samples `wpStatus: 0/202` from VM timeouts).
+4. Archive: re-run `PARITY_TEMPLATE=archive` after templates merge.
+5. Tablet/mobile chrome + gtranslate (behavior harness landed from meta branch).
 
 ---
 

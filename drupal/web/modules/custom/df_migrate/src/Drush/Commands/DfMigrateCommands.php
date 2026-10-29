@@ -182,6 +182,31 @@ final class DfMigrateCommands extends DrushCommands {
   }
 
   /**
+   * Backfill field_related_articles from wp_jetpack_related_posts.json.
+   */
+  #[Command(name: 'df-migrate:backfill-jetpack-related')]
+  #[Bootstrap(level: DrupalBootLevels::FULL)]
+  #[Usage(name: 'drush df-migrate:backfill-jetpack-related --dry-run', description: 'Preview related-article refs')]
+  #[Option(name: 'dry-run', description: 'Do not save nodes.')]
+  #[Option(name: 'only-wp-id', description: 'Restrict to one source wp_id.')]
+  public function backfillJetpackRelated(array $options = [
+    'dry-run' => FALSE,
+    'only-wp-id' => NULL,
+  ]): void {
+    $inc = dirname(__DIR__, 3) . '/scripts/backfill_jetpack_related_articles.inc';
+    if (!is_readable($inc)) {
+      $this->logger()->error(dt('Missing include file @f', ['@f' => $inc]));
+      return;
+    }
+    require_once $inc;
+    $only = $options['only-wp-id'];
+    $only_wp_id = ($only !== NULL && $only !== '' && (string) $only !== '0')
+      ? (int) $only
+      : NULL;
+    df_migrate_backfill_jetpack_related_run((bool) $options['dry-run'], $only_wp_id);
+  }
+
+  /**
    * Sync article/in-brief paths, placement, and redirects from df_migrate JSON.
    */
   #[Command(name: 'df-migrate:sync-wordpress-paths')]

@@ -20,4 +20,5 @@ settings:
   handler_settings:
     target_bundles:
       article: article
+      in_brief: in_brief
 field_type: entity_reference

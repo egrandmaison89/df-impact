@@ -1,0 +1,37 @@
+{#
+  In Brief single — title above <main> like WordPress posts.
+#}
+<div class="wp-site-blocks">
+
+  {% include '@df_impact/includes/wp-chrome-header.html.twig' %}
+
+  <div class="wp-block-group alignfull no-margin-top header-media-inner-post without-bg is-layout-constrained wp-block-group-is-layout-constrained">
+    <div class="wp-block-group alignfull is-layout-flow wp-block-group-is-layout-flow" style="padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px">
+      <div class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
+        <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wp-block-group alignfull is-content-justification-center is-layout-constrained wp-block-group-is-layout-constrained">
+    {% if wp_singular_post_title %}
+      <h1 class="alignwide wp-block-post-title has-libre-baskerville-font-family">{{ wp_singular_post_title }}</h1>
+    {% endif %}
+  </div>
+
+  {% if page.highlighted and not is_about_impact %}
+    <div class="highlighted visually-hidden">
+      {{ page.highlighted }}
+    </div>
+  {% endif %}
+
+  <main id="wp--skip-link--target" class="wp-block-group is-layout-flow wp-block-group-is-layout-flow" role="main">
+    <div class="entry-content wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+      {{ page.content }}
+    </div>
+    <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained"></div>
+  </main>
+
+  {% include '@df_impact/includes/wp-chrome-footer.html.twig' %}
+
+</div>

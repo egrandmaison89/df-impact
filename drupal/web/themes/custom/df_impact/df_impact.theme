@@ -374,6 +374,11 @@ function df_impact_preprocess_page(&$variables) {
   $variables['is_front'] = \Drupal::service('path.matcher')->isFrontPage();
   $variables['is_about_impact'] = df_impact_is_about_impact_page();
 
+  $route_node = \Drupal::routeMatch()->getParameter('node');
+  if ($route_node instanceof NodeInterface && in_array($route_node->bundle(), ['article', 'in_brief'], TRUE)) {
+    $variables['wp_singular_post_title'] = $route_node->label();
+  }
+
   // Donate CTA — match legacy WordPress / Jimmy Fund campaign parameters.
   $variables['donate_url'] = 'https://danafarber.jimmyfund.org/site/Donation2?df_id=2101&mfc_pref=T&2101.donation=form1&utm_source=dfimpact&utm_medium=button&utm_campaign=AGDFI031323&s_src=AGDFI031323&s_subsrc=AGDFI031323';
   $route_provider = \Drupal::service('router.route_provider');
@@ -1257,29 +1262,6 @@ function df_impact_article_more_story_nodes(NodeInterface $article): array {
         $nodes[] = $ref;
       }
     }
-    return array_slice($nodes, 0, 3);
-  }
-  $topic_ids = [];
-  if ($article->hasField('field_topics')) {
-    foreach ($article->get('field_topics') as $item) {
-      $topic_ids[] = $item->target_id;
-    }
-  }
-  if ($topic_ids === []) {
-    return [];
-  }
-  $view = \Drupal\views\Views::getView('related_articles');
-  if (!$view) {
-    return [];
-  }
-  $view->setDisplay('block_1');
-  $view->setArguments([implode('+', $topic_ids), (string) $article->id()]);
-  $view->execute();
-  foreach ($view->result as $row) {
-    $related = df_impact_views_result_row_node($row);
-    if ($related instanceof NodeInterface) {
-      $nodes[] = $related;
-    }
   }
   return array_slice($nodes, 0, 3);
 }
@@ -1313,6 +1295,20 @@ function df_impact_jetpack_related_image_for_article(NodeInterface $related): ?s
 function df_impact_article_more_story_cards(NodeInterface $article): array {
   $cards = [];
   foreach (df_impact_article_more_story_nodes($article) as $related) {
+    if ($related->bundle() === 'in_brief') {
+      $meta = df_impact_in_brief_card_image_meta($related);
+      $image_url = $meta['url'] ?? NULL;
+      if ($image_url && !str_contains($image_url, 'i0.wp.com')) {
+        $image_url = df_impact_wp_i0_derivative_url_from_photon_src($image_url, '350', '200') ?? $image_url;
+      }
+      $cards[] = [
+        'url' => df_impact_in_brief_item_url($related),
+        'title' => $related->label(),
+        'image_url' => $image_url,
+        'image_alt' => $meta['alt'] ?? $related->label(),
+      ];
+      continue;
+    }
     $meta = df_impact_article_card_image_meta($related);
     $cards[] = [
       'url' => $related->toUrl()->toString(),

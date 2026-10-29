@@ -58,7 +58,7 @@ function recordAssertion(stats: AssertionStat[], name: string, pass: boolean) {
   globalStats.assertions += 1;
   if (pass) globalStats.passed += 1;
   if (process.env.PARITY_BEHAVIOR_STRICT === '1' || crossSite) {
-    expect(pass, name).toBeTruthy();
+    expect.soft(pass, name).toBeTruthy();
   }
 }
 
@@ -79,8 +79,6 @@ function wpUrl(pathNorm: string) {
   const p = pathNorm === '/homepage' ? '/' : pathNorm.startsWith('/') ? pathNorm : `/${pathNorm}`;
   return `${wpBase}${p}`;
 }
-
-test.describe.configure({ mode: 'serial' });
 
 for (const pathNorm of paths) {
   for (const bp of BEHAVIOR_BREAKPOINTS) {

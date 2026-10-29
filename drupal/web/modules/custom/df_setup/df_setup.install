@@ -1146,8 +1146,6 @@ function df_setup_update_10030(): string {
 
 /**
  * Search parity (PR #24): enable df_secondary and move Search API view off /search.
- *
- * Hook 10034+ so #23 can use 10031–10033 (merge #25 before #23).
  */
 function df_setup_update_10034(): string {
   $messages = [];

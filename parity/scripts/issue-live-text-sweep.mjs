@@ -12,6 +12,7 @@ import {
   createIssueParityPage,
   issueLandingTextSimilarity,
 } from '../lib/issue-playwright-text.mjs';
+import { issueWpCacheOnly, resolveIssueWpHtml } from '../lib/issue-wp-baseline.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const parityRoot = path.resolve(__dirname, '..');
@@ -20,20 +21,7 @@ const drupalBase = process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888';
 const wpBase = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const retries = Number(process.env.PARITY_LIVE_RETRIES || '2');
 const minDelay = Number(process.env.PARITY_LIVE_DELAY_MS || '800');
-const cacheDir = path.join(parityRoot, 'cache/wp-issue-pages');
-
-function loadCachedWpHtml(issuePath) {
-  const slug = issuePath.replace(/^\/|\/$/g, '').replace(/\//g, '_');
-  const file = path.join(cacheDir, `${slug}.html`);
-  if (!fs.existsSync(file)) {
-    return null;
-  }
-  const html = fs.readFileSync(file, 'utf8');
-  if (html.length < 5000 || /sgcaptcha|well-known\/sgcaptcha/i.test(html)) {
-    return null;
-  }
-  return html;
-}
+const cacheOnly = issueWpCacheOnly();
 
 function wpHtmlIsArchiveError(html) {
   return /arch_err|"post":"0"/.test(html) && !/ultp-post-grid-block/.test(html);
@@ -76,14 +64,23 @@ for (const p of issuePaths) {
   const drUrl = `${drupalBase}${p}`;
   let error = null;
   let sim = null;
+  let resolved = { html: null, source: null };
   try {
-    let wpHtml = loadCachedWpHtml(p);
-    if (wpHtml) {
-      if (wpHtmlIsArchiveError(wpHtml)) {
-        results.push({ path: p, textSimilarity: null, error: 'wp_archive_error_non_comparable', skipped: true });
+    resolved = resolveIssueWpHtml(p);
+    let wpHtml = resolved.html;
+    if (wpHtml && wpHtmlIsArchiveError(wpHtml)) {
+      results.push({ path: p, textSimilarity: null, error: 'wp_archive_error_non_comparable', skipped: true });
+      continue;
+    }
+    if (!wpHtml) {
+      if (cacheOnly) {
+        results.push({
+          path: p,
+          textSimilarity: null,
+          error: 'wp_cache_missing (set PARITY_ISSUE_WP_CACHE_ONLY=0 to allow live fetch)',
+        });
         continue;
       }
-    } else {
       await fetchWpHtml(page, wpUrl);
       wpHtml = await page.content();
       if (wpHtmlIsArchiveError(wpHtml)) {
@@ -96,7 +93,7 @@ for (const p of issuePaths) {
   } catch (e) {
     error = String(e.message || e);
   }
-  results.push({ path: p, textSimilarity: sim, error });
+  results.push({ path: p, textSimilarity: sim, error, wpSource: resolved?.source ?? (cacheOnly ? null : 'live') });
 }
 
 await browser.close();

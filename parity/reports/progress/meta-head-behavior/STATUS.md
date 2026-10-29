@@ -1,7 +1,7 @@
 # Meta / head / behavior / URL agent status
 
 Branch: `cursor/meta-head-behavior-0751` | PR: https://github.com/egrandmaison89/df-impact/pull/10  
-Base: `cursor/phase4-chrome-behavior-0b67` | Integration: PR #12 flow
+Base: `cursor/phase4-chrome-behavior-0b67` | **Stacked on PR #25** `cursor/gutenberg-hover-archive-2b1b` (rebased 2026-10-29)
 
 ## Site owner QA (Eric / DDEV) — 2026-10-29
 
@@ -23,7 +23,8 @@ Base: `cursor/phase4-chrome-behavior-0b67` | Integration: PR #12 flow
 ## Strict cross-site behavior gate
 
 - **Assertion:** `cross.diff.zero_mismatch_rows` (includes `headerLayout600`, `headerLayout2000` on every chrome-header template path × 3 breakpoints).
-- **Capture gate:** WP timeouts → `cross.wp.snapshot` and `captured: false`; summarize exits **1** until `caseCount === 48` and `incompleteCaseCount === 0`. Retry: `PARITY_BEHAVIOR_RUN_ID=<run> node scripts/retry-behavior-incomplete.mjs`.
+- **Capture gate:** WP timeouts → `cross.wp.snapshot` and `captured: false`; summarize exits **1** until `caseCount === expectedCases` (currently **51** = 17 paths × 3 BPs) and `incompleteCaseCount === 0`. Retry: `PARITY_BEHAVIOR_RUN_ID=<run> node scripts/retry-behavior-incomplete.mjs`.
+- **Nav `backgroundColor` @768/375:** Evidence run `parity/scripts/sample-wp-nav-bg.mjs` (3×) → `reports/behavior/wp-nav-bg-evidence/`. **Full `navDefault` compare restored** (no tablet/mobile field omission); Drupal uses PR #25 white nav bg `@media (min-width: 768px)`.
 - **Hover compare:** `hover.changed` parity + color/bg/transform when either side changes (~3/255 tolerance).
 - **Body link hover:** content paths only (`/YYYY/MM/`, `/in-brief`, `-issue`).
 
@@ -36,7 +37,7 @@ Base: `cursor/phase4-chrome-behavior-0b67` | Integration: PR #12 flow
 | `pagerHover`, `categoryLinkHover`, `inBriefButtonHover` | Optional (`optionalHoverCompare` — no mismatch when selectors absent) |
 | `bodyLinkHover` | Content paths only |
 | `issuesDropdown` | Desktop only |
-| `navDefault` | Desktop: full style fields; tablet/mobile: color + transform only |
+| `navDefault` | Full compare all breakpoints (see wp-nav-bg-evidence) |
 | `mobileMenu` | Mobile only |
 | Widget inventory | Scoped to `main`; consent roots excluded |
 
@@ -51,7 +52,8 @@ Base: `cursor/phase4-chrome-behavior-0b67` | Integration: PR #12 flow
 | --- | --- |
 | `parity:head:manifest` | **773/773** |
 | `parity:url:check` | **801/801** |
-| `parity:behavior:templates` | **Active:** `2026-10-29T07-cross11` (mobile pass in tmux `behavior-cross11`). **Superseded:** `2026-10-29T05-30-00-cross7` (stopped at 4/48). After cross11: `PARITY_BEHAVIOR_RUN_ID=2026-10-29T07-cross11 node scripts/retry-behavior-incomplete.mjs` then re-run failing paths. |
+| `parity:behavior:templates` | **Active:** `2026-10-29T10-cross14-final` (tmux `behavior-cross14`, merged PR #25 + fixes). Superseded: cross7/cross11/cross12. |
+| `parity:smoke:200` | **40 paths, 0 fails** (`reports/smoke-200/smoke-1793267221975.json`) |
 | Embeds backfill | VM run 2026-10-29: **before** 16 fields (15 article, 1 in_brief) with vimeo/youtube markers; **after** 1 in_brief field updated (articles already iframe-backed). Script: `drush php:script modules/custom/df_migrate/scripts/df_backfill_all_embeds.php` |
 
 ## Hover/focus (More Stories, pager, category, In Brief band)
@@ -59,4 +61,4 @@ Base: `cursor/phase4-chrome-behavior-0b67` | Integration: PR #12 flow
 - Harness: `pagerHover`, `categoryLinkHover`, `inBriefButtonHover`, `cardHover` in cross-site diff (optional when DOM missing).
 - Theme: `theme.css` — In Brief band + banner CTA hover/focus; ultp card title link hover; archive pager/category `:focus-visible`.
 
-Updated: 2026-10-29T09:50Z
+Updated: 2026-10-29T10:05Z

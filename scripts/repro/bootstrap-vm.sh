@@ -92,7 +92,11 @@ done
 "${DRUSH[@]}" pm:enable df_secondary -y
 "${DRUSH[@]}" df-migrate:sync-wordpress-paths
 "${DRUSH[@]}" php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); echo _df_setup_run_post_migrate_integrator_convergence();"
+<<<<<<< HEAD
 "${DRUSH[@]}" search-api:index
+=======
+"${DRUSH[@]}" php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); _df_setup_ensure_home_landing();"
+>>>>>>> 5c3fa6aa (fix(chrome): match live WP outer spacing and PR #28 main/footer inset)
 "${DRUSH[@]}" cr
 
 echo "Done. Start server: cd drupal && ./vendor/bin/drush -r web serve 127.0.0.1:8888"

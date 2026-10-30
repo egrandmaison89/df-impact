@@ -1,0 +1,33 @@
+/* Montserrat as served on live (blockmag static faces via wp-fonts-local). The Google Fonts variable build renders wider glyphs. */
+@font-face {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 400;
+  font-display: fallback;
+  src: url('../wp-assets/danafarberimpact.org_wp-content_themes_blockmag_assets_fonts_montserrat_Montserrat-Regular.woff2') format('woff2');
+  font-stretch: normal;
+}
+@font-face {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-display: fallback;
+  src: url('../wp-assets/danafarberimpact.org_wp-content_themes_blockmag_assets_fonts_montserrat_Montserrat-Medium.woff2') format('woff2');
+  font-stretch: normal;
+}
+@font-face {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 600;
+  font-display: fallback;
+  src: url('../wp-assets/danafarberimpact.org_wp-content_themes_blockmag_assets_fonts_montserrat_Montserrat-SemiBold.woff2') format('woff2');
+  font-stretch: normal;
+}
+@font-face {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 700;
+  font-display: fallback;
+  src: url('../wp-assets/danafarberimpact.org_wp-content_themes_blockmag_assets_fonts_montserrat_Montserrat-Bold.woff2') format('woff2');
+  font-stretch: normal;
+}

@@ -7,11 +7,15 @@ dependencies:
     - node.type.article
     - node.type.in_brief
     - node.type.issue
+    - taxonomy.vocabulary.topics
     - workflows.workflow.editorial
   module:
     - coffee
     - content_moderation
     - df_editor
+    - editoria11y
+    - file
+    - filter
     - media
     - node
     - scheduler
@@ -45,6 +49,8 @@ permissions:
   - 'edit own article content'
   - 'edit own in_brief content'
   - 'edit own issue content'
+  - 'mark as hidden in editoria11y'
+  - 'mark as ok in editoria11y'
   - 'publish issue with articles'
   - 'schedule publishing of nodes'
   - 'update any media'
@@ -54,6 +60,8 @@ permissions:
   - 'use legacy full html on stored content'
   - 'use text format editor_html'
   - 'view any unpublished content'
+  - 'view editoria11y checker'
   - 'view latest version'
   - 'view scheduled content'
   - 'view the administration theme'
+

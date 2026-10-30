@@ -254,7 +254,7 @@ async function openFormTab(page: import('@playwright/test').Page, label: string)
     if (!open) {
       await panel.locator('summary').first().click();
     }
-    await expect(panel).toHaveAttribute('open', '', { timeout: 30_000 });
+    await expect(panel).toHaveAttribute('open', /^(open)?$/, { timeout: 30_000 });
     return;
   }
   const anchor = page.locator(

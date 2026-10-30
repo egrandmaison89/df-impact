@@ -27,9 +27,10 @@ admin_front_tabs:
       css/admin-front-tabs.css: { weight: 510 }
 
 global:
-  version: 1.7
+  version: 1.8
   css:
     theme:
+      css/fonts-montserrat.css: { weight: 389 }
       css/fonts-libre-baskerville.css: { weight: 390 }
       css/theme.css: { weight: 400 }
       css/drupal-overrides.css: { weight: 500 }
@@ -43,7 +44,7 @@ global:
     - core/once
 
 wp_port:
-  version: reference-pack-2
+  version: reference-pack-3
   css:
     theme:
       wp-assets/danafarberimpact.org_wp-content_themes_blockmag_style.css: { weight: 0 }
@@ -53,7 +54,6 @@ wp_port:
       wp-assets/danafarberimpact.org_wp-content_plugins_stackable-ultimate-gutenberg-blocks_dist_frontend_blocks_responsive.css: { weight: 4 }
       wp-assets/danafarberimpact.org_wp-content_plugins_add-search-to-menu_public_css_ivory-search.min.css: { weight: 5 }
       wp-assets/danafarberimpact.org_wp-content_uploads_font-awesome_v6.2.1_css_svg-with-js.css: { weight: 6 }
-      wp-assets/fonts.googleapis.com_css: { weight: 7 }
       wp-assets/use.fontawesome.com_releases_v6.2.1_css_all.css: { weight: 8 }
       wp-assets/danafarberimpact.org_wp-content_plugins_better-search_includes_frontend_css_bsearch-styles.min.css: { weight: 9 }
       wp-assets/use.fontawesome.com_releases_v6.2.1_css_v4-shims.css: { weight: 10 }

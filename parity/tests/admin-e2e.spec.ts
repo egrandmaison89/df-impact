@@ -279,6 +279,14 @@ test.describe('Site admin chrome editing (UI)', () => {
       await expectLoggedInToolbar(page);
       await expectStickyHeaderBelowToolbar(page);
     }
+    // QA-049: narrow toolbar is not fixed and scrolls away; the header must not keep the gap.
+    await page.setViewportSize({ width: 390, height: 900 });
+    await go(page, '/homepage');
+    await expectLoggedInToolbar(page);
+    await page.evaluate(() => window.scrollTo(0, 1200));
+    await expect
+      .poll(() => page.evaluate(() => Math.round(document.querySelector('header.wp-block-template-part')!.getBoundingClientRect().top)))
+      .toBe(0);
     await page.setViewportSize({ width: 1280, height: 900 });
     await go(page, articlePath);
     await expectLoggedInNodeTabs(page);
@@ -291,6 +299,12 @@ test.describe('Site admin chrome editing (UI)', () => {
     }
     const adminContent = await go(page, '/admin/content');
     expect(adminContent?.status()).toBe(200);
+    // QA-053: site_admin may delete any content (form only; nothing is submitted).
+    const deleteForm = await go(page, `/node/${latestIssueNid}/delete`);
+    expect(deleteForm?.status()).toBe(200);
+    // QA-054: Editoria11y checker loads for site_admin.
+    await go(page, articlePath);
+    expect(await page.evaluate(() => !!(window as any).drupalSettings?.editoria11y)).toBe(true);
     await screenshot(page, '00-admin-front-end-toolbar');
     await logout(page);
   });
@@ -308,6 +322,8 @@ test.describe('Site admin chrome editing (UI)', () => {
     }
     await go(page, `/node/${latestIssueNid}/edit`);
     await expect(page.locator('#edit-group-df-homepage-hero')).toHaveCount(0);
+    await go(page, samplePublishedArticlePath());
+    expect(await page.evaluate(() => !!(window as any).drupalSettings?.editoria11y)).toBe(true);
     await screenshot(page, '01-web-editor-forbidden');
     await logout(page);
   });

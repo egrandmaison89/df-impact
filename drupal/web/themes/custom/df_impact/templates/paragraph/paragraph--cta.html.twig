@@ -1,23 +1,20 @@
 {#
 /**
  * @file
- * Theme override for Call to Action paragraphs.
+ * Call to Action paragraph — WordPress heading, paragraph and core/buttons blocks.
  */
 #}
-<div{{ attributes.addClass('paragraph--cta') }}>
-  {% if content.field_cta_heading|render|trim %}
-    <h3 class="paragraph--cta__heading">{{ content.field_cta_heading }}</h3>
+<div{{ attributes.addClass('wp-block-group', 'paragraph--cta', 'is-layout-flow', 'wp-block-group-is-layout-flow') }}>
+  {% if content.field_cta_heading.0 %}
+    <h3 class="wp-block-heading">{{ content.field_cta_heading.0 }}</h3>
   {% endif %}
-
-  {% if content.field_cta_body|render|trim %}
-    <div class="paragraph--cta__body">
-      {{ content.field_cta_body }}
+  {% if content.field_cta_body.0 %}
+    {{ content.field_cta_body.0 }}
+  {% endif %}
+  {% set cta_url = paragraph.field_cta_button_url.isEmpty() ? null : paragraph.field_cta_button_url.0.getUrl().toString() %}
+  {% if cta_url %}
+    <div class="wp-block-buttons is-layout-flex wp-block-buttons-is-layout-flex">
+      <div class="wp-block-button"><a class="wp-block-button__link has-white-color has-text-color has-background wp-element-button" href="{{ cta_url }}" style="border-radius:5px;background-color:#00629b;padding-top:10px;padding-right:20px;padding-bottom:10px;padding-left:20px;font-style:normal;font-weight:700;text-transform:none" data-analytics-linktype="cta" data-analytics-region="body">{{ content.field_cta_button_text.0|default(paragraph.field_cta_button_url.0.title) }}</a></div>
     </div>
-  {% endif %}
-
-  {% if content.field_cta_button_url|render|trim %}
-    <a href="{{ content.field_cta_button_url[0]['#url'] }}" class="paragraph--cta__button">
-      {{ content.field_cta_button_text }}
-    </a>
   {% endif %}
 </div>

@@ -132,6 +132,14 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
       return;
     }
 
+    // Core node/help search pages have no WP equivalent; send them to the WP-style results.
+    if (preg_match('#^/search/(node|help)(?:/(.*))?$#', $path, $matches)) {
+      $keys = trim((string) ($request->query->get('keys') ?? rawurldecode($matches[2] ?? '')));
+      $target = $keys === '' ? '/' : '/?' . http_build_query(['s' => $keys]);
+      $event->setResponse(new RedirectResponse($target, 301));
+      return;
+    }
+
     // Core Drupal search module owns `/search`; Search API view lives at `/search-legacy`.
     if ($path === '/search') {
       $query = $request->query->all();

@@ -5,7 +5,7 @@
     <form class="is-search-form is-form-style is-form-style-1 is-form-id-701" action="{{ wp_home_url|default('/') }}" method="get" role="search">
       <label for="is-search-input-701">
         <span class="is-screen-reader-text">{{ 'Search for:'|t }}</span>
-        <input type="search" id="is-search-input-701" name="s" value="" class="is-search-input" placeholder="" autocomplete="off">
+        <input type="search" id="is-search-input-701" name="s" value="{{ search_query }}" class="is-search-input" placeholder="" autocomplete="off">
       </label>
       <input type="submit" value="{{ 'Search'|t }}" class="is-search-submit">
       <input type="hidden" name="id" value="701">

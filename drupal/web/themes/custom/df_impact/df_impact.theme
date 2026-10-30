@@ -371,6 +371,10 @@ function df_impact_preprocess_html(array &$variables): void {
 
   $front = Url::fromRoute('<front>')->toString();
   $variables['wp_home_url'] = str_ends_with($front, '/') ? $front : $front . '/';
+  $variables['search_query'] = df_impact_is_search_results_route()
+    ? trim((string) (\Drupal::request()->query->get('s') ?? ''))
+    : '';
+  $variables['#cache']['contexts'][] = 'url.query_args:s';
   $route = \Drupal::routeMatch()->getRouteName();
   $variables['is_category_archive'] = ($route === 'view.topic_archive.page_1');
 

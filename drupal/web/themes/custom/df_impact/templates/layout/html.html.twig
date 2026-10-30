@@ -41,7 +41,7 @@
     <a class="skip-link screen-reader-text" id="wp-skip-link" href="#wp--skip-link--target">{{ 'Skip to content'|t }}</a>
     {{ page_top }}
     {{ page }}
-    {% include '@df_impact/includes/wp-ivory-search-popup.html.twig' with { wp_home_url: wp_home_url|default('/') } only %}
+    {% include '@df_impact/includes/wp-ivory-search-popup.html.twig' with { wp_home_url: wp_home_url|default('/'), search_query: search_query|default('') } only %}
     {{ page_bottom }}
     {% if df_site_snippets_footer %}
       {{ df_site_snippets_footer }}

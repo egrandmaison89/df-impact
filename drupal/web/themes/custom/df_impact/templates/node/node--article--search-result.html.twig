@@ -3,11 +3,11 @@
 #}
 <li{{ attributes.addClass('wp-block-post', 'node--view-mode-search-result') }}>
   <div class="wp-block-columns is-layout-flex wp-block-columns-is-layout-flex">
-    {% if content.field_featured_image|render|trim %}
+    {% if search_result_image %}
       <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:33%">
         <div class="wp-block-group is-nowrap is-layout-flex wp-block-group-is-layout-flex">
           <figure class="wp-block-post-featured-image">
-            <a href="{{ url }}">{{ content.field_featured_image }}</a>
+            <a href="{{ url }}" target="_self"><img width="1024" height="734" src="{{ search_result_image.url }}" class="attachment-full size-full wp-post-image" alt="{{ search_result_image.alt }}" style="object-fit:contain;" loading="lazy" decoding="async"></a>
           </figure>
         </div>
       </div>

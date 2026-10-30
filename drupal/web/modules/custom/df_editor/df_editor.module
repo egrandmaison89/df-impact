@@ -82,6 +82,21 @@ function df_editor_form_node_article_form_alter(array &$form, FormStateInterface
 }
 
 /**
+ * Counts published and draft articles assigned to an issue.
+ */
+function df_editor_count_attached_articles(NodeInterface $issue): int {
+  if (!$issue->id()) {
+    return 0;
+  }
+  return (int) \Drupal::entityTypeManager()->getStorage('node')->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('field_issue.target_id', $issue->id())
+    ->count()
+    ->execute();
+}
+
+/**
  * Implements hook_entity_access() for legacy Full HTML on migrated bodies.
  */
 function df_editor_entity_access(EntityInterface $entity, $operation, AccountInterface $account): AccessResult {
@@ -303,12 +318,15 @@ function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $
   }
 
   if (\Drupal::currentUser()->hasPermission('publish issue with articles')) {
+    $form['#attached']['library'][] = 'df_editor/issue_publish_confirm';
+    $form['#attached']['drupalSettings']['dfEditor']['issueArticleCount'] = df_editor_count_attached_articles($entity);
     $form['df_publish_issue_bundle'] = [
       '#type' => 'submit',
       '#value' => t('Publish issue and all attached articles'),
       '#weight' => 101,
       '#submit' => ['df_editor_issue_publish_bundle_submit'],
       '#limit_validation_errors' => [],
+      '#attributes' => ['class' => ['js-df-issue-publish-bundle']],
     ];
   }
 

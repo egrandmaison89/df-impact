@@ -12,8 +12,11 @@ body:not(.user-logged-in) nav.tabs {
   display: none !important;
 }
 
-/* Logged-in: sticky site header sits below the fixed admin toolbar (Drupal displace offset). */
-body.user-logged-in header.wp-block-template-part {
+/*
+ * Logged-in: sticky site header sits below the admin toolbar only while it is fixed. On narrow
+ * screens the toolbar is absolute and scrolls away, but the displace offset stays set.
+ */
+body.user-logged-in.toolbar-fixed header.wp-block-template-part {
   top: var(--drupal-displace-offset-top, 0px);
 }
 

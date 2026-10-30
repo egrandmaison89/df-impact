@@ -4,6 +4,7 @@ namespace Drupal\linkit\Entity;
 
 use Drupal\Core\Config\Action\Attribute\ActionMethod;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\Core\Entity\Attribute\ConfigEntityType;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\linkit\MatcherCollection;
@@ -44,6 +45,35 @@ use Drupal\linkit\ProfileInterface;
  *   }
  * )
  */
+#[ConfigEntityType(
+  id: 'linkit_profile',
+  label: new TranslatableMarkup('Linkit Profile'),
+  entity_keys: [
+    'id' => 'id',
+    'label' => 'label',
+  ],
+  admin_permission: "administer linkit profiles",
+  config_prefix: "linkit_profile",
+  config_export: [
+    "label",
+    "id",
+    "description",
+    "matchers",
+  ],
+  links: [
+    "collection" => "/admin/config/content/linkit",
+    "edit-form" => "/admin/config/content/linkit/manage/{linkit_profile}",
+    "delete-form" => "/admin/config/content/linkit/manage/{linkit_profile}/delete",
+  ],
+  handlers: [
+    "list_builder" => "Drupal\linkit\ProfileListBuilder",
+    "form" => [
+      "add" => "Drupal\linkit\Form\Profile\AddForm",
+      "edit" => "Drupal\linkit\Form\Profile\EditForm",
+      "delete" => "Drupal\Core\Entity\EntityDeleteForm",
+    ],
+  ],
+)]
 class Profile extends ConfigEntityBase implements ProfileInterface, EntityWithPluginCollectionInterface {
 
   /**

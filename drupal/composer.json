@@ -19,16 +19,16 @@
         "drupal/admin_toolbar": "^3.6",
         "drupal/coffee": "^2.0",
         "drupal/config_split": "^2.0",
-        "drupal/core-composer-scaffold": "^11.3",
-        "drupal/core-project-message": "^11.3",
-        "drupal/core-recipe-unpack": "^11.3",
-        "drupal/core-recommended": "^11.3",
-        "drupal/editoria11y": "^2.2",
+        "drupal/core-composer-scaffold": "^11.4.11",
+        "drupal/core-project-message": "^11.4.11",
+        "drupal/core-recipe-unpack": "^11.4.11",
+        "drupal/core-recommended": "^11.4.11",
+        "drupal/editoria11y": "^2.2.24",
         "drupal/entity_reference_revisions": "^1.14",
         "drupal/facets": "^3.0",
         "drupal/field_group": "^4.0",
         "drupal/focal_point": "^2.1",
-        "drupal/gin": "^5.0",
+        "drupal/gin": "^5.0.16",
         "drupal/google_analytics": "^4.0",
         "drupal/google_tag": "^2.0",
         "drupal/imageapi_optimize": "^4.1",
@@ -37,7 +37,7 @@
         "drupal/migrate_plus": "^6.0",
         "drupal/migrate_source_csv": "^3.8",
         "drupal/migrate_tools": "^6.1",
-        "drupal/paragraphs": "^1.20",
+        "drupal/paragraphs": "^1.21",
         "drupal/pathauto": "^1.14",
         "drupal/redirect": "^1.12",
         "drupal/scheduler": "^2.2",
@@ -46,11 +46,11 @@
         "drupal/seckit": "^2.0",
         "drupal/simple_sitemap": "^4.2",
         "drupal/social_media_links": "^2.10",
-        "drupal/stage_file_proxy": "^3.1",
+        "drupal/stage_file_proxy": "^3.1.7",
         "drupal/token": "^1.17",
         "drupal/twig_tweak": "^3.4",
         "drupal/views_infinite_scroll": "^2.0",
-        "drush/drush": "^13.7"
+        "drush/drush": "^13.8"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -66,7 +66,8 @@
             "phpstan/extension-installer": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "php-http/discovery": true,
-            "php-tuf/composer-integration": true
+            "php-tuf/composer-integration": true,
+            "symfony/runtime": true
         },
         "sort-packages": true,
         "audit": {
@@ -77,6 +78,9 @@
         "drupal-scaffold": {
             "locations": {
                 "web-root": "web/"
+            },
+            "file-mapping": {
+                "[web-root]/robots.txt": false
             }
         },
         "installer-paths": {

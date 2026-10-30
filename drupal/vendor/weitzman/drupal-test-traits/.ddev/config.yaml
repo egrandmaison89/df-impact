@@ -1,0 +1,5 @@
+type: drupal11
+docroot: web
+web_environment:
+#  - DTT_BASE_URL=http://ddev-dtt-web
+  - SYMFONY_DEPRECATIONS_HELPER=weak

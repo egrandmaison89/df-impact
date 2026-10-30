@@ -17,7 +17,7 @@
         {% if has_byline %}<br>{{ article_byline_display }}{% endif %}
         {% if has_photo_credit %}<br>{{ article_photo_credit_display }}{% endif %}
       </p>
-    {% elseif has_byline or has_photo_credit %}
+    {% elseif (has_byline or has_photo_credit) and not article_meta_in_body|default(false) %}
       <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
         {% if has_byline %}{{ article_byline_display }}{% endif %}
         {% if has_photo_credit %}{% if has_byline %}<br>{% endif %}{{ article_photo_credit_display }}{% endif %}

@@ -707,14 +707,17 @@ function df_impact_preprocess_node(&$variables) {
       $legacy_tag = function_exists('df_setup_legacy_issue_tag_slug_for_request_path')
         ? df_setup_legacy_issue_tag_slug_for_request_path($issue_alias)
         : '';
-      $body_has_tag = $legacy_tag !== ''
-        && $node->hasField('body')
-        && !$node->get('body')->isEmpty()
-        && stripos((string) $node->get('body')->value, '/tag/' . $legacy_tag) !== FALSE;
+      $body_value = $node->hasField('body') && !$node->get('body')->isEmpty()
+        ? (string) $node->get('body')->value
+        : '';
+      $body_has_tag = $legacy_tag !== '' && stripos($body_value, '/tag/' . $legacy_tag) !== FALSE;
+      // The WP body usually opens with its own "Issue / By … / Photography …" paragraph.
+      $variables['article_meta_in_body'] = $body_has_tag
+        || ($body_value !== '' && preg_match('#href="(?:https?://[^"/]+)?' . preg_quote($issue_alias, '#') . '/?"#i', $body_value) === 1);
       if ($legacy_tag !== '' && !$body_has_tag) {
         $variables['issue_url'] = \Drupal\Core\Url::fromUserInput('/tag/' . $legacy_tag)->toString();
       }
-      elseif ($legacy_tag === '') {
+      elseif ($legacy_tag === '' && !$variables['article_meta_in_body']) {
         $variables['issue_url'] = $issue->toUrl()->toString();
       }
     }

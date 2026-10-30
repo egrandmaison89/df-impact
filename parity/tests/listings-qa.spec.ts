@@ -193,6 +193,12 @@ test.describe('listings QA', () => {
     expect(await firstLetters()).toEqual(['p:none', 'dc:left', 'p:none']);
   });
 
+  test('QA-017 issue label prints once when the body already carries it', async ({ page }) => {
+    await open(page, '/2023/11/dismantling-gender-disparity-through-mentorship');
+    await expect(page.locator('main .entry-content a', { hasText: /^Winter 2023$/ })).toHaveCount(1);
+    await expect(page.locator('main .entry-content > p').first()).toHaveText(/^Winter 2023\s*By Amber Sinicrope/);
+  });
+
   test('QA-007 WP-style /page/N/?s= search URLs redirect to the Drupal pager', async ({ request }) => {
     const response = await request.get(`${drupalBase}/page/3/?s=cancer`, { maxRedirects: 0 });
     expect(response.status()).toBe(302);

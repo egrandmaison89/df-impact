@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\df_editor\CurrentIssueNav;
 use Drupal\df_editor\IssuePublisher;
 use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use Drupal\user\Entity\User;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
@@ -51,7 +52,10 @@ final class DfEditorCommands extends DrushCommands {
     }
 
     $before_latest = df_setup_get_latest_issue_nid();
+    $issue = NULL;
+    $article_nids = [];
 
+    try {
     $issue = Node::create([
       'type' => 'issue',
       'title' => 'DF Test Issue Workflow',
@@ -62,7 +66,6 @@ final class DfEditorCommands extends DrushCommands {
       'field_hero_heading' => 'Test Hero Heading',
     ]);
     $issue->save();
-    $article_nids = [];
     for ($i = 1; $i <= 2; $i++) {
       $article = Node::create([
         'type' => 'article',
@@ -137,14 +140,17 @@ final class DfEditorCommands extends DrushCommands {
       throw new \RuntimeException('Browse issues page missing test issue title.');
     }
 
-    foreach ([$issue->id(), ...$article_nids] as $nid) {
-      $node = $storage->load($nid);
-      if ($node) {
-        $node->delete();
-      }
-    }
-
     $this->logger()->success('df-editor:test-publish-workflow passed (latest issue restored to ' . ($before_latest ?? 'none') . ').');
+    }
+    finally {
+      if ($issue instanceof NodeInterface && $issue->id()) {
+        $article_nids[] = (int) $issue->id();
+      }
+      foreach (array_unique($article_nids) as $nid) {
+        $storage->load($nid)?->delete();
+      }
+      df_editor_cleanup_automation_test_nodes();
+    }
   }
 
   /**

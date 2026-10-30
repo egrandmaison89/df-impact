@@ -91,6 +91,25 @@ function df_editor_entity_type_alter(array &$entity_types): void {
 }
 
 /**
+ * Deletes nodes left by Drush/Playwright automation (DF Test*, Playwright*).
+ */
+function df_editor_cleanup_automation_test_nodes(): int {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $deleted = 0;
+  foreach (['Playwright%', 'DF Test%'] as $pattern) {
+    $nids = $storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('title', $pattern, 'LIKE')
+      ->execute();
+    foreach ($nids as $nid) {
+      $storage->load($nid)?->delete();
+      $deleted++;
+    }
+  }
+  return $deleted;
+}
+
+/**
  * Counts published and draft articles assigned to an issue.
  */
 function df_editor_count_attached_articles(NodeInterface $issue): int {

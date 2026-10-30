@@ -2,9 +2,9 @@
 
 /**
  * @file
- * Delete draft/published nodes created by editor Playwright E2E (Winter YEAR* titles).
+ * Delete nodes created by editor Playwright E2E and Drush workflow tests.
  *
- * Usage: drush scr ../parity/scripts/cleanup-editor-e2e-nodes.php -- <year>
+ * Usage: drush scr ../parity/scripts/cleanup-editor-e2e-nodes.php -- <title-prefix>
  */
 
 declare(strict_types=1);
@@ -20,17 +20,12 @@ $nids = $storage->getQuery()
   ->execute();
 
 foreach ($nids as $nid) {
-  $node = Node::load($nid);
-  $node?->delete();
-}
-
-$extraTitles = ['DF Test Issue Workflow', 'Debug', 'D', 'DF Test Article 1', 'DF Test Article 2'];
-$extraNids = $storage->getQuery()
-  ->accessCheck(FALSE)
-  ->condition('title', $extraTitles, 'IN')
-  ->execute();
-foreach ($extraNids as $nid) {
   Node::load($nid)?->delete();
 }
 
-print count($nids) + count($extraNids) . " node(s) deleted for title prefix {$prefix}.\n";
+$deleted = count($nids);
+if (function_exists('df_editor_cleanup_automation_test_nodes')) {
+  $deleted += df_editor_cleanup_automation_test_nodes();
+}
+
+print "{$deleted} automation test node(s) deleted (prefix {$prefix}).\n";

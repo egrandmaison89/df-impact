@@ -621,6 +621,8 @@ function df_impact_preprocess_node(&$variables) {
         '#langcode' => $node->language()->getId(),
       ];
     }
+    $variables['article_post_term_links'] = df_impact_in_brief_post_term_links($node);
+    $variables['article_more_stories_cards'] = df_impact_in_brief_more_story_cards($node);
     $variables['in_brief_issue_url'] = NULL;
     $variables['in_brief_issue_label'] = NULL;
     if ($node->hasField('field_issue') && !$node->get('field_issue')->isEmpty()) {
@@ -2546,6 +2548,81 @@ function df_impact_in_brief_plain_excerpt(NodeInterface $node): string {
   }
   $value = $node->get('field_summary')->value ?? '';
   return trim(strip_tags($value));
+}
+
+/**
+ * Category pills for In Brief posts (topics live only in in_brief.json).
+ *
+ * @return list<array{url: string, label: string}>
+ */
+function df_impact_in_brief_post_term_links(NodeInterface $node): array {
+  $row = df_impact_in_brief_manifest_row($node);
+  $links = [];
+  foreach (['topics', 'cancer_types'] as $key) {
+    $names = $row[$key] ?? [];
+    if (is_string($names)) {
+      // Python repr list: double quotes when the name contains an apostrophe.
+      preg_match_all('/\'((?:[^\'\\\\]|\\\\.)*)\'|"((?:[^"\\\\]|\\\\.)*)"/', $names, $m, PREG_SET_ORDER);
+      $names = array_map(static fn(array $match): string => stripslashes(($match[2] ?? '') ?: $match[1]), $m);
+    }
+    foreach ((array) $names as $name) {
+      $name = trim((string) $name);
+      if ($name === '') {
+        continue;
+      }
+      $slug = function_exists('df_setup_topic_category_slug')
+        ? df_setup_topic_category_slug($name)
+        : strtolower(trim((string) preg_replace('/[^a-z0-9]+/i', '-', $name), '-'));
+      $links[$slug] = [
+        'url' => Url::fromUri('internal:/category/' . $slug)->toString(),
+        'label' => df_impact_decode_plain_text($name),
+      ];
+    }
+  }
+  uasort($links, static fn(array $a, array $b): int => strnatcasecmp($a['label'], $b['label']));
+  return array_values($links);
+}
+
+/**
+ * "More stories" for In Brief posts.
+ *
+ * Jetpack's picks for briefs are not in the WP export, so use the newest
+ * published articles sharing the brief's first category that has any.
+ *
+ * @return list<array{url: string, title: string, image_url: string|null, image_alt: string}>
+ */
+function df_impact_in_brief_more_story_cards(NodeInterface $node): array {
+  $nids = [];
+  foreach (df_impact_in_brief_post_term_links($node) as $term) {
+    $tids = function_exists('df_setup_topic_term_tids_for_category_slug')
+      ? df_setup_topic_term_tids_for_category_slug(basename($term['url']))
+      : [];
+    if (!$tids) {
+      continue;
+    }
+    $nids = \Drupal::entityQuery('node')
+      ->accessCheck(TRUE)
+      ->condition('type', 'article')
+      ->condition('status', 1)
+      ->condition('field_topics', $tids, 'IN')
+      ->sort('created', 'DESC')
+      ->range(0, 3)
+      ->execute();
+    if ($nids) {
+      break;
+    }
+  }
+  $cards = [];
+  foreach (\Drupal::entityTypeManager()->getStorage('node')->loadMultiple($nids) as $related) {
+    $meta = df_impact_article_card_image_meta($related);
+    $cards[] = [
+      'url' => $related->toUrl()->toString(),
+      'title' => $related->label(),
+      'image_url' => df_impact_jetpack_related_image_for_article($related),
+      'image_alt' => $meta['alt'] ?? $related->label(),
+    ];
+  }
+  return $cards;
 }
 
 /**

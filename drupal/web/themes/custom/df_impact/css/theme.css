@@ -2170,3 +2170,13 @@ main .wp-block-search .wp-block-search__button {
   padding: 4px 14px;
   margin-right: 7px;
 }
+
+/* WP flow layout gives the "More stories" group margin-block-start: 1.5rem inside main. */
+.wp-singular > .taxonomy-category + .wp-block-group {
+  margin-top: 1.5rem;
+}
+
+.jp-related-posts-i2__post-img {
+  width: 100%;
+  height: auto;
+}

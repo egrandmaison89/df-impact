@@ -125,6 +125,53 @@ test.describe('listings QA', () => {
     expect(visibleWithoutImage).toBe(0);
   });
 
+  for (const width of [1280, 390]) {
+    test(`QA-012 article category pills are WP title-case, alphabetical @ ${width}px`, async ({ page }) => {
+      await open(page, '/2024/09/palumbo-family-moves-needle-for-patients-with-rare-pediatric-cancers', width);
+      const links = page.locator('.taxonomy-category.wp-block-post-terms > a');
+      await expect(links).toHaveText(['Cancer Research', 'Pediatrics', 'Rare and Resistant Cancers', 'Total Patient Care']);
+      const styles = await links.evaluateAll((els) =>
+        els.map((el) => {
+          const s = getComputedStyle(el);
+          const r = el.getBoundingClientRect();
+          return { font: `${s.fontFamily.split(',')[0]} ${s.fontWeight} ${s.fontSize}`, transform: s.textTransform, color: s.color, deco: s.textDecorationLine, x: Math.round(r.x), y: Math.round(r.y), h: Math.round(r.height) };
+        }),
+      );
+      for (const s of styles) {
+        expect(s.font).toBe('Montserrat 600 18px');
+        expect(s.transform).toBe('none');
+        expect(s.color).toBe('rgb(0, 98, 155)');
+        expect(s.deco).toBe('underline');
+        expect(s.h).toBe(35);
+      }
+      await expect(page.locator('.taxonomy-category .wp-block-post-terms__separator').first()).toBeHidden();
+      if (width === 390) {
+        expect(styles[2].x).toBe(styles[0].x);
+        expect(styles[3].y).toBeGreaterThan(styles[2].y);
+      }
+    });
+  }
+
+  for (const path of ['/2023/01/rossy-foundation-ribbon-cutting', '/2023/01/michele-and-howard-kessler', '/2026/09/american-association-for-cancer-research-2']) {
+    test(`QA-015 In Brief ${path} uses the WP single-post template`, async ({ page }) => {
+      await open(page, path);
+      const h1 = page.locator('h1.wp-block-post-title');
+      await expect(h1).toHaveCSS('color', 'rgb(0, 51, 84)');
+      await expect(page.locator('main .ss-inline-share-wrapper')).toBeVisible();
+      expect(await page.locator('.taxonomy-category.wp-block-post-terms > a').count()).toBeGreaterThan(0);
+      await expect(page.locator('main h3', { hasText: 'More stories:' })).toBeVisible();
+      await expect(page.locator('.jp-related-posts-i2__post')).toHaveCount(3);
+    });
+  }
+
+  test('QA-015 articles show WP Jetpack "More stories"', async ({ page }) => {
+    await open(page, '/2024/09/palumbo-family-moves-needle-for-patients-with-rare-pediatric-cancers');
+    const cards = page.locator('.jp-related-posts-i2__post');
+    await expect(cards).toHaveCount(3);
+    const box = await cards.first().boundingBox();
+    expect([Math.round(box!.width), Math.round(box!.height)]).toEqual([373, 309]);
+  });
+
   test('QA-022 404 search form lands on search results', async ({ page }) => {
     await open(page, '/digital-exclusives');
     await page.fill('main .wp-block-search__input', 'cancer');

@@ -366,3 +366,48 @@ function df_setup_post_update_in_brief_featured_images(): string {
   }
   return sprintf('In Brief featured images: %d attached, %d without a local file.', $updated, $missing);
 }
+
+/**
+ * Populate article "More stories" (field_related_articles) from the WP Jetpack export.
+ */
+function df_setup_post_update_jetpack_related_articles(): string {
+  $inc = DRUPAL_ROOT . '/modules/custom/df_migrate/scripts/backfill_jetpack_related_articles.inc';
+  if (!is_readable($inc)) {
+    return 'Jetpack related: df_migrate include missing.';
+  }
+  require_once $inc;
+  $data = df_migrate_load_jetpack_related_json();
+  $by_wp_id = is_array($data) ? ($data['by_wp_id'] ?? []) : [];
+  $wp_to_nid = df_migrate_wp_id_to_article_nid_map();
+  $slug_to_wp = df_migrate_article_slug_to_wp_id_map();
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  foreach ($by_wp_id as $entry) {
+    $source_wp_id = (int) ($entry['wp_id'] ?? 0);
+    $nid = $wp_to_nid[$source_wp_id] ?? NULL;
+    $node = $nid ? $node_storage->load($nid) : NULL;
+    if (!$node || $node->bundle() !== 'article' || !$node->hasField('field_related_articles')) {
+      continue;
+    }
+    $targets = [];
+    foreach ($entry['related'] ?? [] as $rel) {
+      $rel_wp = (int) ($rel['wp_id'] ?? 0);
+      if ($rel_wp <= 0 && !empty($rel['slug'])) {
+        $rel_wp = (int) ($slug_to_wp[(string) $rel['slug']] ?? 0);
+      }
+      $rel_nid = $wp_to_nid[$rel_wp] ?? NULL;
+      if ($rel_wp > 0 && $rel_wp !== $source_wp_id && $rel_nid !== NULL && !in_array($rel_nid, $targets, TRUE)) {
+        $targets[] = $rel_nid;
+      }
+    }
+    $targets = array_slice($targets, 0, 3);
+    $current = array_map('intval', array_column($node->get('field_related_articles')->getValue(), 'target_id'));
+    if ($current === $targets) {
+      continue;
+    }
+    $node->set('field_related_articles', array_map(static fn(int $id): array => ['target_id' => $id], $targets));
+    $node->save();
+    $updated++;
+  }
+  return sprintf('Jetpack related: %d articles updated.', $updated);
+}

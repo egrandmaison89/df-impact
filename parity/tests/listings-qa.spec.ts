@@ -254,6 +254,14 @@ test.describe('listings QA', () => {
     });
   }
 
+  test('QA-024 "More than a building name" card shows the four-people photo', async ({ page }) => {
+    await open(page, '/fall-2026-issue');
+    const img = page.locator('main .ultp-block-item', { hasText: 'More than a building name' }).locator('img').first();
+    await img.scrollIntoViewIfNeeded();
+    await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.currentSrc)).toContain('LavineBekensteinFCH_1450');
+    expect(await img.getAttribute('srcset')).not.toMatch(/\/FCH_1450/);
+  });
+
   test('QA-007 WP-style /page/N/?s= search URLs redirect to the Drupal pager', async ({ request }) => {
     const response = await request.get(`${drupalBase}/page/3/?s=cancer`, { maxRedirects: 0 });
     expect(response.status()).toBe(302);

@@ -1710,7 +1710,8 @@ function df_impact_wp_uploads_path_from_uri(string $uri): ?string {
       if (!is_string($candidate)) {
         continue;
       }
-      if (str_contains($stem, $key) || str_contains($key, $stem)) {
+      // Only longer WP names containing ours: the reverse maps LavineBekensteinFCH_1450 to FCH_1450.
+      if (str_contains($key, $stem)) {
         $source = $candidate;
         break;
       }

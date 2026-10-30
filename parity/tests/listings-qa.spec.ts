@@ -224,6 +224,28 @@ test.describe('listings QA', () => {
     expect(await page.locator('main .entry-content img[src*="//default/"]').count()).toBe(0);
   });
 
+  const qa019Captions: Record<string, (string | null)[]> = {
+    '/2023/01/edward-p-evans-foundation-grants-propel-mds-research': [null, 'R. Coleman Lindsley, MD, PhD.'],
+    '/2024/06/the-gray-foundation-empowers-team-science-against-brca-mutated-cancers': [null, 'Judy Garber, MD, MPH', 'Dipanjan Chowdhury, PhD'],
+    '/2026/09/a-message-from-melany-duval-13': ['Photography by Cheryl Richards'],
+    '/2023/11/dismantling-gender-disparity-through-mentorship': ['Helen Gurley Brown.'],
+    '/2026/09/more-than-a-building-name': ['Anita and Josh Bekenstein and Jeannie and Jonathan Lavine'],
+    '/2024/03/lindsley-named-edward-p-evans-investigator': ['Pictured at the celebration: Lindsley (left) and foundation President Michael D. Lewis, PhD.'],
+    '/2024/06/st-baldricks-foundation-2': [null],
+  };
+  for (const width of [1280, 768, 390]) {
+    test(`QA-019 lead image keeps only its own caption like WP @${width}`, async ({ page }) => {
+      for (const [path, expected] of Object.entries(qa019Captions)) {
+        await open(page, path, width);
+        const captions = await page.locator('main .entry-content figure.wp-block-image').evaluateAll((figs) =>
+          figs.map((f) => f.querySelector(':scope > figcaption')?.textContent?.trim() || null),
+        );
+        expect(captions.slice(0, expected.length), path).toEqual(expected);
+        expect(captions.filter(Boolean).length, path).toBe(expected.filter(Boolean).length);
+      }
+    });
+  }
+
   test('QA-021 quote citation is small, plain and dark gray like WP', async ({ page }) => {
     await open(page, '/2023/11/dismantling-gender-disparity-through-mentorship');
     const quote = page.locator('main blockquote.wp-block-quote').first();

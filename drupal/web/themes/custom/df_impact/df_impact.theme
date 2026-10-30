@@ -1442,10 +1442,11 @@ function df_impact_article_wp_lead_figcaption_from_export(NodeInterface $node): 
  * @return non-empty-string
  */
 function df_impact_article_extract_first_lead_figcaption(string $body): string {
-  if ($body === '') {
+  // Only the leading wp:image block's own caption; later figures keep theirs.
+  if (!preg_match('/^\s*<!-- wp:image\b.*?<!-- \/wp:image -->/s', $body, $lead)) {
     return '';
   }
-  if (preg_match('/<figcaption class="wp-element-caption">(.*?)<\/figcaption>/s', $body, $match)) {
+  if (preg_match('/<figcaption class="wp-element-caption">(.*?)<\/figcaption>/s', $lead[0], $match)) {
     return trim(html_entity_decode(strip_tags($match[1]), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
   }
   return '';
@@ -1586,7 +1587,7 @@ function df_impact_article_lead_figure_build(NodeInterface $node): ?array {
   $align_class = $layout['align'] === 'left' ? 'alignleft' : 'alignright';
   $size_class = $layout['size_slug'] === 'full' ? 'size-full' : 'size-large';
   $caption = df_impact_article_wp_lead_figcaption_from_body($node);
-  if ($caption === '') {
+  if ($caption === '' && $node->get('body')->isEmpty()) {
     $caption = df_impact_article_wp_lead_figcaption_from_export($node);
   }
   if ($caption === '' && $node->hasField('field_photo_caption') && !$node->get('field_photo_caption')->isEmpty()) {

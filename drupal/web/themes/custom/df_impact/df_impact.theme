@@ -634,7 +634,7 @@ function df_impact_preprocess_node(&$variables) {
       ];
     }
     $variables['article_post_term_links'] = df_impact_in_brief_post_term_links($node);
-    $variables['article_more_stories_cards'] = df_impact_in_brief_more_story_cards($node);
+    $variables['article_more_stories_cards'] = df_impact_article_more_story_cards($node);
     $variables['in_brief_issue_url'] = NULL;
     $variables['in_brief_issue_label'] = NULL;
     if ($node->hasField('field_issue') && !$node->get('field_issue')->isEmpty()) {
@@ -1896,24 +1896,69 @@ function df_impact_article_post_term_links(NodeInterface $node): array {
 }
 
 /**
- * Related story nodes for article footer (manual refs or topic-based view).
+ * "More stories:" nodes: field_related_articles (live Jetpack order), topped up with automatic picks.
  *
  * @return \Drupal\node\NodeInterface[]
  */
-function df_impact_article_more_story_nodes(NodeInterface $article): array {
-  if ($article->bundle() !== 'article') {
+function df_impact_article_more_story_nodes(NodeInterface $node): array {
+  if (!in_array($node->bundle(), ['article', 'in_brief'], TRUE)) {
     return [];
   }
   $nodes = [];
-  if ($article->hasField('field_related_articles') && !$article->get('field_related_articles')->isEmpty()) {
-    foreach ($article->get('field_related_articles') as $item) {
+  if ($node->hasField('field_related_articles')) {
+    foreach ($node->get('field_related_articles') as $item) {
       $ref = $item->entity;
-      if ($ref instanceof NodeInterface && $ref->isPublished() && (int) $ref->id() !== (int) $article->id()) {
-        $nodes[] = $ref;
+      if ($ref instanceof NodeInterface && $ref->isPublished() && (int) $ref->id() !== (int) $node->id()) {
+        $nodes[(int) $ref->id()] = $ref;
       }
     }
   }
-  return array_slice($nodes, 0, 3);
+  if (count($nodes) < 3) {
+    foreach (df_impact_more_story_auto_nodes($node, array_keys($nodes)) as $auto) {
+      $nodes[(int) $auto->id()] = $auto;
+    }
+  }
+  return array_slice(array_values($nodes), 0, 3);
+}
+
+/**
+ * Automatic picks when no related posts are stored: newest published articles sharing a topic, then newest overall.
+ *
+ * @param int[] $exclude
+ *
+ * @return \Drupal\node\NodeInterface[]
+ */
+function df_impact_more_story_auto_nodes(NodeInterface $node, array $exclude): array {
+  $wanted = 3 - count($exclude);
+  $exclude = array_merge($exclude, [(int) $node->id()]);
+  $tids = [];
+  if ($node->hasField('field_topics')) {
+    $tids = array_map('intval', array_column($node->get('field_topics')->getValue(), 'target_id'));
+  }
+  elseif ($node->bundle() === 'in_brief' && function_exists('df_setup_topic_term_tids_for_category_slug')) {
+    foreach (df_impact_in_brief_post_term_links($node) as $term) {
+      $tids = array_merge($tids, df_setup_topic_term_tids_for_category_slug(basename($term['url'])));
+    }
+  }
+  $nids = [];
+  foreach ($tids ? [$tids, NULL] : [NULL] as $topic_tids) {
+    $need = $wanted - count($nids);
+    if ($need <= 0) {
+      break;
+    }
+    $query = \Drupal::entityQuery('node')
+      ->accessCheck(TRUE)
+      ->condition('type', 'article')
+      ->condition('status', 1)
+      ->condition('nid', array_merge($exclude, $nids), 'NOT IN')
+      ->sort('created', 'DESC')
+      ->range(0, $need);
+    if ($topic_tids) {
+      $query->condition('field_topics', $topic_tids, 'IN');
+    }
+    $nids = array_merge($nids, array_values($query->execute()));
+  }
+  return $nids ? array_values(\Drupal::entityTypeManager()->getStorage('node')->loadMultiple($nids)) : [];
 }
 
 /**
@@ -1942,32 +1987,72 @@ function df_impact_jetpack_related_image_for_article(NodeInterface $related): ?s
   return NULL;
 }
 
-function df_impact_article_more_story_cards(NodeInterface $article): array {
+function df_impact_article_more_story_cards(NodeInterface $node): array {
   $cards = [];
-  foreach (df_impact_article_more_story_nodes($article) as $related) {
+  $live_thumbs = df_impact_jetpack_live_thumb_index();
+  foreach (df_impact_article_more_story_nodes($node) as $related) {
+    $url = $related->toUrl()->toString();
+    $live_thumb = $live_thumbs[rtrim((string) parse_url($url, PHP_URL_PATH), '/')] ?? NULL;
     if ($related->bundle() === 'in_brief') {
       $meta = df_impact_in_brief_card_image_meta($related);
-      $image_url = $meta['url'] ?? NULL;
-      if ($image_url && !str_contains($image_url, 'i0.wp.com')) {
-        $image_url = df_impact_wp_i0_derivative_url_from_photon_src($image_url, '350', '200') ?? $image_url;
-      }
-      $cards[] = [
-        'url' => df_impact_in_brief_item_url($related),
-        'title' => $related->label(),
-        'image_url' => $image_url,
-        'image_alt' => $meta['alt'] ?? $related->label(),
-      ];
-      continue;
+      $image_url = $live_thumb ?? df_impact_in_brief_more_story_image_url($related);
     }
-    $meta = df_impact_article_card_image_meta($related);
+    else {
+      $meta = df_impact_article_card_image_meta($related);
+      $image_url = $live_thumb ?? df_impact_jetpack_related_image_for_article($related);
+    }
     $cards[] = [
-      'url' => $related->toUrl()->toString(),
+      'url' => $url,
       'title' => $related->label(),
-      'image_url' => df_impact_jetpack_related_image_for_article($related),
+      'image_url' => $image_url,
       'image_alt' => $meta['alt'] ?? $related->label(),
     ];
   }
   return $cards;
+}
+
+/**
+ * Live Jetpack thumbnail per post path, from the frozen related-posts fixture.
+ *
+ * Jetpack shows the same thumbnail for a post wherever it is listed.
+ *
+ * @return array<string, string>
+ */
+function df_impact_jetpack_live_thumb_index(): array {
+  static $index = NULL;
+  if ($index !== NULL) {
+    return $index;
+  }
+  $index = [];
+  $data = json_decode((string) @file_get_contents(DRUPAL_ROOT . '/modules/custom/df_migrate/data/wp_jetpack_related_posts.json'), TRUE);
+  foreach (is_array($data) ? ($data['by_wp_id'] ?? []) : [] as $entry) {
+    foreach ($entry['related'] ?? [] as $rel) {
+      $path = rtrim((string) parse_url((string) ($rel['url'] ?? ''), PHP_URL_PATH), '/');
+      if ($path !== '' && !empty($rel['image_src'])) {
+        $index[$path] = (string) $rel['image_src'];
+      }
+    }
+  }
+  return $index;
+}
+
+/**
+ * Jetpack 350x200 thumb for an In Brief: field_image, else its header (first summary) image.
+ */
+function df_impact_in_brief_more_story_image_url(NodeInterface $node): ?string {
+  $uri = NULL;
+  if ($node->hasField('field_image') && !$node->get('field_image')->isEmpty()) {
+    $file = $node->get('field_image')->entity;
+    $uri = $file instanceof \Drupal\file\FileInterface ? $file->getFileUri() : NULL;
+  }
+  if ($uri === NULL && $node->hasField('field_summary') && preg_match('#<img[^>]+src="[^"]*/(?:wp-images|wp-content/uploads/\d{4}/\d{2})/([^"/?]+)"#', (string) $node->get('field_summary')->value, $m)) {
+    $uri = 'public://wp-images/' . rawurldecode($m[1]);
+  }
+  if ($uri === NULL) {
+    $meta = df_impact_in_brief_card_image_meta($node);
+    return $meta['url'] ?? NULL;
+  }
+  return df_impact_jetpack_related_image_url($uri);
 }
 
 /**
@@ -2662,48 +2747,6 @@ function df_impact_in_brief_post_term_links(NodeInterface $node): array {
   }
   uasort($links, static fn(array $a, array $b): int => strnatcasecmp($a['label'], $b['label']));
   return array_values($links);
-}
-
-/**
- * "More stories" for In Brief posts.
- *
- * Jetpack's picks for briefs are not in the WP export, so use the newest
- * published articles sharing the brief's first category that has any.
- *
- * @return list<array{url: string, title: string, image_url: string|null, image_alt: string}>
- */
-function df_impact_in_brief_more_story_cards(NodeInterface $node): array {
-  $nids = [];
-  foreach (df_impact_in_brief_post_term_links($node) as $term) {
-    $tids = function_exists('df_setup_topic_term_tids_for_category_slug')
-      ? df_setup_topic_term_tids_for_category_slug(basename($term['url']))
-      : [];
-    if (!$tids) {
-      continue;
-    }
-    $nids = \Drupal::entityQuery('node')
-      ->accessCheck(TRUE)
-      ->condition('type', 'article')
-      ->condition('status', 1)
-      ->condition('field_topics', $tids, 'IN')
-      ->sort('created', 'DESC')
-      ->range(0, 3)
-      ->execute();
-    if ($nids) {
-      break;
-    }
-  }
-  $cards = [];
-  foreach (\Drupal::entityTypeManager()->getStorage('node')->loadMultiple($nids) as $related) {
-    $meta = df_impact_article_card_image_meta($related);
-    $cards[] = [
-      'url' => $related->toUrl()->toString(),
-      'title' => $related->label(),
-      'image_url' => df_impact_jetpack_related_image_for_article($related),
-      'image_alt' => $meta['alt'] ?? $related->label(),
-    ];
-  }
-  return $cards;
 }
 
 /**

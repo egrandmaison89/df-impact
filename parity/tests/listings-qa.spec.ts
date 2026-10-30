@@ -246,6 +246,72 @@ test.describe('listings QA', () => {
     });
   }
 
+  const qa020Live: Record<string, [string, string][]> = {
+    '/2023/01/edward-p-evans-foundation-grants-propel-mds-research': [
+      ['/2025/06/edward-p-evans-foundation-takes-aim-at-blood-disorders', 'EvansMDS_Logo_725.jpg'],
+      ['/2024/03/edward-p-evans-foundation-grants-spur-cutting-edge-mds-research', 'EvansMDS_Logo_725.jpg'],
+      ['/2026/06/advancing-blood-cancer-research-with-the-edward-p-evans-foundation', 'EvansMDS_Logo_725.jpg'],
+    ],
+    '/2024/06/the-gray-foundation-empowers-team-science-against-brca-mutated-cancers': [
+      ['/2024/03/the-paula-and-rodger-riney-foundation-sustains-momentum-in-multiple-myeloma-research', 'DFI_Rineys-illum1.jpg'],
+      ['/2024/06/st-baldricks-foundation-2', 'StBaldricks_1450.jpg'],
+      ['/2025/06/breast-cancer-research-foundation-grants-more-than-4-million-to-speed-dana-farber-research', 'BCRF_1450.jpg'],
+    ],
+    '/2026/09/a-message-from-melany-duval-13': [
+      ['/2026/06/a-message-from-melany-duval-12', 'Melany_Duval.jpg'],
+      ['/2025/06/a-message-from-melany-duval-9', 'Melany_Duval.jpg'],
+      ['/2024/09/a-message-from-melany-duval-6', 'Melany_Duval.jpg'],
+    ],
+    '/2023/11/dismantling-gender-disparity-through-mentorship': [
+      ['/2026/06/the-michael-helen-r-cyker-charitable-foundation', 'Impact-InBrief11-1450.jpg'],
+      ['/2025/06/helen-hay-whitney-foundation', 'Impact-InBrief8-1450.jpg'],
+      ['/2025/11/craig-and-bettina-burr', 'Impact-InBrief8-1450.jpg'],
+    ],
+    '/2026/09/more-than-a-building-name': [
+      ['/2026/09/a-new-era-in-cancer-care-lavine-bekenstein-cancer-hospital-at-dana-farber', '25_0610_View-from-Brookline-Ave_night-scaled.jpg'],
+      ['/2026/09/honoring-a-foundation-of-leadership', 'PresidentsFloor_1450.jpg'],
+      ['/2025/03/the-dana-farber-campaign-cabinet', 'DFI_JCP_8.14.24_0020_edit.jpg'],
+    ],
+    '/2024/03/lindsley-named-edward-p-evans-investigator': [
+      ['/2023/01/edward-p-evans-foundation-grants-propel-mds-research', 'EvansMDS_Logo_725.jpg'],
+      ['/2025/03/the-dana-farber-campaign-stopping-cancer-before-it-starts', 'DFI_SO_07167_24.jpg'],
+      ['/2026/06/advancing-blood-cancer-research-with-the-edward-p-evans-foundation', 'EvansMDS_Logo_725.jpg'],
+    ],
+    '/2024/06/st-baldricks-foundation-2': [
+      ['/2023/07/st-baldricks-foundation', 'StBaldricks_1450.jpg'],
+      ['/2025/03/st-baldricks-foundation-3', 'StBaldricks_1450.jpg'],
+      ['/2023/01/grants-support-innovations-in-pediatric-cancer-research', 'HyundaiHopeOnWheelsLogo_1450.jpg'],
+    ],
+  };
+  for (const [width, card] of [
+    [1280, [373, 213]],
+    [768, [220, 126]],
+    [390, [350, 200]],
+  ] as const) {
+    test(`QA-020 "More stories:" lists live's Jetpack items in order with thumbnails @${width}`, async ({ page }) => {
+      for (const [path, expected] of Object.entries(qa020Live)) {
+        await open(page, path, width);
+        const group = page.locator('main .wp-block-group:has(> nav.jp-relatedposts-i2)');
+        await expect(group.locator('h3.wp-block-heading.has-montserrat-font-family'), path).toHaveText('More stories:');
+        expect(await group.evaluate((g) => g.previousElementSibling?.classList.contains('taxonomy-category')), path).toBe(true);
+        await expect(group.locator('ul.jp-related-posts-i2__list'), path).toHaveAttribute('data-post-count', '3');
+        const items = await group.locator('li.jp-related-posts-i2__post > a.jp-related-posts-i2__post-link').evaluateAll((links) =>
+          links.map((a) => [
+            a.getAttribute('href') ?? '',
+            (a.querySelector('img.jp-related-posts-i2__post-img')?.getAttribute('src') ?? '').replace(/[?#].*$/, '').split('/').pop() ?? '',
+          ]),
+        );
+        expect(items, path).toEqual(expected);
+        if (path.includes('the-gray-foundation')) {
+          const img = group.locator('img.jp-related-posts-i2__post-img').first();
+          await img.scrollIntoViewIfNeeded();
+          const box = await img.boundingBox();
+          expect([Math.round(box!.width), Math.round(box!.height)]).toEqual(card);
+        }
+      }
+    });
+  }
+
   test('QA-021 quote citation is small, plain and dark gray like WP', async ({ page }) => {
     await open(page, '/2023/11/dismantling-gender-disparity-through-mentorship');
     const quote = page.locator('main blockquote.wp-block-quote').first();

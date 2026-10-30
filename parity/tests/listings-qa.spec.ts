@@ -89,6 +89,32 @@ test.describe('listings QA', () => {
     expect(axe.violations.map((v) => v.id)).toEqual([]);
   });
 
+  for (const path of ['/digital-exclusives', '/topics', '/late-fall-2022-issue', '/no-such-page-qa022']) {
+    test(`QA-008/022 ${path} serves the WP 404 page`, async ({ page }) => {
+      const response = await open(page, path);
+      expect(response?.status()).toBe(404);
+      const h1 = page.locator('h1.blue-border-header');
+      await expect(h1).toHaveText('OOPS!');
+      const h1Style = await h1.evaluate((el) => {
+        const s = getComputedStyle(el);
+        return [s.fontSize, s.fontWeight, s.color, s.borderLeftWidth, s.borderLeftColor].join(' ');
+      });
+      expect(h1Style).toBe('38px 600 rgb(0, 51, 84) 5px rgb(0, 98, 155)');
+      await expect(page.locator('main p.has-text-align-center')).toHaveText('This page could not be found. Maybe try a search?');
+      const button = page.locator('main form.wp-block-search .wp-block-search__button');
+      const box = await button.boundingBox();
+      expect([Math.round(box!.width), Math.round(box!.height)]).toEqual([48, 48]);
+      await expect(page.locator('main form.wp-block-search input[name="s"]')).toBeVisible();
+    });
+  }
+
+  test('QA-022 404 search form lands on search results', async ({ page }) => {
+    await open(page, '/digital-exclusives');
+    await page.fill('main .wp-block-search__input', 'cancer');
+    await Promise.all([page.waitForURL(/\/search\?s=cancer$/), page.click('main .wp-block-search__button')]);
+    await expect(page.locator('ul.wp-block-post-template > li.wp-block-post').first()).toBeVisible();
+  });
+
   test('QA-007 WP-style /page/N/?s= search URLs redirect to the Drupal pager', async ({ request }) => {
     const response = await request.get(`${drupalBase}/page/3/?s=cancer`, { maxRedirects: 0 });
     expect(response.status()).toBe(302);

@@ -2156,3 +2156,11 @@ main .ultp-block-item .ultp-block-title a:focus-visible {
     text-decoration: underline;
   }
 }
+
+/* Core search block in page content (404): blockmag style.css wins over block-library on WP. */
+main .wp-block-search .wp-block-search__button {
+  background-color: var(--wp--preset--color--text-link, #111);
+  border: 0;
+  font-size: 16px;
+  padding: 10px 12px;
+}

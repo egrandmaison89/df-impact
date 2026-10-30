@@ -53,7 +53,7 @@ function df_setup_form_node_article_form_alter(array &$form, FormStateInterface 
   $form['df_digital_exclusive_checkbox'] = [
     '#type' => 'checkbox',
     '#title' => (string) t('Show under Digital Exclusives'),
-    '#description' => (string) t('Lists this story in the homepage Digital Exclusives row and on /digital-exclusives—the same intent as choosing the Digital Exclusives category in WordPress. You can assign a magazine Issue and turn this on; they are independent, like on the previous site.'),
+    '#description' => (string) t('Lists this story in the homepage Digital Exclusives row and on /category/digital-exclusives—the same intent as choosing the Digital Exclusives category in WordPress. You can assign a magazine Issue and turn this on; they are independent, like on the previous site.'),
     '#default_value' => _df_setup_article_channels_has_exclusive_term($entity, $tid),
     '#weight' => 10,
   ];

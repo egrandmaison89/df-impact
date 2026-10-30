@@ -770,10 +770,21 @@ function df_impact_theme_suggestions_page_alter(array &$suggestions, array $vari
     $suggestions[] = 'page__front';
     return;
   }
+  $route_match = \Drupal::routeMatch();
+  if ($route_match->getRouteName() === 'df_setup.topics_index') {
+    $suggestions[] = 'page__404';
+    return;
+  }
   // Add page template suggestions based on node type.
-  $node = \Drupal::routeMatch()->getParameter('node');
+  $node = $route_match->getParameter('node');
   if ($node instanceof NodeInterface) {
     $suggestions[] = 'page__node__' . $node->bundle();
+    if ($node->bundle() === 'issue' && function_exists('df_setup_legacy_issue_tag_slug_for_request_path')) {
+      $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $node->id());
+      if (df_setup_legacy_issue_tag_slug_for_request_path($alias) !== '') {
+        $suggestions[] = 'page__404';
+      }
+    }
   }
 }
 

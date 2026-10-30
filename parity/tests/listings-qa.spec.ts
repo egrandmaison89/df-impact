@@ -84,7 +84,7 @@ test.describe('listings QA', () => {
     expect(pager?.items.slice(0, 2)).toEqual(['[1]', '2']);
     expect(pager?.next).toBe(true);
     const nextHref = await page.locator('.wp-block-query-pagination-next').getAttribute('href');
-    expect(nextHref).toMatch(/^\/search\?s=cancer&page=1$/);
+    expect(nextHref).toMatch(/^\/page\/2\/\?s=cancer$/);
     const axe = await new AxeBuilder({ page }).withRules(['list', 'listitem']).analyze();
     expect(axe.violations.map((v) => v.id)).toEqual([]);
   });
@@ -276,9 +276,13 @@ test.describe('listings QA', () => {
     await expect(figure.locator('figcaption')).toContainText('Representatives from Arbella Insurance Group');
   });
 
-  test('QA-007 WP-style /page/N/?s= search URLs redirect to the Drupal pager', async ({ request }) => {
+  test('QA-007 WP-style /page/N/?s= search URLs render that results page in place', async ({ page, request }) => {
     const response = await request.get(`${drupalBase}/page/3/?s=cancer`, { maxRedirects: 0 });
-    expect(response.status()).toBe(302);
-    expect(response.headers()['location']).toMatch(/\/search\?s=cancer&page=2$/);
+    expect(response.status()).toBe(200);
+    await open(page, '/page/3/?s=cancer');
+    const pager = await pagerSummary(page);
+    expect(pager?.items).toContain('[3]');
+    await expect(page.locator('.wp-block-query-pagination-previous')).toHaveAttribute('href', /^\/page\/2\/\?s=cancer$/);
+    await expect(page.locator('.wp-block-query-pagination-numbers a.page-numbers', { hasText: /^1$/ })).toHaveAttribute('href', /^\/\?s=cancer$/);
   });
 });

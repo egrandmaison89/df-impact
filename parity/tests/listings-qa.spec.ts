@@ -108,6 +108,12 @@ test.describe('listings QA', () => {
     });
   }
 
+  test('QA-009 /past-issues has no pager', async ({ page }) => {
+    const response = await open(page, '/past-issues');
+    expect(response?.status()).toBe(200);
+    await expect(page.locator('nav.wp-block-query-pagination, .page-numbers, nav.pager')).toHaveCount(0);
+  });
+
   test('QA-022 404 search form lands on search results', async ({ page }) => {
     await open(page, '/digital-exclusives');
     await page.fill('main .wp-block-search__input', 'cancer');

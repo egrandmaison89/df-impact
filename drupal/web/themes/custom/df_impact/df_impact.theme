@@ -5,6 +5,8 @@
  * Functions to support theming in the Dana-Farber Impact theme.
  */
 
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
 use Drupal\df_setup\ArticleCreditLabels;
@@ -548,6 +550,12 @@ function df_impact_preprocess_node(&$variables) {
   $variables['attributes']['class'][] = 'node--view-mode-' . str_replace('_', '-', $variables['view_mode']);
   $variables['is_about_impact_node'] = df_impact_is_about_impact_page($node);
 
+  if (df_impact_is_search_results_route()) {
+    $term = trim((string) (\Drupal::request()->query->get('s') ?? ''));
+    $variables['search_result_title'] = df_impact_search_highlight_text(df_impact_decode_plain_text($node->label()), $term);
+    $variables['search_result_excerpt'] = df_impact_search_result_excerpt($node);
+  }
+
   if ($node->bundle() === 'in_brief' && $variables['view_mode'] === 'in_brief_listing') {
     $variables['in_brief_collapsed'] = !empty($variables['elements']['#in_brief_collapsed']);
     $variables['in_brief_item_url'] = df_impact_in_brief_item_url($node);
@@ -760,6 +768,58 @@ function df_impact_theme_suggestions_node_alter(array &$suggestions, array $vari
   $node = $variables['elements']['#node'];
   $view_mode = $variables['elements']['#view_mode'];
   $suggestions[] = 'node__' . $node->bundle() . '__' . $view_mode;
+  if (df_impact_is_search_results_route()) {
+    $suggestions[] = 'node__' . $node->bundle() . '__search_result';
+  }
+}
+
+/**
+ * Whether the current request renders the Search API results view.
+ */
+function df_impact_is_search_results_route(): bool {
+  return \Drupal::routeMatch()->getRouteName() === 'view.df_impact_search.page_1';
+}
+
+/**
+ * Wraps search term hits in the title like WordPress Better Search (mark.bsearch_highlight).
+ */
+function df_impact_search_highlight_text(string $text, string $term): Markup {
+  $words = array_filter(preg_split('/\s+/u', $term) ?: [], static fn (string $word): bool => $word !== '');
+  if ($words === []) {
+    return Markup::create(Html::escape($text));
+  }
+  $pattern = '/(' . implode('|', array_map(static fn (string $word): string => preg_quote($word, '/'), $words)) . ')/iu';
+  $parts = preg_split($pattern, $text, -1, PREG_SPLIT_DELIM_CAPTURE) ?: [$text];
+  $html = '';
+  foreach ($parts as $i => $part) {
+    $html .= $i % 2 ? '<mark class="bsearch_highlight">' . Html::escape($part) . '</mark>' : Html::escape($part);
+  }
+  return Markup::create($html);
+}
+
+/**
+ * Search result excerpt: WP core/post-excerpt trims to 55 words with a trailing ellipsis.
+ */
+function df_impact_search_result_excerpt(NodeInterface $node): string {
+  $source = '';
+  if ($node->hasField('field_excerpt') && !$node->get('field_excerpt')->isEmpty()) {
+    $source = (string) $node->get('field_excerpt')->value;
+  }
+  elseif ($node->bundle() === 'in_brief') {
+    $source = df_impact_in_brief_plain_excerpt($node);
+  }
+  elseif ($node->hasField('body') && !$node->get('body')->isEmpty()) {
+    $source = (string) $node->get('body')->value;
+  }
+  $text = trim(preg_replace('/\s+/u', ' ', df_impact_decode_plain_text(strip_tags($source))) ?? '');
+  if ($text === '') {
+    return '';
+  }
+  $words = explode(' ', $text);
+  if (count($words) > 55) {
+    return implode(' ', array_slice($words, 0, 55)) . '…';
+  }
+  return $text;
 }
 
 /**

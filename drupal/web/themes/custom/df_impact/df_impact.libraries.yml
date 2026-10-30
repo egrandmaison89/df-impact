@@ -21,9 +21,10 @@ archive_listings:
       css/wp-query-pagination.css: { weight: 420 }
 
 global:
-  version: 1.6
+  version: 1.7
   css:
     theme:
+      css/fonts-libre-baskerville.css: { weight: 390 }
       css/theme.css: { weight: 400 }
       css/drupal-overrides.css: { weight: 500 }
   js:

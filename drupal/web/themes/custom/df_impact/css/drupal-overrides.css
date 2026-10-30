@@ -368,6 +368,21 @@ main .wp-block-post-content a:hover {
   }
 }
 
+/* Search results (/?s=): live query loop sits in the plain .wp-site-blocks content box. */
+@media (min-width: 769px) {
+  body.search-results .wp-site-blocks > main#wp--skip-link--target {
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* blockmag style.css loads after the inline link color on live, so result titles use foreground. */
+body.search-results .wp-block-post-template .wp-block-post-title a {
+  color: var(--wp--preset--color--foreground);
+}
+
 /* Header search icon — match WP link color (SVG uses currentColor). */
 .header-search a {
   color: rgb(0, 98, 155);

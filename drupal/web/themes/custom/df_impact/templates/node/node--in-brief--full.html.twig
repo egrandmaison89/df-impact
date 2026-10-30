@@ -9,7 +9,9 @@
   <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
     <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
 
-      {% if in_brief_image_url %}
+      {% if in_brief_lead_figure is defined and in_brief_lead_figure %}
+        {{ in_brief_lead_figure }}
+      {% elseif in_brief_image_url %}
         <figure class="wp-block-image alignleft size-large is-resized"><img decoding="async" src="{{ in_brief_image_url }}" alt="{{ in_brief_image_alt }}" class="wp-post-image wp-image-{{ node.id }}" width="363" height="260"></figure>
       {% endif %}
 

@@ -607,7 +607,18 @@ function df_impact_preprocess_node(&$variables) {
     $variables['in_brief_listing_excerpt'] = df_impact_in_brief_listing_excerpt($node);
     if ($node->hasField('field_summary') && !$node->get('field_summary')->isEmpty()) {
       $summary = (string) $node->get('field_summary')->value;
-      if ($variables['in_brief_image_url']) {
+      $summary_format = $node->get('field_summary')->format ?? 'full_html';
+      // WP keeps the summary's own lead image block (with its hidden caption) ahead of the meta line.
+      if (preg_match('/^\s*<!-- wp:image\b.*?<!-- \/wp:image -->/s', $summary, $lead)) {
+        $variables['in_brief_lead_figure'] = [
+          '#type' => 'processed_text',
+          '#text' => $lead[0],
+          '#format' => $summary_format,
+          '#langcode' => $node->language()->getId(),
+        ];
+        $summary = df_impact_article_strip_leading_wp_image_block($summary);
+      }
+      elseif ($variables['in_brief_image_url']) {
         $summary = df_impact_article_strip_leading_wp_image_block($summary);
       }
       if (isset($variables['content']['field_summary'])) {
@@ -616,7 +627,7 @@ function df_impact_preprocess_node(&$variables) {
       $variables['in_brief_body'] = [
         '#type' => 'processed_text',
         '#text' => $summary,
-        '#format' => $node->get('field_summary')->format ?? 'full_html',
+        '#format' => $summary_format,
         '#langcode' => $node->language()->getId(),
       ];
     }

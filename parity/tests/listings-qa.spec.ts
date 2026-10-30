@@ -268,6 +268,14 @@ test.describe('listings QA', () => {
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', 'Digital Exclusives Archives - Impact Magazine');
   });
 
+  test('QA-010/015 In Brief keeps the summary lead figure and caption like WP', async ({ page }) => {
+    await open(page, '/2026/03/arbella-insurance-foundation-3');
+    const figure = page.locator('main .entry-content > figure.wp-block-image').first();
+    await expect(page.locator('main .entry-content > :first-child')).toHaveClass(/wp-block-image/);
+    await expect(figure.locator('img')).toHaveAttribute('src', /ArbellaCheck_1450/);
+    await expect(figure.locator('figcaption')).toContainText('Representatives from Arbella Insurance Group');
+  });
+
   test('QA-007 WP-style /page/N/?s= search URLs redirect to the Drupal pager', async ({ request }) => {
     const response = await request.get(`${drupalBase}/page/3/?s=cancer`, { maxRedirects: 0 });
     expect(response.status()).toBe(302);

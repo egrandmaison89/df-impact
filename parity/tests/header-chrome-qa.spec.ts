@@ -111,12 +111,14 @@ test.describe('header chrome QA', () => {
     ).toBe(false);
   });
 
-  for (const path of ['/', '/about', '/fall-2026-issue', '/category/cancer-research', '/?s=cancer&id=701']) {
-    test(`QA-050 no horizontal overflow @ 390px ${path}`, async ({ page }) => {
-      await page.setViewportSize({ width: 390, height: 900 });
-      await page.goto(`${drupalBase}${path}`, { waitUntil: 'load' });
-      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
-    });
+  for (const width of [390, 1280]) {
+    for (const path of ['/', '/about', '/fall-2026-issue', '/category/cancer-research', '/?s=cancer&id=701']) {
+      test(`QA-050/QA-058 no horizontal overflow @ ${width}px ${path}`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(`${drupalBase}${path}`, { waitUntil: 'load' });
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+      });
+    }
   }
 
   test('QA-046 search result image fills the column @ 768px like WP (691x496)', async ({ page }) => {

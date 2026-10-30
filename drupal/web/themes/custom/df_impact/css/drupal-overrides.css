@@ -110,21 +110,6 @@ body:has(main .issue-page-banner.is-light) #mega-menu-max_mega_menu_1 > li.mega-
   }
 }
 
-/*
- * Live WP: main/footer content column ~20px inset inside outer padding, max 1400px.
- * Uses --wp--custom--spacing--outer (max(1.75rem, 5vw)) so tablet widths track WP.
- */
-@media (min-width: 769px) {
-  .wp-site-blocks > main#wp--skip-link--target,
-  .wp-site-blocks > footer {
-    box-sizing: border-box;
-    max-width: 1400px;
-    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px) - 40px) !important;
-    margin-left: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
-    margin-right: calc(20px - var(--wp--custom--spacing--outer, 72px)) !important;
-  }
-}
-
 @media (max-width: 768px) {
   .wp-site-blocks > main#wp--skip-link--target,
   .wp-site-blocks > footer {
@@ -372,16 +357,6 @@ main .wp-block-post-content a:hover {
     padding-left: 0 !important;
     padding-right: 0 !important;
     box-sizing: border-box;
-  }
-}
-
-/* Search results (/?s=): live query loop sits in the plain .wp-site-blocks content box. */
-@media (min-width: 769px) {
-  body.search-results .wp-site-blocks > main#wp--skip-link--target {
-    width: 100% !important;
-    max-width: none;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
   }
 }
 

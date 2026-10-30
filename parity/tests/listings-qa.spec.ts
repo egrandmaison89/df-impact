@@ -262,6 +262,12 @@ test.describe('listings QA', () => {
     expect((await img.getAttribute('srcset')) ?? '').not.toMatch(/\/FCH_1450/);
   });
 
+  test('QA-029 tag archive title matches WP', async ({ page }) => {
+    await open(page, '/tag/digital-exclusives');
+    await expect(page).toHaveTitle('Digital Exclusives Archives - Impact Magazine');
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', 'Digital Exclusives Archives - Impact Magazine');
+  });
+
   test('QA-007 WP-style /page/N/?s= search URLs redirect to the Drupal pager', async ({ request }) => {
     const response = await request.get(`${drupalBase}/page/3/?s=cancer`, { maxRedirects: 0 });
     expect(response.status()).toBe(302);

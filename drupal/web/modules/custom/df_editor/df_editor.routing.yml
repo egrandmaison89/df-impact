@@ -1,3 +1,11 @@
+df_editor.admin_config:
+  path: '/admin/config/df-impact'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Impact Magazine'
+  requirements:
+    _permission: 'administer df site settings'
+
 df_editor.site_settings:
   path: '/admin/config/df-impact/site-settings'
   defaults:

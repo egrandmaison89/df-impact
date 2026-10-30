@@ -532,7 +532,8 @@ function df_setup_post_update_jetpack_related_live_fixture(): string {
   if (!FieldConfig::loadByName('node', 'in_brief', 'field_related_articles') && FieldStorageConfig::loadByName('node', 'field_related_articles')) {
     $data = \Drupal::service('config.storage.sync')->read('field.field.node.in_brief.field_related_articles');
     if ($data) {
-      FieldConfig::create($data)->save();
+      // Syncing like config import: the In Brief listing display references a missing formatter.
+      FieldConfig::create($data)->setSyncing(TRUE)->save();
       \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
       $messages[] = 'Added field_related_articles to In Brief.';
     }

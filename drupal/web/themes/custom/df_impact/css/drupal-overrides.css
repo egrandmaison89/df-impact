@@ -313,51 +313,34 @@ main .wp-block-post-content a:hover {
   color: rgb(104, 160, 193);
 }
 
-/*
- * Footer chrome: mirror desktop-header bleed on .footer-dark (not template-part — that pushed footer x=0 vs WP x=72).
- */
-@media (min-width: 769px) {
-  .wp-site-blocks footer .footer-dark.alignfull {
-    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
-    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
-    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
-    max-width: none;
-    padding-left: var(--wp--custom--spacing--outer, 72px) !important;
-    padding-right: var(--wp--custom--spacing--outer, 72px) !important;
-    box-sizing: border-box;
-  }
-
-  .wp-site-blocks footer .footer.alignfull {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    max-width: none !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    box-sizing: border-box;
-  }
+/* blockmag style.css loads after the inline .header-media-inner-post padding reset on live. */
+.wp-site-blocks > .wp-block-group.alignfull.header-media-inner-post.without-bg {
+  padding-left: var(--wp--custom--spacing--outer);
+  padding-right: var(--wp--custom--spacing--outer);
 }
 
-@media (max-width: 768px) {
-  .wp-site-blocks > footer.wp-block-template-part {
-    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 20px));
-    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 20px));
-    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 20px));
-    max-width: 100vw;
-    box-sizing: border-box;
-  }
+/*
+ * Footer chrome: live bleeds .footer-dark to the viewport edges at every width (blockmag alignfull
+ * margins + outer padding); the footer template part itself stays in the content box.
+ */
+.wp-site-blocks footer .footer-dark.alignfull {
+  margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+  margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+  width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+  max-width: none;
+  padding-left: var(--wp--custom--spacing--outer, 72px) !important;
+  padding-right: var(--wp--custom--spacing--outer, 72px) !important;
+  box-sizing: border-box;
+}
 
-  .wp-site-blocks > footer.wp-block-template-part .footer-dark.alignfull,
-  .wp-site-blocks > footer.wp-block-template-part .footer.alignfull,
-  .wp-site-blocks > footer.wp-block-template-part .alignfull {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    max-width: none !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    box-sizing: border-box;
-  }
+.wp-site-blocks footer .footer.alignfull {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box;
 }
 
 /* blockmag style.css loads after the inline link color on live, so result titles use foreground. */

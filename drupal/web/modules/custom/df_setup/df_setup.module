@@ -441,6 +441,9 @@ function df_setup_archive_frozen_lookup_path(): string {
  */
 function df_setup_archive_nids_for_request_path(string $path): array {
   unset($path);
+  if (drupal_static('df_setup_archive_frozen_bypass', FALSE)) {
+    return [];
+  }
   $path = df_setup_archive_frozen_lookup_path();
   $order_paths = ArchivePageWpOrder::pathsForArchive($path);
   if ($order_paths === [] && preg_match('#^/category/([^/]+)(?:/page/\d+)?$#', $path, $m)) {
@@ -1346,4 +1349,83 @@ function df_setup_backfill_issue_banner_is_light(): string {
     $updated++;
   }
   return "Backfilled field_issue_banner_is_light on $updated issue(s).";
+}
+
+/**
+ * Implements hook_views_post_execute().
+ *
+ * Frozen WP archive pages run without a Views pager (fixed node list), so
+ * register the archive's real total to render WP's numbered pager (QA-005).
+ */
+function df_setup_views_post_execute(ViewExecutable $view): void {
+  if (
+    !in_array($view->id(), ['topic_archive', 'digital_exclusives_archive'], TRUE)
+    || ($view->current_display ?? '') !== 'page_1'
+    || df_setup_archive_nids_for_request_path('') === []
+  ) {
+    return;
+  }
+  $pager_options = $view->display_handler->getOption('pager');
+  $per_page = (int) ($pager_options['options']['items_per_page'] ?? 10) ?: 10;
+  $element = (int) ($pager_options['options']['id'] ?? 0);
+  $total = df_setup_archive_frozen_total_items($view);
+  if ($total <= $per_page) {
+    return;
+  }
+  \Drupal::service('pager.manager')->createPager($total, $per_page, $element);
+  $view->df_setup_frozen_pager_element = $element;
+}
+
+/**
+ * Implements hook_preprocess_views_view().
+ */
+function df_setup_preprocess_views_view(array &$variables): void {
+  $view = $variables['view'] ?? NULL;
+  if ($view instanceof ViewExecutable && isset($view->df_setup_frozen_pager_element)) {
+    $variables['pager'] = [
+      '#type' => 'pager',
+      '#element' => $view->df_setup_frozen_pager_element,
+    ];
+  }
+}
+
+/**
+ * Total listing items for a frozen WP archive (all pages, not just this one).
+ */
+function df_setup_archive_frozen_total_items(ViewExecutable $view): int {
+  $path = preg_replace('#/page/\d+$#', '', rtrim(df_setup_archive_frozen_lookup_path(), '/'));
+  if (preg_match('#^/tag/[^/]+$#', $path)) {
+    // Tag archives only exist as frozen WP captures: sum every captured page.
+    $total = 0;
+    for ($page = 1; $page < 100; $page++) {
+      $paths = ArchivePageWpOrder::pathsForArchive($page === 1 ? $path : $path . '/page/' . $page);
+      if ($paths === []) {
+        break;
+      }
+      $total += count($paths);
+    }
+    return $total;
+  }
+  if (!preg_match('#^/category/([^/]+)$#', $path, $m)) {
+    return 0;
+  }
+  $bypass = &drupal_static('df_setup_archive_frozen_bypass', FALSE);
+  $bypass = TRUE;
+  try {
+    $count_view = \Drupal\views\Views::getView($view->id());
+    if (!$count_view || !$count_view->setDisplay('page_1')) {
+      return 0;
+    }
+    $count_view->setArguments([$m[1]]);
+    $count_view->get_total_rows = TRUE;
+    $count_view->setItemsPerPage(1);
+    $count_view->setCurrentPage(0);
+    $count_view->execute();
+    $total = (int) $count_view->total_rows;
+    $count_view->destroy();
+    return $total;
+  }
+  finally {
+    $bypass = FALSE;
+  }
 }

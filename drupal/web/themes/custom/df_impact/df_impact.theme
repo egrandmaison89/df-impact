@@ -939,8 +939,8 @@ function df_impact_preprocess_pager(array &$variables): void {
   if ($variables['use_wp_query_pager'] || $variables['use_issue_postx_pager']) {
     $variables['#attached']['library'][] = 'df_impact/archive_listings';
   }
-  if ($variables['use_wp_query_pager'] && !empty($variables['items']['next']['text'])) {
-    $variables['items']['next']['text'] = t('Next Page');
+  if ($variables['use_wp_query_pager']) {
+    $variables['wp_pager'] = df_impact_wp_paginate_links((int) ($variables['element'] ?? 0), $variables['parameters'] ?? []);
   }
   if ($variables['use_issue_postx_pager'] && !empty($variables['items']['last']['href'])) {
     $parts = parse_url($variables['items']['last']['href']);
@@ -955,6 +955,56 @@ function df_impact_preprocess_pager(array &$variables): void {
       $variables['issue_postx_last_page'] = max(array_keys($variables['items']['pages']));
     }
   }
+}
+
+/**
+ * WordPress paginate_links() page list (end_size 1, mid_size 2).
+ *
+ * @return array{pages: list<array{type: string, num?: int, href?: string}>, previous: ?string, next: ?string}|null
+ */
+function df_impact_wp_paginate_links(int $element, array $parameters = []): ?array {
+  $pager_manager = \Drupal::service('pager.manager');
+  $pager = $pager_manager->getPager($element);
+  if (!$pager || $pager->getTotalPages() < 2) {
+    return NULL;
+  }
+  $total = $pager->getTotalPages();
+  $current = $pager->getCurrentPage() + 1;
+  // WP-style /page/N paths map to ?page= internally; link from the archive root.
+  $request_path = (string) parse_url(\Drupal::request()->getRequestUri(), PHP_URL_PATH);
+  $base_path = preg_replace('#/page/\d+/?$#', '', $request_path) ?: '/';
+  if ($base_path === '/search-legacy') {
+    $base_path = '/search';
+  }
+  $href = static function (int $num) use ($pager_manager, $parameters, $element, $base_path): string {
+    $query = $pager_manager->getUpdatedParameters($parameters, $element, $num - 1);
+    if ($num === 1) {
+      unset($query['page']);
+    }
+    return Url::fromUserInput($base_path, ['query' => $query])->toString();
+  };
+  $pages = [];
+  $dots = FALSE;
+  for ($num = 1; $num <= $total; $num++) {
+    if ($num === $current) {
+      $pages[] = ['type' => 'current', 'num' => $num];
+      $dots = TRUE;
+    }
+    elseif ($num <= 1 || ($num >= $current - 2 && $num <= $current + 2) || $num > $total - 1) {
+      $pages[] = ['type' => 'page', 'num' => $num, 'href' => $href($num)];
+      $dots = TRUE;
+    }
+    elseif ($dots) {
+      $pages[] = ['type' => 'dots'];
+      $dots = FALSE;
+    }
+  }
+  return [
+    'align_class' => df_impact_active_listing_view_id() === 'df_impact_search' ? 'alignwide' : '',
+    'pages' => $pages,
+    'previous' => $current > 1 ? $href($current - 1) : NULL,
+    'next' => $current < $total ? $href($current + 1) : NULL,
+  ];
 }
 
 /**

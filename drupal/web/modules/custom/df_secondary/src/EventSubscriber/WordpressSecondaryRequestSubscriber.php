@@ -24,7 +24,7 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
     return [
       KernelEvents::REQUEST => [
         ['onRequestPreserveTrailingSlash', 29],
-        ['onRequestSearchQuery', 31],
+        ['onRequestSearchQuery', 33],
         ['onRequest', 35],
       ],
     ];
@@ -43,10 +43,21 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
       return;
     }
     $path = rtrim($request->getPathInfo(), '/') ?: '/';
+    $query = ['s' => (string) $search_term];
+    if (preg_match('#^/page/(\d+)$#', $path, $matches)) {
+      // WP search pagination: /page/N/?s=term.
+      $path = '/';
+      if ((int) $matches[1] > 1) {
+        $query['page'] = (string) ((int) $matches[1] - 1);
+      }
+    }
+    elseif (ctype_digit((string) $request->query->get('page', '')) && (int) $request->query->get('page') > 0) {
+      $query['page'] = (string) (int) $request->query->get('page');
+    }
     if (!in_array($path, ['/', '/homepage', '/home'], TRUE)) {
       return;
     }
-    $target = '/search?' . http_build_query(['s' => (string) $search_term]);
+    $target = '/search?' . http_build_query($query);
     $event->setResponse(new RedirectResponse($request->getBaseUrl() . $target, 302));
   }
 

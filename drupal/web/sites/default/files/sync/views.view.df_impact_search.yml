@@ -24,10 +24,16 @@ display:
     display_options:
       title: Search
       pager:
-        type: mini
+        type: full
         options:
           offset: 0
           items_per_page: 10
+          tags:
+            next: 'Next Page'
+            previous: 'Previous Page'
+            first: ''
+            last: ''
+          quantity: 5
       exposed_form:
         type: basic
         options:

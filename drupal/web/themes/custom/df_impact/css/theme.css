@@ -1739,9 +1739,15 @@ figure.issue-cover img {
   margin-top: 24px;
 }
 
-/* WP /browse-issues/ is a plain page: main fills the outer padding box (no 20px inset). */
+/* WP listing templates: main fills the outer padding box (no 20px inset). */
 @media (min-width: 769px) {
-  body.path-browse-issues .wp-site-blocks > main#wp--skip-link--target {
+  body.path-browse-issues .wp-site-blocks > main#wp--skip-link--target,
+  body.path-category .wp-site-blocks > main#wp--skip-link--target,
+  body.path-tag .wp-site-blocks > main#wp--skip-link--target,
+  body.path-issues .wp-site-blocks > main#wp--skip-link--target,
+  body.path-search-legacy .wp-site-blocks > main#wp--skip-link--target,
+  body.path-in-brief .wp-site-blocks > main#wp--skip-link--target,
+  body.path-past-issues .wp-site-blocks > main#wp--skip-link--target {
     width: 100% !important;
     max-width: none;
     margin-left: 0 !important;

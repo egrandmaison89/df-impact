@@ -22,11 +22,7 @@
 
     <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
       <main id="wp--skip-link--target" class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow" style="margin-top:0;padding-top:0" role="main">
-        {% if page.highlighted and not is_about_impact %}
-          <div class="highlighted visually-hidden">
-            {{ page.highlighted }}
-          </div>
-        {% endif %}
+        {% include '@df_impact/includes/df-admin-highlighted.html.twig' %}
         {{ page.content }}
         <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained"></div>
       </main>

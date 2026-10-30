@@ -391,6 +391,10 @@ function df_impact_preprocess_html(array &$variables): void {
       $variables['attributes']['class'][] = 'issue-chrome-nav-solid';
     }
   }
+
+  if (!empty($variables['logged_in'])) {
+    $variables['#attached']['library'][] = 'df_impact/admin_front_tabs';
+  }
 }
 
 /**

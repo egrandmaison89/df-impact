@@ -20,6 +20,12 @@ archive_listings:
     theme:
       css/wp-query-pagination.css: { weight: 420 }
 
+admin_front_tabs:
+  version: 1.0
+  css:
+    theme:
+      css/admin-front-tabs.css: { weight: 510 }
+
 global:
   version: 1.6
   css:

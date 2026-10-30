@@ -296,7 +296,7 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     return;
   }
   $view_id = $view->storage->id();
-  if ($view_id === 'browse_issues') {
+  if (in_array($view_id, ['browse_issues', 'past_issues'], TRUE)) {
     $node = df_impact_views_result_row_node($variables['row'] ?? NULL);
     if (!$node instanceof NodeInterface || $node->bundle() !== 'issue') {
       return;
@@ -550,6 +550,11 @@ function df_impact_preprocess_node(&$variables) {
 
   // Add view mode class.
   $variables['attributes']['class'][] = 'node--view-mode-' . str_replace('_', '-', $variables['view_mode']);
+
+  if ($node->bundle() === 'issue' && ($variables['view_mode'] ?? '') === 'teaser') {
+    $variables['issue_title_plain'] = df_impact_format_issue_label($node)
+      ?? df_impact_decode_plain_text($node->label());
+  }
   $variables['is_about_impact_node'] = df_impact_is_about_impact_page($node);
 
   if ($node->bundle() === 'in_brief' && $variables['view_mode'] === 'in_brief_listing') {

@@ -175,7 +175,7 @@ test.describe('listings QA', () => {
   test('QA-022 404 search form lands on search results', async ({ page }) => {
     await open(page, '/digital-exclusives');
     await page.fill('main .wp-block-search__input', 'cancer');
-    await Promise.all([page.waitForURL(/\/search\?s=cancer$/), page.click('main .wp-block-search__button')]);
+    await Promise.all([page.waitForURL(/\/\?s=cancer$/), page.click('main .wp-block-search__button')]);
     await expect(page.locator('ul.wp-block-post-template > li.wp-block-post').first()).toBeVisible();
   });
 

@@ -28,15 +28,7 @@ body:has(main .issue-page-banner.is-light) #mega-menu-max_mega_menu_1 > li.mega-
   background-color: rgb(255, 255, 255) !important;
 }
 
-/* Mega flyout hover (Max Mega Menu). Sticky header comes from WP pack (`header { position: sticky }`). */
-@media (min-width: 769px) {
-  #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children:hover > ul.mega-sub-menu,
-  #mega-menu-max_mega_menu_1 li.mega-menu-flyout.mega-menu-item-has-children:hover > ul.mega-sub-menu {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-}
+/* Mega menu opens on click (Max Mega Menu data-event=click); no hover override. */
 
 /* Sticky chrome shadow only — logo shrink uses `.header-logo.scrolled` (wp-chrome-behaviors.js). */
 .desktop-header.header--scrolled,
@@ -369,27 +361,17 @@ main .wp-block-post-content a:hover {
   }
 }
 
-/* Mobile mega menu open — slide effect (maxmegamenu data-effect-mobile=slide). */
-@media (max-width: 768px) {
-  .mobile-header .mega-menu-wrap:not(.mega-menu-open) .mega-menu {
-    display: none !important;
-  }
-
-  .mobile-header .mega-menu-wrap.mega-menu-open .mega-menu {
-    display: block !important;
-    animation: df-mega-menu-slide-in 0.4s ease;
-  }
+/* Header search icon — match WP link color (SVG uses currentColor). */
+.header-search a {
+  color: rgb(0, 98, 155);
 }
 
-@keyframes df-mega-menu-slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.header-search svg.search-icon {
+  fill: currentColor;
+}
+
+.header-search .search-icon-path {
+  fill: currentColor;
 }
 
 /* Tablet / medium desktop — header + homepage hero (WP blockmag breakpoints). */
@@ -408,11 +390,6 @@ main .wp-block-post-content a:hover {
   .wp-site-blocks .desktop-header .is-content-justification-space-between.is-nowrap {
     flex-wrap: wrap !important;
     gap: 0.5rem;
-  }
-
-  #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link {
-    font-size: clamp(0.875rem, 1.6vw, 1rem);
-    white-space: nowrap;
   }
 
   .homepage-banner .wp-block-cover__inner-container h1,

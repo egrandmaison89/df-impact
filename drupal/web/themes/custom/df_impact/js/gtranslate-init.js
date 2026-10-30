@@ -9,14 +9,20 @@
   }
   window.__dfImpactGtranslateInit = true;
 
-  window.gtranslateSettings = {
-    default_language: 'en',
+  var defaultLanguage = 'en';
+  var htmlLang = (document.documentElement.getAttribute('lang') || defaultLanguage).toLowerCase();
+  if (htmlLang.indexOf('en') === 0) {
+    htmlLang = 'en';
+  }
+
+  window.gtranslateSettings = window.gtranslateSettings || {
+    default_language: defaultLanguage,
     native_language_names: true,
     languages: ['en', 'es', 'fr', 'pt', 'zh-CN', 'ar', 'ht', 'ru', 'vi', 'ko', 'ja'],
     wrapper_selector: '.gtranslate_wrapper',
+    url_structure: 'none',
   };
 
-  // WP chrome ships a static `.gt_selector`; do not load dropdown.js (it injects a second select).
   function loadTranslateLib(callback) {
     if (window.gt_translate_script) {
       callback && callback();
@@ -31,6 +37,23 @@
     document.body.appendChild(window.gt_translate_script);
   }
 
+  window.doGTranslate = function (langPair) {
+    if (langPair && langPair.value) {
+      langPair = langPair.value;
+    }
+    if (!langPair) {
+      return;
+    }
+    var parts = langPair.split('|');
+    var sourceLang = parts[0];
+    var targetLang = parts[1];
+    loadTranslateLib(function () {
+      if (window.__GT && window.__GT.translator && typeof window.__GT.translator.translate === 'function') {
+        window.__GT.translator.translate(sourceLang, targetLang);
+      }
+    });
+  };
+
   function bindStaticSelectors() {
     document.querySelectorAll('.gtranslate_wrapper .gt_selector').forEach(function (select) {
       if (select.dataset.dfGtranslateBound) {
@@ -38,11 +61,7 @@
       }
       select.dataset.dfGtranslateBound = '1';
       select.addEventListener('change', function () {
-        loadTranslateLib(function () {
-          if (typeof window.doGTranslate === 'function') {
-            window.doGTranslate(select.value);
-          }
-        });
+        window.doGTranslate(select.value);
       });
     });
   }

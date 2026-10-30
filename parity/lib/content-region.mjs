@@ -47,6 +47,8 @@ export const EXTRACT_MAIN_TEXT_FN = () => {
     '.cookie',
     '#cookie',
     '.wp-block-template-part',
+    '#is-popup-wrapper',
+    '.is-popup-search-form',
   ];
 
   const CONTENT_SELECTORS = [

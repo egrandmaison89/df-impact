@@ -299,6 +299,12 @@ test.describe('Site admin chrome editing (UI)', () => {
     }
     const adminContent = await go(page, '/admin/content');
     expect(adminContent?.status()).toBe(200);
+    // QA-053: site_admin may delete any content (form only; nothing is submitted).
+    const deleteForm = await go(page, `/node/${latestIssueNid}/delete`);
+    expect(deleteForm?.status()).toBe(200);
+    // QA-054: Editoria11y checker loads for site_admin.
+    await go(page, articlePath);
+    expect(await page.evaluate(() => !!(window as any).drupalSettings?.editoria11y)).toBe(true);
     await screenshot(page, '00-admin-front-end-toolbar');
     await logout(page);
   });
@@ -316,6 +322,8 @@ test.describe('Site admin chrome editing (UI)', () => {
     }
     await go(page, `/node/${latestIssueNid}/edit`);
     await expect(page.locator('#edit-group-df-homepage-hero')).toHaveCount(0);
+    await go(page, samplePublishedArticlePath());
+    expect(await page.evaluate(() => !!(window as any).drupalSettings?.editoria11y)).toBe(true);
     await screenshot(page, '01-web-editor-forbidden');
     await logout(page);
   });

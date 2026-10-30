@@ -142,6 +142,15 @@ test.describe('header chrome QA', () => {
     await expect(page.locator('#is-search-input-701')).toHaveValue('');
   });
 
+  test('QA-056 core /search/node and /search/help redirect to WP-style /?s=', async ({ request }) => {
+    for (const [from, to] of [['/search/node?keys=cancer', '/?s=cancer'], ['/search/node', '/'], ['/search/help', '/']]) {
+      const res = await request.get(`${drupalBase}${from}`, { maxRedirects: 0 });
+      expect(res.status(), from).toBe(301);
+      expect(new URL(res.headers()['location'], drupalBase).pathname + new URL(res.headers()['location'], drupalBase).search).toBe(to);
+    }
+    expect((await request.get(`${drupalBase}/search?s=cancer`)).status()).toBe(200);
+  });
+
   test('QA-045 opened Issues submenu pushes content down @ 390px', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
     await page.goto(`${drupalBase}/`, { waitUntil: 'load' });

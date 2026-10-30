@@ -259,7 +259,7 @@ test.describe('listings QA', () => {
     const img = page.locator('main .ultp-block-item', { hasText: 'More than a building name' }).locator('img').first();
     await img.scrollIntoViewIfNeeded();
     await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.currentSrc)).toContain('LavineBekensteinFCH_1450');
-    expect(await img.getAttribute('srcset')).not.toMatch(/\/FCH_1450/);
+    expect((await img.getAttribute('srcset')) ?? '').not.toMatch(/\/FCH_1450/);
   });
 
   test('QA-007 WP-style /page/N/?s= search URLs redirect to the Drupal pager', async ({ request }) => {

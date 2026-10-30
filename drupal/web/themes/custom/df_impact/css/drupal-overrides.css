@@ -38,6 +38,11 @@ body:has(main .issue-page-banner.is-light) #mega-menu-max_mega_menu_1 > li.mega-
 
 /* Mega menu opens on click (Max Mega Menu data-event=click); no hover override. */
 
+/* Live loads maxmegamenu style.css after the inline header CSS, so its 6px indicator gap wins there. */
+#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children > a.mega-menu-link > span.mega-indicator {
+  margin-left: 6px;
+}
+
 /* Sticky chrome shadow only — logo shrink uses `.header-logo.scrolled` (wp-chrome-behaviors.js). */
 .desktop-header.header--scrolled,
 .impact-header.header--scrolled {

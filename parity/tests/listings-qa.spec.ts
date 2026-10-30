@@ -179,6 +179,20 @@ test.describe('listings QA', () => {
     await expect(page.locator('ul.wp-block-post-template > li.wp-block-post').first()).toBeVisible();
   });
 
+  test('QA-016 drop cap only on WP dropCap paragraphs', async ({ page }) => {
+    const firstLetters = () =>
+      page.evaluate(() =>
+        [...document.querySelectorAll('main .entry-content > p')].slice(0, 3).map((p) => {
+          const f = getComputedStyle(p, '::first-letter');
+          return `${p.classList.contains('has-drop-cap') ? 'dc' : 'p'}:${f.float}`;
+        }),
+      );
+    await open(page, '/2024/03/a-message-from-melany-duval-4');
+    expect(await firstLetters()).toEqual(['p:none', 'p:none', 'p:none']);
+    await open(page, '/2022/11/rasmussen-family-funds-research-into-underlying-causes-of-colorectal-cancer');
+    expect(await firstLetters()).toEqual(['p:none', 'dc:left', 'p:none']);
+  });
+
   test('QA-007 WP-style /page/N/?s= search URLs redirect to the Drupal pager', async ({ request }) => {
     const response = await request.get(`${drupalBase}/page/3/?s=cancer`, { maxRedirects: 0 });
     expect(response.status()).toBe(302);

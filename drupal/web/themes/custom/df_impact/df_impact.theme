@@ -610,7 +610,6 @@ function df_impact_preprocess_node(&$variables) {
       if ($variables['in_brief_image_url']) {
         $summary = df_impact_article_strip_leading_wp_image_block($summary);
       }
-      $summary = df_impact_article_add_drop_cap_class($summary);
       if (isset($variables['content']['field_summary'])) {
         $variables['content']['field_summary']['#access'] = FALSE;
       }
@@ -746,7 +745,6 @@ function df_impact_preprocess_node(&$variables) {
         if (isset($variables['content']['body'])) {
           $variables['content']['body']['#access'] = FALSE;
         }
-        $stripped = df_impact_article_add_drop_cap_class($stripped);
         $variables['article_body'] = [
           '#type' => 'processed_text',
           '#text' => $stripped,
@@ -1320,22 +1318,6 @@ function df_impact_issue_banner_meta(NodeInterface $node): ?array {
 function df_impact_article_strip_leading_wp_image_block(string $body): string {
   $stripped = preg_replace('/\s*<!-- wp:image\b.*?<!-- \/wp:image -->\s*/s', '', $body, 1);
   return is_string($stripped) ? $stripped : $body;
-}
-
-/**
- * Adds WP has-drop-cap to the first paragraph (matches Gutenberg dropCap blocks).
- */
-function df_impact_article_add_drop_cap_class(string $html): string {
-  if (preg_match('/\bhas-drop-cap\b/', $html)) {
-    return $html;
-  }
-  $updated = preg_replace(
-    '/<p(\s[^>]*)?>/',
-    '<p class="has-drop-cap wp-block-paragraph"$1>',
-    $html,
-    1,
-  );
-  return is_string($updated) ? $updated : $html;
 }
 
 /**

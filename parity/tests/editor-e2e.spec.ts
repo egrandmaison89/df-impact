@@ -95,11 +95,19 @@ function setIssueHeroHeading(nid: number, heading: string): void {
 
 function cleanupNodes() {
   const nids = [...(issueNid ? [issueNid] : []), ...articleNids];
-  if (!nids.length) return;
-  execSync(
-    `cd /workspace/drupal && ./vendor/bin/drush ev 'foreach ([${nids.join(',')}] as $nid) { \\Drupal\\node\\Entity\\Node::load($nid)?->delete(); }'`,
-    { stdio: 'inherit' },
+  if (nids.length) {
+    execSync(
+      `cd /workspace/drupal && ./vendor/bin/drush ev 'foreach ([${nids.join(',')}] as $nid) { \\Drupal\\node\\Entity\\Node::load($nid)?->delete(); }'`,
+      { stdio: 'inherit' },
+    );
+  }
+  cleanupPriorRunContent();
+  const leaked = Number(
+    drush(
+      `sqlq "SELECT COUNT(*) FROM node_field_data WHERE status=1 AND (title LIKE 'DF Test%' OR title LIKE 'Playwright%')"`,
+    ),
   );
+  expect(leaked, 'published automation test nodes after teardown').toBe(0);
 }
 
 async function go(page: import('@playwright/test').Page, route: string) {
@@ -587,6 +595,7 @@ test.describe('Web editor issue launch (UI)', () => {
         `cd /workspace/drupal && ./vendor/bin/drush sqlq "SELECT alias FROM path_alias WHERE path = '/node/${issueNid}' LIMIT 1"`,
         { encoding: 'utf8' },
       ).trim() || `/node/${issueNid}`;
+    expect(issuePath).toMatch(/\/[\w-]+-\d{4}-issue$/);
 
     await logout(page);
     await expect
@@ -613,5 +622,34 @@ test.describe('Web editor issue launch (UI)', () => {
       await expect(page.locator('body')).toContainText(t);
     }
     await screenshot(page, '11-issue-landing');
+  });
+
+  test('web_editor can delete own draft article', async ({ page }) => {
+    await login(page, WEB_EDITOR.name, WEB_EDITOR.pass);
+    const title = `${TITLE_PREFIX} delete-me ${Date.now()}`;
+    await go(page, '/node/add/article');
+    await waitForArticleAddForm(page);
+    // QA-037: no featured image and no topics — must still save.
+    await page.evaluate((t) => {
+      const set = (sel: string, v: string) => {
+        const el = document.querySelector(sel) as HTMLInputElement | HTMLTextAreaElement | null;
+        if (el) {
+          el.value = v;
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      };
+      set('#edit-title-0-value', t);
+      set('#edit-field-byline-0-value', 'Playwright Author');
+      set('#edit-body-0-value', '<p>No-hero body</p>');
+    }, title);
+    await saveNodeForm(page);
+    const nid = nodeNidByTitle(title);
+    expect(nid).toBeGreaterThan(0);
+    const deleteRes = await go(page, `/node/${nid}/delete`);
+    expect(deleteRes?.status()).toBe(200);
+    await page.locator('#edit-submit').click();
+    await expect(page.locator('.messages--status')).toBeVisible({ timeout: 30_000 });
+    await logout(page);
   });
 });

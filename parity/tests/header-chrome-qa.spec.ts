@@ -80,4 +80,99 @@ test.describe('header chrome QA', () => {
     await expect(page.locator('#is-popup-wrapper')).toBeVisible();
     await expect(page.locator('#is-search-input-701')).toBeVisible();
   });
+
+  test('QA-045 mobile header inset @ 768px matches WP outer spacing', async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 900 });
+    await page.goto(`${drupalBase}/`, { waitUntil: 'load' });
+    await dismissOverlays(page);
+
+    const box = await page.locator('.mobile-header .impact-header').first().boundingBox();
+    // WP: max(1.75rem, 5vw) = 38.4px at 768.
+    expect(Math.abs((box?.x ?? 0) - 38.4)).toBeLessThanOrEqual(2);
+    expect(Math.abs((box?.width ?? 0) - (768 - 2 * 38.4))).toBeLessThanOrEqual(2);
+    const donate = await page.locator('.mobile-header .header-button-section a').first().boundingBox();
+    expect((donate?.x ?? 0) + (donate?.width ?? 0)).toBeLessThanOrEqual(737);
+  });
+
+  test('QA-045 opened Issues submenu pushes content down @ 390px', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto(`${drupalBase}/`, { waitUntil: 'load' });
+    await dismissOverlays(page);
+
+    const header = page.locator('.mobile-header .impact-header').first();
+    const closedHeight = (await header.boundingBox())?.height ?? 0;
+    const issues = page.locator('.mobile-header #mega-menu-max_mega_menu_1 > li.mega-menu-item-599 > a').first();
+    await issues.click();
+    const submenu = page.locator('.mobile-header #mega-menu-max_mega_menu_1 > li.mega-menu-item-599 > ul.mega-sub-menu').first();
+    await expect(submenu).toBeVisible();
+    // Max Mega Menu slides the flyout open with jQuery (400ms).
+    await expect.poll(async () => (await header.boundingBox())?.height ?? 0).toBeGreaterThan(closedHeight + 100);
+
+    const headerBox = await header.boundingBox();
+    const subBox = await submenu.boundingBox();
+    const searchBox = await page.locator('.mobile-header .header-search a').first().boundingBox();
+    const mainBox = await page.locator('main#wp--skip-link--target').first().boundingBox();
+    expect(headerBox?.height ?? 0).toBeGreaterThan(closedHeight + 100);
+    expect(searchBox?.y ?? 0).toBeGreaterThanOrEqual((subBox?.y ?? 0) + (subBox?.height ?? 0) - 1);
+    expect(mainBox?.y ?? 0).toBeGreaterThanOrEqual((headerBox?.y ?? 0) + (headerBox?.height ?? 0) - 1);
+  });
+
+  test('QA-047 popup search submits like WP (/?s=term&id=701)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`${drupalBase}/`, { waitUntil: 'load' });
+    await dismissOverlays(page);
+
+    await page.locator('.desktop-header .header-search a').first().click();
+    const input = page.locator('#is-search-input-701');
+    await expect(input).toBeVisible();
+    await input.fill('cancer');
+    const [response] = await Promise.all([
+      page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+      input.press('Enter'),
+    ]);
+    expect(response?.status()).toBe(200);
+    const url = new URL(page.url());
+    expect(url.pathname).toBe('/');
+    expect(url.searchParams.get('s')).toBe('cancer');
+    expect(url.searchParams.get('id')).toBe('701');
+    await expect(page.locator('main li.wp-block-post').first()).toBeVisible();
+    await expect(page.locator('.wp-block-query-pagination a[href^="/page/2/?"]').first()).toBeAttached();
+
+    const legacy = await page.request.get(`${drupalBase}/search?s=cancer`);
+    expect(legacy.status()).toBe(200);
+    expect(await legacy.text()).toContain('bsearch_highlight');
+  });
+
+  test('QA-046 search results layout matches WP Better Search rows @ 1280px', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`${drupalBase}/?s=cancer&id=701`, { waitUntil: 'load' });
+    await dismissOverlays(page);
+
+    const row = page.locator('main li.wp-block-post').first();
+    await expect(row).toBeVisible();
+    await expect(page.locator('main .card__topics, main .article__tag')).toHaveCount(0);
+    await expect(row.locator('.wp-block-post-title mark.bsearch_highlight').first()).toBeVisible();
+
+    const img = await row.locator('.wp-block-post-featured-image img').first().boundingBox();
+    const title = await row.locator('.wp-block-post-title a').first().boundingBox();
+    expect(title?.x ?? 0).toBeGreaterThan((img?.x ?? 0) + (img?.width ?? 0));
+    expect(Math.abs((title?.y ?? 0) - (img?.y ?? 0))).toBeLessThanOrEqual(4);
+
+    const style = await row.locator('.wp-block-post-title a').first().evaluate((el) => {
+      const cs = getComputedStyle(el);
+      return { color: cs.color, family: cs.fontFamily, size: cs.fontSize, weight: cs.fontWeight };
+    });
+    expect(style).toEqual({ color: 'rgb(17, 17, 17)', family: '"Libre Baskerville"', size: '24px', weight: '600' });
+    expect(await page.evaluate(() => document.fonts.check('600 24px "Libre Baskerville"'))).toBe(true);
+  });
+
+  test('QA-048 Issues nav link is excluded from GTranslate', async ({ page }) => {
+    await page.goto(`${drupalBase}/`, { waitUntil: 'domcontentloaded' });
+    const links = page.locator('#mega-menu-max_mega_menu_1 > li.mega-menu-item-599 > a.mega-menu-link');
+    await expect(links).toHaveCount(2);
+    for (const link of await links.all()) {
+      await expect(link).toHaveClass(/\bnotranslate\b/);
+      await expect(link).toHaveAttribute('translate', 'no');
+    }
+  });
 });

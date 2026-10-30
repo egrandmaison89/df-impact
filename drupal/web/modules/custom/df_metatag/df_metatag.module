@@ -125,6 +125,11 @@ function df_metatag_metatags_alter(array &$tags, array &$context): void {
     $tags['og_url'] = $archive_url;
   }
 
+  if ($tag_title = df_metatag_wp_tag_archive_title()) {
+    $tags['title'] = $tag_title;
+    $tags['og_title'] = $tag_title;
+  }
+
   if ($route_match->getRouteName() === '<front>' || df_metatag_is_homepage_path()) {
     $front_tags = \Drupal::config('metatag.metatag_defaults.front')->get('tags') ?: [];
     if (is_array($front_tags)) {
@@ -169,6 +174,24 @@ function df_metatag_preprocess_html(array &$variables): void {
   elseif (\Drupal::routeMatch()->getRouteName() === 'view.digital_exclusives_archive.page_1') {
     $variables['head_title']['title'] = 'Digital Exclusives Archives - Impact Magazine';
   }
+  elseif ($tag_title = df_metatag_wp_tag_archive_title()) {
+    $variables['head_title']['title'] = $tag_title;
+  }
+}
+
+/**
+ * WP tag archive document title ("{Tag} Archives - Impact Magazine").
+ */
+function df_metatag_wp_tag_archive_title(): ?string {
+  $route_match = \Drupal::routeMatch();
+  if (!in_array($route_match->getRouteName(), ['df_setup.wp_tag_archive', 'df_setup.wp_tag_archive_page'], TRUE)) {
+    return NULL;
+  }
+  $slug = (string) $route_match->getRawParameter('slug');
+  if ($slug === '') {
+    return NULL;
+  }
+  return ucwords(str_replace('-', ' ', $slug)) . ' Archives - Impact Magazine';
 }
 
 /**

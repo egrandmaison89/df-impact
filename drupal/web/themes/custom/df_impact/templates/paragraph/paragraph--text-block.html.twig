@@ -1,9 +1,9 @@
 {#
 /**
  * @file
- * Theme override for Text Block paragraphs.
+ * Text Block paragraph — flows into entry-content like WordPress core/paragraph blocks.
  */
 #}
 <div{{ attributes.addClass('paragraph--text-block') }}>
-  {{ content.field_text_body }}
+  {{ content.field_text_body.0 }}
 </div>

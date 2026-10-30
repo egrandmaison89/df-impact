@@ -277,9 +277,18 @@ function df_impact_preprocess_views_view_unformatted(array &$variables): void {
   if ($rows === []) {
     return;
   }
-  $flex_rows = [];
-  foreach (array_chunk($rows, 4) as $group) {
-    $flex_rows[] = $group;
+  // WP /browse-issues/ groups covers into one flex row per year (newest first).
+  $by_year = [];
+  foreach ($rows as $index => $row) {
+    $node = $view->result[$index]->_entity ?? NULL;
+    $year = $node instanceof NodeInterface && $node->hasField('field_year') ? (string) $node->get('field_year')->value : '';
+    $by_year[$year][] = [$row];
+  }
+  $flex_rows = array_values($by_year);
+  // WP's newest (partial) year row stacks its two newest covers in one column.
+  if (isset($flex_rows[0]) && count($flex_rows[0]) === 3) {
+    $first = array_shift($flex_rows[0]);
+    $flex_rows[0][0] = array_merge($first, $flex_rows[0][0]);
   }
   $variables['browse_issue_flex_rows'] = $flex_rows;
 }
@@ -308,6 +317,8 @@ function df_impact_preprocess_views_view_fields(&$variables): void {
     $variables['issue_cover_alt'] = $cover['alt'] ?? $node->label();
     $variables['issue_title_plain'] = df_impact_format_issue_label($node)
       ?? df_impact_decode_plain_text($node->label());
+    // WP's newest caption has no has-tertiary-color class (inherits #111 body text).
+    $variables['issue_heading_uncolored'] = (int) ($variables['row']->index ?? -1) === 0;
     return;
   }
   if ($view_id === 'issue_articles') {

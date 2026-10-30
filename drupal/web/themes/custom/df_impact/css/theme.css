@@ -1710,7 +1710,8 @@ figure.issue-cover img {
   width: 250px;
   max-width: 100%;
   height: auto;
-  display: block;
+  display: inline;
+  vertical-align: bottom;
 }
 
 .wp-container-core-group-is-layout-7caa2bd2 {
@@ -1720,23 +1721,31 @@ figure.issue-cover img {
   gap: 0;
 }
 
+/* WP columns are content-sized (250px cover + 20px inset) and wrap with the 15px block gap. */
 .wp-container-core-group-is-layout-7caa2bd2 > .wp-block-group {
-  flex: 0 0 25%;
-  max-width: 25%;
-  box-sizing: border-box;
+  flex: 0 1 auto;
+  box-sizing: content-box;
 }
 
-@media (max-width: 991px) {
-  .wp-container-core-group-is-layout-7caa2bd2 > .wp-block-group {
-    flex: 0 0 50%;
-    max-width: 50%;
-  }
+.wp-container-core-group-is-layout-7caa2bd2 {
+  align-items: center;
 }
 
-@media (max-width: 600px) {
-  .wp-container-core-group-is-layout-7caa2bd2 > .wp-block-group {
-    flex: 0 0 100%;
-    max-width: 100%;
+.wp-container-core-group-is-layout-7caa2bd2 figure.issue-cover {
+  margin: 0 0 10px;
+}
+
+.wp-container-core-group-is-layout-1ce60de8 > h4 + figure.issue-cover {
+  margin-top: 24px;
+}
+
+/* WP /browse-issues/ is a plain page: main fills the outer padding box (no 20px inset). */
+@media (min-width: 769px) {
+  body.path-browse-issues .wp-site-blocks > main#wp--skip-link--target {
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }
 

@@ -259,3 +259,50 @@ function df_setup_import_issue_banner_is_light_config(): string {
   }
   return 'field_issue_banner_is_light config already present.';
 }
+
+/**
+ * Sets issue cover alt text to the WP /browse-issues/ alt (QA-004).
+ */
+function df_setup_post_update_browse_issue_cover_alt(): string {
+  // WP leaves /spring-2025-issue and /fall-2024-issue covers without alt; keep ours.
+  $alts = [
+    '/fall-2026-issue' => 'Cover of the Fall 2026 issue of Impact',
+    '/summer-2026-issue' => 'Cover of the Summer 2026 issue of Impact',
+    '/spring-2026-issue' => 'Impact Spring 2026 magazine cover',
+    '/winter-2025-issue' => 'Impact Winter 2025 cover',
+    '/fall-2025-issue' => 'Impact Fall 2025 cover',
+    '/summer-2025-issue' => 'Impact Summer 2025 cover',
+    '/winter-2024-issue' => 'Impact Winter 2024 cover',
+    '/summer-2024-issue' => 'Impact Magazine Summer 2024 Cover',
+    '/spring-2024-issue' => 'Dana-Farber Impact Spring 2024 cover',
+    '/winter-2023-issue' => 'Dana-Farber Impact Winter 2023 magazine cover',
+    '/fall-2023-issue' => 'Impact Fall 2023 Cover',
+    '/summer-2023-issue' => 'Impact Summer 2023 Cover',
+    '/spring-2023-issue' => 'Impact Spring 2023 Cover',
+  ];
+  $alias_manager = \Drupal::service('path_alias.manager');
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  foreach ($alts as $alias => $alt) {
+    $path = $alias_manager->getPathByAlias($alias);
+    if (!preg_match('#^/node/(\d+)$#', $path, $m)) {
+      continue;
+    }
+    $issue = $node_storage->load((int) $m[1]);
+    if (!$issue || $issue->bundle() !== 'issue' || !$issue->hasField('field_cover_image')) {
+      continue;
+    }
+    $media = $issue->get('field_cover_image')->entity;
+    if (!$media || !$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
+      continue;
+    }
+    $item = $media->get('field_media_image')->first();
+    if ((string) $item->alt === $alt) {
+      continue;
+    }
+    $item->alt = $alt;
+    $media->save();
+    $updated++;
+  }
+  return sprintf('Browse-issues cover alt text: %d updated.', $updated);
+}

@@ -279,6 +279,14 @@ test.describe('Site admin chrome editing (UI)', () => {
       await expectLoggedInToolbar(page);
       await expectStickyHeaderBelowToolbar(page);
     }
+    // QA-049: narrow toolbar is not fixed and scrolls away; the header must not keep the gap.
+    await page.setViewportSize({ width: 390, height: 900 });
+    await go(page, '/homepage');
+    await expectLoggedInToolbar(page);
+    await page.evaluate(() => window.scrollTo(0, 1200));
+    await expect
+      .poll(() => page.evaluate(() => Math.round(document.querySelector('header.wp-block-template-part')!.getBoundingClientRect().top)))
+      .toBe(0);
     await page.setViewportSize({ width: 1280, height: 900 });
     await go(page, articlePath);
     await expectLoggedInNodeTabs(page);

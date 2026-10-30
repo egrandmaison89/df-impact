@@ -94,6 +94,52 @@ test.describe('header chrome QA', () => {
     expect((donate?.x ?? 0) + (donate?.width ?? 0)).toBeLessThanOrEqual(737);
   });
 
+  test('QA-045 Issues link and search row widths match WP @ 390px', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto(`${drupalBase}/`, { waitUntil: 'load' });
+    await dismissOverlays(page);
+    await page.evaluate(() => document.fonts.ready);
+
+    // Live: blockmag static Montserrat SemiBold + 6px indicator gap = 117px; the row (link + 25px
+    // search) is within ~1px of the column, so it wraps under platform font rendering like WP.
+    const issues = page.locator('.mobile-header #mega-menu-max_mega_menu_1 > li.mega-menu-item-599 > a').first();
+    expect(Math.round((await issues.boundingBox())?.width ?? 0)).toBe(117);
+    expect(
+      await page.evaluate(() =>
+        [...document.styleSheets].some((s) => (s.href || '').includes('fonts.googleapis.com_css')),
+      ),
+    ).toBe(false);
+  });
+
+  for (const path of ['/', '/about', '/fall-2026-issue', '/category/cancer-research', '/?s=cancer&id=701']) {
+    test(`QA-050 no horizontal overflow @ 390px ${path}`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 900 });
+      await page.goto(`${drupalBase}${path}`, { waitUntil: 'load' });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+    });
+  }
+
+  test('QA-046 search result image fills the column @ 768px like WP (691x496)', async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 900 });
+    await page.goto(`${drupalBase}/?s=cancer&id=701`, { waitUntil: 'load' });
+    const img = page.locator('main li.wp-block-post .wp-block-post-featured-image img').first();
+    await expect(img).toBeVisible();
+    await expect.poll(async () => Math.round((await img.boundingBox())?.width ?? 0)).toBe(691);
+    expect(Math.abs(((await img.boundingBox())?.height ?? 0) - 496)).toBeLessThanOrEqual(2);
+  });
+
+  test('QA-051 search popup input is pre-filled with the current query', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`${drupalBase}/?s=cancer&id=701`, { waitUntil: 'load' });
+    await dismissOverlays(page);
+    await page.locator('.desktop-header .header-search a').first().click();
+    const input = page.locator('#is-search-input-701');
+    await expect(input).toBeVisible();
+    await expect(input).toHaveValue('cancer');
+    await page.goto(`${drupalBase}/`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#is-search-input-701')).toHaveValue('');
+  });
+
   test('QA-045 opened Issues submenu pushes content down @ 390px', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
     await page.goto(`${drupalBase}/`, { waitUntil: 'load' });

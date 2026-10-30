@@ -199,6 +199,45 @@ test.describe('listings QA', () => {
     await expect(page.locator('main .entry-content > p').first()).toHaveText(/^Winter 2023\s*By Amber Sinicrope/);
   });
 
+  for (const [width, figure, side] of [
+    [1280, [569, 407], true],
+    [768, [338, 242], true],
+    [390, [350, 251], false],
+  ] as const) {
+    test(`QA-018 gallery images sit side by side like WP @${width}`, async ({ page }) => {
+      await open(page, '/2024/06/the-gray-foundation-empowers-team-science-against-brca-mutated-cancers', width);
+      const figures = page.locator('main .wp-block-gallery > figure.wp-block-image');
+      await expect(figures).toHaveCount(2);
+      await figures.first().scrollIntoViewIfNeeded();
+      await expect(figures.first().locator('img')).toHaveJSProperty('complete', true);
+      const boxes = await figures.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().toJSON()));
+      expect(boxes.map((b) => [Math.round(b.width), Math.round(b.height)])).toEqual([figure, figure]);
+      expect(Math.round(boxes[1].y) === Math.round(boxes[0].y)).toBe(side);
+      expect(await figures.first().locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(1024);
+    });
+  }
+
+  test('QA-018 articles without a leading body image keep every gallery photo and get no injected lead figure', async ({ page }) => {
+    await open(page, '/2024/03/jimmy-fund-golf-community-helps-to-usher-in-the-jimmy-funds-75th');
+    await expect(page.locator('main .entry-content > :first-child')).toHaveText(/^\s*Spring 2024/);
+    await expect(page.locator('main .wp-block-gallery > figure.wp-block-image')).toHaveCount(8);
+    expect(await page.locator('main .entry-content img[src*="//default/"]').count()).toBe(0);
+  });
+
+  test('QA-021 quote citation is small, plain and dark gray like WP', async ({ page }) => {
+    await open(page, '/2023/11/dismantling-gender-disparity-through-mentorship');
+    const quote = page.locator('main blockquote.wp-block-quote').first();
+    await expect(quote).toHaveCSS('margin-left', '0px');
+    await expect(quote).toHaveCSS('padding-left', '20px');
+    await expect(quote.locator('p').first()).toHaveCSS('margin-bottom', '10px');
+    const cite = quote.locator('cite');
+    await expect(cite).toHaveCSS('display', 'block');
+    await expect(cite).toHaveCSS('font-size', '16.25px');
+    await expect(cite).toHaveCSS('font-style', 'normal');
+    await expect(cite).toHaveCSS('color', 'rgb(17, 17, 17)');
+    await expect(cite).toHaveCSS('margin-top', '24px');
+  });
+
   test('QA-007 WP-style /page/N/?s= search URLs redirect to the Drupal pager', async ({ request }) => {
     const response = await request.get(`${drupalBase}/page/3/?s=cancer`, { maxRedirects: 0 });
     expect(response.status()).toBe(302);

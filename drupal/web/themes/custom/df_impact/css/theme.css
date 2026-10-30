@@ -2166,3 +2166,120 @@ main .wp-block-search .wp-block-search__button {
   width: 100%;
   height: auto;
 }
+
+/* WP core gallery block CSS is inlined per page on WP (not in the vendored bundle);
+   values include blockmag's global overrides (15px flex gap, darker caption). The
+   mobile width: initial override is already in extracted-wp-inline.css. */
+.wp-block-gallery.has-nested-images {
+  --wp--style--unstable-gallery-gap: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: normal;
+  gap: 15px;
+}
+
+.wp-block-gallery.has-nested-images.aligncenter {
+  justify-content: center;
+}
+
+.wp-block-gallery.has-nested-images figure.wp-block-image {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  max-width: 100%;
+  position: relative;
+}
+
+.wp-block-gallery.has-nested-images figure.wp-block-image:not(#individual-image) {
+  margin: 0;
+}
+
+@media (min-width: 651px) {
+  .wp-block-gallery.has-nested-images figure.wp-block-image:not(#individual-image) {
+    width: calc(50% - var(--wp--style--unstable-gallery-gap) / 2);
+  }
+}
+
+.wp-block-gallery.has-nested-images.columns-1 figure.wp-block-image:not(#individual-image),
+.wp-block-gallery.has-nested-images.columns-default figure.wp-block-image:not(#individual-image):first-child:last-child {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .wp-block-gallery.has-nested-images.columns-3 figure.wp-block-image:not(#individual-image),
+  .wp-block-gallery.has-nested-images.columns-default figure.wp-block-image:not(#individual-image) {
+    width: calc(33.33% - var(--wp--style--unstable-gallery-gap) * .66667);
+  }
+
+  .wp-block-gallery.has-nested-images.columns-4 figure.wp-block-image:not(#individual-image) {
+    width: calc(25% - var(--wp--style--unstable-gallery-gap) * .75);
+  }
+
+  .wp-block-gallery.has-nested-images.columns-default figure.wp-block-image:not(#individual-image):first-child:nth-last-child(2),
+  .wp-block-gallery.has-nested-images.columns-default figure.wp-block-image:not(#individual-image):first-child:nth-last-child(2) ~ figure.wp-block-image:not(#individual-image) {
+    width: calc(50% - var(--wp--style--unstable-gallery-gap) * .5);
+  }
+}
+
+.wp-block-gallery.has-nested-images figure.wp-block-image img {
+  display: block;
+  height: auto;
+  max-width: 100% !important;
+  width: auto;
+}
+
+.wp-block-gallery.has-nested-images.is-cropped figure.wp-block-image:not(#individual-image) img {
+  flex: 1 0 0%;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.wp-block-gallery.has-nested-images figure.wp-block-image figcaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  overflow: auto;
+  padding: 1em;
+  text-align: center;
+  text-shadow: 0 0 1.5px #000;
+  color: #fff !important;
+  background: linear-gradient(0deg, rgba(0, 0, 0, .7), rgba(0, 0, 0, .3) 80%, transparent);
+  flex-basis: 100%;
+  flex-grow: 1;
+}
+
+/* Core quote block theme CSS + flow layout spacing (WP inlines both per page). */
+.entry-content .wp-block-quote {
+  box-sizing: border-box;
+  margin-left: 0;
+  margin-right: 0;
+  overflow-wrap: break-word;
+  padding-left: 1em;
+}
+
+.entry-content .wp-block-quote > * {
+  margin-top: 1.5rem;
+}
+
+.entry-content .wp-block-quote > :first-child {
+  margin-top: 0;
+}
+
+.entry-content .wp-block-quote > p {
+  margin-bottom: 10px;
+}
+
+.entry-content .wp-block-quote cite {
+  display: block;
+  position: relative;
+  font-size: .8125em;
+  font-style: normal;
+  color: #111;
+}

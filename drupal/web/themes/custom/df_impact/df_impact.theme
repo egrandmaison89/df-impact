@@ -741,20 +741,24 @@ function df_impact_preprocess_node(&$variables) {
     if (isset($variables['content']['field_featured_image'])) {
       $variables['content']['field_featured_image']['#access'] = FALSE;
     }
-    $variables['article_lead_figure'] = df_impact_article_lead_figure_build($node);
-    if ($variables['article_lead_figure'] && $node->hasField('body') && !$node->get('body')->isEmpty()) {
-      $stripped = df_impact_article_strip_leading_wp_image_block((string) $node->get('body')->value);
-      if ($stripped !== (string) $node->get('body')->value) {
-        if (isset($variables['content']['body'])) {
-          $variables['content']['body']['#access'] = FALSE;
-        }
-        $variables['article_body'] = [
-          '#type' => 'processed_text',
-          '#text' => $stripped,
-          '#format' => $node->get('body')->format,
-          '#langcode' => $node->language()->getId(),
-        ];
+    // WP has no featured-image slot on single posts: the lead figure is the body's own opening image block.
+    $body_leads_with_image = $node->hasField('body') && !$node->get('body')->isEmpty()
+      && preg_match('/^\s*<!-- wp:image\b/', (string) $node->get('body')->value) === 1;
+    $variables['article_lead_figure'] = $body_leads_with_image ? df_impact_article_lead_figure_build($node) : NULL;
+    if ($node->hasField('body') && !$node->get('body')->isEmpty()) {
+      $body_html = (string) $node->get('body')->value;
+      if ($variables['article_lead_figure']) {
+        $body_html = df_impact_article_strip_leading_wp_image_block($body_html);
       }
+      if (isset($variables['content']['body'])) {
+        $variables['content']['body']['#access'] = FALSE;
+      }
+      $variables['article_body'] = [
+        '#type' => 'processed_text',
+        '#text' => $body_html,
+        '#format' => $node->get('body')->format,
+        '#langcode' => $node->language()->getId(),
+      ];
     }
 
     if (isset($variables['content']['field_related_articles'])) {

@@ -40,7 +40,6 @@ module:
   google_analytics: 0
   google_tag: 0
   help: 0
-  history: 0
   image: 0
   imageapi_optimize: 0
   link: 0

@@ -114,6 +114,17 @@ test.describe('listings QA', () => {
     await expect(page.locator('nav.wp-block-query-pagination, .page-numbers, nav.pager')).toHaveCount(0);
   });
 
+  test('QA-010 /in-brief cards have WP thumbnails @ 1280px', async ({ page }) => {
+    await open(page, '/in-brief');
+    const first = page.locator('.ultp-block-item:not(.is-collapsed) img.ultp-block-image-content').first();
+    await expect(first).toBeVisible();
+    await expect(first).toHaveAttribute('src', /AACR_1450\.jpg/);
+    const box = await first.boundingBox();
+    expect([Math.round(box!.x), Math.round(box!.width), Math.round(box!.height)]).toEqual([64, 346, 248]);
+    const visibleWithoutImage = await page.locator('.ultp-block-item:not(.is-collapsed):not(:has(img))').count();
+    expect(visibleWithoutImage).toBe(0);
+  });
+
   test('QA-022 404 search form lands on search results', async ({ page }) => {
     await open(page, '/digital-exclusives');
     await page.fill('main .wp-block-search__input', 'cancer');

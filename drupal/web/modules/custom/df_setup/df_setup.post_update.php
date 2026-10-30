@@ -306,3 +306,63 @@ function df_setup_post_update_browse_issue_cover_alt(): string {
   }
   return sprintf('Browse-issues cover alt text: %d updated.', $updated);
 }
+
+/**
+ * Attach In Brief featured images (in_brief.json holds WP attachment-page URLs, not files).
+ */
+function df_setup_post_update_in_brief_featured_images(): string {
+  if (!\Drupal::moduleHandler()->moduleExists('df_migrate') || !class_exists('\Drupal\df_migrate\Plugin\migrate\process\DownloadImage')) {
+    return 'In Brief featured images: df_migrate unavailable.';
+  }
+  $data_dir = DRUPAL_ROOT . '/' . \Drupal::service('extension.list.module')->getPath('df_migrate') . '/data';
+  $briefs = json_decode((string) @file_get_contents($data_dir . '/in_brief.json'), TRUE);
+  $media_rows = json_decode((string) @file_get_contents($data_dir . '/media.json'), TRUE);
+  if (!is_array($briefs) || !is_array($media_rows)) {
+    return 'In Brief featured images: data files missing.';
+  }
+  $media_by_wp_id = [];
+  foreach ($media_rows as $row) {
+    if (!empty($row['wp_id']) && !empty($row['source_url'])) {
+      $media_by_wp_id[(string) $row['wp_id']] = $row;
+    }
+  }
+  $alias_manager = \Drupal::service('path_alias.manager');
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $file_system = \Drupal::service('file_system');
+  $updated = 0;
+  $missing = 0;
+  foreach ($briefs as $brief) {
+    if (empty($brief['drupal_alias'])) {
+      continue;
+    }
+    $path = $alias_manager->getPathByAlias($brief['drupal_alias']);
+    if (!preg_match('#^/node/(\d+)$#', $path, $m)) {
+      continue;
+    }
+    $node = $node_storage->load((int) $m[1]);
+    if (!$node || $node->bundle() !== 'in_brief' || !$node->hasField('field_image') || !$node->get('field_image')->isEmpty()) {
+      continue;
+    }
+    $media_row = $media_by_wp_id[(string) ($brief['featured_image_wp_id'] ?? '')] ?? NULL;
+    $url = $media_row['source_url'] ?? '';
+    if ($url === '' && preg_match('#<img[^>]+src="([^"]*wp-content/uploads/[^"]+)"#', (string) ($brief['body'] ?? ''), $img)) {
+      $url = $img[1];
+    }
+    $uri = $url !== '' ? \Drupal\df_migrate\Plugin\migrate\process\DownloadImage::urlToUri($url) : '';
+    $real = $uri !== '' ? $file_system->realpath($uri) : FALSE;
+    if (!is_string($real) || !is_readable($real)) {
+      $missing++;
+      continue;
+    }
+    $fid = \Drupal\df_migrate\Plugin\migrate\process\DownloadImage::getOrCreateFileFromUrl($url);
+    if (!$fid) {
+      $missing++;
+      continue;
+    }
+    $alt = trim((string) ($media_row['alt_text'] ?? '')) ?: $node->label();
+    $node->set('field_image', ['target_id' => $fid, 'alt' => $alt]);
+    $node->save();
+    $updated++;
+  }
+  return sprintf('In Brief featured images: %d attached, %d without a local file.', $updated, $missing);
+}

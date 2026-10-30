@@ -2500,7 +2500,15 @@ function df_impact_in_brief_card_image_meta(NodeInterface $node): ?array {
     return NULL;
   }
   if ($node->hasField('field_image') && !$node->get('field_image')->isEmpty()) {
-    $media = $node->get('field_image')->entity;
+    $item = $node->get('field_image')->first();
+    $media = $item->entity;
+    if ($media instanceof \Drupal\file\FileInterface) {
+      $alt = (string) $item->alt;
+      return [
+        'url' => df_impact_card_image_url_for_parity($media->getFileUri()),
+        'alt' => $alt !== '' ? $alt : $node->label(),
+      ];
+    }
     if ($media && $media->hasField('field_media_image') && !$media->get('field_media_image')->isEmpty()) {
       $file = $media->get('field_media_image')->entity;
       if ($file) {

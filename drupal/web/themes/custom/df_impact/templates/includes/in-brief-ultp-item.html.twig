@@ -7,7 +7,7 @@
   <div class="ultp-block-content-wrap">
     {% if in_brief_image_url %}
       <div class="ultp-block-image ultp-block-image-zoomIn">
-        <a href="{{ in_brief_item_url }}"><img decoding="async" src="{{ in_brief_image_url }}" class="ultp-block-image-content lazyloaded" alt="{{ in_brief_image_alt }}"></a>
+        <a href="{{ in_brief_item_url }}"><img decoding="async"{{ collapsed ? ' loading="lazy"' }} src="{{ in_brief_image_url }}" class="ultp-block-image-content lazyloaded" alt="{{ in_brief_image_alt }}"></a>
       </div>
     {% endif %}
     <div class="ultp-block-content">

@@ -238,6 +238,22 @@ test.describe('listings QA', () => {
     await expect(cite).toHaveCSS('margin-top', '24px');
   });
 
+  for (const [width, h1Box, coverBox] of [
+    [1280, [721, 331, 515], [0, 148, 1280, 481]],
+    [768, [38, 378, 711], [0, 191, 768, 481]],
+  ] as const) {
+    test(`QA-023 issue hero title sits where WP centers it @${width}`, async ({ page }) => {
+      await open(page, '/fall-2026-issue', width);
+      const box = (sel: string) =>
+        page.locator(sel).first().evaluate((el) => {
+          const r = el.getBoundingClientRect();
+          return [Math.round(r.x), Math.round(r.y + window.scrollY), Math.round(r.width), Math.round(r.height)];
+        });
+      expect((await box('main h1.ultp-heading-inner')).slice(0, 3)).toEqual(h1Box);
+      expect(await box('main .wp-block-cover.alignfull')).toEqual(coverBox);
+    });
+  }
+
   test('QA-007 WP-style /page/N/?s= search URLs redirect to the Drupal pager', async ({ request }) => {
     const response = await request.get(`${drupalBase}/page/3/?s=cancer`, { maxRedirects: 0 });
     expect(response.status()).toBe(302);

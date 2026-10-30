@@ -1387,6 +1387,11 @@ article.post .wp-block-post-terms {
   object-fit: cover;
 }
 
+/* The WP cover has no issue-page-banner class, so WP's 250px heading offset for that class never applies. */
+.issue-page .issue-page-banner .ultp-heading-wrap .ultp-heading-inner {
+  margin-top: 0;
+}
+
 .issue-page .issue-page-banner .wp-block-cover__image-background {
   position: absolute;
   inset: 0;
@@ -1750,7 +1755,8 @@ figure.issue-cover img {
   body.path-issues .wp-site-blocks > main#wp--skip-link--target,
   body.path-search-legacy .wp-site-blocks > main#wp--skip-link--target,
   body.path-in-brief .wp-site-blocks > main#wp--skip-link--target,
-  body.path-past-issues .wp-site-blocks > main#wp--skip-link--target {
+  body.path-past-issues .wp-site-blocks > main#wp--skip-link--target,
+  body.page-node-type-issue .wp-site-blocks > main#wp--skip-link--target {
     width: 100% !important;
     max-width: none;
     margin-left: 0 !important;

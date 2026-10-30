@@ -4,7 +4,7 @@
 <article{{ attributes.addClass('issue-page') }}>
 
   {% if issue_banner_url %}
-    <div class="wp-block-cover alignfull{{ issue_banner_is_light ? ' is-light' : '' }} issue-page-banner" style="margin-bottom:40px;min-height:481px;aspect-ratio:{{ issue_banner_width|default(1024) }} / {{ issue_banner_height|default(396) }};">
+    <div class="wp-block-cover alignfull{{ issue_banner_is_light ? ' is-light' : '' }} issue-page-banner" style="margin-bottom:40px;min-height:481px;aspect-ratio:unset;">
       <img decoding="async" fetchpriority="high" loading="eager" src="{{ issue_banner_url }}" width="{{ issue_banner_width|default(1024) }}" height="{{ issue_banner_height|default(396) }}" class="wp-block-cover__image-background wp-image-issue-banner size-large" alt="{{ issue_banner_alt }}" data-object-fit="cover" style="object-fit:cover">
       <span aria-hidden="true" class="wp-block-cover__background has-background-background-color has-background-dim-0 has-background-dim"></span>
       <div class="wp-block-cover__inner-container is-layout-flow wp-block-cover-is-layout-flow">

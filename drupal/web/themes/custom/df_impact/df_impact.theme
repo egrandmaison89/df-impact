@@ -823,6 +823,29 @@ function df_impact_search_result_excerpt(NodeInterface $node): string {
 }
 
 /**
+ * Implements hook_preprocess_views_mini_pager().
+ *
+ * Search pager links use the live WordPress form: /page/N/?s=term&id=701.
+ */
+function df_impact_preprocess_views_mini_pager(array &$variables): void {
+  if (!df_impact_is_search_results_route()) {
+    return;
+  }
+  foreach (['previous', 'next'] as $key) {
+    if (empty($variables['items'][$key]['href'])) {
+      continue;
+    }
+    $parts = parse_url((string) $variables['items'][$key]['href']);
+    $query = [];
+    parse_str($parts['query'] ?? '', $query);
+    $page = (int) ($query['page'] ?? 0);
+    unset($query['page']);
+    $path = $page > 0 ? '/page/' . ($page + 1) . '/' : '/';
+    $variables['items'][$key]['href'] = $path . ($query !== [] ? '?' . http_build_query($query) : '');
+  }
+}
+
+/**
  * Implements hook_preprocess_block().
  */
 function df_impact_preprocess_block(&$variables) {

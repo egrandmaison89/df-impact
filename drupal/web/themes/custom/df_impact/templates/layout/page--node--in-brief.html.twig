@@ -21,11 +21,7 @@
 
   <div style="height:46px" aria-hidden="true" class="wp-block-spacer wp-article-main-offset"></div>
 
-  {% if page.highlighted and not is_about_impact %}
-    <div class="highlighted visually-hidden">
-      {{ page.highlighted }}
-    </div>
-  {% endif %}
+  {% include '@df_impact/includes/df-admin-highlighted.html.twig' %}
 
   <main id="wp--skip-link--target" class="wp-block-group is-layout-flow wp-block-group-is-layout-flow" role="main">
     <div class="entry-content wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">

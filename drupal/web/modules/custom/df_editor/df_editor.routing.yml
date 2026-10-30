@@ -1,3 +1,16 @@
+entity.file.canonical:
+  path: '/admin/content/files/{file}'
+  defaults:
+    _controller: '\Drupal\df_editor\Controller\FileCanonicalRedirectController::toFileList'
+  requirements:
+    _entity_access: 'file.view'
+    file: '\d+'
+  options:
+    parameters:
+      file:
+        type: 'entity:file'
+    _admin_route: TRUE
+
 df_editor.site_settings:
   path: '/admin/config/df-impact/site-settings'
   defaults:

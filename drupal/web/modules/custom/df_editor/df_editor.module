@@ -65,6 +65,19 @@ function df_editor_form_node_article_form_alter(array &$form, FormStateInterface
   }
 
   $widget['#description'] = (string) t('Use the toolbar for headings, quotes, images, and media embeds (Vimeo/YouTube). For WordPress-style blocks (pull quote, spacer, buttons), switch to Source and paste the same markup used on migrated stories—see WEB_EDITOR_GUIDE.md.');
+
+  if (isset($form['title']['widget'][0]['value'])) {
+    $form['title']['widget'][0]['value']['#title_display'] = 'before';
+  }
+  if (isset($form['field_topics']['widget'])) {
+    $form['field_topics']['widget']['#title'] = $form['field_topics']['widget']['#title'] ?? t('Topics');
+    $form['field_topics']['widget']['#title_display'] = 'before';
+    $form['field_topics']['widget']['#required'] = FALSE;
+  }
+  if (isset($form['field_featured_image']['widget'])) {
+    $form['field_featured_image']['widget']['#required'] = FALSE;
+  }
+
   df_editor_attach_web_editor_save_redirect($form);
 }
 

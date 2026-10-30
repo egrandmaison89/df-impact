@@ -12,7 +12,7 @@ entity_type: node
 bundle: article
 label: 'Featured Image'
 description: 'The main article image (recommended: 1450×1040px minimum).'
-required: true
+required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''

@@ -24,30 +24,26 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
     return [
       KernelEvents::REQUEST => [
         ['onRequestPreserveTrailingSlash', 29],
-        ['onRequestSearchQuery', 31],
         ['onRequest', 35],
       ],
     ];
   }
 
   /**
-   * WP ?s= on home paths → /search (before RouterListener; see onRequest for /search → view).
+   * WordPress search URL (/?s=term&id=701, /page/N/?s=term) → 0-based view page, or NULL.
    */
-  public function onRequestSearchQuery(RequestEvent $event): void {
-    if (!$event->isMainRequest()) {
-      return;
-    }
-    $request = $event->getRequest();
+  public static function wordpressSearchPage(string $path, Request $request): ?int {
     $search_term = $request->query->get('s');
     if ($search_term === NULL || $search_term === '') {
-      return;
+      return NULL;
     }
-    $path = rtrim($request->getPathInfo(), '/') ?: '/';
-    if (!in_array($path, ['/', '/homepage', '/home'], TRUE)) {
-      return;
+    if (in_array($path, ['/', '/homepage', '/home'], TRUE)) {
+      return 0;
     }
-    $target = '/search?' . http_build_query(['s' => (string) $search_term]);
-    $event->setResponse(new RedirectResponse($request->getBaseUrl() . $target, 302));
+    if (preg_match('#^/page/(\d+)$#', $path, $matches)) {
+      return max(0, (int) $matches[1] - 1);
+    }
+    return NULL;
   }
 
 
@@ -74,6 +70,18 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
     }
     $request = $event->getRequest();
     $path = rtrim($request->getPathInfo(), '/') ?: '/';
+
+    // Live WP serves search results at /?s= (Ivory Search form 701); render in place.
+    $search_page = self::wordpressSearchPage($path, $request);
+    if ($search_page !== NULL) {
+      $query = $request->query->all();
+      unset($query['page']);
+      if ($search_page > 0) {
+        $query['page'] = (string) $search_page;
+      }
+      $this->rebuildRequest($request, '/search-legacy', $query);
+      return;
+    }
 
     if ($request->query->has('p')) {
       $wp_id = (int) $request->query->get('p');

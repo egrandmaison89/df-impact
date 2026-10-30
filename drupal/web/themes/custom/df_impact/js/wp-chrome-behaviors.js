@@ -79,4 +79,26 @@
         });
     },
   };
+
+  // Ivory Search binds its popup trigger on window load; replay an earlier click once bound.
+  if (document.readyState !== 'complete') {
+    var pendingSearchLink = null;
+    var captureEarlySearchClick = function (e) {
+      var link = e.target.closest ? e.target.closest('.is-menu.popup > a') : null;
+      if (!link) {
+        return;
+      }
+      e.preventDefault();
+      pendingSearchLink = link;
+    };
+    document.addEventListener('click', captureEarlySearchClick, true);
+    window.addEventListener('load', function () {
+      document.removeEventListener('click', captureEarlySearchClick, true);
+      if (pendingSearchLink) {
+        window.setTimeout(function () {
+          $(pendingSearchLink).trigger('click');
+        }, 0);
+      }
+    });
+  }
 })(jQuery, Drupal);

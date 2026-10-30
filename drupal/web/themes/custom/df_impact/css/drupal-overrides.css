@@ -236,32 +236,39 @@ main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-image 
   }
 }
 
+/*
+ * Mobile/tablet header: full-bleed band, but live keeps the white header box at the
+ * WP outer spacing (max(1.75rem, 5vw)) from each viewport edge.
+ */
 @media (max-width: 768px) {
   .wp-site-blocks .mobile-header.alignfull {
-    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 20px)) !important;
-    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 20px)) !important;
-    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 20px)) !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+    width: 100vw !important;
     max-width: none;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-left: max(1.75rem, 5vw) !important;
+    padding-right: max(1.75rem, 5vw) !important;
     box-sizing: border-box;
   }
 
-  .wp-site-blocks .mobile-header.alignfull .impact-header.alignfull,
+  /*
+   * Max Mega Menu mobile flyout is in-flow on live (style.css loads after the inline header
+   * CSS there); extracted-wp-inline.css loads last here and re-applies position:absolute.
+   */
+  #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-flyout ul.mega-sub-menu {
+    float: left;
+    position: static;
+    width: 100%;
+  }
+
   .wp-site-blocks .mobile-header.alignfull .is-content-justification-space-between.alignfull {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
+    margin-left: calc(-1 * max(1.75rem, 5vw)) !important;
+    margin-right: calc(-1 * max(1.75rem, 5vw)) !important;
+    width: auto !important;
     max-width: none !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-left: max(1.75rem, 5vw) !important;
+    padding-right: max(1.75rem, 5vw) !important;
     box-sizing: border-box;
-  }
-
-  .wp-site-blocks .mobile-header .left-side-header,
-  .wp-site-blocks .mobile-header .right-side-header {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
   }
 }
 
@@ -364,6 +371,21 @@ main .wp-block-post-content a:hover {
     padding-right: 0 !important;
     box-sizing: border-box;
   }
+}
+
+/* Search results (/?s=): live query loop sits in the plain .wp-site-blocks content box. */
+@media (min-width: 769px) {
+  body.search-results .wp-site-blocks > main#wp--skip-link--target {
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* blockmag style.css loads after the inline link color on live, so result titles use foreground. */
+body.search-results .wp-block-post-template .wp-block-post-title a {
+  color: var(--wp--preset--color--foreground);
 }
 
 /* Header search icon — match WP link color (SVG uses currentColor). */

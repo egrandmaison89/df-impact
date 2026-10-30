@@ -136,7 +136,7 @@ final class DfEditorCommands extends DrushCommands {
     }
 
     $browse = (string) $http->get($base . '/browse-issues')->getBody();
-    if (!str_contains($browse, 'DF Test Issue Workflow')) {
+    if (!str_contains($browse, 'Winter 2099')) {
       throw new \RuntimeException('Browse issues page missing test issue title.');
     }
 

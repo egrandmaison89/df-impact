@@ -166,13 +166,13 @@ test.describe('header chrome QA', () => {
     expect(await page.evaluate(() => document.fonts.check('600 24px "Libre Baskerville"'))).toBe(true);
   });
 
-  test('QA-048 Issues nav link is excluded from GTranslate', async ({ page }) => {
+  test('QA-048 Issues nav link and submenu stay translatable like WP', async ({ page }) => {
     await page.goto(`${drupalBase}/`, { waitUntil: 'domcontentloaded' });
-    const links = page.locator('#mega-menu-max_mega_menu_1 > li.mega-menu-item-599 > a.mega-menu-link');
-    await expect(links).toHaveCount(2);
+    const links = page.locator('#mega-menu-max_mega_menu_1 > li.mega-menu-item-599 a.mega-menu-link');
+    expect(await links.count()).toBeGreaterThan(2);
     for (const link of await links.all()) {
-      await expect(link).toHaveClass(/\bnotranslate\b/);
-      await expect(link).toHaveAttribute('translate', 'no');
+      const blocked = await link.evaluate((el) => !!el.closest('.notranslate, [translate="no"]'));
+      expect(blocked).toBe(false);
     }
   });
 });

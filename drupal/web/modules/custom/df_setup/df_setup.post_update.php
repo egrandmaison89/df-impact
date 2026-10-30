@@ -411,3 +411,37 @@ function df_setup_post_update_jetpack_related_articles(): string {
   }
   return sprintf('Jetpack related: %d articles updated.', $updated);
 }
+
+/**
+ * Root-relative inline file URLs (migrations under drush stored http://default/…).
+ */
+function df_setup_post_update_relative_inline_file_urls(): string {
+  $fields = ['body', 'field_summary', 'field_excerpt'];
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  foreach ($node_storage->getQuery()->accessCheck(FALSE)->execute() as $nid) {
+    $node = $node_storage->load($nid);
+    if (!$node) {
+      continue;
+    }
+    $changed = FALSE;
+    foreach ($fields as $field) {
+      if (!$node->hasField($field) || $node->get($field)->isEmpty()) {
+        continue;
+      }
+      $item = $node->get($field)->first();
+      $value = (string) $item->value;
+      $new = str_replace(['http://default/sites/default/files/', 'https://default/sites/default/files/'], '/sites/default/files/', $value);
+      if ($new !== $value) {
+        $item->value = $new;
+        $changed = TRUE;
+      }
+    }
+    if ($changed) {
+      $node->save();
+      $updated++;
+    }
+    $node_storage->resetCache([$nid]);
+  }
+  return sprintf('Inline file URLs: %d nodes made root-relative.', $updated);
+}

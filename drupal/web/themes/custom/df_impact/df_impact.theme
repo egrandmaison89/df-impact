@@ -396,6 +396,12 @@ function df_impact_preprocess_html(array &$variables): void {
   $route = \Drupal::routeMatch();
   if ($route->getRouteName() === 'entity.node.canonical') {
     $node = $route->getParameter('node');
+    // blockmag scopes single-post rules (category pills, meta) to these body classes.
+    if ($node instanceof NodeInterface && in_array($node->bundle(), ['article', 'in_brief'], TRUE)) {
+      foreach (['wp-singular', 'post-template-default', 'single', 'single-post', 'single-format-standard'] as $class) {
+        $variables['attributes']['class'][] = $class;
+      }
+    }
     if ($node instanceof NodeInterface
       && $node->bundle() === 'issue'
       && $node->hasField('field_issue_banner_is_light')
@@ -1796,13 +1802,14 @@ function df_impact_article_post_term_links(NodeInterface $node): array {
       $slug = function_exists('df_setup_topic_category_slug')
         ? df_setup_topic_category_slug($term->label())
         : strtolower(preg_replace('/[^a-z0-9]+/i', '-', $term->label()));
-      $links[] = [
+      $links[$slug] = [
         'url' => Url::fromUri('internal:/category/' . $slug)->toString(),
         'label' => $term->label(),
       ];
     }
   }
-  return $links;
+  uasort($links, static fn(array $a, array $b): int => strnatcasecmp($a['label'], $b['label']));
+  return array_values($links);
 }
 
 /**

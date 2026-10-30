@@ -39,10 +39,10 @@
 
   {% if article_post_term_links is defined and article_post_term_links|length %}
     <div style="color:#00629b;text-transform:capitalize" class="taxonomy-category has-link-color wp-block-post-terms has-text-color">
-      {% for term in article_post_term_links %}
-        {% if not loop.first %}<span class="wp-block-post-terms__separator">, </span>{% endif %}
+      {%- for term in article_post_term_links -%}
+        {%- if not loop.first %}<span class="wp-block-post-terms__separator">, </span>{% endif -%}
         <a href="{{ term.url }}" rel="tag">{{ term.label }}</a>
-      {% endfor %}
+      {%- endfor -%}
     </div>
   {% endif %}
 

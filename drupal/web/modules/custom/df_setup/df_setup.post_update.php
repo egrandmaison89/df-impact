@@ -521,3 +521,55 @@ function df_setup_repair_node_field_storage_definitions(array $field_names): str
     ? 'Node field storage definitions already in sync.'
     : 'Repaired node field storage definitions: ' . implode(', ', $repaired) . '.';
 }
+
+/**
+ * "More stories:" = live Jetpack Related Posts for articles and In Briefs (QA-020).
+ *
+ * Applies df_migrate/data/wp_jetpack_related_posts.json (frozen from live) in live order.
+ */
+function df_setup_post_update_jetpack_related_live_fixture(): string {
+  $messages = [];
+  if (!FieldConfig::loadByName('node', 'in_brief', 'field_related_articles') && FieldStorageConfig::loadByName('node', 'field_related_articles')) {
+    $data = \Drupal::service('config.storage.sync')->read('field.field.node.in_brief.field_related_articles');
+    if ($data) {
+      FieldConfig::create($data)->save();
+      \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+      $messages[] = 'Added field_related_articles to In Brief.';
+    }
+  }
+  $inc = DRUPAL_ROOT . '/modules/custom/df_migrate/scripts/backfill_jetpack_related_articles.inc';
+  if (!is_readable($inc)) {
+    return implode(' ', [...$messages, 'Jetpack live related: df_migrate include missing.']);
+  }
+  require_once $inc;
+  $data = df_migrate_load_jetpack_related_json();
+  $wp_to_nid = df_migrate_wp_id_to_article_nid_map();
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  $unresolved = 0;
+  foreach (is_array($data) ? ($data['by_wp_id'] ?? []) : [] as $entry) {
+    $nid = $wp_to_nid[(int) ($entry['wp_id'] ?? 0)] ?? NULL;
+    $node = $nid ? $node_storage->load($nid) : NULL;
+    if (!$node || !in_array($node->bundle(), ['article', 'in_brief'], TRUE) || !$node->hasField('field_related_articles')) {
+      continue;
+    }
+    $targets = [];
+    foreach (array_slice($entry['related'] ?? [], 0, 3) as $rel) {
+      $rel_nid = $wp_to_nid[(int) ($rel['wp_id'] ?? 0)] ?? NULL;
+      if ($rel_nid === NULL || $rel_nid === (int) $nid) {
+        $unresolved++;
+        continue;
+      }
+      $targets[] = $rel_nid;
+    }
+    $current = array_map('intval', array_column($node->get('field_related_articles')->getValue(), 'target_id'));
+    if ($current === $targets) {
+      continue;
+    }
+    $node->set('field_related_articles', array_map(static fn(int $id): array => ['target_id' => $id], $targets));
+    $node->save();
+    $updated++;
+  }
+  $messages[] = sprintf('Jetpack live related: %d nodes updated, %d related posts not migrated.', $updated, $unresolved);
+  return implode(' ', $messages);
+}

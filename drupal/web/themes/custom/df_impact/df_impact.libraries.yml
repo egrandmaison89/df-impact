@@ -65,7 +65,7 @@ wp_port:
     - core/jquery
 
 wp_chrome:
-  version: 1.1
+  version: 1.2
   js:
     js/wp-chrome-behaviors.js: {}
   dependencies:

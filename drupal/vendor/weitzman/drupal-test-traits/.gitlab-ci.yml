@@ -1,0 +1,34 @@
+include:
+  - project: $_GITLAB_TEMPLATES_REPO
+    ref: $_GITLAB_TEMPLATES_REF
+    file:
+      - "/includes/include.drupalci.main.yml"
+      - "/includes/include.drupalci.variables.yml"
+      - "/includes/include.drupalci.workflows.yml"
+
+variables:
+  DTT_BASE_URL: $SIMPLETEST_BASE_URL
+  DTT_MINK_DRIVER_ARGS: $MINK_DRIVER_ARGS_WEBDRIVER_DEFAULT
+  SKIP_ESLINT: 1
+  SKIP_STYLELINT: 1
+  SKIP_CSPELL: 1
+
+  # Show more log output
+  #_PHPUNIT_EXTRA: --verbose
+  # Convenient, and we have no secrets.
+  _SHOW_ENVIRONMENT_VARIABLES: 1
+
+.phpunit-base:
+  script:
+    - !reference [ .show-environment-variables ]
+    - !reference [ .setup-webserver ]
+    - !reference [ .simpletest-db ]
+    # Provide some context on the test run.
+    - vendor/bin/drush status
+    # Install and execute tests.
+    - composer si
+    - printf '\n\n $settings["extension_discovery_scan_tests"] = TRUE;' >> web/sites/default/settings.php
+    - vendor/bin/drush pm:install performance_test
+    - composer unit -- --log-junit $CI_PROJECT_DIR/junit.xml $_PHPUNIT_EXTRA
+    - cp /var/log/apache2/test.apache.access.log $CI_PROJECT_DIR/apache.access.log.txt
+    - cp /var/log/apache2/test.apache.error.log $CI_PROJECT_DIR/apache.error.log.txt

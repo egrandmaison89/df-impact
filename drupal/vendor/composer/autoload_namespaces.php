@@ -6,6 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'org\\bovigo\\vfs\\' => array($vendorDir . '/mikey179/vfsstream/src/main/php'),
     'Console' => array($vendorDir . '/pear/console_getopt'),
     'Archive_Tar' => array($vendorDir . '/pear/archive_tar'),
 );

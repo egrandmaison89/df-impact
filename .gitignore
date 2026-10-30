@@ -54,3 +54,11 @@ drupal/web/sites/default/files/php/
 drupal/web/sites/default/files/styles/
 drupal/web/sites/default/files/wp-content/
 drupal/web/sites/default/files/config_*/drupal/web/wp-content/
+
+# Upstream binary assets not used by this site (keep binaries out of git; restored by `composer install`).
+drupal/web/core/themes/default_admin/font/
+drupal/web/core/themes/default_admin/images/
+drupal/web/core/themes/default_admin/logo.png
+drupal/web/core/themes/default_admin/screenshot.png
+drupal/web/core/modules/system/tests/fixtures/update/drupal-11.3.0.*.php.gz
+drupal/vendor/weitzman/drupal-test-traits/tests/fixtures/drupal.png

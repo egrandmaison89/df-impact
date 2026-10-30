@@ -11,6 +11,7 @@ use Drupal\Tests\ckeditor5\Kernel\CKEditor5ValidationTestTrait;
 use Drupal\Tests\SchemaCheckTestTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * @covers \Drupal\linkit\Plugin\CKEditor5Plugin\Linkit::validChoices
@@ -71,6 +72,7 @@ if (version_compare(\Drupal::VERSION, '10.3', '>')) {
    *
    * @group linkit
    */
+  #[RunTestsInSeparateProcesses]
   class LinkitValidatorsTest extends ValidatorsTest {
 
     /**

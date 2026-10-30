@@ -17,4 +17,4 @@
     <a href="{{ url }}">{{ content.field_cover_image }}</a>
   </figure>
 {% endif %}
-<h4 class="wp-block-heading has-tertiary-color has-text-color"><a href="{{ url }}">{{ label }}</a></h4>
+<h4 class="wp-block-heading has-tertiary-color has-text-color"><a href="{{ url }}">{{ issue_title_plain|default(label) }}</a></h4>

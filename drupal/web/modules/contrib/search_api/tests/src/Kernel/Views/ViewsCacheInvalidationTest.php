@@ -10,9 +10,9 @@ use Drupal\search_api\Entity\Index;
 use Drupal\Tests\search_api\Kernel\PostRequestIndexingTrait;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\views\Tests\AssertViewsCacheTagsTrait;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 // cspell:ignore angua littlebottom überwald
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Tests that cached Search API views get invalidated at the right occasions.
@@ -263,12 +263,8 @@ class ViewsCacheInvalidationTest extends KernelTestBase {
     $this->assertCached('no-access');
     $this->assertCached('has-access');
 
-    // Edit one of the test content entities. This should not affect the cached
-    // view until the search index is updated.
+    // Edit one of the test content entities. This should invalidate the cache.
     $this->nodes['Cheery']->set('title', 'Cheery Littlebottom')->save();
-    $this->assertCached('no-access');
-    $this->assertCached('has-access');
-    $this->index->indexItems();
     $this->assertNotCached('no-access');
     $this->assertNotCached('has-access');
 
@@ -444,6 +440,14 @@ class ViewsCacheInvalidationTest extends KernelTestBase {
    *   The key of the user to set as currently active user.
    */
   protected function setCurrentUser($user_key) {
+    // Pretend the user switch happens on a new page request. Otherwise, the
+    // permissions hash calculated for the user earlier in the test would still
+    // be used after the user's roles have changed.
+    foreach (['cache.memory', 'cache.static'] as $bin) {
+      if ($this->container->has($bin)) {
+        $this->container->get($bin)->deleteAll();
+      }
+    }
     $this->currentUser->setAccount($this->users[$user_key]);
   }
 

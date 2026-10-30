@@ -445,3 +445,79 @@ function df_setup_post_update_relative_inline_file_urls(): string {
   }
   return sprintf('Inline file URLs: %d nodes made root-relative.', $updated);
 }
+
+/**
+ * Repairs "Mismatched entity and/or field definitions" for node field storages.
+ *
+ * Covers node.body, node.field_homepage_sort_weight and node.field_postx_sort_weight
+ * (plus field_issue_banner_is_light, which shows the same drift on long-lived DBs).
+ */
+function df_setup_post_update_repair_node_field_storage_definitions(): string {
+  return df_setup_repair_node_field_storage_definitions([
+    'body',
+    'field_homepage_sort_weight',
+    'field_postx_sort_weight',
+    'field_issue_banner_is_light',
+  ]);
+}
+
+/**
+ * Reconciles dedicated field tables and installed schema records (idempotent).
+ *
+ * The drift seen on migrated DBs is a missing or stale
+ * entity.storage_schema.sql record while the field tables already hold data,
+ * so tables are created/extended non-destructively and the records rewritten.
+ *
+ * @param list<string> $field_names
+ */
+function df_setup_repair_node_field_storage_definitions(array $field_names): string {
+  $entity_type_id = 'node';
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $change_list = $update_manager->getChangeList()[$entity_type_id]['field_storage_definitions'] ?? [];
+  $current = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions($entity_type_id);
+  $repository = \Drupal::service('entity.last_installed_schema.repository');
+  $schema_kv = \Drupal::keyValue('entity.storage_schema.sql');
+  $db_schema = \Drupal::database()->schema();
+  $storage = \Drupal::entityTypeManager()->getStorage($entity_type_id);
+  $storage_schema = (fn () => $this->getStorageSchema())->call($storage);
+
+  $repaired = [];
+  foreach ($field_names as $field_name) {
+    $definition = $current[$field_name] ?? NULL;
+    if ($definition === NULL || !isset($change_list[$field_name])) {
+      continue;
+    }
+
+    if ($change_list[$field_name] === $update_manager::DEFINITION_CREATED && !$db_schema->tableExists($storage->getTableMapping()->getDedicatedDataTableName($definition))) {
+      $update_manager->installFieldStorageDefinition($field_name, $entity_type_id, $definition->getProvider(), $definition);
+      $repaired[] = $field_name . ' (installed)';
+      continue;
+    }
+
+    $schema = (fn ($d) => $this->getSchemaFromStorageDefinition($d))->call($storage_schema, $definition);
+    foreach ($schema as $table => $table_schema) {
+      if (!$db_schema->tableExists($table)) {
+        $db_schema->createTable($table, $table_schema);
+        continue;
+      }
+      foreach ($table_schema['fields'] as $column => $column_schema) {
+        if (!$db_schema->fieldExists($table, $column)) {
+          $db_schema->addField($table, $column, $column_schema);
+        }
+      }
+      foreach ($table_schema['indexes'] ?? [] as $index => $index_fields) {
+        if (!$db_schema->indexExists($table, $index)) {
+          $db_schema->addIndex($table, $index, $index_fields, $table_schema);
+        }
+      }
+    }
+    $schema_kv->set($entity_type_id . '.field_schema_data.' . $field_name, $schema);
+    $repository->setLastInstalledFieldStorageDefinition($definition);
+    $repaired[] = $field_name;
+  }
+
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+  return $repaired === []
+    ? 'Node field storage definitions already in sync.'
+    : 'Repaired node field storage definitions: ' . implode(', ', $repaired) . '.';
+}

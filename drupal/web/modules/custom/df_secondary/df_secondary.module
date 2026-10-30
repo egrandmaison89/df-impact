@@ -68,7 +68,9 @@ function df_secondary_preprocess_html(array &$variables): void {
   if ($route === 'view.df_impact_search.page_1' || $path === '/search') {
     $variables['attributes']['class'][] = 'search';
     $variables['attributes']['class'][] = 'search-results';
-    $variables['attributes']['class'][] = 'error404';
+    if (trim((string) (\Drupal::request()->query->get('s') ?? '')) === '') {
+      $variables['attributes']['class'][] = 'error404';
+    }
   }
   if ($route === 'system.404') {
     $variables['attributes']['class'][] = 'error404';

@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Non\-abstract test classes names should always have the suffix "Test", found incorrect class name "ExistingSitePerformanceBase"\.$#'
+			identifier: nonAbstractTestClass.NameNoSuffixTest
+			count: 1
+			path: src/ExistingSitePerformanceBase.php

@@ -116,6 +116,34 @@ async function expectLoggedInNodeTabs(page: import('@playwright/test').Page) {
   ).toBeVisible();
 }
 
+async function expectStickyHeaderBelowToolbar(page: import('@playwright/test').Page) {
+  await page.evaluate(() => window.scrollTo(0, 1200));
+  await page.waitForTimeout(300);
+  const layout = await page.evaluate(() => {
+    const toolbar = document.querySelector('#toolbar-administration');
+    const header = document.querySelector('header.wp-block-template-part');
+    if (!toolbar || !header) {
+      return null;
+    }
+    const offset = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--drupal-displace-offset-top') || '0',
+    );
+    const hd = header.getBoundingClientRect();
+    return { toolbarBottom: offset, headerTop: hd.top };
+  });
+  expect(layout).not.toBeNull();
+  expect(layout!.headerTop).toBeGreaterThanOrEqual(layout!.toolbarBottom - 2);
+}
+
+function assertNoPublishedAutomationNodes(): void {
+  const count = Number(
+    drush(
+      `sqlq "SELECT COUNT(*) FROM node_field_data WHERE status=1 AND (title LIKE 'DF Test%' OR title LIKE 'Playwright%')"`,
+    ),
+  );
+  expect(count, 'published automation test nodes must be cleaned up').toBe(0);
+}
+
 /** Restore every setting admin-e2e may change so parity sweeps stay 801/801. */
 function restoreChromeSnapshot(): void {
   if (!snapshotReady) {
@@ -226,6 +254,8 @@ test.describe('Site admin chrome editing (UI)', () => {
 
   test.afterAll(() => {
     restoreChromeSnapshot();
+    drush('ev "if (function_exists(\\"df_editor_cleanup_automation_test_nodes\\")) { df_editor_cleanup_automation_test_nodes(); }"');
+    assertNoPublishedAutomationNodes();
   });
 
   test('site_admin front-end toolbar, tabs, and admin/content (anonymous stays clean)', async ({
@@ -236,13 +266,29 @@ test.describe('Site admin chrome editing (UI)', () => {
       await go(anon, '/homepage');
       await expect(anon.locator('#toolbar-administration')).toHaveCount(0);
       await expect(anon.locator('.df-admin-local-tasks')).toHaveCount(0);
+      await go(anon, '/fall-2026-issue');
+      const bannerHeight = await anon.locator('.issue-page-banner').evaluate((el) => el.getBoundingClientRect().height);
+      expect(bannerHeight).toBeGreaterThan(470);
+      expect(bannerHeight).toBeLessThan(495);
     });
 
     await login(page, SITE_ADMIN.name, SITE_ADMIN.pass);
-    await go(page, '/homepage');
-    await expectLoggedInToolbar(page);
+    for (const width of [1280, 768]) {
+      await page.setViewportSize({ width, height: 900 });
+      await go(page, '/homepage');
+      await expectLoggedInToolbar(page);
+      await expectStickyHeaderBelowToolbar(page);
+    }
+    await page.setViewportSize({ width: 1280, height: 900 });
     await go(page, articlePath);
     await expectLoggedInNodeTabs(page);
+    const inBriefPath = drush(
+      `sqlq "SELECT pa.alias FROM node_field_data n INNER JOIN path_alias pa ON pa.path = CONCAT('/node/', n.nid) WHERE n.type='in_brief' AND n.status=1 ORDER BY n.nid DESC LIMIT 1"`,
+    );
+    if (inBriefPath) {
+      await go(page, inBriefPath.startsWith('/') ? inBriefPath : `/${inBriefPath}`);
+      await expectLoggedInNodeTabs(page);
+    }
     const adminContent = await go(page, '/admin/content');
     expect(adminContent?.status()).toBe(200);
     await screenshot(page, '00-admin-front-end-toolbar');

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+## Copied from https://github.com/ddev/ddev-drupal-contrib
+## Description: Expand composer.json and run composer install.
+## Usage: poser [flags] [args]
+## Example: "ddev poser"
+## ProjectTypes: drupal8,drupal9,drupal10,drupal11,drupal12
+## ExecRaw: true
+
+export COMPOSER=composer.contrib.json
+.ddev/commands/web/expand-composer-json "$DDEV_PROJECT_NAME"
+composer install
+rm composer.contrib.json composer.contrib.lock
+cd $DDEV_DOCROOT/core
+echo "Yarn version (before corepack enable) $(yarn --version)"
+corepack enable && yarn install
+touch ./.env
+cd -

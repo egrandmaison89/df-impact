@@ -1371,6 +1371,9 @@ article.post .wp-block-post-terms {
 .issue-page .issue-page-banner.wp-block-cover {
   width: 100%;
   min-height: 481px;
+  height: 481px;
+  max-height: 481px;
+  overflow: hidden;
   contain: layout;
 }
 

@@ -94,6 +94,11 @@ function df_metatag_metatags_alter(array &$tags, array &$context): void {
     $tags['og_description'] = '';
     unset($tags['canonical_url'], $tags['shortlink'], $tags['twitter_cards_description']);
   }
+  elseif ($is_search_surface) {
+    // Yoast on live: no canonical for search results; og:url uses the /search/{term}/ form.
+    unset($tags['canonical_url'], $tags['shortlink']);
+    $tags['og_url'] = rtrim($origin, '/') . '/search/' . rawurlencode(trim((string) $search_query)) . '/';
+  }
 
   if ($route_match->getRouteName() === 'view.topic_archive.page_1') {
     $term = df_metatag_topic_archive_term();

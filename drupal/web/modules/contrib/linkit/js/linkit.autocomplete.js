@@ -68,6 +68,9 @@
     setMetadata(ui.item, $context, event.target);
 
     event.target.value = ui.item.path;
+    // Keep the stored focusin value in sync so the focusout check
+    // does not treat the autocomplete selection as a manual edit.
+    $(event.target).data('linkit-uri-on-focusin', ui.item.path);
 
     // Auto populate the title field if configured to do so for this link field.
     if (ui.item.label) {
@@ -252,11 +255,24 @@
           // In case the user makes an edit and does not click on the
           // autocomplete dropdown (so selectHandler() does not run), add a
           // listener to update the hidden form inputs.
+          $uri.focusin(event => {
+            $(event.target).data('linkit-uri-on-focusin', event.target.value);
+          });
           $uri.focusout(event => {
             const $context = $(event.target).closest('form,fieldset,tr,.linkit-widget-container,.field--widget-linkit');
             let $href = $getAttributesInput('href', $context, event.target),
                  href = new URL($href.val(), document.baseURI),
                   uri = new URL($uri.val(), document.baseURI);
+            const valueOnFocusIn = $(event.target).data('linkit-uri-on-focusin');
+            // If the field value changed since focusin, the user typed a raw
+            // URL rather than selecting from autocomplete — clear entity metadata.
+            // selectHandler keeps linkit-uri-on-focusin in sync, so an
+            // autocomplete selection is never treated as a manual edit.
+            if (valueOnFocusIn !== undefined && $uri.val() === valueOnFocusIn) {
+               // The value is not changed between focusin and focusout, do nothing.
+               $(event.target).removeData('linkit-uri-on-focusin');
+              return;
+            }
             // If any of the these properties differ between the two URLs, the
             // hidden inputs storing options field data will be cleared.
             // Essentially, we leave out any of the props that contain URL

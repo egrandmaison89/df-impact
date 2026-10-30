@@ -16,17 +16,7 @@
     </div>
   </div>
 
-  {% if page.highlighted and not is_about_impact %}
-    {% if logged_in %}
-      <div class="highlighted df-admin-local-tasks">
-        {{ page.highlighted }}
-      </div>
-    {% else %}
-      <div class="highlighted visually-hidden">
-        {{ page.highlighted }}
-      </div>
-    {% endif %}
-  {% endif %}
+  {% include '@df_impact/includes/df-admin-highlighted.html.twig' %}
 
   <main id="wp--skip-link--target" class="wp-block-group is-layout-flow wp-block-group-is-layout-flow" role="main">
     {% if page.hero %}

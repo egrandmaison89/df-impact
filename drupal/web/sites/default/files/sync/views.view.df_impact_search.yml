@@ -111,10 +111,10 @@ display:
         options:
           view_modes:
             'entity:node':
-              article: teaser
-              in_brief: default
-              issue: default
-              page: teaser
+              article: search_result
+              in_brief: search_result
+              issue: search_result
+              page: search_result
       query:
         type: search_api_query
         options: {  }

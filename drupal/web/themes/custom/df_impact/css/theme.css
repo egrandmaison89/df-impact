@@ -2,6 +2,23 @@
    THEME — Page-specific overrides and section styling
    ========================================================================== */
 
+/* blockmag theme.json fontFace (WP inlines these as wp-fonts-local). */
+@font-face {
+  font-family: "Libre Baskerville";
+  font-style: normal;
+  font-weight: 400;
+  font-display: fallback;
+  src: url("../wp-assets/danafarberimpact.org_wp-content_themes_blockmag_assets_fonts_libre-baskerville_LibreBaskerville-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Libre Baskerville";
+  font-style: normal;
+  font-weight: 700;
+  font-display: fallback;
+  src: url("../wp-assets/danafarberimpact.org_wp-content_themes_blockmag_assets_fonts_libre-baskerville_LibreBaskerville-Bold.woff2") format("woff2");
+}
+
 /* --- About Impact page --- */
 .about-impact-page {
   font-size: 0.75rem;

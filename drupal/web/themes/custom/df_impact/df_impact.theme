@@ -5,6 +5,8 @@
  * Functions to support theming in the Dana-Farber Impact theme.
  */
 
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
 use Drupal\df_setup\ArticleCreditLabels;
@@ -558,6 +560,26 @@ function df_impact_preprocess_node(&$variables) {
   // Add view mode class.
   $variables['attributes']['class'][] = 'node--view-mode-' . str_replace('_', '-', $variables['view_mode']);
   $variables['is_about_impact_node'] = df_impact_is_about_impact_page($node);
+
+  if ($variables['view_mode'] === 'search_result') {
+    $terms = (string) \Drupal::request()->query->get('s', '');
+    $variables['search_result_title'] = df_impact_search_highlight(df_impact_decode_plain_text($node->label()), $terms);
+    if ($node->bundle() === 'in_brief') {
+      $variables['search_result_excerpt'] = df_impact_in_brief_plain_excerpt($node);
+    }
+    else {
+      $meta = df_impact_archive_row_image_meta($node);
+      $variables['search_result_image_url'] = $meta['url'] ?? NULL;
+      $variables['search_result_image_alt'] = $meta['alt'] ?? $node->label();
+      $variables['search_result_image_width'] = $meta['width'] ?? 1450;
+      $variables['search_result_image_height'] = $meta['height'] ?? 1040;
+      $variables['search_result_excerpt'] = df_impact_archive_excerpt_for_node($node);
+    }
+    $words = preg_split('/\s+/u', trim((string) $variables['search_result_excerpt'])) ?: [];
+    if (count($words) > 55) {
+      $variables['search_result_excerpt'] = implode(' ', array_slice($words, 0, 55)) . '…';
+    }
+  }
 
   if ($node->bundle() === 'in_brief' && $variables['view_mode'] === 'in_brief_listing') {
     $variables['in_brief_collapsed'] = !empty($variables['elements']['#in_brief_collapsed']);
@@ -2586,6 +2608,23 @@ function df_impact_in_brief_manifest_row(NodeInterface $node): array {
  */
 function df_impact_decode_plain_text(?string $text): string {
   return \Drupal\df_migrate\TextEntityHelper::decode($text);
+}
+
+/**
+ * Wraps search terms in WP Better Search's highlight marks.
+ */
+function df_impact_search_highlight(string $text, string $terms): Markup {
+  $words = array_filter(preg_split('/\s+/u', trim($terms)) ?: [], static fn($w) => mb_strlen($w) > 1);
+  if (!$words) {
+    return Markup::create(Html::escape($text));
+  }
+  $pattern = '/(' . implode('|', array_map(static fn($w) => preg_quote($w, '/'), $words)) . ')/iu';
+  $parts = preg_split($pattern, $text, -1, PREG_SPLIT_DELIM_CAPTURE) ?: [$text];
+  $out = '';
+  foreach ($parts as $i => $part) {
+    $out .= $i % 2 ? '<mark class="bsearch_highlight">' . Html::escape($part) . '</mark>' : Html::escape($part);
+  }
+  return Markup::create($out);
 }
 
 function df_impact_archive_excerpt_for_node(NodeInterface $node): string {

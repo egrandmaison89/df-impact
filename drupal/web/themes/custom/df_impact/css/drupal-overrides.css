@@ -158,8 +158,8 @@ main#wp--skip-link--target .entry-content.wp-block-post-content::after {
 }
 
 .wp-block-post-template > .wp-block-post {
-  margin-bottom: 64.8px;
-  padding-bottom: 64.8px;
+  margin-bottom: clamp(30px, 4.5vw, 84px);
+  padding-bottom: clamp(30px, 4.5vw, 84px);
 }
 
 .wp-block-post-template > .wp-block-post .wp-block-post-featured-image {

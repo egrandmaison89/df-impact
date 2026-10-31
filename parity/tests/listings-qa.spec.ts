@@ -350,10 +350,45 @@ test.describe('listings QA', () => {
     expect((await img.getAttribute('srcset')) ?? '').not.toMatch(/\/FCH_1450/);
   });
 
-  test('QA-029 tag archive title matches WP', async ({ page }) => {
+  test('QA-029 tag archive title matches WP and the pager has 6 pages', async ({ page }) => {
     await open(page, '/tag/digital-exclusives');
     await expect(page).toHaveTitle('Digital Exclusives Archives - Impact Magazine');
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', 'Digital Exclusives Archives - Impact Magazine');
+    const pager = await pagerSummary(page);
+    expect(pager).not.toBeNull();
+    expect(pager!.items[0]).toBe('[1]');
+    expect(pager!.items).toContain('6');
+    expect(pager!.next).toBe(true);
+    await expect(page.locator('.wp-block-query-pagination-next')).toHaveAttribute('href', /\/tag\/digital-exclusives\/page\/2\/?$/);
+  });
+
+  test('QA-065 YouTube embed stays inside a 390px viewport', async ({ page }) => {
+    await open(page, '/2026/09/a-legacy-of-giving-that-makes-compassionate-care-possible/', 390);
+    const frame = page.locator('figure.wp-block-embed-youtube iframe').first();
+    await expect(frame).toBeVisible();
+    const box = await frame.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.width).toBeLessThanOrEqual(390);
+    expect(box!.width).toBeGreaterThan(200);
+    const ratio = box!.width / box!.height;
+    expect(ratio).toBeGreaterThan(1.6);
+    expect(ratio).toBeLessThan(1.9);
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(390);
+  });
+
+  test('QA-064 pull quote uses live Libre Baskerville styles', async ({ page }) => {
+    await open(page, '/2025/03/sajni-fund-raises-vital-funds-for-rare-pediatric-cancer-research/');
+    const quote = page.locator('figure.wp-block-pullquote').first();
+    await expect(quote).toBeVisible();
+    await expect(quote).toHaveCSS('font-size', '30px');
+    await expect(quote).toHaveCSS('font-weight', '600');
+    await expect(quote).toHaveCSS('border-top-color', 'rgb(255, 163, 0)');
+    const family = await quote.evaluate((el) => getComputedStyle(el).fontFamily);
+    expect(family.toLowerCase()).toContain('libre baskerville');
+    const cite = quote.locator('cite').first();
+    await expect(cite).toHaveCSS('font-size', '24.375px');
+    await expect(cite).toHaveCSS('text-transform', 'capitalize');
   });
 
   test('QA-010/015 In Brief keeps the summary lead figure and caption like WP', async ({ page }) => {

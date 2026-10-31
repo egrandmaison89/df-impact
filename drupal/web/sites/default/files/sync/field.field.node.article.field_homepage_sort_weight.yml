@@ -10,7 +10,7 @@ field_name: field_homepage_sort_weight
 entity_type: node
 bundle: article
 label: 'Homepage grid sort weight'
-description: 'Lower numbers appear first on homepage PostX rows (Explore, Digital Exclusives, Recent Highlights).'
+description: 'Lower numbers appear first. Explore the Latest Issue uses 1–99. Digital Exclusives uses 110–199. Other values are left out of that row. Leave blank to sort last. <a href="/admin/content/issue-dashboard">Issue dashboard</a>'
 required: false
 translatable: false
 default_value: {  }

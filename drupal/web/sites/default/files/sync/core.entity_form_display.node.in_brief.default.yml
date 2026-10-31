@@ -12,8 +12,8 @@ dependencies:
     - workflows.workflow.editorial
   module:
     - content_moderation
+    - image
     - link
-    - media_library
     - path
     - text
 id: node.in_brief.default
@@ -28,12 +28,12 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_image:
-    type: media_library_widget
+    type: image_image
     weight: 2
     region: content
     settings:
-      media_types:
-        - image
+      progress_indicator: throbber
+      preview_image_style: thumbnail
     third_party_settings: {  }
   field_issue:
     type: entity_reference_autocomplete

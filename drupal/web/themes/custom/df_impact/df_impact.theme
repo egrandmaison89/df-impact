@@ -1121,8 +1121,8 @@ function df_impact_wp_paginate_links(int $element, array $parameters = []): ?arr
   $total = $pager->getTotalPages();
   $current = $pager->getCurrentPage() + 1;
   // WP-style /page/N paths map to ?page= internally; link from the archive root.
-  $request_path = (string) parse_url(\Drupal::request()->getRequestUri(), PHP_URL_PATH);
-  $base_path = preg_replace('#/page/\d+/?$#', '', $request_path) ?: '/';
+    $request_path = (string) parse_url(\Drupal::request()->getRequestUri(), PHP_URL_PATH);
+    $base_path = rtrim((string) preg_replace('#/page/\d+/?$#', '', $request_path), '/') ?: '/';
   $is_search = df_impact_is_search_results_route();
   $href = static function (int $num) use ($pager_manager, $parameters, $element, $base_path, $is_search): string {
     $query = $pager_manager->getUpdatedParameters($parameters, $element, $num - 1);
@@ -1132,6 +1132,16 @@ function df_impact_wp_paginate_links(int $element, array $parameters = []): ?arr
     if ($is_search) {
       // Live WP search pagination: /page/N/?s=term&id=701.
       return Url::fromUserInput($num > 1 ? '/page/' . $num . '/' : '/', ['query' => $query])->toString();
+    }
+    // Tag archives (and the Digital Exclusives category, which live paginates
+    // on /tag/...) use /page/N. Other category views keep ?page= because an
+    // outbound processor rewrites /category/{slug}/page/N back to ?page=.
+    if (preg_match('#^/(tag|category)/([^/]+)$#', $base_path, $archive)) {
+      $tag_slug = $archive[1] === 'tag' ? $archive[2] : ($archive[2] === 'digital-exclusives' ? 'digital-exclusives' : '');
+      if ($tag_slug !== '') {
+        $root = '/tag/' . $tag_slug;
+        return Url::fromUserInput($num > 1 ? $root . '/page/' . $num : $root)->toString();
+      }
     }
     return Url::fromUserInput($base_path, ['query' => $query])->toString();
   };
@@ -2714,7 +2724,53 @@ function df_impact_in_brief_card_image_meta(NodeInterface $node): ?array {
       }
     }
   }
-  return NULL;
+  $uri = df_impact_in_brief_manifest_image_uri($node);
+  if ($uri === NULL) {
+    return NULL;
+  }
+  return [
+    'url' => df_impact_card_image_url_for_parity($uri),
+    'alt' => $node->label(),
+  ];
+}
+
+/**
+ * Local wp-images URI for an In Brief card when field_image was not backfilled.
+ *
+ * in_brief.json stores WordPress attachment-page URLs. media.json has the file URL.
+ */
+function df_impact_in_brief_manifest_image_uri(NodeInterface $node): ?string {
+  static $media_by_wp_id = NULL;
+  $row = df_impact_in_brief_manifest_row($node);
+  if ($media_by_wp_id === NULL) {
+    $media_by_wp_id = [];
+    $json_path = DRUPAL_ROOT . '/' . \Drupal::service('extension.list.module')->getPath('df_migrate') . '/data/media.json';
+    if (is_readable($json_path)) {
+      $items = json_decode((string) file_get_contents($json_path), TRUE);
+      if (is_array($items)) {
+        foreach ($items as $item) {
+          if (!empty($item['wp_id']) && !empty($item['source_url'])) {
+            $media_by_wp_id[(string) $item['wp_id']] = (string) $item['source_url'];
+          }
+        }
+      }
+    }
+  }
+  $url = $media_by_wp_id[(string) ($row['featured_image_wp_id'] ?? '')] ?? '';
+  if ($url === '' && !empty($row['body']) && preg_match('#https?://[^"\s]+/wp-content/uploads/[^"\s]+#', (string) $row['body'], $match)) {
+    $url = $match[0];
+  }
+  if ($url === '') {
+    return NULL;
+  }
+  $filename = rawurldecode((string) basename((string) parse_url($url, PHP_URL_PATH)));
+  if ($filename === '') {
+    return NULL;
+  }
+  $uri = 'public://wp-images/' . $filename;
+  $resolved = df_impact_resolve_wp_images_uri($uri) ?? $uri;
+  $real = \Drupal::service('file_system')->realpath($resolved);
+  return is_string($real) && is_readable($real) ? $resolved : NULL;
 }
 
 /**

@@ -10,7 +10,7 @@ field_name: field_postx_sort_weight
 entity_type: node
 bundle: article
 label: 'Issue grid sort weight'
-description: 'Lower numbers appear first in issue PostX grids (matches WordPress order when backfilled).'
+description: 'Lower numbers appear first in the issue article grid. Leave blank to sort last. <a href="/admin/content/issue-dashboard">Issue dashboard</a>'
 required: false
 translatable: false
 default_value: {  }

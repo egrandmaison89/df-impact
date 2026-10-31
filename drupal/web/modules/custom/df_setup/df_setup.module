@@ -316,24 +316,6 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
   $tid_sql = (int) $tid;
   $snippet = "{$base_alias}.{$base_field} IN (SELECT fc.entity_id FROM {node__field_channels} fc WHERE fc.bundle = 'article' AND fc.deleted = 0 AND fc.field_channels_target_id = {$tid_sql})";
   $query->addWhereExpression(0, $snippet);
-
-  if ($view_id === 'digital_exclusives_archive') {
-    $slugs = df_setup_digital_exclusive_archive_slugs();
-    if ($slugs === []) {
-      $query->addWhereExpression(0, '1 = 0');
-      return;
-    }
-    $connection = \Drupal::database();
-    $quoted = [];
-    foreach ($slugs as $slug) {
-      $quoted[] = $connection->quote($slug);
-    }
-    $in = implode(', ', $quoted);
-    $query->addWhereExpression(
-      0,
-      "EXISTS (SELECT 1 FROM {path_alias} pa WHERE pa.path = CONCAT('/node/', {$base_alias}.{$base_field}) AND pa.alias IN ({$in}))"
-    );
-  }
 }
 
 /**
@@ -477,6 +459,23 @@ function df_setup_archive_nids_for_request_path(string $path): array {
     }
   }
   return $nids;
+}
+
+/**
+ * Published articles on the Digital Exclusives channel term.
+ */
+function df_setup_digital_exclusive_published_count(): int {
+  $tid = \Drupal::service('df_setup.digital_exclusive_channels')->findTermId();
+  if (!$tid) {
+    return 0;
+  }
+  return (int) \Drupal::entityTypeManager()->getStorage('node')->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('status', 1)
+    ->condition('field_channels', $tid)
+    ->count()
+    ->execute();
 }
 
 function df_setup_digital_exclusive_archive_slugs(): array {
@@ -1400,8 +1399,12 @@ function df_setup_preprocess_views_view(array &$variables): void {
  */
 function df_setup_archive_frozen_total_items(ViewExecutable $view): int {
   $path = preg_replace('#/page/\d+$#', '', rtrim(df_setup_archive_frozen_lookup_path(), '/'));
-  if (preg_match('#^/tag/[^/]+$#', $path)) {
-    // Tag archives only exist as frozen WP captures: sum every captured page.
+  if (preg_match('#^/tag/([^/]+)$#', $path, $tag)) {
+    if ($tag[1] === 'digital-exclusives') {
+      // Page 1 is frozen; later pages are every article on the channel term.
+      return df_setup_digital_exclusive_published_count();
+    }
+    // Other tag archives only exist as frozen WP captures: sum every captured page.
     $total = 0;
     for ($page = 1; $page < 100; $page++) {
       $paths = ArchivePageWpOrder::pathsForArchive($page === 1 ? $path : $path . '/page/' . $page);

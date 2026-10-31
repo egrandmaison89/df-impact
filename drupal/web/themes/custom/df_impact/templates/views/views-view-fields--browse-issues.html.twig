@@ -1,20 +1,17 @@
 {#
 /**
  * @file
- * Issue card for browse issues — WordPress /browse-issues/ parity (cover + h4).
+ * Issue card for browse issues — WordPress /browse-issues/ parity (linked cover + plain h4).
  */
 #}
+{% set heading_classes = issue_heading_uncolored|default(false) ? 'wp-block-heading' : 'wp-block-heading has-tertiary-color has-text-color' %}
 {% if issue_cover_url is defined and issue_cover_url %}
-  <figure class="wp-block-image size-full is-resized issue-cover">
-    <a href="{{ issue_url }}"><img decoding="async" src="{{ issue_cover_url }}" alt="{{ issue_cover_alt }}" class="lazyloaded" style="width:250px;height:auto"></a>
-  </figure>
+  <figure class="wp-block-image size-full is-resized issue-cover"><a href="{{ issue_url }}"><img decoding="async" src="{{ issue_cover_url }}" alt="{{ issue_cover_alt }}" class="lazyloaded" style="width:250px;height:auto"></a></figure>
 {% elseif issue_thumbnail is defined and issue_thumbnail|render|trim %}
-  <figure class="wp-block-image size-full is-resized issue-cover">
-    <a href="{{ issue_url }}">{{ issue_thumbnail }}</a>
-  </figure>
+  <figure class="wp-block-image size-full is-resized issue-cover"><a href="{{ issue_url }}">{{ issue_thumbnail }}</a></figure>
 {% endif %}
 {% if issue_title_plain is defined and issue_title_plain %}
-  <h4 class="wp-block-heading has-tertiary-color has-text-color"><a href="{{ issue_url }}">{{ issue_title_plain }}</a></h4>
+  <h4 class="{{ heading_classes }}">{{ issue_title_plain }}</h4>
 {% elseif fields.title is defined %}
-  <h4 class="wp-block-heading has-tertiary-color has-text-color"><a href="{{ issue_url }}">{{ fields.title.content|render|striptags|trim }}</a></h4>
+  <h4 class="{{ heading_classes }}">{{ fields.title.content|render|striptags|trim }}</h4>
 {% endif %}

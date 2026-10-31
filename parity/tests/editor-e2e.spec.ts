@@ -477,6 +477,7 @@ test.describe('Web editor issue launch (UI)', () => {
   test('RBAC: web_editor denied site chrome; site_admin allowed', async ({ page }) => {
     await login(page, WEB_EDITOR.name, WEB_EDITOR.pass);
     for (const route of [
+      '/admin/config/df-impact',
       '/admin/config/df-impact/site-settings',
       '/admin/config/df-impact/footer-settings',
       '/admin/config/df-impact/homepage-hero',
@@ -489,12 +490,17 @@ test.describe('Web editor issue launch (UI)', () => {
     await logout(page);
     await login(page, SITE_ADMIN.name, SITE_ADMIN.pass);
     for (const route of [
+      '/admin/config/df-impact',
       '/admin/config/df-impact/site-settings',
       '/admin/config/df-impact/footer-settings',
       '/admin/config/df-impact/homepage-hero',
     ]) {
       const res = await go(page, route);
       expect(res?.status(), route).toBe(200);
+    }
+    await go(page, '/admin/config/df-impact');
+    for (const label of ['Impact site settings', 'Homepage hero', 'Impact footer settings']) {
+      await expect(page.locator('.admin-list a, dl.admin-list a, main a', { hasText: label }).first()).toBeVisible();
     }
     await screenshot(page, '02-site-admin-settings-ok');
     await logout(page);

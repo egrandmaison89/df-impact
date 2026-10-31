@@ -11,11 +11,7 @@
 {% if rows %}
   <main class="wp-block-query is-layout-constrained wp-block-query-is-layout-constrained">
     {{ rows }}
-    {% if pager %}
-      <nav class="alignwide wp-block-query-pagination is-content-justification-space-between is-layout-flex wp-block-query-pagination-is-layout-flex" aria-label="{{ 'Pagination'|t }}">
-        {{ pager }}
-      </nav>
-    {% endif %}
+    {{ pager }}
   </main>
 {% elseif search_has_query %}
   <main class="wp-block-query is-layout-constrained wp-block-query-is-layout-constrained search-no-results"></main>

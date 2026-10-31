@@ -9,10 +9,10 @@
   <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
     <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
 
-      {% if in_brief_image_url %}
-        <figure class="wp-block-image alignleft size-large is-resized no-caption-image">
-          <img decoding="async" src="{{ in_brief_image_url }}" alt="{{ in_brief_image_alt }}" class="wp-post-image wp-image-{{ node.id }}" style="object-fit:cover;width:363px;height:260px" width="363" height="260">
-        </figure>
+      {% if in_brief_lead_figure is defined and in_brief_lead_figure %}
+        {{ in_brief_lead_figure }}
+      {% elseif in_brief_image_url %}
+        <figure class="wp-block-image alignleft size-large is-resized"><img decoding="async" src="{{ in_brief_image_url }}" alt="{{ in_brief_image_alt }}" class="wp-post-image wp-image-{{ node.id }}" width="363" height="260"></figure>
       {% endif %}
 
       {% set has_byline = in_brief_byline is defined and in_brief_byline|trim %}
@@ -39,6 +39,10 @@
       {% elseif in_brief_listing_excerpt %}
         <p class="has-drop-cap wp-block-paragraph">{{ in_brief_listing_excerpt }}</p>
       {% endif %}
+
+      {% include '@df_impact/includes/article-social-share.html.twig' %}
     </div>
   </div>
+
+  {% include '@df_impact/includes/single-post-footer.html.twig' %}
 </article>

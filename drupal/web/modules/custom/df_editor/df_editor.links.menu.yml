@@ -5,23 +5,30 @@ df_editor.issue_dashboard:
   route_name: df_editor.issue_dashboard
   weight: 2
 
+df_editor.admin_config:
+  title: 'Impact Magazine'
+  description: 'Site chrome, homepage hero, and footer settings.'
+  parent: system.admin_config
+  route_name: df_editor.admin_config
+  weight: 5
+
 df_editor.site_settings:
   title: 'Impact site settings'
   description: 'Header logo, donate button, and main navigation menu.'
-  parent: system.admin_config
+  parent: df_editor.admin_config
   route_name: df_editor.site_settings
-  weight: 5
+  weight: 0
 
 df_editor.homepage_hero:
   title: 'Homepage hero'
   description: 'Edit video, poster, and heading on the current featured issue.'
-  parent: df_editor.site_settings
+  parent: df_editor.admin_config
   route_name: df_editor.homepage_hero
   weight: 5
 
 df_editor.footer_settings:
   title: 'Impact footer settings'
   description: 'Footer about links, address, disclaimer, and social URLs.'
-  parent: df_editor.site_settings
+  parent: df_editor.admin_config
   route_name: df_editor.footer_settings
   weight: 10

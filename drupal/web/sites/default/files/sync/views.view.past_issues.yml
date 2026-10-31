@@ -25,9 +25,10 @@ display:
       title: 'Recent Issues'
       fields: {  }
       pager:
-        type: full
+        type: none
         options:
-          items_per_page: 12
+          offset: 0
+          items_per_page: 0
       access:
         type: perm
         options:

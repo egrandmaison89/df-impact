@@ -1325,20 +1325,6 @@ main nav.pager .pager__item a:focus-visible,
   }
 }
 
-/* Article body — drop cap (first paragraph, including inside WP wrapper blocks) */
-.article__body > p:first-of-type::first-letter,
-.article__body > .wp-block-group > p:first-of-type::first-letter,
-.article__body > .wp-block-column > p:first-of-type::first-letter {
-  float: left;
-  font-family: var(--font-heading);
-  font-size: 4.5rem;
-  line-height: 0.8;
-  padding-right: var(--space-sm);
-  padding-top: 0.1em;
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
 .article__body p {
   margin-bottom: var(--space-md);
 }
@@ -1385,6 +1371,11 @@ article.post .wp-block-post-terms {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* The WP cover has no issue-page-banner class, so WP's 250px heading offset for that class never applies. */
+.issue-page .issue-page-banner .ultp-heading-wrap .ultp-heading-inner {
+  margin-top: 0;
 }
 
 .issue-page .issue-page-banner .wp-block-cover__image-background {
@@ -1713,7 +1704,8 @@ figure.issue-cover img {
   width: 250px;
   max-width: 100%;
   height: auto;
-  display: block;
+  display: inline;
+  vertical-align: bottom;
 }
 
 .wp-container-core-group-is-layout-7caa2bd2 {
@@ -1723,23 +1715,38 @@ figure.issue-cover img {
   gap: 0;
 }
 
+/* WP columns are content-sized (250px cover + 20px inset) and wrap with the 15px block gap. */
 .wp-container-core-group-is-layout-7caa2bd2 > .wp-block-group {
-  flex: 0 0 25%;
-  max-width: 25%;
-  box-sizing: border-box;
+  flex: 0 1 auto;
+  box-sizing: content-box;
 }
 
-@media (max-width: 991px) {
-  .wp-container-core-group-is-layout-7caa2bd2 > .wp-block-group {
-    flex: 0 0 50%;
-    max-width: 50%;
-  }
+.wp-container-core-group-is-layout-7caa2bd2 {
+  align-items: center;
 }
 
-@media (max-width: 600px) {
-  .wp-container-core-group-is-layout-7caa2bd2 > .wp-block-group {
-    flex: 0 0 100%;
-    max-width: 100%;
+.wp-container-core-group-is-layout-7caa2bd2 figure.issue-cover {
+  margin: 0 0 10px;
+}
+
+.wp-container-core-group-is-layout-1ce60de8 > h4 + figure.issue-cover {
+  margin-top: 24px;
+}
+
+/* WP listing templates: main fills the outer padding box (no 20px inset). */
+@media (min-width: 769px) {
+  body.path-browse-issues .wp-site-blocks > main#wp--skip-link--target,
+  body.path-category .wp-site-blocks > main#wp--skip-link--target,
+  body.path-tag .wp-site-blocks > main#wp--skip-link--target,
+  body.path-issues .wp-site-blocks > main#wp--skip-link--target,
+  body.path-search-legacy .wp-site-blocks > main#wp--skip-link--target,
+  body.path-in-brief .wp-site-blocks > main#wp--skip-link--target,
+  body.path-past-issues .wp-site-blocks > main#wp--skip-link--target,
+  body.page-node-type-issue .wp-site-blocks > main#wp--skip-link--target {
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }
 
@@ -2126,4 +2133,145 @@ main .ultp-block-item .ultp-block-title a:focus-visible {
     color: #000;
     text-decoration: underline;
   }
+}
+
+/* Core search block in page content (404): blockmag style.css wins over block-library on WP. */
+main .wp-block-search .wp-block-search__button {
+  background-color: var(--wp--preset--color--text-link, #111);
+  border: 0;
+  font-size: 16px;
+  padding: 10px 12px;
+}
+
+/* Article category pills: WP's effective values (blockmag style.css loads after block CSS there). */
+.single .taxonomy-category.wp-block-post-terms > a {
+  padding: 4px 14px;
+  margin-right: 7px;
+}
+
+/* WP flow layout gives the "More stories" group margin-block-start: 1.5rem inside main. */
+.wp-singular > .taxonomy-category + .wp-block-group {
+  margin-top: 1.5rem;
+}
+
+.jp-related-posts-i2__post-img {
+  width: 100%;
+  height: auto;
+}
+
+/* WP core gallery block CSS is inlined per page on WP (not in the vendored bundle);
+   values include blockmag's global overrides (15px flex gap, darker caption). The
+   mobile width: initial override is already in extracted-wp-inline.css. */
+.wp-block-gallery.has-nested-images {
+  --wp--style--unstable-gallery-gap: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: normal;
+  gap: 15px;
+}
+
+.wp-block-gallery.has-nested-images.aligncenter {
+  justify-content: center;
+}
+
+.wp-block-gallery.has-nested-images figure.wp-block-image {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  max-width: 100%;
+  position: relative;
+}
+
+.wp-block-gallery.has-nested-images figure.wp-block-image:not(#individual-image) {
+  margin: 0;
+}
+
+@media (min-width: 651px) {
+  .wp-block-gallery.has-nested-images figure.wp-block-image:not(#individual-image) {
+    width: calc(50% - var(--wp--style--unstable-gallery-gap) / 2);
+  }
+}
+
+.wp-block-gallery.has-nested-images.columns-1 figure.wp-block-image:not(#individual-image),
+.wp-block-gallery.has-nested-images.columns-default figure.wp-block-image:not(#individual-image):first-child:last-child {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .wp-block-gallery.has-nested-images.columns-3 figure.wp-block-image:not(#individual-image),
+  .wp-block-gallery.has-nested-images.columns-default figure.wp-block-image:not(#individual-image) {
+    width: calc(33.33% - var(--wp--style--unstable-gallery-gap) * .66667);
+  }
+
+  .wp-block-gallery.has-nested-images.columns-4 figure.wp-block-image:not(#individual-image) {
+    width: calc(25% - var(--wp--style--unstable-gallery-gap) * .75);
+  }
+
+  .wp-block-gallery.has-nested-images.columns-default figure.wp-block-image:not(#individual-image):first-child:nth-last-child(2),
+  .wp-block-gallery.has-nested-images.columns-default figure.wp-block-image:not(#individual-image):first-child:nth-last-child(2) ~ figure.wp-block-image:not(#individual-image) {
+    width: calc(50% - var(--wp--style--unstable-gallery-gap) * .5);
+  }
+}
+
+.wp-block-gallery.has-nested-images figure.wp-block-image img {
+  display: block;
+  height: auto;
+  max-width: 100% !important;
+  width: auto;
+}
+
+.wp-block-gallery.has-nested-images.is-cropped figure.wp-block-image:not(#individual-image) img {
+  flex: 1 0 0%;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.wp-block-gallery.has-nested-images figure.wp-block-image figcaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  overflow: auto;
+  padding: 1em;
+  text-align: center;
+  text-shadow: 0 0 1.5px #000;
+  color: #fff !important;
+  background: linear-gradient(0deg, rgba(0, 0, 0, .7), rgba(0, 0, 0, .3) 80%, transparent);
+  flex-basis: 100%;
+  flex-grow: 1;
+}
+
+/* Core quote block theme CSS + flow layout spacing (WP inlines both per page). */
+.entry-content .wp-block-quote {
+  box-sizing: border-box;
+  margin-left: 0;
+  margin-right: 0;
+  overflow-wrap: break-word;
+  padding-left: 1em;
+}
+
+.entry-content .wp-block-quote > * {
+  margin-top: 1.5rem;
+}
+
+.entry-content .wp-block-quote > :first-child {
+  margin-top: 0;
+}
+
+.entry-content .wp-block-quote > p {
+  margin-bottom: 10px;
+}
+
+.entry-content .wp-block-quote cite {
+  display: block;
+  position: relative;
+  font-size: .8125em;
+  font-style: normal;
+  color: #111;
 }

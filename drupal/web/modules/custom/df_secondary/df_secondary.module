@@ -82,7 +82,7 @@ function df_secondary_preprocess_html(array &$variables): void {
  */
 function df_secondary_preprocess_node(array &$variables): void {
   $node = $variables['node'] ?? NULL;
-  if (!$node instanceof NodeInterface || $node->bundle() !== 'article') {
+  if (!$node instanceof NodeInterface || !in_array($node->bundle(), ['article', 'in_brief'], TRUE)) {
     return;
   }
   if (($variables['view_mode'] ?? '') !== 'full') {

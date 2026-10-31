@@ -13,8 +13,8 @@ final class InlineImageHtmlProcessor {
   /**
    * Localize remote WordPress images in HTML; download to public://wp-images.
    *
-   * Uses absolute URLs for img src so images resolve regardless of path aliases,
-   * &lt;base&gt; tags, or environment. Idempotent for already-fixed markup.
+   * Uses root-relative URLs for img src: absolute ones bake in the request host,
+   * which is http://default under drush. Idempotent for already-fixed markup.
    */
   public static function localize(string $html): string {
     if ($html === '') {
@@ -62,7 +62,7 @@ final class InlineImageHtmlProcessor {
         if (!$file instanceof FileInterface) {
           continue;
         }
-        $img->setAttribute('src', $fileUrlGenerator->generateAbsoluteString($file->getFileUri()));
+        $img->setAttribute('src', $fileUrlGenerator->generateString($file->getFileUri()));
         $img->removeAttribute('data-src');
         $img->removeAttribute('data-srcset');
         $img->removeAttribute('data-sizes');
@@ -80,7 +80,7 @@ final class InlineImageHtmlProcessor {
         continue;
       }
 
-      // Already pointing at our public files: normalize to absolute URL (and fix missing DB rows).
+      // Already pointing at our public files: normalize to a root-relative URL.
       $publicUri = self::publicUriFromImgAttributes($img);
       if ($publicUri === NULL || !str_starts_with($publicUri, 'public://wp-images/')) {
         continue;
@@ -91,9 +91,9 @@ final class InlineImageHtmlProcessor {
         continue;
       }
 
-      $absolute = $fileUrlGenerator->generateAbsoluteString($file->getFileUri());
-      if ($src !== $absolute) {
-        $img->setAttribute('src', $absolute);
+      $relative = $fileUrlGenerator->generateString($file->getFileUri());
+      if ($src !== $relative) {
+        $img->setAttribute('src', $relative);
         $changed = TRUE;
       }
     }

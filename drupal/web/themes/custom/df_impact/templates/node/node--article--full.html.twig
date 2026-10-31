@@ -17,7 +17,7 @@
         {% if has_byline %}<br>{{ article_byline_display }}{% endif %}
         {% if has_photo_credit %}<br>{{ article_photo_credit_display }}{% endif %}
       </p>
-    {% elseif has_byline or has_photo_credit %}
+    {% elseif (has_byline or has_photo_credit) and not article_meta_in_body|default(false) %}
       <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
         {% if has_byline %}{{ article_byline_display }}{% endif %}
         {% if has_photo_credit %}{% if has_byline %}<br>{% endif %}{{ article_photo_credit_display }}{% endif %}
@@ -37,34 +37,6 @@
     {% include '@df_impact/includes/article-social-share.html.twig' %}
   </div>
 
-  {% if article_post_term_links is defined and article_post_term_links|length %}
-    <div style="color:#00629b;text-transform:capitalize" class="taxonomy-category has-link-color wp-block-post-terms has-text-color">
-      {% for term in article_post_term_links %}
-        {% if not loop.first %}<span class="wp-block-post-terms__separator">, </span>{% endif %}
-        <a href="{{ term.url }}" rel="tag">{{ term.label }}</a>
-      {% endfor %}
-    </div>
-  {% endif %}
-
-  {% if article_more_stories_cards is defined and article_more_stories_cards|length %}
-    <div class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
-      <div style="height:18px" aria-hidden="true" class="wp-block-spacer"></div>
-      <h3 class="wp-block-heading has-montserrat-font-family" style="font-size:26px;font-style:normal;font-weight:700">{{ 'More stories:'|t }}</h3>
-      <nav class="jp-relatedposts-i2 wp-block-jetpack-related-posts" style="line-height:1.5;" data-layout="grid" aria-label="{{ 'Related Posts'|t }}">
-        <ul class="jp-related-posts-i2__list" role="list" data-post-count="{{ article_more_stories_cards|length }}">
-          {% for card in article_more_stories_cards %}
-            <li class="jp-related-posts-i2__post">
-              <a href="{{ card.url }}" class="jp-related-posts-i2__post-link">
-                {{ card.title }}
-                {% if card.image_url %}
-                  <img loading="lazy" class="jp-related-posts-i2__post-img" src="{{ card.image_url }}" width="350" height="200" alt="{{ card.image_alt }}">
-                {% endif %}
-              </a>
-            </li>
-          {% endfor %}
-        </ul>
-      </nav>
-    </div>
-  {% endif %}
+  {% include '@df_impact/includes/single-post-footer.html.twig' %}
 
 </div>

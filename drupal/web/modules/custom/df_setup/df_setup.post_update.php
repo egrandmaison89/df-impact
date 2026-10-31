@@ -261,6 +261,192 @@ function df_setup_import_issue_banner_is_light_config(): string {
 }
 
 /**
+ * Sets issue cover alt text to the WP /browse-issues/ alt (QA-004).
+ */
+function df_setup_post_update_browse_issue_cover_alt(): string {
+  // WP leaves /spring-2025-issue and /fall-2024-issue covers without alt; keep ours.
+  $alts = [
+    '/fall-2026-issue' => 'Cover of the Fall 2026 issue of Impact',
+    '/summer-2026-issue' => 'Cover of the Summer 2026 issue of Impact',
+    '/spring-2026-issue' => 'Impact Spring 2026 magazine cover',
+    '/winter-2025-issue' => 'Impact Winter 2025 cover',
+    '/fall-2025-issue' => 'Impact Fall 2025 cover',
+    '/summer-2025-issue' => 'Impact Summer 2025 cover',
+    '/winter-2024-issue' => 'Impact Winter 2024 cover',
+    '/summer-2024-issue' => 'Impact Magazine Summer 2024 Cover',
+    '/spring-2024-issue' => 'Dana-Farber Impact Spring 2024 cover',
+    '/winter-2023-issue' => 'Dana-Farber Impact Winter 2023 magazine cover',
+    '/fall-2023-issue' => 'Impact Fall 2023 Cover',
+    '/summer-2023-issue' => 'Impact Summer 2023 Cover',
+    '/spring-2023-issue' => 'Impact Spring 2023 Cover',
+  ];
+  $alias_manager = \Drupal::service('path_alias.manager');
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  foreach ($alts as $alias => $alt) {
+    $path = $alias_manager->getPathByAlias($alias);
+    if (!preg_match('#^/node/(\d+)$#', $path, $m)) {
+      continue;
+    }
+    $issue = $node_storage->load((int) $m[1]);
+    if (!$issue || $issue->bundle() !== 'issue' || !$issue->hasField('field_cover_image')) {
+      continue;
+    }
+    $media = $issue->get('field_cover_image')->entity;
+    if (!$media || !$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
+      continue;
+    }
+    $item = $media->get('field_media_image')->first();
+    if ((string) $item->alt === $alt) {
+      continue;
+    }
+    $item->alt = $alt;
+    $media->save();
+    $updated++;
+  }
+  return sprintf('Browse-issues cover alt text: %d updated.', $updated);
+}
+
+/**
+ * Attach In Brief featured images (in_brief.json holds WP attachment-page URLs, not files).
+ */
+function df_setup_post_update_in_brief_featured_images(): string {
+  if (!\Drupal::moduleHandler()->moduleExists('df_migrate') || !class_exists('\Drupal\df_migrate\Plugin\migrate\process\DownloadImage')) {
+    return 'In Brief featured images: df_migrate unavailable.';
+  }
+  $data_dir = DRUPAL_ROOT . '/' . \Drupal::service('extension.list.module')->getPath('df_migrate') . '/data';
+  $briefs = json_decode((string) @file_get_contents($data_dir . '/in_brief.json'), TRUE);
+  $media_rows = json_decode((string) @file_get_contents($data_dir . '/media.json'), TRUE);
+  if (!is_array($briefs) || !is_array($media_rows)) {
+    return 'In Brief featured images: data files missing.';
+  }
+  $media_by_wp_id = [];
+  foreach ($media_rows as $row) {
+    if (!empty($row['wp_id']) && !empty($row['source_url'])) {
+      $media_by_wp_id[(string) $row['wp_id']] = $row;
+    }
+  }
+  $alias_manager = \Drupal::service('path_alias.manager');
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $file_system = \Drupal::service('file_system');
+  $updated = 0;
+  $missing = 0;
+  foreach ($briefs as $brief) {
+    if (empty($brief['drupal_alias'])) {
+      continue;
+    }
+    $path = $alias_manager->getPathByAlias($brief['drupal_alias']);
+    if (!preg_match('#^/node/(\d+)$#', $path, $m)) {
+      continue;
+    }
+    $node = $node_storage->load((int) $m[1]);
+    if (!$node || $node->bundle() !== 'in_brief' || !$node->hasField('field_image') || !$node->get('field_image')->isEmpty()) {
+      continue;
+    }
+    $media_row = $media_by_wp_id[(string) ($brief['featured_image_wp_id'] ?? '')] ?? NULL;
+    $url = $media_row['source_url'] ?? '';
+    if ($url === '' && preg_match('#<img[^>]+src="([^"]*wp-content/uploads/[^"]+)"#', (string) ($brief['body'] ?? ''), $img)) {
+      $url = $img[1];
+    }
+    $uri = $url !== '' ? \Drupal\df_migrate\Plugin\migrate\process\DownloadImage::urlToUri($url) : '';
+    $real = $uri !== '' ? $file_system->realpath($uri) : FALSE;
+    if (!is_string($real) || !is_readable($real)) {
+      $missing++;
+      continue;
+    }
+    $fid = \Drupal\df_migrate\Plugin\migrate\process\DownloadImage::getOrCreateFileFromUrl($url);
+    if (!$fid) {
+      $missing++;
+      continue;
+    }
+    $alt = trim((string) ($media_row['alt_text'] ?? '')) ?: $node->label();
+    $node->set('field_image', ['target_id' => $fid, 'alt' => $alt]);
+    $node->save();
+    $updated++;
+  }
+  return sprintf('In Brief featured images: %d attached, %d without a local file.', $updated, $missing);
+}
+
+/**
+ * Populate article "More stories" (field_related_articles) from the WP Jetpack export.
+ */
+function df_setup_post_update_jetpack_related_articles(): string {
+  $inc = DRUPAL_ROOT . '/modules/custom/df_migrate/scripts/backfill_jetpack_related_articles.inc';
+  if (!is_readable($inc)) {
+    return 'Jetpack related: df_migrate include missing.';
+  }
+  require_once $inc;
+  $data = df_migrate_load_jetpack_related_json();
+  $by_wp_id = is_array($data) ? ($data['by_wp_id'] ?? []) : [];
+  $wp_to_nid = df_migrate_wp_id_to_article_nid_map();
+  $slug_to_wp = df_migrate_article_slug_to_wp_id_map();
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  foreach ($by_wp_id as $entry) {
+    $source_wp_id = (int) ($entry['wp_id'] ?? 0);
+    $nid = $wp_to_nid[$source_wp_id] ?? NULL;
+    $node = $nid ? $node_storage->load($nid) : NULL;
+    if (!$node || $node->bundle() !== 'article' || !$node->hasField('field_related_articles')) {
+      continue;
+    }
+    $targets = [];
+    foreach ($entry['related'] ?? [] as $rel) {
+      $rel_wp = (int) ($rel['wp_id'] ?? 0);
+      if ($rel_wp <= 0 && !empty($rel['slug'])) {
+        $rel_wp = (int) ($slug_to_wp[(string) $rel['slug']] ?? 0);
+      }
+      $rel_nid = $wp_to_nid[$rel_wp] ?? NULL;
+      if ($rel_wp > 0 && $rel_wp !== $source_wp_id && $rel_nid !== NULL && !in_array($rel_nid, $targets, TRUE)) {
+        $targets[] = $rel_nid;
+      }
+    }
+    $targets = array_slice($targets, 0, 3);
+    $current = array_map('intval', array_column($node->get('field_related_articles')->getValue(), 'target_id'));
+    if ($current === $targets) {
+      continue;
+    }
+    $node->set('field_related_articles', array_map(static fn(int $id): array => ['target_id' => $id], $targets));
+    $node->save();
+    $updated++;
+  }
+  return sprintf('Jetpack related: %d articles updated.', $updated);
+}
+
+/**
+ * Root-relative inline file URLs (migrations under drush stored http://default/…).
+ */
+function df_setup_post_update_relative_inline_file_urls(): string {
+  $fields = ['body', 'field_summary', 'field_excerpt'];
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  foreach ($node_storage->getQuery()->accessCheck(FALSE)->execute() as $nid) {
+    $node = $node_storage->load($nid);
+    if (!$node) {
+      continue;
+    }
+    $changed = FALSE;
+    foreach ($fields as $field) {
+      if (!$node->hasField($field) || $node->get($field)->isEmpty()) {
+        continue;
+      }
+      $item = $node->get($field)->first();
+      $value = (string) $item->value;
+      $new = str_replace(['http://default/sites/default/files/', 'https://default/sites/default/files/'], '/sites/default/files/', $value);
+      if ($new !== $value) {
+        $item->value = $new;
+        $changed = TRUE;
+      }
+    }
+    if ($changed) {
+      $node->save();
+      $updated++;
+    }
+    $node_storage->resetCache([$nid]);
+  }
+  return sprintf('Inline file URLs: %d nodes made root-relative.', $updated);
+}
+
+/**
  * Repairs "Mismatched entity and/or field definitions" for node field storages.
  *
  * Covers node.body, node.field_homepage_sort_weight and node.field_postx_sort_weight
@@ -334,4 +520,57 @@ function df_setup_repair_node_field_storage_definitions(array $field_names): str
   return $repaired === []
     ? 'Node field storage definitions already in sync.'
     : 'Repaired node field storage definitions: ' . implode(', ', $repaired) . '.';
+}
+
+/**
+ * "More stories:" = live Jetpack Related Posts for articles and In Briefs (QA-020).
+ *
+ * Applies df_migrate/data/wp_jetpack_related_posts.json (frozen from live) in live order.
+ */
+function df_setup_post_update_jetpack_related_live_fixture(): string {
+  $messages = [];
+  if (!FieldConfig::loadByName('node', 'in_brief', 'field_related_articles') && FieldStorageConfig::loadByName('node', 'field_related_articles')) {
+    $data = \Drupal::service('config.storage.sync')->read('field.field.node.in_brief.field_related_articles');
+    if ($data) {
+      // Syncing like config import: the In Brief listing display references a missing formatter.
+      FieldConfig::create($data)->setSyncing(TRUE)->save();
+      \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+      $messages[] = 'Added field_related_articles to In Brief.';
+    }
+  }
+  $inc = DRUPAL_ROOT . '/modules/custom/df_migrate/scripts/backfill_jetpack_related_articles.inc';
+  if (!is_readable($inc)) {
+    return implode(' ', [...$messages, 'Jetpack live related: df_migrate include missing.']);
+  }
+  require_once $inc;
+  $data = df_migrate_load_jetpack_related_json();
+  $wp_to_nid = df_migrate_wp_id_to_article_nid_map();
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  $unresolved = 0;
+  foreach (is_array($data) ? ($data['by_wp_id'] ?? []) : [] as $entry) {
+    $nid = $wp_to_nid[(int) ($entry['wp_id'] ?? 0)] ?? NULL;
+    $node = $nid ? $node_storage->load($nid) : NULL;
+    if (!$node || !in_array($node->bundle(), ['article', 'in_brief'], TRUE) || !$node->hasField('field_related_articles')) {
+      continue;
+    }
+    $targets = [];
+    foreach (array_slice($entry['related'] ?? [], 0, 3) as $rel) {
+      $rel_nid = $wp_to_nid[(int) ($rel['wp_id'] ?? 0)] ?? NULL;
+      if ($rel_nid === NULL || $rel_nid === (int) $nid) {
+        $unresolved++;
+        continue;
+      }
+      $targets[] = $rel_nid;
+    }
+    $current = array_map('intval', array_column($node->get('field_related_articles')->getValue(), 'target_id'));
+    if ($current === $targets) {
+      continue;
+    }
+    $node->set('field_related_articles', array_map(static fn(int $id): array => ['target_id' => $id], $targets));
+    $node->save();
+    $updated++;
+  }
+  $messages[] = sprintf('Jetpack live related: %d nodes updated, %d related posts not migrated.', $updated, $unresolved);
+  return implode(' ', $messages);
 }

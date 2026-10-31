@@ -10,7 +10,7 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\node\NodeInterface;
 
 /**
- * Issue references for articles, including draft issues for launch editors.
+ * Issue references for articles and In Briefs, including unpublished issues.
  */
 #[EntityReferenceSelection(
   id: 'df_editor:issue_article',

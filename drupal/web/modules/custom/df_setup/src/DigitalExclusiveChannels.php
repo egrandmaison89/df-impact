@@ -59,6 +59,7 @@ final class DigitalExclusiveChannels {
       ->accessCheck(FALSE)
       ->condition('vid', self::VOCABULARY_ID)
       ->condition('name', self::TERM_NAME)
+      ->sort('tid', 'ASC')
       ->range(0, 1)
       ->execute();
 

@@ -574,3 +574,94 @@ function df_setup_post_update_jetpack_related_live_fixture(): string {
   $messages[] = sprintf('Jetpack live related: %d nodes updated, %d related posts not migrated.', $updated, $unresolved);
   return implode(' ', $messages);
 }
+
+/**
+ * One Digital Exclusives channel term. Remap references, then delete duplicates.
+ */
+function df_setup_post_update_consolidate_digital_exclusives_term(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $tids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('vid', 'channels')
+    ->condition('name', 'Digital Exclusives')
+    ->sort('tid', 'ASC')
+    ->execute();
+  $tids = array_map('intval', array_values($tids));
+  if (count($tids) < 2) {
+    return 'Digital Exclusives term already unique.';
+  }
+  $db = \Drupal::database();
+  $canonical = $tids[0];
+  $best = -1;
+  foreach ($tids as $tid) {
+    $count = (int) $db->query('SELECT COUNT(*) FROM {node__field_channels} WHERE field_channels_target_id = :tid AND deleted = 0', [':tid' => $tid])->fetchField();
+    if ($count > $best) {
+      $best = $count;
+      $canonical = $tid;
+    }
+  }
+  $remapped = 0;
+  $tables = ['node__field_channels', 'node_revision__field_channels'];
+  foreach ($tids as $tid) {
+    if ($tid === $canonical) {
+      continue;
+    }
+    foreach ($tables as $table) {
+      if (!$db->schema()->tableExists($table)) {
+        continue;
+      }
+      $rows = $db->select($table, 'c')
+        ->fields('c', ['entity_id'])
+        ->condition('field_channels_target_id', $tid)
+        ->execute()
+        ->fetchCol();
+      foreach ($rows as $entity_id) {
+        $exists = (int) $db->select($table, 'c')
+          ->condition('entity_id', $entity_id)
+          ->condition('field_channels_target_id', $canonical)
+          ->countQuery()
+          ->execute()
+          ->fetchField();
+        if ($exists) {
+          $db->delete($table)
+            ->condition('entity_id', $entity_id)
+            ->condition('field_channels_target_id', $tid)
+            ->execute();
+          continue;
+        }
+        $db->update($table)
+          ->fields(['field_channels_target_id' => $canonical])
+          ->condition('entity_id', $entity_id)
+          ->condition('field_channels_target_id', $tid)
+          ->execute();
+        $remapped++;
+      }
+    }
+    if ($db->schema()->tableExists('taxonomy_index')) {
+      $nids = $db->select('taxonomy_index', 'ti')
+        ->fields('ti', ['nid'])
+        ->condition('tid', $tid)
+        ->execute()
+        ->fetchCol();
+      foreach ($nids as $nid) {
+        $exists = (int) $db->select('taxonomy_index', 'ti')
+          ->condition('nid', $nid)
+          ->condition('tid', $canonical)
+          ->countQuery()
+          ->execute()
+          ->fetchField();
+        if ($exists) {
+          $db->delete('taxonomy_index')->condition('nid', $nid)->condition('tid', $tid)->execute();
+        }
+        else {
+          $db->update('taxonomy_index')->fields(['tid' => $canonical])->condition('nid', $nid)->condition('tid', $tid)->execute();
+        }
+      }
+    }
+    $term = $storage->load($tid);
+    if ($term) {
+      $term->delete();
+    }
+  }
+  return sprintf('Kept Digital Exclusives term %d and remapped %d references.', $canonical, $remapped);
+}

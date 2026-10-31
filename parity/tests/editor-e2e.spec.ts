@@ -658,4 +658,45 @@ test.describe('Web editor issue launch (UI)', () => {
     await expect(page.locator('.messages--status')).toBeVisible({ timeout: 30_000 });
     await logout(page);
   });
+
+  test('QA-060/061 In Brief image upload and draft issue reference', async ({ page }) => {
+    ensureUsers();
+    const stamp = Date.now();
+    const issueTitle = `Playwright QA061 Draft ${stamp}`;
+    const safe = issueTitle.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    execSync(
+      `cd /workspace/drupal && ./vendor/bin/drush --uri=${drupalBase} ev "\\$n = \\\\Drupal\\\\node\\\\Entity\\\\Node::create(['type' => 'issue', 'title' => '${safe}', 'status' => 0, 'moderation_state' => 'draft']); \\$n->save(); echo \\$n->id();"`,
+      { encoding: 'utf8' },
+    );
+    const issueNid = nodeNidByTitle(issueTitle);
+    const jpeg = `/tmp/qa060-e2e-${stamp}.jpg`;
+    execSync(
+      `php -r '$im=imagecreatetruecolor(80,60); imagejpeg($im, ${JSON.stringify(jpeg)}, 90);'`,
+    );
+    try {
+      await login(page, WEB_EDITOR.name, WEB_EDITOR.pass);
+      const response = await go(page, '/node/add/in_brief');
+      expect(response?.status()).toBeLessThan(400);
+      const upload = page.waitForResponse(
+        (res) => res.request().method() === 'POST' && res.url().includes('ajax'),
+        { timeout: 60_000 },
+      );
+      await page.locator('input[name="files[field_image_0]"]').setInputFiles(jpeg);
+      const uploaded = await upload;
+      expect(uploaded.status(), 'In Brief image upload').toBeLessThan(400);
+      await expect(page.locator('.image-preview img, .form-managed-file img').first()).toBeVisible({ timeout: 30_000 });
+      const issue = page.locator('input[name="field_issue[0][target_id]"]');
+      await issue.click();
+      await issue.fill('Playwright QA061');
+      await expect(page.locator('.ui-autocomplete .ui-menu-item, ul.ui-autocomplete li').filter({ hasText: issueTitle })).toBeVisible({ timeout: 20_000 });
+    }
+    finally {
+      if (issueNid) {
+        execSync(
+          `cd /workspace/drupal && ./vendor/bin/drush ev '\\Drupal\\node\\Entity\\Node::load(${issueNid})?->delete();'`,
+          { stdio: 'inherit' },
+        );
+      }
+    }
+  });
 });

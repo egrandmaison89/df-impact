@@ -389,6 +389,94 @@ body.search-results .wp-block-post-template .wp-block-post-title a {
   }
 }
 
+/*
+ * Live style.css (after inline CSS) sets pull quotes in Libre Baskerville at 1.5em.
+ * extracted-wp-inline.css loads later here and forces Montserrat 22px, so these
+ * values are the live computed styles.
+ */
+.entry-content figure.wp-block-pullquote,
+.entry-content .wp-block-pullquote {
+  font-family: "Libre Baskerville", serif;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 48px;
+  color: rgb(0, 51, 84);
+  border-top: 3px solid rgb(255, 163, 0);
+  border-bottom: 3px solid rgb(255, 163, 0);
+  border-left: 0;
+  border-right: 0;
+  padding: 10px;
+  margin: 24px 40px 20px 0;
+  text-align: left;
+}
+
+.entry-content figure.wp-block-pullquote p,
+.entry-content .wp-block-pullquote p {
+  font-family: "Libre Baskerville", serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 35.2px;
+  color: rgb(0, 51, 84);
+  margin: 0 0 10px;
+}
+
+.entry-content figure.wp-block-pullquote cite,
+.entry-content .wp-block-pullquote cite {
+  font-family: Montserrat, sans-serif;
+  font-size: 24.375px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 39px;
+  color: rgb(17, 17, 17);
+  text-transform: capitalize;
+}
+
+.entry-content figure.wp-block-image figcaption,
+.entry-content .wp-block-image figcaption,
+.entry-content .wp-element-caption {
+  font-family: Montserrat, sans-serif;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 24.5px;
+  color: rgb(0, 0, 0);
+  margin: 7px 0 10px;
+  display: table-caption;
+  caption-side: bottom;
+}
+
+/* YouTube/Vimeo embeds stay inside the column and keep 16:9 (QA-065). */
+.entry-content figure.wp-block-embed-youtube,
+.entry-content figure.wp-block-embed-vimeo,
+.entry-content .wp-block-embed.is-type-video {
+  width: 100%;
+  max-width: min(100%, 800px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.entry-content .wp-embed-aspect-16-9 .wp-block-embed__wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.entry-content .wp-embed-aspect-16-9 .wp-block-embed__wrapper > div {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0 !important;
+}
+
+.entry-content .wp-block-embed__wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+}
+
 .visually-hidden {
   position: absolute !important;
   overflow: hidden;

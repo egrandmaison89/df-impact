@@ -1,0 +1,37 @@
+uuid: e009dbfb-294f-406d-b37b-3096bb10b19f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.video_embed.field_video_caption
+    - field.field.paragraph.video_embed.field_video_url
+    - paragraphs.paragraphs_type.video_embed
+  module:
+    - link
+id: paragraph.video_embed.default
+targetEntityType: paragraph
+bundle: video_embed
+mode: default
+content:
+  field_video_url:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_video_caption:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  search_api_excerpt: true

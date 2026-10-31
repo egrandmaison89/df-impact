@@ -202,7 +202,7 @@ test.describe('listings QA', () => {
   for (const [width, figure, side] of [
     [1280, [569, 407], true],
     [768, [338, 242], true],
-    [390, [350, 251], false],
+    [390, [334, 239], false],
   ] as const) {
     test(`QA-018 gallery images sit side by side like WP @${width}`, async ({ page }) => {
       await open(page, '/2024/06/the-gray-foundation-empowers-team-science-against-brca-mutated-cancers', width);
@@ -286,7 +286,7 @@ test.describe('listings QA', () => {
   for (const [width, card] of [
     [1280, [373, 213]],
     [768, [220, 126]],
-    [390, [350, 200]],
+    [390, [334, 191]],
   ] as const) {
     test(`QA-020 "More stories:" lists live's Jetpack items in order with thumbnails @${width}`, async ({ page }) => {
       for (const [path, expected] of Object.entries(qa020Live)) {

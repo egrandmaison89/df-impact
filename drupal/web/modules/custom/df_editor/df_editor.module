@@ -435,6 +435,27 @@ function df_editor_issue_publish_bundle_submit(array &$form, FormStateInterface 
 }
 
 /**
+ * Implements hook_node_insert().
+ */
+function df_editor_node_insert(NodeInterface $node): void {
+  if ($node->bundle() === 'issue' && $node->isPublished() && PHP_SAPI !== 'cli') {
+    df_editor_warn_empty_published_issue($node);
+  }
+}
+
+/**
+ * Server-side counterpart of issue-publish-confirm.js; warns without blocking the publish.
+ */
+function df_editor_warn_empty_published_issue(NodeInterface $issue): void {
+  if (df_editor_count_attached_articles($issue) > 0) {
+    return;
+  }
+  \Drupal::messenger()->addWarning(t('Issue @issue was published with no attached articles. Its issue page and the homepage feature stay empty until articles are attached.', [
+    '@issue' => $issue->label(),
+  ]));
+}
+
+/**
  * Implements hook_node_update().
  *
  * When an issue is first published via moderation, attach-publish its articles.
@@ -471,6 +492,7 @@ function df_editor_node_update(NodeInterface $node): void {
   if (!$original instanceof NodeInterface || $original->isPublished()) {
     return;
   }
+  df_editor_warn_empty_published_issue($node);
   if (!\Drupal::currentUser()->hasPermission('publish issue with articles')) {
     return;
   }

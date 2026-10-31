@@ -53,6 +53,7 @@ third_party_settings:
       format_type: tab
       format_settings:
         label: Content
+        formatter: open
         direction: vertical
     group_metadata:
       children:

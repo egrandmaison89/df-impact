@@ -94,6 +94,63 @@ test.describe('header chrome QA', () => {
     expect((donate?.x ?? 0) + (donate?.width ?? 0)).toBeLessThanOrEqual(737);
   });
 
+  test('QA-045 Issues link and search row widths match WP @ 390px', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto(`${drupalBase}/`, { waitUntil: 'load' });
+    await dismissOverlays(page);
+    await page.evaluate(() => document.fonts.ready);
+
+    // Live: blockmag static Montserrat SemiBold + 6px indicator gap = 117px; the row (link + 25px
+    // search) is within ~1px of the column, so it wraps under platform font rendering like WP.
+    const issues = page.locator('.mobile-header #mega-menu-max_mega_menu_1 > li.mega-menu-item-599 > a').first();
+    expect(Math.round((await issues.boundingBox())?.width ?? 0)).toBe(117);
+    expect(
+      await page.evaluate(() =>
+        [...document.styleSheets].some((s) => (s.href || '').includes('fonts.googleapis.com_css')),
+      ),
+    ).toBe(false);
+  });
+
+  for (const width of [390, 1280]) {
+    for (const path of ['/', '/about', '/fall-2026-issue', '/category/cancer-research', '/?s=cancer&id=701']) {
+      test(`QA-050/QA-058 no horizontal overflow @ ${width}px ${path}`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(`${drupalBase}${path}`, { waitUntil: 'load' });
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+      });
+    }
+  }
+
+  test('QA-046 search result image fills the column @ 768px like WP (691x496)', async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 900 });
+    await page.goto(`${drupalBase}/?s=cancer&id=701`, { waitUntil: 'load' });
+    const img = page.locator('main li.wp-block-post .wp-block-post-featured-image img').first();
+    await expect(img).toBeVisible();
+    await expect.poll(async () => Math.round((await img.boundingBox())?.width ?? 0)).toBe(691);
+    expect(Math.abs(((await img.boundingBox())?.height ?? 0) - 496)).toBeLessThanOrEqual(2);
+  });
+
+  test('QA-051 search popup input is pre-filled with the current query', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`${drupalBase}/?s=cancer&id=701`, { waitUntil: 'load' });
+    await dismissOverlays(page);
+    await page.locator('.desktop-header .header-search a').first().click();
+    const input = page.locator('#is-search-input-701');
+    await expect(input).toBeVisible();
+    await expect(input).toHaveValue('cancer');
+    await page.goto(`${drupalBase}/`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#is-search-input-701')).toHaveValue('');
+  });
+
+  test('QA-056 core /search/node and /search/help redirect to WP-style /?s=', async ({ request }) => {
+    for (const [from, to] of [['/search/node?keys=cancer', '/?s=cancer'], ['/search/node', '/'], ['/search/help', '/']]) {
+      const res = await request.get(`${drupalBase}${from}`, { maxRedirects: 0 });
+      expect(res.status(), from).toBe(301);
+      expect(new URL(res.headers()['location'], drupalBase).pathname + new URL(res.headers()['location'], drupalBase).search).toBe(to);
+    }
+    expect((await request.get(`${drupalBase}/search?s=cancer`)).status()).toBe(200);
+  });
+
   test('QA-045 opened Issues submenu pushes content down @ 390px', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
     await page.goto(`${drupalBase}/`, { waitUntil: 'load' });
@@ -166,13 +223,13 @@ test.describe('header chrome QA', () => {
     expect(await page.evaluate(() => document.fonts.check('600 24px "Libre Baskerville"'))).toBe(true);
   });
 
-  test('QA-048 Issues nav link is excluded from GTranslate', async ({ page }) => {
+  test('QA-048 Issues nav link and submenu stay translatable like WP', async ({ page }) => {
     await page.goto(`${drupalBase}/`, { waitUntil: 'domcontentloaded' });
-    const links = page.locator('#mega-menu-max_mega_menu_1 > li.mega-menu-item-599 > a.mega-menu-link');
-    await expect(links).toHaveCount(2);
+    const links = page.locator('#mega-menu-max_mega_menu_1 > li.mega-menu-item-599 a.mega-menu-link');
+    expect(await links.count()).toBeGreaterThan(2);
     for (const link of await links.all()) {
-      await expect(link).toHaveClass(/\bnotranslate\b/);
-      await expect(link).toHaveAttribute('translate', 'no');
+      const blocked = await link.evaluate((el) => !!el.closest('.notranslate, [translate="no"]'));
+      expect(blocked).toBe(false);
     }
   });
 });

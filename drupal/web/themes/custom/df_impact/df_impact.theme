@@ -371,6 +371,10 @@ function df_impact_preprocess_html(array &$variables): void {
 
   $front = Url::fromRoute('<front>')->toString();
   $variables['wp_home_url'] = str_ends_with($front, '/') ? $front : $front . '/';
+  $variables['search_query'] = df_impact_is_search_results_route()
+    ? trim((string) (\Drupal::request()->query->get('s') ?? ''))
+    : '';
+  $variables['#cache']['contexts'][] = 'url.query_args:s';
   $route = \Drupal::routeMatch()->getRouteName();
   $variables['is_category_archive'] = ($route === 'view.topic_archive.page_1');
 
@@ -563,6 +567,14 @@ function df_impact_preprocess_node(&$variables) {
     $term = trim((string) (\Drupal::request()->query->get('s') ?? ''));
     $variables['search_result_title'] = df_impact_search_highlight_text(df_impact_decode_plain_text($node->label()), $term);
     $variables['search_result_excerpt'] = df_impact_search_result_excerpt($node);
+    $uri = df_impact_node_featured_image_uri($node);
+    if ($uri) {
+      $media = $node->get('field_featured_image')->entity;
+      $variables['search_result_image'] = [
+        'url' => df_impact_article_lead_image_url($uri),
+        'alt' => (string) ($media->get('field_media_image')->alt ?? '') ?: $node->label(),
+      ];
+    }
   }
 
   if ($node->bundle() === 'in_brief' && $variables['view_mode'] === 'in_brief_listing') {

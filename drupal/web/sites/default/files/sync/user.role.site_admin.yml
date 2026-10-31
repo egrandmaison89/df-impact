@@ -1,0 +1,87 @@
+uuid: 7a1b2c3d-4e5f-6789-abcd-ef0011223344
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.editor_html
+    - filter.format.full_html
+    - node.type.article
+    - node.type.in_brief
+    - node.type.issue
+    - node.type.page
+    - taxonomy.vocabulary.topics
+    - workflows.workflow.editorial
+  module:
+    - block
+    - coffee
+    - content_moderation
+    - df_editor
+    - df_site_snippets
+    - editoria11y
+    - file
+    - filter
+    - media
+    - node
+    - path
+    - scheduler
+    - system
+    - taxonomy
+    - toolbar
+id: site_admin
+label: 'Site admin'
+weight: 6
+is_admin: false
+permissions:
+  - 'access administration pages'
+  - 'access coffee'
+  - 'access content overview'
+  - 'access media overview'
+  - 'access toolbar'
+  - 'administer blocks'
+  - 'administer df site settings'
+  - 'administer df site snippets'
+  - 'administer menu'
+  - 'administer site configuration'
+  - 'administer taxonomy'
+  - 'administer url aliases'
+  - 'create article content'
+  - 'create in_brief content'
+  - 'create issue content'
+  - 'create media'
+  - 'create page content'
+  - 'create terms in topics'
+  - 'create url aliases'
+  - 'delete any article content'
+  - 'delete any in_brief content'
+  - 'delete any issue content'
+  - 'delete any media'
+  - 'delete any page content'
+  - 'delete media'
+  - 'delete own article content'
+  - 'delete own files'
+  - 'delete own in_brief content'
+  - 'delete own issue content'
+  - 'delete own page content'
+  - 'edit any article content'
+  - 'edit any in_brief content'
+  - 'edit any issue content'
+  - 'edit any page content'
+  - 'manage editoria11y results'
+  - 'mark as hidden in editoria11y'
+  - 'mark as ok in editoria11y'
+  - 'publish issue with articles'
+  - 'schedule publishing of nodes'
+  - 'update any media'
+  - 'use editorial transition archive'
+  - 'use editorial transition create_new_draft'
+  - 'use editorial transition publish'
+  - 'use editorial transition send_back'
+  - 'use editorial transition submit_for_review'
+  - 'use text format editor_html'
+  - 'use text format full_html'
+  - 'view any unpublished content'
+  - 'view editoria11y checker'
+  - 'view latest version'
+  - 'view scheduled content'
+  - 'view the administration theme'
+

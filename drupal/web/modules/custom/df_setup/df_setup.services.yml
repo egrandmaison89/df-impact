@@ -26,8 +26,28 @@ services:
     tags:
       - { name: event_subscriber }
 
+  df_setup.topics_index_not_found:
+    class: Drupal\df_setup\EventSubscriber\TopicsIndexNotFoundSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  df_setup.legacy_issue_not_found:
+    class: Drupal\df_setup\EventSubscriber\LegacyIssueNotFoundSubscriber
+    tags:
+      - { name: event_subscriber }
+
   df_setup.wordpress_homepage_route:
     class: Drupal\df_setup\EventSubscriber\WordpressHomepageRouteSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  df_setup.wordpress_legacy_paths:
+    class: Drupal\df_setup\EventSubscriber\WordpressLegacyPathSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  df_setup.topic_category_archive_paginate:
+    class: Drupal\df_setup\EventSubscriber\TopicCategoryArchivePaginateSubscriber
     tags:
       - { name: event_subscriber }
 
@@ -36,3 +56,8 @@ services:
     arguments: ['@entity_type.manager']
     tags:
       - { name: path_processor_outbound, priority: 200 }
+
+  df_setup.path_processor.topic_category_archive_inbound:
+    class: Drupal\df_setup\PathProcessor\TopicCategoryArchiveInboundPathProcessor
+    tags:
+      - { name: path_processor_inbound, priority: 250 }

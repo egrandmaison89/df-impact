@@ -1,0 +1,6 @@
+{
+  "homepage": { "path": "/homepage", "refSlug": "homepage" },
+  "issue": { "path": "/fall-2026-issue", "refSlug": "fall-2026-issue" },
+  "article": { "path": "/2026/09/american-association-for-cancer-research-2", "refSlug": "2026_09_american-association-for-cancer-research-2" },
+  "archive": { "path": "/category/cancer-research", "refSlug": "category_cancer-research" }
+}

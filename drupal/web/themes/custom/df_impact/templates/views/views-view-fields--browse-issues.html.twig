@@ -1,22 +1,17 @@
 {#
 /**
  * @file
- * Issue card for browse issues — WordPress /browse-issues/ parity (cover + h4).
- *
- * Thumbnail from cover, issue banner, or first linked article featured image.
+ * Issue card for browse issues — WordPress /browse-issues/ parity (linked cover + plain h4).
  */
 #}
-<div class="issue-card">
-  {% if issue_thumbnail is defined and issue_thumbnail %}
-    <a href="{{ issue_url }}" class="issue-card__cover-link" tabindex="-1" aria-hidden="true">
-      <div class="issue-card__cover">
-        {{ issue_thumbnail }}
-      </div>
-    </a>
-  {% endif %}
-  {% if fields.title is defined %}
-    <div class="issue-card__label">
-      <h4 class="issue-card__heading">{{ fields.title.content }}</h4>
-    </div>
-  {% endif %}
-</div>
+{% set heading_classes = issue_heading_uncolored|default(false) ? 'wp-block-heading' : 'wp-block-heading has-tertiary-color has-text-color' %}
+{% if issue_cover_url is defined and issue_cover_url %}
+  <figure class="wp-block-image size-full is-resized issue-cover"><a href="{{ issue_url }}"><img decoding="async" src="{{ issue_cover_url }}" alt="{{ issue_cover_alt }}" class="lazyloaded" style="width:250px;height:auto"></a></figure>
+{% elseif issue_thumbnail is defined and issue_thumbnail|render|trim %}
+  <figure class="wp-block-image size-full is-resized issue-cover"><a href="{{ issue_url }}">{{ issue_thumbnail }}</a></figure>
+{% endif %}
+{% if issue_title_plain is defined and issue_title_plain %}
+  <h4 class="{{ heading_classes }}">{{ issue_title_plain }}</h4>
+{% elseif fields.title is defined %}
+  <h4 class="{{ heading_classes }}">{{ fields.title.content|render|striptags|trim }}</h4>
+{% endif %}

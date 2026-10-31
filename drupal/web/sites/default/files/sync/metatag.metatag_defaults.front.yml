@@ -7,5 +7,13 @@ _core:
 id: front
 label: 'Front page'
 tags:
-  canonical_url: '[site:url]'
-  shortlink: '[site:url]'
+  title: 'Homepage - Impact Magazine'
+  description: "Explore the latest issue, read recent highlights, and dive into digital exclusives for Dana-Farber Cancer Institute's Impact newsletter."
+  canonical_url: 'https://danafarberimpact.org/homepage/'
+  robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+  og_site_name: 'Impact Magazine'
+  og_type: article
+  og_title: 'Homepage - Impact Magazine'
+  og_description: "Explore the latest issue, read recent highlights, and dive into digital exclusives for Dana-Farber Cancer Institute's Impact newsletter."
+  og_url: 'https://danafarberimpact.org/homepage/'
+  twitter_cards_type: summary_large_image

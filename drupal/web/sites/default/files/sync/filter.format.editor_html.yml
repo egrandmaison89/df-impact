@@ -1,0 +1,63 @@
+uuid: a1b2c3d4-e5f6-7890-abcd-ef0011223355
+langcode: en
+status: true
+dependencies:
+  module:
+    - df_editor
+    - editor
+    - filter
+name: 'Editor HTML'
+format: editor_html
+weight: -5
+filters:
+  filter_html:
+    id: filter_html
+    provider: filter
+    status: true
+    weight: -10
+    settings:
+      allowed_html: '<a href hreflang class target rel> <p class> <h2 id class> <h3 id class> <h4 id class> <h5 id class> <h6 id class> <cite> <dl> <dt> <dd> <blockquote cite class> <ul type class> <ol start type class> <li> <strong> <em> <code> <br> <figure class> <figcaption class> <div class style aria-hidden> <img src alt width height class loading data-entity-type data-entity-uuid data-caption data-align> <iframe src width height frameborder allow allowfullscreen title loading>'
+      filter_html_help: true
+      filter_html_nofollow: false
+  editor_html_sanitize:
+    id: editor_html_sanitize
+    provider: df_editor
+    status: true
+    weight: -9
+    settings: {  }
+  editor_html_iframe:
+    id: editor_html_iframe
+    provider: df_editor
+    status: true
+    weight: -8
+    settings: {  }
+  filter_align:
+    id: filter_align
+    provider: filter
+    status: true
+    weight: 7
+    settings: {  }
+  filter_caption:
+    id: filter_caption
+    provider: filter
+    status: true
+    weight: 8
+    settings: {  }
+  filter_htmlcorrector:
+    id: filter_htmlcorrector
+    provider: filter
+    status: true
+    weight: 10
+    settings: {  }
+  editor_file_reference:
+    id: editor_file_reference
+    provider: editor
+    status: true
+    weight: 11
+    settings: {  }
+  filter_image_lazy_load:
+    id: filter_image_lazy_load
+    provider: filter
+    status: true
+    weight: 15
+    settings: {  }

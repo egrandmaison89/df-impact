@@ -770,11 +770,70 @@
   margin: var(--space-lg) 0;
 }
 
+.article__body .wp-block-image.alignleft,
+.article__body .wp-block-image.alignright,
+.article__body .wp-block-image.aligncenter {
+  display: table;
+}
+
 .article__body .wp-block-image img,
 .article__body figure img {
   width: 100%;
   height: auto;
+  aspect-ratio: auto;
   border-radius: var(--border-radius);
+}
+
+.article__body .wp-block-image.is-resized[style*="width"],
+.entry-content.wp-block-post-content > figure.wp-block-image.is-resized[style*="width"] {
+  max-width: none;
+  width: auto;
+}
+
+.article__body .wp-block-image.is-resized img,
+.entry-content.wp-block-post-content > figure.wp-block-image.is-resized img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.article__body .wp-block-pullquote {
+  box-sizing: border-box;
+  margin: 0 0 1.75em;
+  overflow-wrap: break-word;
+  padding: 4em 0;
+  text-align: center;
+  border-top: 4px solid currentColor;
+  border-bottom: 4px solid currentColor;
+  color: currentColor;
+}
+
+.article__body .wp-block-pullquote blockquote {
+  margin: 0;
+}
+
+.article__body .wp-block-pullquote p {
+  margin-top: 0;
+  font-size: 1.5em;
+  line-height: 1.6;
+}
+
+.article__body .wp-block-pullquote cite,
+.article__body .wp-block-pullquote footer {
+  font-size: 0.8125em;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.article__body .wp-block-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.article__body .wp-block-gallery.has-nested-images figure.wp-block-image {
+  flex: 1 1 240px;
+  margin: 0;
 }
 
 .article__body figcaption,
@@ -796,6 +855,13 @@
   float: right;
   max-width: 45%;
   margin: 0 0 var(--space-md) var(--space-md);
+}
+
+.article__body .wp-block-image.alignright.is-resized,
+.article__body .wp-block-image.alignleft.is-resized,
+.entry-content.wp-block-post-content > figure.wp-block-image.alignright.is-resized,
+.entry-content.wp-block-post-content > figure.wp-block-image.alignleft.is-resized {
+  max-width: none;
 }
 
 .article__body .aligncenter,

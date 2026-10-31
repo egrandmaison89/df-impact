@@ -1,0 +1,16 @@
+{
+  "/topics": {
+    "reason": "Live WordPress serves HTTP 404 “Page not found - Impact Magazine” at /topics/ (no public topics index). Baseline: reference-pack/topics/desktop/rendered.html (captured WP 404 HTML).",
+    "liveUrl": "https://danafarberimpact.org/topics/",
+    "baseline": "reference-pack/topics/desktop/rendered.html"
+  },
+  "/late-fall-2022-issue": {
+    "reason": "Live WordPress returns HTTP 404 at /late-fall-2022-issue/ (arch_err); canonical issue archive is /tag/late-fall-2022/. No browse-issues / Issues nav / past-issues link to the issue URL on WP (past-issues uses /tag/late-fall-2022/).",
+    "liveUrl": "https://danafarberimpact.org/late-fall-2022-issue/",
+    "baseline": "reference-pack/late-fall-2022-issue/desktop/rendered.html"
+  },
+  "/digital-exclusives": {
+    "reason": "Live WordPress returns HTTP 404 “Page not found - Impact Magazine” at /digital-exclusives/ (QA-008). The archive lives at /category/digital-exclusives/ and /tag/digital-exclusives/.",
+    "liveUrl": "https://danafarberimpact.org/digital-exclusives/"
+  }
+}

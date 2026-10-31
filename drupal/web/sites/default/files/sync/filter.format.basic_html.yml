@@ -9,11 +9,6 @@ _core:
 name: 'Basic HTML'
 format: basic_html
 weight: 0
-roles:
-  - authenticated
-  - editor
-  - issue_manager
-  - content_editor
 filters:
   editor_file_reference:
     id: editor_file_reference

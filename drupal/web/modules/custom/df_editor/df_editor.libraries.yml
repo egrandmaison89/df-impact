@@ -1,0 +1,13 @@
+issue_dashboard:
+  css:
+    theme:
+      css/issue-dashboard.css: {}
+
+issue_publish_confirm:
+  version: 1.0
+  js:
+    js/issue-publish-confirm.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/once

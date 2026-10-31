@@ -1,16 +1,13 @@
 {#
-/**
- * @file
- * Homepage "Explore the Latest Issue" — stories from the current issue only.
- */
+  PostX / Ultimate Post grid — latest issue row (unequal-grid overlay).
 #}
-{% if title %}
-  <h3 class="visually-hidden">{{ title }}</h3>
-{% endif %}
-<div class="homepage-latest-issue-grid">
-  {% for row in rows %}
-    <div{{ row.attributes }}>
-      {{ row.content }}
+<div class="ultp-post-grid-block wp-block-ultimate-post-post-grid-4 ultp-block-1f374b alignwide unequal-grid">
+  <div class="ultp-block-wrapper">
+    <div class="ultp-block-items-wrap ultp-block-row ultp-layout1 ultp-block-content-">
+      {% for row in rows %}
+        {{ row.content }}
+      {% endfor %}
     </div>
-  {% endfor %}
+  </div>
+  <div class="pagination-block-html" aria-hidden="true" style="display: none;"></div>
 </div>

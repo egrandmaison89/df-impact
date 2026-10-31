@@ -1,0 +1,11 @@
+{#
+/**
+ * @file
+ * Stories archive list wrapper (wp-block-post-template).
+ */
+#}
+<ul class="wp-block-post-template is-layout-flow wp-block-post-template-is-layout-flow">
+  {% for row in rows %}
+    {{ row.content }}
+  {% endfor %}
+</ul>

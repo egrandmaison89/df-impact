@@ -1,0 +1,24 @@
+services:
+  df_editor.issue_preview:
+    class: Drupal\df_editor\IssuePreview
+    arguments: ['@request_stack', '@entity_type.manager', '@current_user']
+
+  df_editor.current_issue_nav:
+    class: Drupal\df_editor\CurrentIssueNav
+    arguments: ['@entity_type.manager']
+  df_editor.site_chrome:
+    class: Drupal\df_editor\SiteChrome
+    arguments: ['@config.factory', '@entity_type.manager', '@menu.link_tree', '@file_url_generator']
+  df_editor.issue_publisher:
+    class: Drupal\df_editor\IssuePublisher
+    arguments: ['@entity_type.manager', '@datetime.time', '@cache_tags.invalidator']
+  df_editor.admin_access_subscriber:
+    class: Drupal\df_editor\EventSubscriber\AdminAccessSubscriber
+    arguments: ['@current_user']
+    tags:
+      - { name: event_subscriber }
+
+  df_editor.issue_nav_page_cache_subscriber:
+    class: Drupal\df_editor\EventSubscriber\IssueNavPageCacheSubscriber
+    tags:
+      - { name: event_subscriber }

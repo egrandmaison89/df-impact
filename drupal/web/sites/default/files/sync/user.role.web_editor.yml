@@ -1,0 +1,67 @@
+uuid: 8b2c3d4e-5f60-7890-bcde-f01122334455
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.editor_html
+    - node.type.article
+    - node.type.in_brief
+    - node.type.issue
+    - taxonomy.vocabulary.topics
+    - workflows.workflow.editorial
+  module:
+    - coffee
+    - content_moderation
+    - df_editor
+    - editoria11y
+    - file
+    - filter
+    - media
+    - node
+    - scheduler
+    - system
+    - taxonomy
+    - toolbar
+id: web_editor
+label: 'Web editor'
+weight: 7
+is_admin: false
+permissions:
+  - 'access coffee'
+  - 'access content'
+  - 'access content overview'
+  - 'access editorial dashboard'
+  - 'access media overview'
+  - 'access toolbar'
+  - 'create article content'
+  - 'create in_brief content'
+  - 'create issue content'
+  - 'create media'
+  - 'create terms in topics'
+  - 'delete media'
+  - 'delete own article content'
+  - 'delete own files'
+  - 'delete own in_brief content'
+  - 'delete own issue content'
+  - 'edit any article content'
+  - 'edit any in_brief content'
+  - 'edit any issue content'
+  - 'edit own article content'
+  - 'edit own in_brief content'
+  - 'edit own issue content'
+  - 'mark as hidden in editoria11y'
+  - 'mark as ok in editoria11y'
+  - 'publish issue with articles'
+  - 'schedule publishing of nodes'
+  - 'update any media'
+  - 'use editorial transition create_new_draft'
+  - 'use editorial transition publish'
+  - 'use editorial transition submit_for_review'
+  - 'use legacy full html on stored content'
+  - 'use text format editor_html'
+  - 'view any unpublished content'
+  - 'view editoria11y checker'
+  - 'view latest version'
+  - 'view scheduled content'
+  - 'view the administration theme'
+

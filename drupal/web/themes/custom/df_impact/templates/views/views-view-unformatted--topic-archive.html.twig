@@ -1,16 +1,17 @@
 {#
 /**
  * @file
- * Topic archive: stacked cards (matches Digital Exclusives archive layout).
+ * Category archive list wrapper (wp-block-post-template).
  */
 #}
-{% if title %}
-  <h2 class="de-archive__subsection-title">{{ title }}</h2>
-{% endif %}
-<div class="de-archive-grid">
-  {% for row in rows %}
-    <div{{ row.attributes.addClass('views-row', 'de-archive-grid__item') }}>
-      {{ row.content }}
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+  <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+    <div class="wp-block-query is-layout-flow wp-block-query-is-layout-flow">
+      <ul class="wp-block-post-template is-layout-flow wp-block-post-template-is-layout-flow">
+        {% for row in rows %}
+          {{ row.content }}
+        {% endfor %}
+      </ul>
     </div>
-  {% endfor %}
+  </div>
 </div>

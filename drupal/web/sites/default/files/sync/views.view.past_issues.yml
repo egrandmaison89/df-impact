@@ -5,6 +5,7 @@ dependencies:
   config:
     - node.type.issue
   module:
+    - metatag_views
     - node
     - user
 id: past_issues
@@ -24,9 +25,14 @@ display:
       title: 'Recent Issues'
       fields: {  }
       pager:
-        type: full
+        type: none
         options:
-          items_per_page: 12
+          offset: 0
+          items_per_page: 0
+      access:
+        type: perm
+        options:
+          perm: 'access content'
       sorts:
         field_year_value:
           id: field_year_value
@@ -60,10 +66,6 @@ display:
         type: 'entity:node'
         options:
           view_mode: teaser
-      access:
-        type: perm
-        options:
-          perm: 'access content'
       display_extenders: {  }
     cache_metadata:
       max-age: -1
@@ -78,7 +80,18 @@ display:
     display_plugin: page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender:
+          metatags:
+            title: 'Recent Issues - Impact Magazine'
+            description: ''
+            og_title: 'Recent Issues - Impact Magazine'
+            og_description: ''
+            og_image: 'https://danafarberimpact.org/wp-content/uploads/2022/11/norma-and-riders_520.jpg'
+            og_type: website
+            og_site_name: 'Impact Magazine'
+            twitter_cards_type: summary_large_image
+          tokenize: false
       path: past-issues
     cache_metadata:
       max-age: -1

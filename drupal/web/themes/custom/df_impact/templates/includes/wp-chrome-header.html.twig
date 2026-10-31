@@ -1,0 +1,78 @@
+{#
+  Ported from parity/reference-pack (desktop + mobile chrome, mega menu shell).
+#}
+<header class="wp-block-template-part">
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+<div class="wp-block-group alignfull wp-block-main-header wp-block-main-header-logo-center is-layout-constrained wp-block-group-is-layout-constrained"></div>
+</div>
+
+<header class="wp-block-template-part">
+<div class="wp-block-group alignfull desktop-header is-layout-flow wp-block-group-is-layout-flow">
+<div class="wp-block-group alignfull impact-header has-white-background-color has-background is-layout-flow wp-block-group-is-layout-flow" style="border-bottom-color:#f4f4f4;border-bottom-width:1px;padding-top:20px;padding-right:0;padding-bottom:20px;padding-left:0">
+<div class="wp-block-group alignfull is-content-justification-space-between is-nowrap is-layout-flex wp-container-core-group-is-layout-73d85c4d wp-block-group-is-layout-flex">
+<div class="wp-block-group left-side-header is-layout-flow wp-block-group-is-layout-flow" style="margin-top:0px;margin-bottom:0px;padding-left:15px">
+<figure class="wp-block-image alignleft size-full is-resized header-logo"><a href="{{ wp_home_url }}"><img fetchpriority="high" decoding="async" width="878" height="235" src="{{ wp_logo_url }}" alt="Impact Dana-Farber &amp; The Jimmy Fund" class="wp-image-4427" style="width:400px;height:107px" srcset="{{ wp_logo_srcset }}" sizes="(max-width: 878px) 100vw, 878px"></a></figure>
+</div>
+
+<div class="wp-block-group right-side-header is-vertical is-content-justification-right is-layout-flex wp-container-core-group-is-layout-951b3b37 wp-block-group-is-layout-flex" style="padding-right:15px">
+<div class="wp-block-group is-nowrap is-layout-flex wp-container-core-group-is-layout-1ffebe42 wp-block-group-is-layout-flex" style="padding-right:5px">
+{% include '@df_impact/includes/wp-gtranslate-static.html.twig' with { wrapper_id: 'gt-wrapper-23849622' } only %}
+<span class="disclaimer-popup"><i class="fa fa-info-circle" aria-hidden="true"></i>
+  <span class="popup-text">{{ gtranslate_disclaimer_text|default('Please note that some translations using Google Translate may not be accurately represented and downloaded documents cannot be translated. Dana-Farber and the Jimmy Fund assume no liability for inaccuracies that may result from using this third-party tool, which is for website translation.') }}</span>
+</span>
+</div>
+
+<div class="wp-block-group is-nowrap is-layout-flex wp-container-core-group-is-layout-f56f613f wp-block-group-is-layout-flex"><div id="mega-menu-wrap-max_mega_menu_1" class="mega-menu-wrap"><div class="mega-menu-toggle"><div class="mega-toggle-blocks-left"><div class="mega-toggle-block mega-menu-toggle-block mega-toggle-block-1" id="mega-toggle-block-1"><span aria-expanded="false" aria-haspopup="true" role="button" class="mega-toggle-label"><span class="mega-toggle-label-closed">MENU</span><span class="mega-toggle-label-open">MENU</span></span></div></div><div class="mega-toggle-blocks-center"></div><div class="mega-toggle-blocks-right"></div></div><ul id="mega-menu-max_mega_menu_1" class="mega-menu max-mega-menu mega-menu-horizontal mega-no-js" data-event="click" data-effect="slide" data-effect-speed="400" data-effect-mobile="slide" data-effect-speed-mobile="400" data-mobile-force-width="false" data-second-click="go" data-document-click="collapse" data-vertical-behaviour="standard" data-breakpoint="768" data-unbind="true" data-mobile-state="collapse_all" data-mobile-direction="vertical"><li class="mega-menu-item mega-menu-item-type-custom mega-menu-item-object-custom mega-menu-item-has-children mega-align-bottom-left mega-menu-flyout mega-menu-item-599" id="mega-menu-item-599"><a class="mega-menu-link" aria-expanded="false" aria-controls="mega-sub-menu-599">Issues<span class="mega-indicator" aria-hidden="true"></span></a>
+<ul class="mega-sub-menu" id="mega-sub-menu-599">
+{% for item in header_issue_links %}
+<li class="mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page"><a class="mega-menu-link" href="{{ item.url }}">{{ item.title }}</a></li>
+{% endfor %}
+<li class="mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page mega-menu-item-5751" id="mega-menu-item-5751"><a class="mega-menu-link" href="{{ path('view.browse_issues.page_1') }}">{{ header_issues_see_all_title|default('See All Issues') }}</a></li>
+</ul>
+</li><li class="header-search astm-search-menu is-menu popup menu-item"><a href="#" role="button" aria-label="Search Icon Link"><svg width="20" height="20" class="search-icon" role="img" viewBox="2 9 20 5" focusable="false" aria-label="Search">
+						<path class="search-icon-path" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg></a></li></ul></div>
+
+<div class="wp-block-buttons header-button-section is-layout-flex wp-block-buttons-is-layout-flex">
+<div class="wp-block-button"><a class="wp-block-button__link has-white-color has-text-color has-background has-medium-font-size has-custom-font-size wp-element-button" href="{{ donate_url }}" style="border-radius:5px;background-color:#00629b;padding-top:10px;padding-right:20px;padding-bottom:10px;padding-left:20px;font-style:normal;font-weight:700;text-transform:none" target="_blank" rel="noreferrer noopener" data-analytics-linktype="cta" data-analytics-region="header" data-analytics-category="donation" data-analytics-text="donate">{{ donate_button_label|default('Donate') }}</a></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="wp-block-group alignfull mobile-header is-layout-flow wp-block-group-is-layout-flow">
+<div class="wp-block-group impact-header has-white-background-color has-background is-layout-flow wp-block-group-is-layout-flow" style="border-bottom-color:#f4f4f4;border-bottom-width:1px;padding-top:20px;padding-right:0;padding-bottom:20px;padding-left:0">
+<div class="wp-block-group is-content-justification-right is-nowrap is-layout-flex wp-container-core-group-is-layout-e65e5dc4 wp-block-group-is-layout-flex" style="margin-bottom:0px;padding-right:5px;padding-bottom:0px">
+{% include '@df_impact/includes/wp-gtranslate-static.html.twig' with { wrapper_id: 'gt-wrapper-47575491' } only %}
+<span class="disclaimer-popup-mobile"><i class="fa fa-info-circle" aria-hidden="true"></i>
+  <span class="popup-text">{{ gtranslate_disclaimer_text|default('Please note that some translations using Google Translate may not be accurately represented and downloaded documents cannot be translated. Dana-Farber and the Jimmy Fund assume no liability for inaccuracies that may result from using this third-party tool, which is for website translation.') }}</span>
+</span>
+</div>
+
+<div class="wp-block-group alignfull is-content-justification-space-between is-nowrap is-layout-flex wp-container-core-group-is-layout-2ffc3973 wp-block-group-is-layout-flex" style="margin-top:10px">
+<div class="wp-block-group left-side-header is-layout-flow wp-block-group-is-layout-flow" style="margin-top:0px;margin-bottom:0px;padding-left:15px">
+<figure class="wp-block-image alignleft size-full is-resized header-logo"><a href="{{ wp_home_url }}"><img fetchpriority="high" decoding="async" width="878" height="235" src="{{ wp_logo_url }}" alt="Impact Dana-Farber &amp; The Jimmy Fund" class="wp-image-4427" style="width:400px;height:107px" srcset="{{ wp_logo_srcset }}" sizes="(max-width: 878px) 100vw, 878px"></a></figure>
+</div>
+
+<div class="wp-block-group right-side-header is-vertical is-content-justification-right is-layout-flex wp-container-core-group-is-layout-951b3b37 wp-block-group-is-layout-flex" style="padding-right:15px">
+<div class="wp-block-group is-vertical is-content-justification-right is-layout-flex wp-container-core-group-is-layout-798296f2 wp-block-group-is-layout-flex"><div id="mega-menu-wrap-max_mega_menu_1" class="mega-menu-wrap"><div class="mega-menu-toggle"><div class="mega-toggle-blocks-left"><div class="mega-toggle-block mega-menu-toggle-block mega-toggle-block-1" id="mega-toggle-block-1"><span aria-expanded="false" aria-haspopup="true" role="button" class="mega-toggle-label"><span class="mega-toggle-label-closed">MENU</span><span class="mega-toggle-label-open">MENU</span></span></div></div><div class="mega-toggle-blocks-center"></div><div class="mega-toggle-blocks-right"></div></div><ul id="mega-menu-max_mega_menu_1" class="mega-menu max-mega-menu mega-menu-horizontal mega-no-js" data-event="click" data-effect="slide" data-effect-speed="400" data-effect-mobile="slide" data-effect-speed-mobile="400" data-mobile-force-width="false" data-second-click="go" data-document-click="collapse" data-vertical-behaviour="standard" data-breakpoint="768" data-unbind="true" data-mobile-state="collapse_all" data-mobile-direction="vertical"><li class="mega-menu-item mega-menu-item-type-custom mega-menu-item-object-custom mega-menu-item-has-children mega-align-bottom-left mega-menu-flyout mega-menu-item-599"><a class="mega-menu-link" aria-expanded="false">Issues<span class="mega-indicator" aria-hidden="true"></span></a>
+<ul class="mega-sub-menu">
+{% for item in header_issue_links %}
+<li class="mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page"><a class="mega-menu-link" href="{{ item.url }}">{{ item.title }}</a></li>
+{% endfor %}
+<li class="mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page"><a class="mega-menu-link" href="{{ path('view.browse_issues.page_1') }}">{{ header_issues_see_all_title|default('See All Issues') }}</a></li>
+</ul>
+</li><li class="header-search astm-search-menu is-menu popup menu-item"><a href="#" role="button" aria-label="Search Icon Link"><svg width="20" height="20" class="search-icon" role="img" viewBox="2 9 20 5" focusable="false" aria-label="Search">
+						<path class="search-icon-path" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg></a></li></ul></div>
+
+<div class="wp-block-buttons header-button-section is-layout-flex wp-block-buttons-is-layout-flex">
+<div class="wp-block-button"><a class="wp-block-button__link has-white-color has-text-color has-background has-medium-font-size has-custom-font-size wp-element-button" href="{{ donate_url }}" style="border-radius:5px;background-color:#00629b;padding-top:10px;padding-right:20px;padding-bottom:10px;padding-left:20px;font-style:normal;font-weight:700;text-transform:none" target="_blank" rel="noreferrer noopener" data-analytics-linktype="cta" data-analytics-region="header" data-analytics-category="donation" data-analytics-text="donate">{{ donate_button_label|default('Donate') }}</a></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+</header>

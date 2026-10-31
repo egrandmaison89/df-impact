@@ -13,15 +13,18 @@ module:
   coffee: 0
   comment: 0
   config: 0
-  config_split: 0
   content_moderation: 0
   contextual: 0
   crop: 0
   datetime: 0
   dblog: 0
+  df_editor: 0
+  df_metatag: 0
   df_migrate: 0
   df_searchstax: 0
+  df_secondary: 0
   df_setup: 0
+  df_launch: 0
   df_site_snippets: 0
   dynamic_page_cache: 0
   editor: 0
@@ -37,7 +40,6 @@ module:
   google_analytics: 0
   google_tag: 0
   help: 0
-  history: 0
   image: 0
   imageapi_optimize: 0
   link: 0
@@ -47,6 +49,9 @@ module:
   menu_link_content: 0
   menu_ui: 0
   metatag: 0
+  metatag_open_graph: 0
+  metatag_twitter_cards: 0
+  metatag_views: 0
   migrate: 0
   migrate_plus: 0
   migrate_tools: 0
@@ -62,6 +67,8 @@ module:
   search: 0
   search_api: 0
   search_api_db: 0
+  search_help: 0
+  search_node: 0
   seckit: 0
   shortcut: 0
   simple_sitemap: 0

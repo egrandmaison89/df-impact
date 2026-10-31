@@ -24,6 +24,17 @@ drupal/migration-data/wp_chrome_reference.json
 parity/node_modules/
 parity/reports/runs/
 parity/reports/latest-report.html
+parity/reports/content-sweep/
+parity/reports/smoke-200/
+parity/reports/url-parity/
+parity/reports/template-samples-http/
+parity/reports/head-meta/
+parity/reports/computed-style-diff/
+parity/reports/behavior/
+parity/reports/progress/
+parity/reports/editor-e2e/
+parity/reports/playwright-results.json
+parity/reports/vm-integrator-before/
 parity/test-results/
 parity/playwright-report/
 parity/baselines/*
@@ -43,3 +54,11 @@ drupal/web/sites/default/files/php/
 drupal/web/sites/default/files/styles/
 drupal/web/sites/default/files/wp-content/
 drupal/web/sites/default/files/config_*/drupal/web/wp-content/
+
+# Upstream binary assets not used by this site (keep binaries out of git; restored by `composer install`).
+drupal/web/core/themes/default_admin/font/
+drupal/web/core/themes/default_admin/images/
+drupal/web/core/themes/default_admin/logo.png
+drupal/web/core/themes/default_admin/screenshot.png
+drupal/web/core/modules/system/tests/fixtures/update/drupal-11.3.0.*.php.gz
+drupal/vendor/weitzman/drupal-test-traits/tests/fixtures/drupal.png

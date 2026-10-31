@@ -182,6 +182,31 @@ final class DfMigrateCommands extends DrushCommands {
   }
 
   /**
+   * Backfill field_related_articles from wp_jetpack_related_posts.json.
+   */
+  #[Command(name: 'df-migrate:backfill-jetpack-related')]
+  #[Bootstrap(level: DrupalBootLevels::FULL)]
+  #[Usage(name: 'drush df-migrate:backfill-jetpack-related --dry-run', description: 'Preview related-article refs')]
+  #[Option(name: 'dry-run', description: 'Do not save nodes.')]
+  #[Option(name: 'only-wp-id', description: 'Restrict to one source wp_id.')]
+  public function backfillJetpackRelated(array $options = [
+    'dry-run' => FALSE,
+    'only-wp-id' => NULL,
+  ]): void {
+    $inc = dirname(__DIR__, 3) . '/scripts/backfill_jetpack_related_articles.inc';
+    if (!is_readable($inc)) {
+      $this->logger()->error(dt('Missing include file @f', ['@f' => $inc]));
+      return;
+    }
+    require_once $inc;
+    $only = $options['only-wp-id'];
+    $only_wp_id = ($only !== NULL && $only !== '' && (string) $only !== '0')
+      ? (int) $only
+      : NULL;
+    df_migrate_backfill_jetpack_related_run((bool) $options['dry-run'], $only_wp_id);
+  }
+
+  /**
    * Sync article/in-brief paths, placement, and redirects from df_migrate JSON.
    */
   #[Command(name: 'df-migrate:sync-wordpress-paths')]
@@ -195,6 +220,77 @@ final class DfMigrateCommands extends DrushCommands {
     }
     require_once $inc;
     df_migrate_run_sync_wordpress_paths();
+  }
+
+  /**
+   * Compare export JSON publish status to Drupal node published flag.
+   */
+  #[Command(name: 'df-migrate:audit-export-publish-status')]
+  #[Bootstrap(level: DrupalBootLevels::FULL)]
+  #[Usage(name: 'drush df-migrate:audit-export-publish-status', description: 'Audit articles.json and in_brief.json vs migrate maps.')]
+  #[Option(name: 'json', description: 'Emit JSON summary on stdout.')]
+  public function auditExportPublishStatus(array $options = ['json' => FALSE]): void {
+    $inc = dirname(__DIR__, 3) . '/scripts/df_audit_export_publish_status.inc';
+    if (!is_readable($inc)) {
+      $this->logger()->error(dt('Missing @f', ['@f' => $inc]));
+      return;
+    }
+    require_once $inc;
+    try {
+      $summary = df_migrate_audit_export_publish_status_run();
+    }
+    catch (\Throwable $e) {
+      $this->logger()->error($e->getMessage());
+      return;
+    }
+    if ($options['json']) {
+      $this->output()->writeln(json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+      return;
+    }
+    $rows = [];
+    foreach ($summary['migrations'] as $r) {
+      $rows[] = [
+        $r['migration'],
+        (string) $r['matched'],
+        (string) count($r['export_published_drupal_unpublished']),
+        (string) count($r['export_draft_drupal_published']),
+      ];
+    }
+    $this->io()->table(
+      ['Migration', 'Matched', 'Export pub / Drupal unpub', 'Export draft / Drupal pub'],
+      $rows,
+    );
+    $this->io()->note(dt('Totals: matched @m; mismatches @a / @b', [
+      '@m' => $summary['matched_total'],
+      '@a' => $summary['export_published_drupal_unpublished_total'],
+      '@b' => $summary['export_draft_drupal_published_total'],
+    ]));
+  }
+
+  /**
+   * Decode HTML entities in node titles and plain-text fields (one-time fix).
+   */
+  #[Command(name: 'df-migrate:decode-text-entities')]
+  #[Bootstrap(level: DrupalBootLevels::FULL)]
+  #[Usage(name: 'drush df-migrate:decode-text-entities --dry-run', description: 'Report entity reference counts without saving.')]
+  #[Option(name: 'dry-run', description: 'Do not save node changes.')]
+  public function decodeTextEntities(array $options = ['dry-run' => FALSE]): void {
+    $inc = dirname(__DIR__, 3) . '/scripts/decode_text_entities.inc';
+    if (!is_readable($inc)) {
+      $this->logger()->error(dt('Missing @f', ['@f' => $inc]));
+      return;
+    }
+    require_once $inc;
+    $result = df_migrate_decode_text_entities_run((bool) $options['dry-run']);
+    $this->io()->table(
+      ['Metric', 'Value'],
+      [
+        ['Nodes scanned', (string) $result['scanned']],
+        ['Nodes updated', (string) $result['updated']],
+        ['Entity refs (before)', (string) $result['entities_before']],
+        ['Entity refs (after)', (string) $result['entities_after']],
+      ],
+    );
   }
 
 }

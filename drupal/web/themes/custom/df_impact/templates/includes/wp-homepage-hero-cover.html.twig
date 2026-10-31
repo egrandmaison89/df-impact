@@ -1,0 +1,19 @@
+{#
+  WordPress homepage cover (reference-pack homepage/desktop/rendered.html).
+  Variables: video_url, poster_url, title
+#}
+<div class="wp-block-cover alignfull is-light homepage-banner" style="min-height:490px;aspect-ratio:unset;">
+  {% if poster_url %}
+    <img decoding="async" src="{{ poster_url }}" class="wp-block-cover__image-background" alt="" aria-hidden="true" data-object-fit="cover" style="object-fit:cover">
+  {% endif %}
+  {% if video_url %}
+    {# WP hero video has no poster attribute; cover img handles still frame for parity captures. #}
+    <video class="wp-block-cover__video-background intrinsic-ignore" autoplay muted loop playsinline preload="metadata" src="{{ video_url }}" data-object-fit="cover"></video>
+  {% endif %}
+  <span aria-hidden="true" class="wp-block-cover__background has-background-dim-0 has-background-dim" style="background-color:#FFF"></span>
+  <div class="wp-block-cover__inner-container is-layout-flow wp-block-cover-is-layout-flow">
+    <div class="wp-block-group homepage-header is-layout-flow wp-block-group-is-layout-flow">
+      <h1 class="wp-block-heading has-text-align-left has-background-color has-text-color has-montserrat-font-family" style="margin-left:0%;font-size:62px;font-style:normal;font-weight:600;line-height:1;text-transform:none">{% if title_link %}<a href="{{ title_link }}" class="has-background-color has-text-color">{{ title }}</a>{% else %}{{ title }}{% endif %}</h1>
+    </div>
+  </div>
+</div>

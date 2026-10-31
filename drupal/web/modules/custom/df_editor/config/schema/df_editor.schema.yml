@@ -1,0 +1,79 @@
+df_editor.settings:
+  type: config_object
+  label: 'DF Editor site settings'
+  mapping:
+    donate_url:
+      type: string
+      label: 'Donate URL'
+    logo_url:
+      type: string
+      label: 'Logo URL'
+    logo_srcset:
+      type: string
+      label: 'Logo srcset'
+    header_primary_menu:
+      type: string
+      label: 'Header primary menu ID'
+    footer_link_about_impact_title:
+      type: label
+      label: 'About Impact link title'
+    footer_link_about_impact_url:
+      type: string
+      label: 'About Impact link URL'
+    footer_link_browse_issues_title:
+      type: label
+      label: 'Browse issues link title'
+    footer_link_browse_issues_url:
+      type: string
+      label: 'Browse issues link URL'
+    footer_link_jimmy_fund_events_title:
+      type: label
+      label: 'Jimmy Fund events link title'
+    footer_link_jimmy_fund_events_url:
+      type: string
+      label: 'Jimmy Fund events link URL'
+    footer_address_html:
+      type: text
+      label: 'Footer address HTML'
+    footer_disclaimer_html:
+      type: text
+      label: 'Footer disclaimer HTML'
+    social_facebook_url:
+      type: string
+      label: 'Facebook URL'
+    social_twitter_url:
+      type: string
+      label: 'Twitter URL'
+    social_instagram_url:
+      type: string
+      label: 'Instagram URL'
+    footer_dei_html:
+      type: text
+      label: 'Footer inclusion & equity HTML'
+    footer_copyright_html:
+      type: text
+      label: 'Footer copyright and legal links HTML'
+    gtranslate_disclaimer_text:
+      type: text
+      label: 'Translate widget disclaimer'
+    header_issues_see_all_title:
+      type: label
+      label: 'Issues menu “see all” label'
+    donate_button_label:
+      type: label
+      label: 'Donate button label'
+    homepage_hero_override_title:
+      type: string
+      label: 'Homepage hero override heading'
+    homepage_hero_override_link:
+      type: string
+      label: 'Homepage hero override link URL'
+    footer_badge_us_news_media_id:
+      type: integer
+      label: 'Footer U.S. News badge media ID'
+    footer_badge_us_news_children_media_id:
+      type: integer
+      label: 'Footer U.S. News children badge media ID'
+    footer_badge_charity_navigator_media_id:
+      type: integer
+      label: 'Footer Charity Navigator badge media ID'

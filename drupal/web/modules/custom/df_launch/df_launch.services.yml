@@ -1,0 +1,4 @@
+services:
+  df_launch.environment:
+    class: Drupal\df_launch\LaunchEnvironment
+    arguments: ['@config.factory', '@settings']

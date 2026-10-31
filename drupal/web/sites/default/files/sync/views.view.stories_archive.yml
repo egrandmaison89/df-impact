@@ -3,10 +3,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_view_display.node.article.teaser
+    - core.entity_view_display.media.image.default
+    - field.storage.node.field_excerpt
+    - field.storage.node.field_featured_image
     - node.type.article
   module:
+    - media
+    - metatag_views
     - node
+    - text
     - user
 id: stories_archive
 label: 'Stories archive'
@@ -23,13 +28,56 @@ display:
     position: 0
     display_options:
       title: 'Stories Archive'
-      fields: {  }
+      fields:
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          plugin_id: field
+          label: ''
+          type: string
+          settings:
+            link_to_entity: true
+        field_featured_image:
+          id: field_featured_image
+          table: node__field_featured_image
+          field: field_featured_image
+          plugin_id: field
+          label: ''
+          type: entity_reference_entity_view
+          settings:
+            view_mode: default
+            link: false
+        field_excerpt:
+          id: field_excerpt
+          table: node__field_excerpt
+          field: field_excerpt
+          plugin_id: field
+          label: ''
+          type: text_default
+          settings: {  }
       pager:
         type: full
         options:
-          items_per_page: 12
           offset: 0
+          items_per_page: 10
+          tags:
+            next: 'Next Page'
+            previous: ‹
+            first: ''
+            last: ''
+          quantity: 3
+      access:
+        type: perm
+        options:
+          perm: 'access content'
       sorts:
+        sticky:
+          id: sticky
+          table: node_field_data
+          field: sticky
+          plugin_id: boolean
+          order: DESC
         created:
           id: created
           table: node_field_data
@@ -53,13 +101,7 @@ display:
       style:
         type: default
       row:
-        type: 'entity:node'
-        options:
-          view_mode: teaser
-      access:
-        type: perm
-        options:
-          perm: 'access content'
+        type: fields
       display_extenders: {  }
     cache_metadata:
       max-age: -1
@@ -67,14 +109,26 @@ display:
         - 'languages:language_interface'
         - url.query_args
         - 'user.node_grants:view'
-      tags: {  }
+      tags:
+        - 'config:field.storage.node.field_excerpt'
+        - 'config:field.storage.node.field_featured_image'
   page_1:
     id: page_1
     display_title: Page
     display_plugin: page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender:
+          metatags:
+            title: 'Stories Archive - Impact Magazine'
+            description: ''
+            og_title: 'Stories Archive - Impact Magazine'
+            og_description: ''
+            og_type: website
+            og_site_name: 'Impact Magazine'
+            twitter_cards_type: summary_large_image
+          tokenize: false
       path: issues
     cache_metadata:
       max-age: -1
@@ -82,4 +136,6 @@ display:
         - 'languages:language_interface'
         - url.query_args
         - 'user.node_grants:view'
-      tags: {  }
+      tags:
+        - 'config:field.storage.node.field_excerpt'
+        - 'config:field.storage.node.field_featured_image'

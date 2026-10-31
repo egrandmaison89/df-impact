@@ -8,18 +8,29 @@
 #}
 {%
   set body_classes = [
+    'wp-embed-responsive',
+    'wp-theme-blockmag',
+    'wp-child-theme-blockmagchild',
+    'postx-page',
+    'mega-menu-max-mega-menu-1',
+    'blockmag',
     logged_in ? 'user-logged-in',
     not root_path ? 'path-frontpage' : 'path-' ~ root_path|clean_class,
     node_type ? 'page-node-type-' ~ node_type|clean_class,
     db_offline ? 'db-offline',
     is_category_archive ? 'path-category-archive',
+    is_front ? 'page-template-default',
   ]
 %}
 <!DOCTYPE html>
 <html{{ html_attributes }}>
   <head>
     <head-placeholder token="{{ placeholder_token }}">
+    {% if head_title.title %}
+    <title>{{ head_title.title }}</title>
+    {% elseif head_title %}
     <title>{{ head_title|safe_join(' | ') }}</title>
+    {% endif %}
     <css-placeholder token="{{ placeholder_token }}">
     <js-placeholder token="{{ placeholder_token }}">
     {% if df_site_snippets_header %}
@@ -27,11 +38,10 @@
     {% endif %}
   </head>
   <body{{ attributes.addClass(body_classes) }}>
-    <a href="#main-content" class="visually-hidden focusable">
-      {{ 'Skip to main content'|t }}
-    </a>
+    <a class="skip-link screen-reader-text" id="wp-skip-link" href="#wp--skip-link--target">{{ 'Skip to content'|t }}</a>
     {{ page_top }}
     {{ page }}
+    {% include '@df_impact/includes/wp-ivory-search-popup.html.twig' with { wp_home_url: wp_home_url|default('/'), search_query: search_query|default('') } only %}
     {{ page_bottom }}
     {% if df_site_snippets_footer %}
       {{ df_site_snippets_footer }}

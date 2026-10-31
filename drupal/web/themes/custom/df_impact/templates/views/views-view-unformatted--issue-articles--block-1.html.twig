@@ -1,16 +1,6 @@
 {#
-/**
- * @file
- * Issue page story grid — two columns to match WordPress ULT layout.
- */
+  Issue “In This Issue” grid rows only — wrapper + pager in views-view--issue-articles--block-1.
 #}
-{% if title %}
-  <h3 class="visually-hidden">{{ title }}</h3>
-{% endif %}
-<div class="grid grid--2 issue-page__story-grid">
-  {% for row in rows %}
-    <div{{ row.attributes }}>
-      {{ row.content }}
-    </div>
-  {% endfor %}
-</div>
+{% for row in rows %}
+  {{ row.content }}
+{% endfor %}

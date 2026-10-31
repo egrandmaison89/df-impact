@@ -23,6 +23,14 @@ if (!fs.existsSync(manifest)) {
 console.log(`Parity run ${runId}`);
 console.log(`WP_BASE_URL=${process.env.WP_BASE_URL || 'https://danafarberimpact.org'}`);
 console.log(`DRUPAL_BASE_URL=${process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888'}`);
+if (process.env.PARITY_WP_BASELINE) {
+  console.log(`PARITY_WP_BASELINE=${process.env.PARITY_WP_BASELINE} (frozen WP reference — no live WP fetches)`);
+} else if (process.env.PARITY_REQUIRE_BASELINE === '1') {
+  console.error('PARITY_REQUIRE_BASELINE=1 but PARITY_WP_BASELINE is unset. Use owner baseline df-impact-2026-10-28.');
+  process.exit(1);
+} else {
+  console.warn('Live WordPress reference (captcha-noisy). Set PARITY_WP_BASELINE=df-impact-2026-10-28 for release scores.');
+}
 
 const pw = spawnSync(
   'npx',

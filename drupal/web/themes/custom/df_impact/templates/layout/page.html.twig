@@ -4,46 +4,39 @@
  * Theme override to display a single page.
  */
 #}
-<div class="page">
+<div class="wp-site-blocks">
 
-  {% include '@df_impact/includes/site-header.html.twig' %}
+  {% include '@df_impact/includes/wp-chrome-header.html.twig' %}
 
-  {# --- Hero Region --- #}
-  {% if page.hero %}
-    <section class="hero">
-      {{ page.hero }}
-    </section>
-  {% endif %}
-
-  {# --- Highlighted Region --- #}
-  {% if page.highlighted and not is_about_impact %}
-    <div class="highlighted">
-      <div class="container">
-        {{ page.highlighted }}
+  <div class="wp-block-group alignfull no-margin-top header-media-inner-post without-bg is-layout-constrained wp-block-group-is-layout-constrained">
+    <div class="wp-block-group alignfull is-layout-flow wp-block-group-is-layout-flow" style="padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px">
+      <div class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
+        <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow"></div>
       </div>
     </div>
-  {% endif %}
+  </div>
 
-  {# --- Main Content --- #}
-  <main id="main-content" class="page__content" role="main">
-    <a id="main-content-anchor" tabindex="-1"></a>
+  {% include '@df_impact/includes/df-admin-highlighted.html.twig' %}
 
+  <main id="wp--skip-link--target" class="wp-block-group is-layout-flow wp-block-group-is-layout-flow" role="main">
+    {% if page.hero %}
+      {{ page.hero }}
+    {% endif %}
     {% if page.sidebar %}
-      <div class="container">
-        <div class="layout-with-sidebar">
-          <div class="layout-with-sidebar__content">
-            {{ page.content }}
-          </div>
-          <aside class="layout-with-sidebar__sidebar" role="complementary">
-            {{ page.sidebar }}
-          </aside>
+      <div class="layout-with-sidebar">
+        <div class="layout-with-sidebar__content">
+          {{ page.content }}
         </div>
+        <aside class="layout-with-sidebar__sidebar" role="complementary">
+          {{ page.sidebar }}
+        </aside>
       </div>
     {% else %}
       {{ page.content }}
     {% endif %}
+    <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained"></div>
   </main>
 
-  {% include '@df_impact/includes/site-footer.html.twig' %}
+  {% include '@df_impact/includes/wp-chrome-footer.html.twig' %}
 
 </div>

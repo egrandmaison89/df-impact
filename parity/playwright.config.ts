@@ -9,6 +9,7 @@ export default defineConfig({
   expect: { timeout: 15_000 },
   fullyParallel: false,
   workers: 1,
+  maxFailures: 0,
   reporter: [['list'], ['json', { outputFile: 'reports/playwright-results.json' }]],
   use: {
     trace: 'off',
@@ -20,9 +21,11 @@ export default defineConfig({
     {
       name: 'behavior',
       testMatch: '**/behavior-parity.spec.ts',
+      timeout: 1_320_000,
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1440, height: 900 },
+        navigationTimeout: 180_000,
         video: process.env.PARITY_BEHAVIOR_VIDEO === '1' ? 'on' : 'off',
       },
     },
@@ -40,6 +43,32 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1440, height: 900 },
+      },
+    },
+    {
+      name: 'editor-e2e',
+      testMatch: '**/editor-e2e.spec.ts',
+      timeout: 600_000,
+      expect: { timeout: 30_000 },
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
+        baseURL: drupalBase,
+        actionTimeout: 60_000,
+        navigationTimeout: 90_000,
+      },
+    },
+    {
+      name: 'admin-e2e',
+      testMatch: '**/admin-e2e.spec.ts',
+      timeout: 600_000,
+      expect: { timeout: 30_000 },
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
+        baseURL: drupalBase,
+        actionTimeout: 60_000,
+        navigationTimeout: 90_000,
       },
     },
   ],

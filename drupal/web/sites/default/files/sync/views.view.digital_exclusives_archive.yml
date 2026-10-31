@@ -68,7 +68,7 @@ display:
       pager:
         type: full
         options:
-          items_per_page: 12
+          items_per_page: 10
       sorts:
         sticky:
           id: sticky
@@ -122,7 +122,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: digital-exclusives
+      path: category/digital-exclusives
     cache_metadata:
       max-age: -1
       contexts:

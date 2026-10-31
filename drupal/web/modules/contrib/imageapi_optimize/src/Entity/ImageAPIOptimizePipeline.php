@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Site\Settings;
 use Drupal\imageapi_optimize\ImageAPIOptimizeProcessorPluginCollection;
 use Drupal\imageapi_optimize\ImageAPIOptimizeProcessorInterface;
 use Drupal\imageapi_optimize\ImageAPIOptimizePipelineInterface;
@@ -144,6 +145,12 @@ class ImageAPIOptimizePipeline extends ConfigEntityBase implements ImageAPIOptim
    * {@inheritdoc}
    */
   public function flush() {
+
+    // Allow for skipping the automatic flushing of image styles for site
+    // admins/developers that want to handle this in a different way.
+    if (Settings::get('imageapi_optimize.disable_pipeline_flush', FALSE)) {
+      return $this;
+    }
 
     // Get all image optimize pipelines and if they use this pipeline, flush it.
     $style_storage = $this->entityTypeManager()->getStorage('image_style');

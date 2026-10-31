@@ -1,0 +1,34 @@
+{#
+  Article route — WordPress post template (title band wraps <main> like reference-pack).
+#}
+<div class="wp-site-blocks">
+
+  {% include '@df_impact/includes/wp-chrome-header.html.twig' %}
+
+  <div class="wp-block-group alignfull no-margin-top header-media-inner-post without-bg is-layout-constrained wp-block-group-is-layout-constrained">
+    <div class="wp-block-group alignfull is-layout-flow wp-block-group-is-layout-flow" style="padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px">
+      <div class="wp-block-group is-layout-flow wp-block-group-is-layout-flow">
+        <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:25px" aria-hidden="true" class="wp-block-spacer"></div>
+
+  <div class="wp-block-group alignfull is-content-justification-center is-layout-constrained wp-block-group-is-layout-constrained">
+    {% if wp_singular_post_title %}
+      <h1 style="color:#003354;font-style:normal;font-weight:600" class="alignwide wp-block-post-title has-text-color has-libre-baskerville-font-family">{{ wp_singular_post_title }}</h1>
+    {% endif %}
+
+    <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+      <main id="wp--skip-link--target" class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow" style="margin-top:0;padding-top:0" role="main">
+        {% include '@df_impact/includes/df-admin-highlighted.html.twig' %}
+        {{ page.content }}
+        <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained"></div>
+      </main>
+    </div>
+  </div>
+
+  {% include '@df_impact/includes/wp-chrome-footer.html.twig' %}
+
+</div>

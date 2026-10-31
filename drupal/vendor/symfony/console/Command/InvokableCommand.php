@@ -35,6 +35,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class InvokableCommand implements SignalableCommandInterface
 {
+    /**
+     * @var list<array{?object, Command}>
+     */
+    private static array $running = [];
+
     private readonly ?SignalableCommandInterface $signalableCommand;
     private readonly \ReflectionFunction $invokable;
     /**
@@ -58,7 +63,13 @@ class InvokableCommand implements SignalableCommandInterface
      */
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
-        $statusCode = $this->invokable->invoke(...$this->getParameters($this->invokable, $input, $output));
+        self::$running[] = [$this->invokable->getClosureThis(), $this->command];
+
+        try {
+            $statusCode = $this->invokable->invoke(...$this->getParameters($this->invokable, $input, $output));
+        } finally {
+            array_pop(self::$running);
+        }
 
         if (!\is_int($statusCode)) {
             if ($this->triggerDeprecations) {
@@ -93,10 +104,10 @@ class InvokableCommand implements SignalableCommandInterface
             }
 
             if ($input = MapInput::tryFrom($parameter)) {
-                $inputArguments = array_map(fn (Argument $a) => $a->toInputArgument(), iterator_to_array($input->getArguments(), false));
+                $inputArguments = array_map(static fn (Argument $a) => $a->toInputArgument(), iterator_to_array($input->getArguments(), false));
 
                 // make sure optional arguments are defined after required ones
-                usort($inputArguments, fn (InputArgument $a, InputArgument $b) => (int) $b->isRequired() - (int) $a->isRequired());
+                usort($inputArguments, static fn (InputArgument $a, InputArgument $b) => (int) $b->isRequired() - (int) $a->isRequired());
 
                 foreach ($inputArguments as $inputArgument) {
                     $definition->addArgument($inputArgument);
@@ -112,6 +123,20 @@ class InvokableCommand implements SignalableCommandInterface
     public function getCode(): callable
     {
         return $this->code;
+    }
+
+    /**
+     * Returns the command that is currently running the given object, if any.
+     */
+    public static function getRunningCommand(object $code): ?Command
+    {
+        for ($i = \count(self::$running) - 1; 0 <= $i; --$i) {
+            if ($code === self::$running[$i][0]) {
+                return self::$running[$i][1];
+            }
+        }
+
+        return null;
     }
 
     private function getClosure(callable $code): \Closure

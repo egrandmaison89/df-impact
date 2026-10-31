@@ -1,0 +1,43 @@
+uuid: 4a913f35-a3a9-4f0b-8c2e-0091a6f93df5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.stat_highlight.field_stat_description
+    - field.field.paragraph.stat_highlight.field_stat_label
+    - field.field.paragraph.stat_highlight.field_stat_number
+    - paragraphs.paragraphs_type.stat_highlight
+  module:
+    - text
+id: paragraph.stat_highlight.default
+targetEntityType: paragraph
+bundle: stat_highlight
+mode: default
+content:
+  field_stat_number:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_stat_label:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_stat_description:
+    type: text_textarea
+    weight: 2
+    region: content
+    settings:
+      rows: 3
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

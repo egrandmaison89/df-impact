@@ -1,0 +1,487 @@
+/**
+ * Minimal Drupal-only fixes on top of WordPress reference-pack CSS.
+ * Shrink this file as Twig markup converges on WP DOM.
+ */
+/* WordPress parity for anonymous visitors only — logged-in editors keep toolbar/tabs/contextual. */
+body:not(.user-logged-in) .toolbar,
+body:not(.user-logged-in) #toolbar-administration,
+body:not(.user-logged-in) .contextual,
+body:not(.user-logged-in) .contextual-region .contextual,
+body:not(.user-logged-in) .block-local-tasks-block,
+body:not(.user-logged-in) nav.tabs {
+  display: none !important;
+}
+
+/*
+ * Logged-in: sticky site header sits below the admin toolbar only while it is fixed. On narrow
+ * screens the toolbar is absolute and scrolls away, but the displace offset stays set.
+ */
+body.user-logged-in.toolbar-fixed header.wp-block-template-part {
+  top: var(--drupal-displace-offset-top, 0px);
+}
+
+body {
+  margin: 0;
+}
+
+/*
+ * WP mega-nav solid background follows page chrome, not viewport:
+ * - /browse-issues listing (reference-pack browse-issues @768)
+ * - Issue landings whose hero cover uses WP block "is-light" (field_issue_banner_is_light)
+ * See parity/reports/behavior/wp-nav-bg-evidence/EVIDENCE.md
+ */
+body.path-browse-issues #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link,
+body.issue-chrome-nav-solid #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link,
+body:has(main .issue-page-banner.is-light) #mega-menu-max_mega_menu_1 > li.mega-menu-item > a.mega-menu-link {
+  background-color: rgb(255, 255, 255) !important;
+}
+
+/* Mega menu opens on click (Max Mega Menu data-event=click); no hover override. */
+
+/* Live loads maxmegamenu style.css after the inline header CSS, so its 6px indicator gap wins there. */
+#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 li.mega-menu-item-has-children > a.mega-menu-link > span.mega-indicator {
+  margin-left: 6px;
+}
+
+/* Sticky chrome shadow only — logo shrink uses `.header-logo.scrolled` (wp-chrome-behaviors.js). */
+.desktop-header.header--scrolled,
+.impact-header.header--scrolled {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* WP `.desktop-header .scrolled` targets logo only; never shrink the header shell. */
+.impact-header.scrolled,
+.desktop-header.scrolled {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Full viewport width on scroll (wp-chrome-behaviors toggles `.header--scrolled`, not `.scrolled`). */
+@media (min-width: 769px) {
+  .wp-site-blocks .desktop-header.alignfull.header--scrolled {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+  }
+}
+
+.gtranslate_wrapper select:not(.gt_selector) {
+  display: none !important;
+}
+
+@media (min-width: 769px) {
+  .mobile-header .gtranslate_wrapper {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .desktop-header .gtranslate_wrapper {
+    display: none !important;
+  }
+}
+
+/*
+ * WP blockmag uses content-box on .wp-site-blocks (1296px + 72px padding = 1440).
+ * Drupal/global border-box was stretching to 1440 content + bleed → 1584px chrome.
+ */
+.wp-site-blocks {
+  box-sizing: content-box !important;
+  /* Live WP global layout (--wp--custom--spacing--outer), not clamp(20px, 5vw, 72px). */
+  --wp--custom--spacing--outer: max(1.75rem, 5vw);
+  width: calc(100vw - 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--wp--custom--spacing--outer, 72px);
+  padding-right: var(--wp--custom--spacing--outer, 72px);
+}
+
+@media (max-width: 767px) {
+  .wp-site-blocks .desktop-header {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .wp-site-blocks .mobile-header {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .wp-site-blocks > main#wp--skip-link--target,
+  .wp-site-blocks > footer {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* Social Snap inline share — horizontal icon row (WordPress Social Snap default). */
+.ss-inline-share-wrapper.ss-left-inline-content .ss-social-icons-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ss-inline-share-wrapper.ss-left-inline-content .ss-social-icons-container > li {
+  display: inline-block;
+  margin: 0;
+}
+
+/* Article/in-brief: floated lead images must expand <main> height (WP block layout). */
+main#wp--skip-link--target .entry-content.wp-block-post-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Category archive rows (wp-block-query template) — match live WP row rhythm + image height. */
+.view-topic-archive ul.wp-block-post-template {
+  margin-top: 53px;
+}
+
+.wp-block-post-template > .wp-block-post {
+  margin-bottom: clamp(30px, 4.5vw, 84px);
+  padding-bottom: clamp(30px, 4.5vw, 84px);
+}
+
+.wp-block-post-template > .wp-block-post .wp-block-post-featured-image {
+  margin: 0;
+  overflow: hidden;
+}
+
+.wp-block-post-template > .wp-block-post .wp-block-post-featured-image img {
+  display: inline;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* About landing — wp-block-columns in main (not footer chrome). */
+main .entry-content > .wp-block-group .wp-block-columns.is-layout-flex,
+main .wp-block-post-content > .wp-block-group .wp-block-columns.is-layout-flex {
+  gap: 40px;
+  max-width: 1400px;
+  box-sizing: border-box;
+}
+
+main .entry-content > .wp-block-group .wp-block-columns .wp-block-image img,
+main .wp-block-post-content > .wp-block-group .wp-block-columns .wp-block-image img {
+  width: 100%;
+  height: auto;
+  max-width: 544px;
+}
+
+/*
+ * Header chrome: cancel .wp-site-blocks outer padding on .desktop-header / .mobile-header (blockmag alignfull).
+ * Drop nested alignfull side-padding so logo/donate sit at 15px inset like live WP.
+ */
+@media (min-width: 769px) {
+  .wp-site-blocks .homepage-banner.wp-block-cover.alignfull,
+  .wp-site-blocks .issue-page > .wp-block-cover.alignfull {
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .wp-site-blocks .desktop-header.alignfull {
+    margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+    width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+    max-width: none;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .wp-site-blocks .desktop-header.alignfull .impact-header.alignfull,
+  .wp-site-blocks .desktop-header.alignfull .is-content-justification-space-between.alignfull {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .wp-site-blocks .desktop-header .left-side-header,
+  .wp-site-blocks .desktop-header .right-side-header {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/*
+ * Mobile/tablet header: full-bleed band, but live keeps the white header box at the
+ * WP outer spacing (max(1.75rem, 5vw)) from each viewport edge.
+ */
+@media (max-width: 768px) {
+  .wp-site-blocks .mobile-header.alignfull {
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+    width: 100vw !important;
+    max-width: none;
+    padding-left: max(1.75rem, 5vw) !important;
+    padding-right: max(1.75rem, 5vw) !important;
+    box-sizing: border-box;
+  }
+
+  /*
+   * Max Mega Menu mobile flyout is in-flow on live (style.css loads after the inline header
+   * CSS there); extracted-wp-inline.css loads last here and re-applies position:absolute.
+   */
+  #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-flyout ul.mega-sub-menu {
+    float: left;
+    position: static;
+    width: 100%;
+  }
+
+  .wp-site-blocks .mobile-header.alignfull .is-content-justification-space-between.alignfull {
+    margin-left: calc(-1 * max(1.75rem, 5vw)) !important;
+    margin-right: calc(-1 * max(1.75rem, 5vw)) !important;
+    width: auto !important;
+    max-width: none !important;
+    padding-left: max(1.75rem, 5vw) !important;
+    padding-right: max(1.75rem, 5vw) !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Article singular title band — match WP line breaks (main y parity). */
+.wp-block-group.alignfull.is-content-justification-center h1.wp-block-post-title.alignwide {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 1.38;
+  word-break: break-word;
+}
+
+@media only screen and (max-width: 860px) {
+  .wp-block-group.alignfull.is-content-justification-center h1.wp-block-post-title.alignwide {
+    font-size: 28px;
+  }
+}
+
+/* Social Snap share icons — WP hover/focus parity (inline block). */
+.ss-inline-share-wrapper .ss-social-icons-container a:hover .ss-network-icon svg,
+.ss-inline-share-wrapper .ss-social-icons-container a:focus-visible .ss-network-icon svg {
+  opacity: 0.85;
+}
+
+footer .copyright a:hover,
+footer p.copyright a:hover {
+  color: #d5d5da !important;
+}
+
+main a.wp-block-button__link.has-background:hover {
+  background-color: transparent !important;
+  color: #00629b !important;
+  border: 2px solid #00629b !important;
+}
+
+/* Issue / homepage band CTAs — WP hover inverts to white fill (behavior parity). */
+main .in-brief-button a.wp-block-button__link.has-background:hover,
+main .homepage-banner-button a.wp-block-button__link.has-background:hover {
+  background-color: rgb(255, 255, 255) !important;
+  color: rgb(0, 98, 155) !important;
+  border: 2px solid transparent !important;
+}
+
+main .wp-block-post a:hover,
+main .ultp-block-item a:hover {
+  opacity: 0.92;
+}
+
+main .entry-content a:hover,
+main .wp-block-post-content a:hover {
+  color: rgb(104, 160, 193);
+}
+
+/* blockmag style.css loads after the inline .header-media-inner-post padding reset on live. */
+.wp-site-blocks > .wp-block-group.alignfull.header-media-inner-post.without-bg {
+  padding-left: var(--wp--custom--spacing--outer);
+  padding-right: var(--wp--custom--spacing--outer);
+}
+
+/*
+ * Footer chrome: live bleeds .footer-dark to the viewport edges at every width (blockmag alignfull
+ * margins + outer padding); the footer template part itself stays in the content box.
+ */
+.wp-site-blocks footer .footer-dark.alignfull {
+  margin-left: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+  margin-right: calc(-1 * var(--wp--custom--spacing--outer, 72px)) !important;
+  width: calc(100% + 2 * var(--wp--custom--spacing--outer, 72px)) !important;
+  max-width: none;
+  padding-left: var(--wp--custom--spacing--outer, 72px) !important;
+  padding-right: var(--wp--custom--spacing--outer, 72px) !important;
+  box-sizing: border-box;
+}
+
+.wp-site-blocks footer .footer.alignfull {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box;
+}
+
+/* blockmag style.css loads after the inline link color on live, so result titles use foreground. */
+body.search-results .wp-block-post-template .wp-block-post-title a {
+  color: var(--wp--preset--color--foreground);
+}
+
+/* Header search icon — match WP link color (SVG uses currentColor). */
+.header-search a {
+  color: rgb(0, 98, 155);
+}
+
+.header-search svg.search-icon {
+  fill: currentColor;
+}
+
+.header-search .search-icon-path {
+  fill: currentColor;
+}
+
+/* Tablet / medium desktop — header + homepage hero (WP blockmag breakpoints). */
+@media (min-width: 769px) and (max-width: 1280px) {
+  .wp-site-blocks .desktop-header .header-logo img,
+  .wp-site-blocks .desktop-header .header-logo .wp-image-4427 {
+    width: min(400px, 42vw) !important;
+    height: auto !important;
+  }
+
+  .wp-site-blocks .desktop-header .right-side-header {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .wp-site-blocks .desktop-header .is-content-justification-space-between.is-nowrap {
+    flex-wrap: wrap !important;
+    gap: 0.5rem;
+  }
+
+  .homepage-banner .wp-block-cover__inner-container h1,
+  .homepage-banner .homepage-header h1 {
+    max-width: 100%;
+    box-sizing: border-box;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+}
+
+/*
+ * Live style.css (after inline CSS) sets pull quotes in Libre Baskerville at 1.5em.
+ * extracted-wp-inline.css loads later here and forces Montserrat 22px, so these
+ * values are the live computed styles.
+ */
+.entry-content figure.wp-block-pullquote,
+.entry-content .wp-block-pullquote {
+  font-family: "Libre Baskerville", serif;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 48px;
+  color: rgb(0, 51, 84);
+  border-top: 3px solid rgb(255, 163, 0);
+  border-bottom: 3px solid rgb(255, 163, 0);
+  border-left: 0;
+  border-right: 0;
+  padding: 10px;
+  margin: 24px 40px 20px 0;
+  text-align: left;
+}
+
+.entry-content figure.wp-block-pullquote p,
+.entry-content .wp-block-pullquote p {
+  font-family: "Libre Baskerville", serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 35.2px;
+  color: rgb(0, 51, 84);
+  margin: 0 0 10px;
+}
+
+.entry-content figure.wp-block-pullquote cite,
+.entry-content .wp-block-pullquote cite {
+  font-family: Montserrat, sans-serif;
+  font-size: 24.375px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 39px;
+  color: rgb(17, 17, 17);
+  text-transform: capitalize;
+}
+
+.entry-content figure.wp-block-image figcaption,
+.entry-content .wp-block-image figcaption,
+.entry-content .wp-element-caption {
+  font-family: Montserrat, sans-serif;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 24.5px;
+  color: rgb(0, 0, 0);
+  margin: 7px 0 10px;
+  display: table-caption;
+  caption-side: bottom;
+}
+
+/* YouTube/Vimeo embeds stay inside the column and keep 16:9 (QA-065). */
+.entry-content figure.wp-block-embed-youtube,
+.entry-content figure.wp-block-embed-vimeo,
+.entry-content .wp-block-embed.is-type-video {
+  width: 100%;
+  max-width: min(100%, 800px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.entry-content .wp-embed-aspect-16-9 .wp-block-embed__wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.entry-content .wp-embed-aspect-16-9 .wp-block-embed__wrapper > div {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0 !important;
+}
+
+.entry-content .wp-block-embed__wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px;
+  word-wrap: normal;
+}

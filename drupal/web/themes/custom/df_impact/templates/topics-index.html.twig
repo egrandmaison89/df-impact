@@ -1,0 +1,13 @@
+{#
+  WordPress /topics index parity.
+#}
+<main class="wp-block-group">
+  <h1 class="wp-block-heading">{{ heading }}</h1>
+  <div class="wp-block-query">
+    <ul class="wp-block-post-template">
+      {% for item in items %}
+        <li class="wp-block-post"><h2 class="wp-block-post-title">{{ item.title }}</h2></li>
+      {% endfor %}
+    </ul>
+  </div>
+</main>

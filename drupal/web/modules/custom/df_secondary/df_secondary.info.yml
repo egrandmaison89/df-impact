@@ -1,0 +1,13 @@
+name: 'DF secondary surfaces'
+type: module
+description: 'WordPress parity for search, 404, RSS, robots, sitemap, legacy redirects, share links, and favicons.'
+core_version_requirement: ^10 || ^11
+package: 'DF Impact'
+dependencies:
+  - df_metatag:df_metatag
+  - df_migrate:df_migrate
+  - df_setup:df_setup
+  - simple_sitemap:simple_sitemap
+  - drupal:node
+  - drupal:system
+  - drupal:views

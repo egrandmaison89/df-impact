@@ -1,0 +1,4 @@
+{#
+  PostX grid card image (lazy + srcset parity with WP Photon).
+#}
+<a href="{{ card_url }}"><img decoding="async" loading="lazy" src="{{ image_url }}"{% if srcset %} srcset="{{ srcset }}" sizes="{{ sizes|default('(max-width: 768px) 100vw, 768px') }}"{% endif %} width="{{ width|default(768) }}" height="{{ height|default(551) }}" class="ultp-block-image-content lazyload" alt="{{ alt }}" style="width:100%;height:100%;object-fit:cover"></a>

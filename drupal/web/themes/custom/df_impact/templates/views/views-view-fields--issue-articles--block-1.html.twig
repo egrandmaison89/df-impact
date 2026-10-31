@@ -1,18 +1,23 @@
 {#
-/**
- * @file
- * Issue page stories — image and title only (WordPress parity).
- */
+  Issue story card — PostX style4.
 #}
-<div class="card card--issue-story">
-  {% if fields.field_featured_image is defined and fields.field_featured_image.content|render|trim %}
-    <div class="card__image">
-      {{ fields.field_featured_image.content }}
-    </div>
-  {% endif %}
-  <div class="card__body">
-    {% if fields.title is defined %}
-      <h3 class="card__title card__title--issue-story">{{ fields.title.content }}</h3>
+<div class="ultp-block-item post-id-{{ article_nid }}">
+  <div class="ultp-block-content-wrap">
+    {% if article_card_image_url %}
+      <div class="ultp-block-image ultp-block-image-zoomIn">
+        {% include '@df_impact/includes/postx-card-image.html.twig' with {
+          card_url: article_url,
+          image_url: article_card_image_url,
+          srcset: article_card_image_srcset,
+          sizes: article_card_image_sizes,
+          width: article_card_image_width,
+          height: article_card_image_height,
+          alt: article_card_image_alt,
+        } only %}
+      </div>
     {% endif %}
+    <div class="ultp-block-content">
+      <h2 class="ultp-block-title"><a href="{{ article_url }}">{{ article_card_title|default(fields.title.content|render|striptags|trim) }}</a></h2>
+    </div>
   </div>
 </div>

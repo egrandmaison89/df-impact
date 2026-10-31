@@ -1,114 +1,42 @@
 {#
-/**
- * @file
- * Theme override for Article nodes (full view mode).
- */
+  Article full — WordPress post template (reference-pack article pages).
 #}
-{{ attach_library('df_impact/global') }}
+<div{{ attributes.addClass('wp-singular', 'post') }}>
 
-{% set has_lead_image = node.hasField('field_featured_image') and not node.field_featured_image.isEmpty %}
-{% set has_lead_fallback = article_lead_image_fallback is defined and article_lead_image_fallback %}
-{% set show_lead_media = has_lead_image or has_lead_fallback %}
-{% set has_photo_credit = article_photo_credit_display is defined and article_photo_credit_display|trim %}
-{% set has_photo_caption = article_photo_caption_display is defined and article_photo_caption_display|trim %}
-{% set has_byline = article_byline_display is defined and article_byline_display|trim %}
+  <div class="entry-content article__body alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
 
-<article{{ attributes.addClass('article') }}>
-
-  {# --- Header --- #}
-  <header class="article__header">
-    {{ title_prefix }}
-    <h1 class="article__title">{{ label }}</h1>
-    {{ title_suffix }}
-
-    {% if content.field_subtitle|render|trim %}
-      <p class="article__subtitle">{{ content.field_subtitle }}</p>
+    {% if article_lead_figure is defined and article_lead_figure %}
+      {{ article_lead_figure }}
     {% endif %}
 
-    <div class="article__meta">
-      {% if issue_title is defined and issue_url is defined %}
-        <div class="article__meta-issue">
-          <a href="{{ issue_url }}" class="article__issue-link">{{ issue_title }}</a>
-        </div>
-      {% endif %}
+    {% set has_byline = article_byline_display is defined and article_byline_display|trim %}
+    {% set has_photo_credit = article_photo_credit_display is defined and article_photo_credit_display|trim %}
+    {% if issue_url is defined and issue_url %}
+      <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
+        <a href="{{ issue_url }}">{{ issue_title }}</a>
+        {% if has_byline %}<br>{{ article_byline_display }}{% endif %}
+        {% if has_photo_credit %}<br>{{ article_photo_credit_display }}{% endif %}
+      </p>
+    {% elseif (has_byline or has_photo_credit) and not article_meta_in_body|default(false) %}
+      <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
+        {% if has_byline %}{{ article_byline_display }}{% endif %}
+        {% if has_photo_credit %}{% if has_byline %}<br>{% endif %}{{ article_photo_credit_display }}{% endif %}
+      </p>
+    {% endif %}
 
-      {% if has_byline or has_photo_credit %}
-        <p class="article__meta-line">
-          {% if has_byline %}
-            <span class="article__meta-byline">{{ article_byline_display }}</span>
-          {% endif %}
-          {% if has_photo_credit %}
-            <span class="article__meta-credit">{{ article_photo_credit_display }}</span>
-          {% endif %}
-        </p>
-      {% endif %}
-    </div>
-  </header>
-
-  {% if show_lead_media %}
-    <div class="article__lead article__lead--has-media">
-      <figure class="article__figure">
-        {% if has_lead_image %}
-          {{ content.field_featured_image }}
-        {% else %}
-          {{ article_lead_image_fallback }}
-        {% endif %}
-        {% if has_photo_caption %}
-          <figcaption class="article__figure-caption">{{ article_photo_caption_display }}</figcaption>
-        {% endif %}
-      </figure>
-      <div class="article__body">
-        {{ content.body }}
-      </div>
-    </div>
-  {% else %}
-    {# --- Article Body (no lead image) --- #}
-    <div class="article__body">
+    {% if article_body is defined and article_body %}
+      {{ article_body }}
+    {% else %}
       {{ content.body }}
-    </div>
-  {% endif %}
+    {% endif %}
 
-  {# --- Content Sections (Paragraphs) --- #}
-  {% if content.field_content_sections|render|trim %}
-    <div class="article__sections">
+    {% if content.field_content_sections|render|trim %}
       {{ content.field_content_sections }}
-    </div>
-  {% endif %}
+    {% endif %}
 
-  {# --- Tags (Topics + Cancer Types) --- #}
-  <div class="article__tags">
-    {% if content.field_topics|render|trim %}
-      {{ content.field_topics }}
-    {% endif %}
-    {% if content.field_cancer_types|render|trim %}
-      {{ content.field_cancer_types }}
-    {% endif %}
+    {% include '@df_impact/includes/article-social-share.html.twig' %}
   </div>
 
-  {# --- Social Sharing --- #}
-  <div class="social-share">
-    <span class="social-share__label">{{ 'Share'|t }}</span>
-    <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('<current>') }}" class="social-share__link" target="_blank" rel="noopener" aria-label="{{ 'Share on Facebook'|t }}">FB</a>
-    <a href="https://twitter.com/intent/tweet?url={{ url('<current>') }}&text={{ label }}" class="social-share__link" target="_blank" rel="noopener" aria-label="{{ 'Share on X'|t }}">X</a>
-    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ url('<current>') }}" class="social-share__link" target="_blank" rel="noopener" aria-label="{{ 'Share on LinkedIn'|t }}">LI</a>
-    <a href="mailto:?subject={{ label }}&body={{ url('<current>') }}" class="social-share__link" aria-label="{{ 'Share via Email'|t }}">✉</a>
-  </div>
+  {% include '@df_impact/includes/single-post-footer.html.twig' %}
 
-  {# --- Related Articles (manual picks or automatic by shared topics) --- #}
-  {% if content.field_related_articles|render|trim %}
-    <section class="related-articles">
-      <h2 class="related-articles__title">{{ 'More Stories'|t }}</h2>
-      <div class="grid grid--3">
-        {{ content.field_related_articles }}
-      </div>
-    </section>
-  {% elseif related_by_topic is defined and related_by_topic|render|trim %}
-    <section class="related-articles">
-      <h2 class="related-articles__title">{{ 'More Stories'|t }}</h2>
-      <div class="grid grid--3">
-        {{ related_by_topic }}
-      </div>
-    </section>
-  {% endif %}
-
-</article>
+</div>

@@ -1,0 +1,353 @@
+/** Compare WP vs Drupal dynamic behavior snapshots. */
+
+export function mediaBasename(url) {
+  if (!url || typeof url !== 'string') return '';
+  try {
+    const u = new URL(url, 'https://danafarberimpact.org');
+    return decodeURIComponent(u.pathname.split('/').pop() || '');
+  } catch {
+    return url.split('/').pop() || '';
+  }
+}
+
+export function parseRgb(color) {
+  if (!color || typeof color !== 'string') return null;
+  const m = color.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/);
+  if (!m) return null;
+  return [Number(m[1]), Number(m[2]), Number(m[3])];
+}
+
+/** Colors within ~2/255 per channel (subpixel / rounding). */
+export function colorsClose(a, b, tolerance = 3) {
+  const ra = parseRgb(a);
+  const rb = parseRgb(b);
+  if (!ra || !rb) return a === b;
+  return ra.every((v, i) => Math.abs(v - rb[i]) <= tolerance);
+}
+
+export function styleFieldMatch(wpVal, drVal, field) {
+  if (wpVal == null && drVal == null) return true;
+  if (wpVal == null || drVal == null) return false;
+  if (field === 'color' || field === 'backgroundColor') {
+    return colorsClose(wpVal, drVal);
+  }
+  if (field === 'transform') {
+    const norm = (t) => (t === 'none' || !t ? 'none' : t);
+    return norm(wpVal) === norm(drVal);
+  }
+  return String(wpVal) === String(drVal);
+}
+
+export function compareVideo(wp, dr) {
+  const diffs = [];
+  if (!wp?.found && !dr?.found) return { ok: true, diffs };
+  if (!wp?.found || !dr?.found) {
+    diffs.push({ field: 'found', wp: wp?.found, dr: dr?.found });
+    return { ok: false, diffs };
+  }
+  const boolFields = ['autoplay', 'muted', 'loop', 'playsInline', 'controls'];
+  for (const f of boolFields) {
+    if (wp[f] !== dr[f]) diffs.push({ field: f, wp: wp[f], dr: dr[f] });
+  }
+  const wpBase = mediaBasename(wp.src);
+  const drBase = mediaBasename(dr.src);
+  if (wpBase && drBase && wpBase !== drBase) {
+    diffs.push({ field: 'src.basename', wp: wpBase, dr: drBase });
+  }
+  if (wp.poster !== dr.poster && (wp.poster || dr.poster)) {
+    diffs.push({ field: 'poster', wp: wp.poster, dr: dr.poster });
+  }
+  if (wp.objectFit !== dr.objectFit) {
+    diffs.push({ field: 'objectFit', wp: wp.objectFit, dr: dr.objectFit });
+  }
+  return { ok: diffs.length === 0, diffs };
+}
+
+export function compareHoverStyles(wpDefault, wpHover, drDefault, drHover) {
+  const diffs = [];
+  const wpChanged = hoverChanged(wpDefault, wpHover);
+  const drChanged = hoverChanged(drDefault, drHover);
+  if (wpChanged !== drChanged) {
+    diffs.push({ field: 'hover.changed', wp: wpChanged, dr: drChanged });
+  }
+  if (!wpHover || !drHover) {
+    if (wpChanged || drChanged) {
+      diffs.push({ field: 'hover.style', wp: !!wpHover, dr: !!drHover });
+    }
+    return { ok: diffs.length === 0, diffs };
+  }
+  // When either side shows a hover transition, computed hover styles must match WP.
+  if (wpChanged || drChanged) {
+    for (const field of ['color', 'backgroundColor', 'transform']) {
+      if (!styleFieldMatch(wpHover[field], drHover[field], field)) {
+        diffs.push({ field, wp: wpHover[field], dr: drHover[field] });
+      }
+    }
+  }
+  return { ok: diffs.length === 0, diffs };
+}
+
+export function compareStyles(wp, dr, fields = ['color', 'backgroundColor', 'transform']) {
+  const diffs = [];
+  if (!wp && !dr) return { ok: true, diffs };
+  if (!wp || !dr) {
+    diffs.push({ field: 'present', wp: !!wp, dr: !!dr });
+    return { ok: false, diffs };
+  }
+  for (const f of fields) {
+    if (!styleFieldMatch(wp[f], dr[f], f)) {
+      diffs.push({ field: f, wp: wp[f], dr: dr[f] });
+    }
+  }
+  return { ok: diffs.length === 0, diffs };
+}
+
+export function hoverChanged(defaultStyle, hoverStyle) {
+  if (!defaultStyle || !hoverStyle) return false;
+  return (
+    !colorsClose(defaultStyle.color, hoverStyle.color) ||
+    !colorsClose(defaultStyle.backgroundColor, hoverStyle.backgroundColor) ||
+    defaultStyle.transform !== hoverStyle.transform
+  );
+}
+
+export function dropdownVisible(panel) {
+  if (!panel?.found) return false;
+  const disp = String(panel.display || '');
+  if (disp === 'none') return false;
+  const op = Number.parseFloat(panel.opacity ?? '1');
+  if (op <= 0.05) return false;
+  // Max Mega Menu often uses visibility:hidden while flyout is positioned.
+  if (disp === 'block' || panel.visibility === 'visible') return true;
+  return panel.visibility !== 'hidden';
+}
+
+export function compareDropdown(wp, dr) {
+  const wpOk = dropdownVisible(wp);
+  const drOk = dropdownVisible(dr);
+  if (wpOk === drOk) return { ok: true, diffs: [] };
+  return {
+    ok: false,
+    diffs: [{ field: 'dropdown.visible', wp: wpOk, dr: drOk, wpRaw: wp, drRaw: dr }],
+  };
+}
+
+function headerScrollEffect(before, after) {
+  if (!after?.found) return false;
+  if (after.scrolled) return true;
+  if (before?.height && after?.height && after.height < before.height - 0.5) return true;
+  const bShadow = before?.boxShadow || 'none';
+  const aShadow = after?.boxShadow || 'none';
+  if (bShadow === 'none' && aShadow !== 'none') return true;
+  return false;
+}
+
+function closeNum(a, b, tolerance = 12) {
+  if (a == null && b == null) return true;
+  if (a == null || b == null) return false;
+  return Math.abs(Number(a) - Number(b)) <= tolerance;
+}
+
+export function compareHeaderLayoutBox(wp, dr) {
+  const diffs = [];
+  if (!wp?.found && !dr?.found) return { ok: true, diffs };
+  if (!wp?.found || !dr?.found) {
+    return { ok: false, diffs: [{ field: 'present', wp: !!wp?.found, dr: !!dr?.found }] };
+  }
+  for (const field of ['width', 'height']) {
+    if (!closeNum(wp.header?.[field], dr.header?.[field])) {
+      diffs.push({ field: `header.${field}`, wp: wp.header?.[field], dr: dr.header?.[field] });
+    }
+  }
+  // Allow WP block outer gutter offset; collapse bug shows as width/height skew, not small x drift.
+  if (!closeNum(wp.header?.x, dr.header?.x, 80)) {
+    diffs.push({ field: 'header.x', wp: wp.header?.x, dr: dr.header?.x });
+  }
+  if (wp.logo && dr.logo && !closeNum(wp.logo.width, dr.logo.width, 40)) {
+    diffs.push({ field: 'logo.width', wp: wp.logo.width, dr: dr.logo.width });
+  }
+  if (
+    typeof wp.gtranslateVisibleSelects === 'number' &&
+    typeof dr.gtranslateVisibleSelects === 'number' &&
+    wp.gtranslateVisibleSelects !== dr.gtranslateVisibleSelects
+  ) {
+    diffs.push({
+      field: 'gtranslate.visibleSelects',
+      wp: wp.gtranslateVisibleSelects,
+      dr: dr.gtranslateVisibleSelects,
+    });
+  }
+  return { ok: diffs.length === 0, diffs };
+}
+
+export function compareScrollHeader(wpBefore, wpAfter, drBefore, drAfter) {
+  const diffs = [];
+  const wpEffect = headerScrollEffect(wpBefore, wpAfter);
+  const drEffect = headerScrollEffect(drBefore, drAfter);
+  if (wpBefore?.found && drBefore?.found && wpEffect !== drEffect) {
+    diffs.push({
+      field: 'scroll.effect',
+      wp: wpEffect,
+      dr: drEffect,
+      wpAfter: wpAfter?.scrolled,
+      drAfter: drAfter?.scrolled,
+    });
+  }
+  if (drBefore?.found && !drEffect) {
+    diffs.push({ field: 'scroll.effect.dr', wp: wpEffect, dr: drEffect });
+  }
+  return { ok: diffs.length === 0, diffs };
+}
+
+export function compareReveal(wp, dr) {
+  if (!wp && !dr) return { ok: true, diffs: [] };
+  const wpCount = wp?.count ?? 0;
+  const drCount = dr?.count ?? 0;
+  if (wpCount > 0 && drCount === 0) {
+    return { ok: false, diffs: [{ field: 'reveal.count', wp: wpCount, dr: drCount }] };
+  }
+  return { ok: true, diffs: [] };
+}
+
+export function compareWidgets(wp, dr) {
+  const diffs = [];
+  const keys = new Set([...(wp ? Object.keys(wp) : []), ...(dr ? Object.keys(dr) : [])]);
+  for (const k of keys) {
+    if ((wp?.[k] ?? 0) !== (dr?.[k] ?? 0)) {
+      diffs.push({ field: `widgets.${k}`, wp: wp?.[k], dr: dr?.[k] });
+    }
+  }
+  return { ok: diffs.length === 0, diffs };
+}
+
+function optionalStyleCompare(wp, dr) {
+  if (!wp && !dr) return { ok: true, diffs: [] };
+  return compareStyles(wp, dr);
+}
+
+function optionalHoverCompare(wpDef, wpHover, drDef, drHover) {
+  if (!wpDef && !wpHover && !drDef && !drHover) return { ok: true, diffs: [] };
+  // Either site may omit optional chrome (pager, category chips, In Brief CTA).
+  if (!wpDef && !wpHover) return { ok: true, diffs: [] };
+  if (!drDef && !drHover) return { ok: true, diffs: [] };
+  return compareHoverStyles(wpDef, wpHover, drDef, drHover);
+}
+
+/** Flatten mismatches for JSON report. */
+export function buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap) {
+  const sections = {};
+  const allDiffs = [];
+  const isHome = pathNorm === '/' || pathNorm === '/homepage';
+  const isContent =
+    /\/\d{4}\/\d{2}\//.test(pathNorm) ||
+    pathNorm.includes('/in-brief') ||
+    pathNorm.includes('-issue');
+
+  sections.hero = isHome ? compareVideo(wpSnap.hero, drSnap.hero) : { ok: true, diffs: [] };
+  sections.navDefault = compareStyles(wpSnap.navDefault, drSnap.navDefault);
+  sections.navHover = compareHoverStyles(wpSnap.navDefault, wpSnap.navHover, drSnap.navDefault, drSnap.navHover);
+  sections.donateDefault = optionalStyleCompare(wpSnap.donateDefault, drSnap.donateDefault);
+  sections.donateHover = optionalHoverCompare(
+    wpSnap.donateDefault,
+    wpSnap.donateHover,
+    drSnap.donateDefault,
+    drSnap.donateHover,
+  );
+  sections.footerHover = optionalHoverCompare(
+    wpSnap.footerDefault,
+    wpSnap.footerLinkHover,
+    drSnap.footerDefault,
+    drSnap.footerLinkHover,
+  );
+  sections.bodyLinkHover = isContent
+    ? compareHoverStyles(
+        wpSnap.bodyLinkDefault,
+        wpSnap.bodyLinkHover,
+        drSnap.bodyLinkDefault,
+        drSnap.bodyLinkHover,
+      )
+    : { ok: true, diffs: [] };
+  sections.issuesDropdown =
+    bp.label === 'desktop'
+      ? compareDropdown(wpSnap.issuesDropdown, drSnap.issuesDropdown)
+      : { ok: true, diffs: [] };
+  sections.headerScroll = compareScrollHeader(
+    wpSnap.headerBeforeScroll,
+    wpSnap.headerAfterScroll,
+    drSnap.headerBeforeScroll,
+    drSnap.headerAfterScroll,
+  );
+  const chromeHeader =
+    (wpSnap.headerScrollDepths?.y600?.found || drSnap.headerScrollDepths?.y600?.found) &&
+    (wpSnap.headerBeforeScroll?.found || drSnap.headerBeforeScroll?.found);
+  sections.headerLayout600 = chromeHeader
+    ? compareHeaderLayoutBox(wpSnap.headerScrollDepths?.y600, drSnap.headerScrollDepths?.y600)
+    : { ok: true, diffs: [] };
+  sections.headerLayout2000 = chromeHeader
+    ? compareHeaderLayoutBox(wpSnap.headerScrollDepths?.y2000, drSnap.headerScrollDepths?.y2000)
+    : { ok: true, diffs: [] };
+  sections.pagerHover = optionalHoverCompare(
+    wpSnap.pagerDefault,
+    wpSnap.pagerHover,
+    drSnap.pagerDefault,
+    drSnap.pagerHover,
+  );
+  sections.categoryLinkHover = optionalHoverCompare(
+    wpSnap.categoryDefault,
+    wpSnap.categoryHover,
+    drSnap.categoryDefault,
+    drSnap.categoryHover,
+  );
+  sections.inBriefButtonHover = optionalHoverCompare(
+    wpSnap.inBriefButtonDefault,
+    wpSnap.inBriefButtonHover,
+    drSnap.inBriefButtonDefault,
+    drSnap.inBriefButtonHover,
+  );
+  sections.reveal = compareReveal(wpSnap.reveal, drSnap.reveal);
+  sections.widgets = compareWidgets(wpSnap.widgets, drSnap.widgets);
+  sections.cardHover = compareHoverStyles(wpSnap.cardDefault, wpSnap.cardHover, drSnap.cardDefault, drSnap.cardHover);
+  sections.buttonHover = compareHoverStyles(
+    wpSnap.buttonDefault,
+    wpSnap.buttonHover,
+    drSnap.buttonDefault,
+    drSnap.buttonHover,
+  );
+  sections.shareIconHover = optionalHoverCompare(
+    wpSnap.shareIconDefault,
+    wpSnap.shareIconHover,
+    drSnap.shareIconDefault,
+    drSnap.shareIconHover,
+  );
+  if (bp.label === 'mobile') {
+    const wpOpen = Boolean(wpSnap.mobileMenu?.opened);
+    const drOpen = Boolean(drSnap.mobileMenu?.opened);
+    const openDiffs =
+      wpOpen === drOpen ? [] : [{ field: 'mobile.open', wp: wpOpen, dr: drOpen }];
+    const drawerDiffs =
+      wpOpen && drOpen
+        ? compareStyles(wpSnap.mobileMenu?.drawerStyle, drSnap.mobileMenu?.drawerStyle).diffs.map(
+            (d) => ({ ...d, field: `mobile.drawer.${d.field}` }),
+          )
+        : [];
+    sections.mobileMenu = {
+      ok: openDiffs.length === 0 && drawerDiffs.length === 0,
+      diffs: [...openDiffs, ...drawerDiffs],
+    };
+  }
+
+  for (const [name, result] of Object.entries(sections)) {
+    if (!result.ok) {
+      allDiffs.push({ section: name, diffs: result.diffs });
+    }
+  }
+
+  return {
+    path: pathNorm,
+    breakpoint: bp.label,
+    match: allDiffs.length === 0,
+    mismatchCount: allDiffs.length,
+    mismatches: allDiffs,
+    sections,
+  };
+}

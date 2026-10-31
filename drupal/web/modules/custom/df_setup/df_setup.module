@@ -8,9 +8,13 @@
 declare(strict_types=1);
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\df_setup\ArchivePageWpOrder;
 use Drupal\df_setup\ArticleCreditLabels;
+use Drupal\field\Entity\FieldConfig;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
@@ -49,7 +53,7 @@ function df_setup_form_node_article_form_alter(array &$form, FormStateInterface 
   $form['df_digital_exclusive_checkbox'] = [
     '#type' => 'checkbox',
     '#title' => (string) t('Show under Digital Exclusives'),
-    '#description' => (string) t('Lists this story in the homepage Digital Exclusives row and on /digital-exclusives—the same intent as choosing the Digital Exclusives category in WordPress. You can assign a magazine Issue and turn this on; they are independent, like on the previous site.'),
+    '#description' => (string) t('Lists this story in the homepage Digital Exclusives row and on /category/digital-exclusives—the same intent as choosing the Digital Exclusives category in WordPress. You can assign a magazine Issue and turn this on; they are independent, like on the previous site.'),
     '#default_value' => _df_setup_article_channels_has_exclusive_term($entity, $tid),
     '#weight' => 10,
   ];
@@ -203,17 +207,95 @@ function _df_setup_article_channels_has_exclusive_term(NodeInterface $node, int 
 }
 
 /**
+ * WordPress issue listing order for browse-issues and past-issues Views.
+ */
+function df_setup_views_query_apply_issue_listing_sort(Sql $query): void {
+  $year_alias = $query->ensureTable('node__field_year');
+  $season_alias = $query->ensureTable('node__field_season');
+  if (!$year_alias || !$season_alias) {
+    return;
+  }
+  $query->orderby = [];
+  $year_expr = "CAST({$year_alias}.field_year_value AS UNSIGNED)";
+  $formula = "CASE LOWER({$season_alias}.field_season_value) "
+    . "WHEN 'fall' THEN ({$year_expr} * 10 + 4) "
+    . "WHEN 'autumn' THEN ({$year_expr} * 10 + 4) "
+    . "WHEN 'summer' THEN ({$year_expr} * 10 + 3) "
+    . "WHEN 'spring' THEN ({$year_expr} * 10 + 2) "
+    . "WHEN 'winter' THEN (({$year_expr} + 1) * 10 + 1) "
+    . "ELSE 0 END";
+  $query->addOrderBy(NULL, $formula, 'DESC', 'issue_browse_sort');
+  $query->addWhereExpression(
+    0,
+    "LOWER({$season_alias}.field_season_value) NOT IN ('late fall')"
+  );
+}
+
+/**
  * Implements hook_views_query_alter().
  *
  * Filters Digital Exclusives Views by field_channels (taxonomy) because term IDs
  * are environment-specific and cannot be stored reliably in exported Views config.
  */
 function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query): void {
-  $ids = ['homepage_digital_exclusives', 'digital_exclusives_archive'];
-  if (!in_array($view->storage->id(), $ids, TRUE)) {
+  if (!$query instanceof Sql) {
     return;
   }
-  if (!$query instanceof Sql) {
+
+  $view_id = $view->storage->id();
+  $display = $view->current_display ?? '';
+
+  if (
+    in_array($view_id, ['topic_archive', 'digital_exclusives_archive'], TRUE)
+    && $display === 'page_1'
+  ) {
+    $path = \Drupal::request()->getPathInfo();
+    $nids = df_setup_archive_nids_for_request_path($path);
+    if ($nids !== []) {
+      $base_table = $view->storage->get('base_table');
+      $base_field = $view->storage->get('base_field');
+      $base_alias = $query->ensureTable($base_table) ?: $base_table;
+      df_setup_views_query_allow_archive_bundles($query, $base_alias);
+      $query->addWhere(0, "{$base_alias}.{$base_field}", $nids, 'IN');
+      $query->setLimit(count($nids));
+      $query->setOffset(0);
+      $query->pager = NULL;
+      $field_order = implode(', ', array_map('intval', $nids));
+      $query->addOrderBy(NULL, "FIELD({$base_alias}.{$base_field}, {$field_order})", 'ASC', 'archive_wp_order');
+      return;
+    }
+  }
+
+  if ($view_id === 'issue_articles') {
+    if ($display === 'homepage_latest') {
+      $alias = $query->ensureTable('node__field_homepage_sort_weight');
+      if ($alias) {
+        $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 100, '<');
+        $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 0, '>');
+      }
+      df_setup_sql_sort_integer_nulls_last($query, 'node__field_homepage_sort_weight', 'field_homepage_sort_weight_value');
+      df_setup_sql_sort_integer_nulls_last($query, 'node__field_postx_sort_weight', 'field_postx_sort_weight_value');
+    }
+    if (in_array($display, ['block_1', 'default'], TRUE)) {
+      df_setup_sql_sort_integer_nulls_last($query, 'node__field_postx_sort_weight', 'field_postx_sort_weight_value');
+      df_setup_issue_articles_exclude_promo_references($view, $query);
+    }
+  }
+
+  if ($view_id === 'homepage_digital_exclusives') {
+    $alias = $query->ensureTable('node__field_homepage_sort_weight');
+    if ($alias) {
+      $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 110, '>=');
+      $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 200, '<');
+    }
+  }
+
+  if (in_array($view_id, ['browse_issues', 'past_issues'], TRUE)) {
+    df_setup_views_query_apply_issue_listing_sort($query);
+    return;
+  }
+
+  if (!in_array($view_id, ['homepage_digital_exclusives', 'digital_exclusives_archive'], TRUE)) {
     return;
   }
 
@@ -237,13 +319,261 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
 }
 
 /**
+ * Sort integer field ASC with NULL and unset values last (PostX weight parity).
+ */
+function df_setup_sql_sort_integer_nulls_last(Sql $query, string $table, string $column): void {
+  $alias = $query->ensureTable($table);
+  if (!$alias) {
+    return;
+  }
+  foreach ($query->orderby as $key => $order) {
+    $field = (string) ($order['field'] ?? '');
+    if ($field !== '' && (str_contains($field, $column) || str_contains($field, 'df_postx_sort_coalesce') || str_contains($field, 'df_home_sort_coalesce'))) {
+      unset($query->orderby[$key]);
+    }
+  }
+  $order_alias = str_contains($column, 'homepage') ? 'df_home_sort_coalesce' : 'df_postx_sort_coalesce';
+  $query->addOrderBy(NULL, "COALESCE({$alias}.{$column}, 999999)", 'ASC', $order_alias);
+}
+
+/**
+ * Excludes issue leadership / second promo cards from the main “In This Issue” grid.
+ */
+function df_setup_issue_articles_exclude_promo_references(ViewExecutable $view, Sql $query): void {
+  $issue_nid = (int) ($view->args[0] ?? 0);
+  if ($issue_nid <= 0) {
+    return;
+  }
+  $exclude = df_setup_issue_promo_article_nids($issue_nid);
+  if ($exclude === []) {
+    return;
+  }
+  $base_table = $view->storage->get('base_table');
+  $base_field = $view->storage->get('base_field');
+  $base_alias = $query->ensureTable($base_table) ?: $base_table;
+  $query->addWhere(0, "{$base_alias}.{$base_field}", $exclude, 'NOT IN');
+}
+
+/**
+ * @return list<int>
+ *   Article node IDs referenced as issue promo cards (not main grid).
+ */
+function df_setup_issue_promo_article_nids(int $issue_nid): array {
+  static $cache = [];
+  if (isset($cache[$issue_nid])) {
+    return $cache[$issue_nid];
+  }
+  $cache[$issue_nid] = [];
+  $issue = \Drupal::entityTypeManager()->getStorage('node')->load($issue_nid);
+  if (!$issue instanceof NodeInterface || $issue->bundle() !== 'issue') {
+    return $cache[$issue_nid];
+  }
+  foreach (['field_leadership_message', 'field_issue_promo_2'] as $field_name) {
+    if (!$issue->hasField($field_name) || $issue->get($field_name)->isEmpty()) {
+      continue;
+    }
+    $referenced = $issue->get($field_name)->entity;
+    if ($referenced instanceof NodeInterface) {
+      $cache[$issue_nid][] = (int) $referenced->id();
+    }
+  }
+  return $cache[$issue_nid];
+}
+
+/**
+ * WP category archives can include in_brief nodes; frozen order lists their paths.
+ */
+function df_setup_views_query_allow_archive_bundles(Sql $query, string $base_alias): void {
+  foreach ($query->where as $group => &$conditions) {
+    if (!is_array($conditions)) {
+      continue;
+    }
+    foreach ($conditions as $key => $condition) {
+      if (!is_array($condition)) {
+        continue;
+      }
+      $field = $condition['field'] ?? '';
+      if (is_string($field) && str_contains($field, '.type')) {
+        unset($conditions[$key]);
+      }
+    }
+  }
+  unset($conditions);
+  $query->addWhere(0, "{$base_alias}.type", ['article', 'in_brief'], 'IN');
+}
+
+/**
+ * Public path key for frozen archive order (handles /category/.../page/N rewrites).
+ */
+function df_setup_archive_frozen_lookup_path(): string {
+  $request = \Drupal::request();
+  $stored = $request->attributes->get('df_setup_wp_archive_path');
+  if (is_string($stored) && $stored !== '') {
+    return $stored;
+  }
+  if (preg_match('#(/(?:category|tag)/[^?]+/page/\d+)#', $request->getRequestUri(), $m)) {
+    return $m[1];
+  }
+  $path = $request->getPathInfo();
+  $page_num = (int) $request->query->get('page', 0) + 1;
+  if ($page_num > 1) {
+    return rtrim($path, '/') . '/page/' . $page_num;
+  }
+  return $path;
+}
+
+/**
+ * Node IDs for the current archive page in frozen WordPress order.
+ *
+ * @return int[]
+ */
+function df_setup_archive_nids_for_request_path(string $path): array {
+  unset($path);
+  if (drupal_static('df_setup_archive_frozen_bypass', FALSE)) {
+    return [];
+  }
+  $path = df_setup_archive_frozen_lookup_path();
+  $order_paths = ArchivePageWpOrder::pathsForArchive($path);
+  if ($order_paths === [] && preg_match('#^/category/([^/]+)(?:/page/\d+)?$#', $path, $m)) {
+    $order_paths = ArchivePageWpOrder::pathsForArchive(
+      preg_replace('#^/category/#', '/tag/', $path),
+    );
+  }
+  if ($order_paths === [] && preg_match('#^/tag/([^/]+)(?:/page/\d+)?$#', $path, $m)) {
+    $order_paths = ArchivePageWpOrder::pathsForArchive(
+      preg_replace('#^/tag/#', '/category/', $path),
+    );
+    if ($order_paths === []) {
+      $order_paths = ArchivePageWpOrder::pathsForArchive('/category/' . $m[1]);
+    }
+  }
+  if ($order_paths === []) {
+    return [];
+  }
+  $alias_manager = \Drupal::service('path_alias.manager');
+  $nids = [];
+  foreach ($order_paths as $article_path) {
+    $internal = $alias_manager->getPathByAlias($article_path);
+    if (preg_match('/^\/node\/(\d+)$/', $internal, $m)) {
+      $nids[] = (int) $m[1];
+    }
+  }
+  return $nids;
+}
+
+/**
+ * Published articles on the Digital Exclusives channel term.
+ */
+function df_setup_digital_exclusive_published_count(): int {
+  $tid = \Drupal::service('df_setup.digital_exclusive_channels')->findTermId();
+  if (!$tid) {
+    return 0;
+  }
+  return (int) \Drupal::entityTypeManager()->getStorage('node')->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('status', 1)
+    ->condition('field_channels', $tid)
+    ->count()
+    ->execute();
+}
+
+function df_setup_digital_exclusive_archive_slugs(): array {
+  static $cache = NULL;
+  if (is_array($cache)) {
+    return $cache;
+  }
+
+  $cache = [];
+  $candidates = [
+    DRUPAL_ROOT . '/modules/custom/df_migrate/data/articles.json',
+    dirname(DRUPAL_ROOT) . '/migration-data/articles.json',
+  ];
+  $raw = NULL;
+  foreach ($candidates as $path) {
+    if (is_readable($path)) {
+      $raw = file_get_contents($path);
+      break;
+    }
+  }
+  if ($raw === NULL || $raw === '') {
+    return $cache;
+  }
+
+  try {
+    $rows = json_decode($raw, TRUE, 512, JSON_THROW_ON_ERROR);
+  }
+  catch (\JsonException) {
+    return $cache;
+  }
+
+  if (!is_array($rows)) {
+    return $cache;
+  }
+
+  foreach ($rows as $row) {
+    if (empty($row['is_digital_exclusive']) || empty($row['drupal_alias'])) {
+      continue;
+    }
+    $alias = '/' . ltrim((string) $row['drupal_alias'], '/');
+    if ($alias !== '/') {
+      $cache[] = $alias;
+    }
+  }
+
+  return $cache;
+}
+
+/**
+ * Implements hook_views_pre_view().
+ *
+ * Swaps invalid category slugs to "all" before argument validation when frozen
+ * WordPress archive order applies (e.g. /tag/late-fall-2022 → /category/…).
+ */
+function df_setup_views_pre_view(ViewExecutable $view, $display_id, array &$args): void {
+  if (
+    !in_array($view->id(), ['topic_archive', 'digital_exclusives_archive'], TRUE)
+    || $display_id !== 'page_1'
+  ) {
+    return;
+  }
+  $frozen = df_setup_archive_nids_for_request_path('');
+  if ($frozen !== []) {
+    $args = ['all'];
+    $view->setArguments(['all']);
+  }
+}
+
+/**
  * Implements hook_views_pre_build().
  *
  * Resolves /category/{slug} path components to term IDs before taxonomy_index
  * contextual filters run (entity:taxonomy_term validation expects a TID).
  */
 function df_setup_views_pre_build(ViewExecutable $view): void {
-  if ($view->id() !== 'topic_archive' || ($view->current_display ?? '') !== 'page_1') {
+  $view_id = $view->id();
+  $display = $view->current_display ?? '';
+
+  if (
+    in_array($view_id, ['topic_archive', 'digital_exclusives_archive'], TRUE)
+    && $display === 'page_1'
+  ) {
+    $frozen_nids = df_setup_archive_nids_for_request_path('');
+    if ($frozen_nids !== []) {
+      $pager = $view->display_handler->getOption('pager');
+      if (is_array($pager)) {
+        $pager['type'] = 'none';
+        $view->display_handler->setOption('pager', $pager);
+      }
+      if ($view_id === 'topic_archive') {
+        // Frozen WP order is authoritative; do not narrow by taxonomy_index tid.
+        $view->setArguments(['all']);
+        return;
+      }
+    }
+  }
+
+  if ($view_id !== 'topic_archive' || $display !== 'page_1') {
     return;
   }
   $raw = $view->args[0] ?? '';
@@ -354,17 +684,19 @@ function df_setup_topic_term_tids_for_category_slug(string $slug): array {
   }
   /** @var \Drupal\taxonomy\TermStorageInterface $storage */
   $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-  $tree = $storage->loadTree('topics', 0, NULL, TRUE);
   $tids = [];
-  foreach ($tree as $item) {
-    if (!$item instanceof TermInterface) {
-      continue;
-    }
-    if (!$item->isPublished()) {
-      continue;
-    }
-    if (df_setup_topic_category_slug($item->getName()) === $slug) {
-      $tids[] = (int) $item->id();
+  foreach (['topics', 'cancer_types'] as $vid) {
+    $tree = $storage->loadTree($vid, 0, NULL, TRUE);
+    foreach ($tree as $item) {
+      if (!$item instanceof TermInterface) {
+        continue;
+      }
+      if (!$item->isPublished()) {
+        continue;
+      }
+      if (df_setup_topic_category_slug($item->getName()) === $slug) {
+        $tids[] = (int) $item->id();
+      }
     }
   }
   sort($tids);
@@ -384,4 +716,725 @@ function df_setup_topic_term_load_by_category_slug(string $slug): ?TermInterface
   /** @var \Drupal\taxonomy\TermInterface|null $term */
   $term = $storage->load($tids[0]);
   return $term instanceof TermInterface ? $term : NULL;
+}
+
+/**
+ * Magazine season order within a calendar year (Fall issue is “latest” for a year).
+ */
+function df_setup_issue_season_weight(string $season): int {
+  return match (mb_strtolower(trim($season), 'UTF-8')) {
+    'fall', 'autumn' => 4,
+    'summer' => 3,
+    'spring' => 2,
+    'winter' => 1,
+    default => 0,
+  };
+}
+
+/**
+ * Chronology sort key for issues (matches /browse-issues and WP Issues nav).
+ *
+ * Winter Y sorts after Fall/Spring/Summer Y (before Fall Y+1) via (Y+1)*10+1.
+ */
+function df_setup_issue_chronology_sort_value(NodeInterface $issue): int {
+  $year = (int) ($issue->get('field_year')->value ?? 0);
+  $season = mb_strtolower(trim((string) ($issue->get('field_season')->value ?? '')), 'UTF-8');
+  return match ($season) {
+    'fall', 'autumn' => $year * 10 + 4,
+    'summer' => $year * 10 + 3,
+    'spring' => $year * 10 + 2,
+    'winter' => ($year + 1) * 10 + 1,
+    default => 0,
+  };
+}
+
+/**
+ * Returns the newest published issue node ID (year desc, season weight desc).
+ */
+function df_setup_get_latest_issue_nid(): ?int {
+  if (\Drupal::moduleHandler()->moduleExists('df_editor')) {
+    $preview = \Drupal::service('df_editor.issue_preview')->getPreviewIssueNid();
+    if ($preview !== NULL) {
+      return $preview;
+    }
+  }
+  $issues = df_setup_load_published_issues_sorted();
+  if ($issues === []) {
+    return NULL;
+  }
+  $best = reset($issues);
+  return $best instanceof NodeInterface ? (int) $best->id() : NULL;
+}
+
+/**
+ * Published issue nodes sorted newest first (year desc, season weight desc).
+ *
+ * @return \Drupal\node\NodeInterface[]
+ */
+function df_setup_load_published_issues_sorted(): array {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'issue')
+    ->condition('status', 1)
+    ->accessCheck(FALSE)
+    ->execute();
+  if (!$nids) {
+    return [];
+  }
+  $nodes = $storage->loadMultiple($nids);
+  $issues = [];
+  foreach ($nodes as $node) {
+    if ($node instanceof NodeInterface) {
+      $issues[] = $node;
+    }
+  }
+  $issues = array_values(array_filter($issues, static function (NodeInterface $issue): bool {
+    $season = mb_strtolower(trim((string) ($issue->get('field_season')->value ?? '')), 'UTF-8');
+    return $season !== 'late fall';
+  }));
+  usort($issues, static function (NodeInterface $a, NodeInterface $b): int {
+    return df_setup_issue_chronology_sort_value($b) <=> df_setup_issue_chronology_sort_value($a);
+  });
+  return $issues;
+}
+
+/**
+ * Header Issues dropdown links from published issues (newest first).
+ *
+ * @return array<int, array{title: string, url: string}>
+ */
+function df_setup_get_header_issue_links(int $limit = 4): array {
+  $links = [];
+  $issues = df_setup_load_published_issues_sorted();
+  if (\Drupal::moduleHandler()->moduleExists('df_editor')) {
+    $preview_nid = \Drupal::service('df_editor.issue_preview')->getPreviewIssueNid();
+    if ($preview_nid !== NULL) {
+      $preview = \Drupal::entityTypeManager()->getStorage('node')->load($preview_nid);
+      if ($preview instanceof NodeInterface) {
+        $issues = array_values(array_filter(
+          $issues,
+          static fn (NodeInterface $issue): bool => (int) $issue->id() !== $preview_nid,
+        ));
+        array_unshift($issues, $preview);
+      }
+    }
+  }
+  foreach (array_slice($issues, 0, $limit) as $issue) {
+    $links[] = [
+      'title' => df_setup_format_issue_nav_label($issue),
+      'url' => $issue->toUrl()->toString(),
+    ];
+  }
+  return $links;
+}
+
+/**
+ * Short issue label for navigation (e.g. "Fall 2026").
+ */
+function df_setup_format_issue_nav_label(NodeInterface $issue): string {
+  if (function_exists('df_impact_format_issue_label')) {
+    return (string) df_impact_format_issue_label($issue);
+  }
+  $season = ucfirst(trim((string) ($issue->get('field_season')->value ?? '')));
+  $year = trim((string) ($issue->get('field_year')->value ?? ''));
+  return trim($season . ' ' . $year);
+}
+
+function _df_setup_get_or_create_image_media(string $file_uri, string $alt = ''): ?int {
+  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $file_uri]);
+  $file = reset($files);
+  if (!$file) {
+    return NULL;
+  }
+  $existing = \Drupal::entityQuery('media')
+    ->condition('bundle', 'image')
+    ->condition('field_media_image.target_id', $file->id())
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if ($existing) {
+    return (int) reset($existing);
+  }
+  /** @var \Drupal\media\Entity\Media $media */
+  $media = \Drupal\media\Entity\Media::create([
+    'bundle' => 'image',
+    'uid' => 1,
+    'status' => 1,
+    'name' => $file->getFilename(),
+    'field_media_image' => [
+      'target_id' => $file->id(),
+      'alt' => $alt,
+    ],
+  ]);
+  $media->save();
+  return (int) $media->id();
+}
+
+/**
+ * Ensures a committed public://wp-images/{basename} file has a Drupal file entity.
+ */
+function _df_setup_ensure_wp_images_file(string $basename, string $mime = 'image/jpeg'): ?string {
+  $basename = basename(str_replace('\\', '/', $basename));
+  if ($basename === '' || $basename === '.' || $basename === '..') {
+    return NULL;
+  }
+  $uri = 'public://wp-images/' . $basename;
+  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $uri]);
+  if ($files) {
+    return $uri;
+  }
+  /** @var \Drupal\Core\File\FileSystemInterface $fs */
+  $fs = \Drupal::service('file_system');
+  $real = $fs->realpath($uri);
+  if ($real === FALSE || !is_readable($real)) {
+    $fallback = DRUPAL_ROOT . '/sites/default/files/wp-images/' . $basename;
+    if (!is_readable($fallback)) {
+      return NULL;
+    }
+    $real = $fallback;
+  }
+  $data = file_get_contents($real);
+  if ($data === FALSE) {
+    return NULL;
+  }
+  return _df_setup_write_public_file_uri($uri, $data, $mime);
+}
+
+/**
+ * Writes bytes to a public file URI and returns the URI on success.
+ */
+function _df_setup_write_public_file_uri(string $uri, string $data, string $mime): ?string {
+  /** @var \Drupal\Core\File\FileSystemInterface $fs */
+  $fs = \Drupal::service('file_system');
+  $dir = $fs->dirname($uri);
+  $fs->prepareDirectory($dir, \Drupal\Core\File\FileSystemInterface::CREATE_DIRECTORY | \Drupal\Core\File\FileSystemInterface::MODIFY_PERMISSIONS);
+  /** @var \Drupal\file\FileRepositoryInterface $repo */
+  $repo = \Drupal::service('file.repository');
+  $file = $repo->writeData($data, $uri, \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE);
+  if ($file) {
+    $file->setPermanent();
+    $file->setMimeType($mime);
+    $file->save();
+    return $uri;
+  }
+  return NULL;
+}
+
+/**
+ * Fetches a WordPress uploads-relative path into public://wp-content/uploads/.
+ */
+function _df_setup_ensure_wp_upload_file_uri(string $relative, string $mime): ?string {
+  $relative = ltrim(str_replace('\\', '/', $relative), '/');
+  $uri = 'public://wp-content/uploads/' . $relative;
+  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $uri]);
+  if ($files) {
+    return $uri;
+  }
+  $candidates = [
+    DRUPAL_ROOT . '/wp-content/uploads/' . $relative,
+    dirname(DRUPAL_ROOT) . '/migration-data/private/wp-uploads/' . $relative,
+  ];
+  foreach ($candidates as $path) {
+    if (!is_readable($path)) {
+      continue;
+    }
+    $data = file_get_contents($path);
+    if ($data === FALSE) {
+      continue;
+    }
+    return _df_setup_write_public_file_uri($uri, $data, $mime);
+  }
+  $url = 'https://danafarberimpact.org/wp-content/uploads/' . $relative;
+  $timeout = (int) (getenv('DF_SETUP_WP_FETCH_TIMEOUT') ?: 45);
+  $data = @file_get_contents($url, FALSE, stream_context_create([
+    'http' => ['timeout' => $timeout, 'user_agent' => 'Drupal/11 DFSetup/1.0'],
+  ]));
+  if ($data !== FALSE && strlen($data) > 1024 && stripos($data, '<html') === FALSE) {
+    return _df_setup_write_public_file_uri($uri, $data, $mime);
+  }
+  return NULL;
+}
+
+/**
+ * @return string[]
+ */
+function _df_setup_issue_cover_wp_images_basenames(string $season_key, int $year): array {
+  $sk = strtolower(trim($season_key));
+  if ($sk === 'late fall') {
+    return [
+      'Golf2022_YearInReviewCover.jpg',
+      'Golf2022_YearInReviewCover-scaled.jpg',
+    ];
+  }
+  $season = ucfirst($sk);
+  $names = [
+    "{$season}{$year}-Cover.jpg",
+    "{$season}{$year}_Cover_1500.jpg",
+    "Impact_{$season}_{$year}_Cover_1500.jpg",
+    "Impact_{$season}{$year}_Cover.jpg",
+    "Impact_{$season}{$year}_Cover-791x1024.jpg",
+  ];
+  $legacy = [
+    'spring_2023' => ['Impact_Spring2023_Cover.jpg'],
+    'summer_2023' => ['Impact_Summer2023_Cover.jpg'],
+    'fall_2023' => ['Impact_Fall2023_Cover.jpg'],
+    'summer_2024' => ['Impact_Summer2024_Cover.jpg'],
+    'spring_2025' => ['Impact_Spring_2025_Cover_1500.jpg'],
+    'summer_2025' => ['Summer2025_Cover_1500.jpg'],
+    'fall_2025' => ['Fall2025_Cover_1500.jpg'],
+    'winter_2025' => ['Winter2025_Cover_1500.jpg'],
+    'spring_2026' => ['Spring2026-Cover.jpg'],
+  ];
+  return array_values(array_unique(array_merge($names, $legacy["{$sk}_{$year}"] ?? [])));
+}
+
+/**
+ * @return string[]
+ */
+function _df_setup_issue_banner_wp_images_basenames(string $season_key, int $year): array {
+  $sk = strtolower(trim($season_key));
+  if ($sk === 'late fall') {
+    return [];
+  }
+  $season = ucfirst($sk);
+  $names = [
+    "{$season}{$year}-Banner.jpg",
+    "{$season}{$year}-Banner.webp",
+  ];
+  $legacy = [
+    'spring_2023' => ['Impact_Spring2023Banner_1750.jpg'],
+    'spring_2025' => ['Impact-Web-Banner-Spring2025-2.jpg'],
+    'spring_2026' => ['Spring2026-Banner.jpg'],
+    'summer_2024' => ['Summer2024Banner_1750.jpg'],
+    'summer_2025' => ['DF_Summer-Impact-Digital-Banner.jpg'],
+    'fall_2025' => ['Fall2025-Banner2x-scaled.jpg', 'DFI_Fall-Impact-Digital-Banner.jpg'],
+    'winter_2024' => ['Impact-Winter-2024-Issue-Banner.jpg'],
+    'winter_2025' => ['Winter2025-Banner.jpg'],
+  ];
+  return array_values(array_unique(array_merge($names, $legacy["{$sk}_{$year}"] ?? [])));
+}
+
+/**
+ * @return string[]
+ */
+function _df_setup_issue_cover_upload_candidates(string $season_key, int $year): array {
+  $season = ucfirst(strtolower($season_key));
+  $month_by_season = [
+    'spring' => '03',
+    'summer' => '06',
+    'fall' => '08',
+    'winter' => '11',
+  ];
+  $month = $month_by_season[strtolower($season_key)] ?? NULL;
+  $candidates = [];
+  if ($month !== NULL) {
+    $candidates[] = "{$year}/{$month}/{$season}{$year}-Cover.jpg";
+    $candidates[] = "{$year}/{$month}/{$season}{$year}_Cover_1500.jpg";
+    $candidates[] = "{$year}/{$month}/Impact_{$season}_{$year}_Cover_1500.jpg";
+  }
+  return $candidates;
+}
+
+/**
+ * @return string[]
+ */
+function _df_setup_issue_banner_upload_candidates(string $season_key, int $year): array {
+  $season = ucfirst(strtolower($season_key));
+  $month_by_season = [
+    'spring' => '03',
+    'summer' => '06',
+    'fall' => '08',
+    'winter' => '11',
+  ];
+  $month = $month_by_season[strtolower($season_key)] ?? NULL;
+  if ($month === NULL) {
+    return [];
+  }
+  return [
+    "{$year}/{$month}/{$season}{$year}-Banner.jpg",
+    "{$year}/{$month}/{$season}{$year}-Banner.webp",
+  ];
+}
+
+function _df_setup_resolve_issue_cover_uri(string $season_key, int $year): ?string {
+  foreach (_df_setup_issue_cover_wp_images_basenames($season_key, $year) as $basename) {
+    $mime = str_ends_with(strtolower($basename), '.webp') ? 'image/webp' : 'image/jpeg';
+    $uri = _df_setup_ensure_wp_images_file($basename, $mime);
+    if ($uri !== NULL) {
+      return $uri;
+    }
+  }
+  foreach (_df_setup_issue_cover_upload_candidates($season_key, $year) as $relative) {
+    $uri = _df_setup_ensure_wp_upload_file_uri($relative, 'image/jpeg');
+    if ($uri !== NULL) {
+      return $uri;
+    }
+  }
+  return NULL;
+}
+
+function _df_setup_resolve_issue_banner_uri(string $season_key, int $year): ?string {
+  foreach (_df_setup_issue_banner_wp_images_basenames($season_key, $year) as $basename) {
+    $mime = str_ends_with(strtolower($basename), '.webp') ? 'image/webp' : 'image/jpeg';
+    $uri = _df_setup_ensure_wp_images_file($basename, $mime);
+    if ($uri !== NULL) {
+      return $uri;
+    }
+  }
+  foreach (_df_setup_issue_banner_upload_candidates($season_key, $year) as $relative) {
+    $mime = str_ends_with($relative, '.webp') ? 'image/webp' : 'image/jpeg';
+    $uri = _df_setup_ensure_wp_upload_file_uri($relative, $mime);
+    if ($uri !== NULL) {
+      return $uri;
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Idempotent: seed field_cover_image on published issues when empty.
+ */
+function _df_setup_backfill_issue_cover_images(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'issue')
+    ->condition('status', 1)
+    ->accessCheck(FALSE)
+    ->execute();
+  $updated = 0;
+  $skipped = 0;
+  foreach ($nids as $nid) {
+    $issue = $storage->load($nid);
+    if (!$issue instanceof NodeInterface) {
+      continue;
+    }
+    if (!$issue->hasField('field_cover_image') || !$issue->get('field_cover_image')->isEmpty()) {
+      $skipped++;
+      continue;
+    }
+    if (!$issue->hasField('field_year') || $issue->get('field_year')->isEmpty()) {
+      $skipped++;
+      continue;
+    }
+    if (!$issue->hasField('field_season') || $issue->get('field_season')->isEmpty()) {
+      $skipped++;
+      continue;
+    }
+    $year = (int) $issue->get('field_year')->value;
+    $season_key = (string) $issue->get('field_season')->value;
+    $alt = sprintf('Cover of the %s issue of Impact', $issue->label());
+    $uri = _df_setup_resolve_issue_cover_uri($season_key, $year);
+    if ($uri === NULL) {
+      $skipped++;
+      continue;
+    }
+    $mid = _df_setup_get_or_create_image_media($uri, $alt);
+    if ($mid === NULL) {
+      $skipped++;
+      continue;
+    }
+    $issue->set('field_cover_image', ['target_id' => $mid]);
+    $issue->save();
+    $updated++;
+  }
+  return "Issue cover media: updated={$updated} skipped={$skipped}.";
+}
+
+/**
+ * Idempotent: seed field_banner_image on published issues when empty.
+ */
+function _df_setup_backfill_issue_banner_images(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'issue')
+    ->condition('status', 1)
+    ->accessCheck(FALSE)
+    ->execute();
+  $updated = 0;
+  $skipped = 0;
+  foreach ($nids as $nid) {
+    $issue = $storage->load($nid);
+    if (!$issue instanceof NodeInterface) {
+      continue;
+    }
+    if (!$issue->hasField('field_banner_image') || !$issue->get('field_banner_image')->isEmpty()) {
+      $skipped++;
+      continue;
+    }
+    if (!$issue->hasField('field_year') || $issue->get('field_year')->isEmpty()) {
+      $skipped++;
+      continue;
+    }
+    if (!$issue->hasField('field_season') || $issue->get('field_season')->isEmpty()) {
+      $skipped++;
+      continue;
+    }
+    $year = (int) $issue->get('field_year')->value;
+    $season_key = (string) $issue->get('field_season')->value;
+    $uri = _df_setup_resolve_issue_banner_uri($season_key, $year);
+    if ($uri === NULL) {
+      $skipped++;
+      continue;
+    }
+    $mid = _df_setup_get_or_create_image_media($uri, $issue->label());
+    if ($mid === NULL) {
+      $skipped++;
+      continue;
+    }
+    $issue->set('field_banner_image', ['target_id' => $mid]);
+    $issue->save();
+    $updated++;
+  }
+  return "Issue banner media: updated={$updated} skipped={$skipped}.";
+}
+
+/**
+ * Tag slug for a legacy issue path (issues.json), e.g. /late-fall-2022-issue.
+ */
+function df_setup_issue_tag_slug_for_path_alias(string $alias): string {
+  static $by_alias = NULL;
+  if ($by_alias === NULL) {
+    $by_alias = [];
+    $path = DRUPAL_ROOT . '/modules/custom/df_migrate/data/issues.json';
+    if (is_readable($path)) {
+      $rows = json_decode((string) file_get_contents($path), TRUE);
+      if (is_array($rows)) {
+        foreach ($rows as $row) {
+          if (!empty($row['path_alias']) && !empty($row['slug'])) {
+            $key = '/' . trim((string) $row['path_alias'], '/') . '/';
+            $by_alias[$key] = (string) $row['slug'];
+          }
+        }
+      }
+    }
+  }
+  $norm = '/' . trim($alias, '/') . '/';
+  return $by_alias[$norm] ?? '';
+}
+
+/**
+ * WordPress-style 404 main content (matches TopicsIndexController markup).
+ */
+function df_setup_wordpress_not_found_page_build(): array {
+  return [
+    '#type' => 'container',
+    '#attributes' => ['class' => ['wp-block-group', 'is-layout-flow']],
+    'main' => [
+      '#type' => 'html_tag',
+      '#tag' => 'main',
+      '#attributes' => ['id' => 'wp--skip-link--target', 'class' => ['wp-block-group']],
+      'message' => [
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#attributes' => ['class' => ['has-text-align-center', 'wp-block-paragraph']],
+        '#value' => t('This page could not be found. Maybe try a search?'),
+      ],
+    ],
+  ];
+}
+
+/**
+ * When WP had no issue landing, map the issue URL to its tag archive slug.
+ */
+function df_setup_legacy_issue_tag_slug_for_request_path(string $path): string {
+  if (!\Drupal::moduleHandler()->moduleExists('df_migrate')) {
+    return '';
+  }
+  $fixture = \Drupal\df_migrate\IssuePageWpFixture::rowForPathAlias($path);
+  if (!is_array($fixture) || empty($fixture['wp_archive_error'])) {
+    return '';
+  }
+  return df_setup_issue_tag_slug_for_path_alias($path);
+}
+
+/**
+ * Implements hook_entity_view_alter().
+ *
+ * Legacy issues: WordPress serves 404 at the issue URL (tag archive is canonical).
+ */
+function df_setup_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display): void {
+  if ($display->getMode() !== 'full' || !$entity instanceof NodeInterface || $entity->bundle() !== 'issue') {
+    return;
+  }
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $entity->id());
+  if (df_setup_legacy_issue_tag_slug_for_request_path($alias) === '') {
+    return;
+  }
+  $build = df_setup_wordpress_not_found_page_build();
+  $build['#cache']['tags'] = Cache::mergeTags(
+    $build['#cache']['tags'] ?? [],
+    $entity->getCacheTags(),
+  );
+}
+
+/**
+ * WP reference-pack map: issue path alias => hero uses is-light (mega-nav solid bg).
+ *
+ * @return array<string, bool>
+ */
+function df_setup_issue_banner_is_light_reference_map(): array {
+  $repo_root = dirname(DRUPAL_ROOT, 2);
+  $pack_root = $repo_root . '/parity/reference-pack';
+  if (!is_dir($pack_root)) {
+    return [];
+  }
+  $map = [];
+  foreach (scandir($pack_root) ?: [] as $dir) {
+    if ($dir === '.' || $dir === '..' || !str_ends_with($dir, '-issue')) {
+      continue;
+    }
+    $html_file = $pack_root . '/' . $dir . '/tablet/rendered.html';
+    if (!is_readable($html_file)) {
+      continue;
+    }
+    $html = file_get_contents($html_file);
+    if ($html === FALSE) {
+      continue;
+    }
+    $map['/' . $dir] = (bool) preg_match(
+      '/<div class="wp-block-cover alignfull is-light"/',
+      $html,
+    );
+  }
+  return $map;
+}
+
+/**
+ * Ensures the issue edit form exposes field_issue_banner_is_light (idempotent).
+ */
+function df_setup_ensure_issue_banner_is_light_form_display(): string {
+  if (!FieldConfig::loadByName('node', 'issue', 'field_issue_banner_is_light')) {
+    return 'field_issue_banner_is_light not installed; form display skipped.';
+  }
+  $form_display = \Drupal\Core\Entity\Entity\EntityFormDisplay::load('node.issue.default');
+  if (!$form_display || $form_display->getComponent('field_issue_banner_is_light')) {
+    return 'Issue form display already includes field_issue_banner_is_light.';
+  }
+  $form_display->setComponent('field_issue_banner_is_light', [
+    'type' => 'boolean_checkbox',
+    'weight' => 5,
+    'region' => 'content',
+    'settings' => ['display_label' => TRUE],
+  ])->save();
+  return 'Added field_issue_banner_is_light to issue form display.';
+}
+
+/**
+ * Idempotent backfill of field_issue_banner_is_light from reference-pack WP HTML.
+ */
+function df_setup_backfill_issue_banner_is_light(): string {
+  if (!FieldConfig::loadByName('node', 'issue', 'field_issue_banner_is_light')) {
+    return 'field_issue_banner_is_light missing; backfill skipped.';
+  }
+  $map = df_setup_issue_banner_is_light_reference_map();
+  if ($map === []) {
+    return 'Reference-pack issue map empty; backfill skipped.';
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $alias_manager = \Drupal::service('path_alias.manager');
+  $updated = 0;
+  $query = $storage->getQuery()->condition('type', 'issue')->accessCheck(FALSE);
+  foreach ($storage->loadMultiple($query->execute()) as $node) {
+    if (!$node instanceof NodeInterface || !$node->hasField('field_issue_banner_is_light')) {
+      continue;
+    }
+    $path = $alias_manager->getAliasByPath('/node/' . $node->id());
+    if (!isset($map[$path])) {
+      continue;
+    }
+    $want = $map[$path] ? 1 : 0;
+    $have = $node->get('field_issue_banner_is_light')->isEmpty()
+      ? NULL
+      : (int) $node->get('field_issue_banner_is_light')->value;
+    if ($have === $want) {
+      continue;
+    }
+    $node->set('field_issue_banner_is_light', $want);
+    $node->save();
+    $updated++;
+  }
+  return "Backfilled field_issue_banner_is_light on $updated issue(s).";
+}
+
+/**
+ * Implements hook_views_post_execute().
+ *
+ * Frozen WP archive pages run without a Views pager (fixed node list), so
+ * register the archive's real total to render WP's numbered pager (QA-005).
+ */
+function df_setup_views_post_execute(ViewExecutable $view): void {
+  if (
+    !in_array($view->id(), ['topic_archive', 'digital_exclusives_archive'], TRUE)
+    || ($view->current_display ?? '') !== 'page_1'
+    || df_setup_archive_nids_for_request_path('') === []
+  ) {
+    return;
+  }
+  $pager_options = $view->display_handler->getOption('pager');
+  $per_page = (int) ($pager_options['options']['items_per_page'] ?? 10) ?: 10;
+  $element = (int) ($pager_options['options']['id'] ?? 0);
+  $total = df_setup_archive_frozen_total_items($view);
+  if ($total <= $per_page) {
+    return;
+  }
+  \Drupal::service('pager.manager')->createPager($total, $per_page, $element);
+  $view->df_setup_frozen_pager_element = $element;
+}
+
+/**
+ * Implements hook_preprocess_views_view().
+ */
+function df_setup_preprocess_views_view(array &$variables): void {
+  $view = $variables['view'] ?? NULL;
+  if ($view instanceof ViewExecutable && isset($view->df_setup_frozen_pager_element)) {
+    $variables['pager'] = [
+      '#type' => 'pager',
+      '#element' => $view->df_setup_frozen_pager_element,
+    ];
+  }
+}
+
+/**
+ * Total listing items for a frozen WP archive (all pages, not just this one).
+ */
+function df_setup_archive_frozen_total_items(ViewExecutable $view): int {
+  $path = preg_replace('#/page/\d+$#', '', rtrim(df_setup_archive_frozen_lookup_path(), '/'));
+  if (preg_match('#^/tag/([^/]+)$#', $path, $tag)) {
+    if ($tag[1] === 'digital-exclusives') {
+      // Page 1 is frozen; later pages are every article on the channel term.
+      return df_setup_digital_exclusive_published_count();
+    }
+    // Other tag archives only exist as frozen WP captures: sum every captured page.
+    $total = 0;
+    for ($page = 1; $page < 100; $page++) {
+      $paths = ArchivePageWpOrder::pathsForArchive($page === 1 ? $path : $path . '/page/' . $page);
+      if ($paths === []) {
+        break;
+      }
+      $total += count($paths);
+    }
+    return $total;
+  }
+  if (!preg_match('#^/category/([^/]+)$#', $path, $m)) {
+    return 0;
+  }
+  $bypass = &drupal_static('df_setup_archive_frozen_bypass', FALSE);
+  $bypass = TRUE;
+  try {
+    $count_view = \Drupal\views\Views::getView($view->id());
+    if (!$count_view || !$count_view->setDisplay('page_1')) {
+      return 0;
+    }
+    $count_view->setArguments([$m[1]]);
+    $count_view->get_total_rows = TRUE;
+    $count_view->setItemsPerPage(1);
+    $count_view->setCurrentPage(0);
+    $count_view->execute();
+    $total = (int) $count_view->total_rows;
+    $count_view->destroy();
+    return $total;
+  }
+  finally {
+    $bypass = FALSE;
+  }
 }

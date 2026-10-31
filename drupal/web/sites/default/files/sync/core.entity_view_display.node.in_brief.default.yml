@@ -6,6 +6,7 @@ dependencies:
     - field.field.node.in_brief.field_image
     - field.field.node.in_brief.field_issue
     - field.field.node.in_brief.field_link
+    - field.field.node.in_brief.field_related_articles
     - field.field.node.in_brief.field_summary
     - node.type.in_brief
   module:
@@ -27,7 +28,7 @@ content:
     weight: 0
     region: content
   field_link:
-    type: link_default
+    type: link
     label: hidden
     settings:
       trim_length: 80
@@ -54,4 +55,5 @@ content:
     weight: 3
     region: content
 hidden:
+  field_related_articles: true
   links: true

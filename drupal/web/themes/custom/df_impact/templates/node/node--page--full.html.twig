@@ -5,41 +5,35 @@
  */
 #}
 {% if is_about_impact_node %}
-  <article{{ attributes.addClass('page-node', 'about-impact-page') }} aria-labelledby="about-impact-title">
-    <div class="about-impact-page__inner">
-      {{ title_prefix }}
-      <h1 id="about-impact-title" class="about-impact-page__title">{{ label }}</h1>
-      {{ title_suffix }}
-
-      <div class="about-impact-page__body">
-        {{ content.body }}
-      </div>
-    </div>
-  </article>
+<div{{ attributes.addClass('page-node', 'wp-singular', 'page', 'about-impact-page', 'is-layout-flow', 'wp-block-group-is-layout-flow') }}>
+  {{ title_prefix }}
+  <h1 class="wp-block-heading blue-border-header has-text-color has-montserrat-font-family">{{ label }}</h1>
+  {{ title_suffix }}
+  <div class="entry-content wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+    {{ content.body }}
+  </div>
+</div>
 {% else %}
-<div{{ attributes.addClass('page-node') }}>
-
+{# Live WP landing pages (e.g. /about) use block groups in <main>, not <article>. #}
+<div{{ attributes.addClass('page-node', 'wp-singular', 'page', 'is-layout-flow', 'wp-block-group-is-layout-flow') }}>
   {% if content.field_banner_image|render|trim %}
-    <div class="hero">
+    <figure class="wp-block-image alignwide size-large">
       {{ content.field_banner_image }}
-    </div>
+    </figure>
   {% endif %}
 
-  <div class="container container--narrow" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
-    {{ title_prefix }}
-    <h1>{{ label }}</h1>
-    {{ title_suffix }}
+  {{ title_prefix }}
+  <h1 class="wp-block-heading blue-border-header has-text-color has-montserrat-font-family">{{ label }}</h1>
+  {{ title_suffix }}
 
-    <div class="page-node__body">
-      {{ content.body }}
-    </div>
-
-    {% if content.field_content_sections|render|trim %}
-      <div class="page-node__sections">
-        {{ content.field_content_sections }}
-      </div>
-    {% endif %}
+  <div class="wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+    {{ content.body }}
   </div>
 
+  {% if content.field_content_sections|render|trim %}
+    <div class="page-node__sections">
+      {{ content.field_content_sections }}
+    </div>
+  {% endif %}
 </div>
 {% endif %}

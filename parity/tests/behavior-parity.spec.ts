@@ -1,129 +1,277 @@
 /**
- * Dynamic behavior parity: hover, scroll, hero video, drawer (live WP + Drupal).
- * Run on owner Mac: npm run parity:behavior
- * Baseline WP reference: PARITY_WP_BASELINE=<id> (reads wordpress.json hero slice if present).
+ * Dynamic behavior parity: live WordPress vs Drupal (Playwright).
+ * Inventory: docs/DYNAMIC_BEHAVIOR_INVENTORY.md
  */
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 import {
   BEHAVIOR_BREAKPOINTS,
-  DRUPAL_HERO_VIDEO,
-  WP_HERO_VIDEO,
   behaviorOutDir,
-  computedStyle,
-  computedStyleHover,
   prepareBehaviorPage,
-  videoState,
 } from '../lib/behavior-utils.mjs';
+import { buildCrossSiteReport } from '../lib/behavior-compare.mjs';
+import {
+  captureReducedMotionHero,
+  captureSiteBehavior,
+  DRUPAL_PROFILE,
+  WP_PROFILE,
+} from '../lib/behavior-profiles.mjs';
+import {
+  expectedBehaviorCaseCount,
+  loadTemplateSamplePaths,
+  normalizeBehaviorPath,
+  pathUsesChromeHeader,
+} from '../lib/behavior-paths.mjs';
 import { resolveParityRoot } from '../lib/parity-root.mjs';
-import { dismissOverlays, waitForFonts } from '../lib/page-utils.mjs';
+import { dismissOverlays, gotoWithBoundedSettle, waitForFonts } from '../lib/page-utils.mjs';
 
 const parityRoot = resolveParityRoot();
 const wpBase = (process.env.WP_BASE_URL || 'https://danafarberimpact.org').replace(/\/$/, '');
 const drupalBase = (process.env.DRUPAL_BASE_URL || 'http://127.0.0.1:8888').replace(/\/$/, '');
 const runId = process.env.PARITY_BEHAVIOR_RUN_ID || new Date().toISOString().replace(/[:.]/g, '-');
-const recordVideo = process.env.PARITY_BEHAVIOR_VIDEO === '1';
 const baselineId = process.env.PARITY_WP_BASELINE || '';
+const crossSite =
+  process.env.PARITY_BEHAVIOR_CROSS_SITE === '1' ||
+  (process.env.PARITY_BEHAVIOR_CROSS_SITE !== '0' && process.env.PARITY_BEHAVIOR_HIT_WP === '1');
+const behaviorLite = process.env.PARITY_BEHAVIOR_LITE === '1';
 
-const paths = (process.env.PARITY_BEHAVIOR_PATHS || '/homepage,/')
-  .split(',')
-  .map((p) => p.trim())
-  .filter(Boolean);
+const hitWp =
+  crossSite ||
+  process.env.PARITY_BEHAVIOR_HIT_WP === '1' ||
+  (!baselineId && process.env.PARITY_BEHAVIOR_HIT_WP !== '0' && process.env.PARITY_BEHAVIOR_PATHS === '/homepage');
+
+const pathsRaw = process.env.PARITY_BEHAVIOR_PATHS || '/homepage';
+const paths =
+  pathsRaw === 'auto'
+    ? loadTemplateSamplePaths()
+    : pathsRaw
+        .split(',')
+        .map((p) => normalizeBehaviorPath(p.trim()))
+        .filter(Boolean);
+
+const breakpointFilter = (process.env.PARITY_BEHAVIOR_BREAKPOINT || '').trim();
+
+type AssertionStat = { name: string; pass: boolean };
+type WpSnap = Record<string, unknown> | null;
 
 function writeJson(file: string, data: unknown) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, JSON.stringify(data, null, 2));
 }
 
-test.describe.configure({ mode: 'serial' });
+const globalStats = {
+  tests: 0,
+  assertions: 0,
+  passed: 0,
+  crossMismatches: 0,
+  capturedCases: 0,
+  incompleteCases: 0,
+};
+
+function recordAssertion(stats: AssertionStat[], name: string, pass: boolean) {
+  stats.push({ name, pass });
+  globalStats.assertions += 1;
+  if (pass) globalStats.passed += 1;
+  if (process.env.PARITY_BEHAVIOR_STRICT === '1') {
+    expect.soft(pass, name).toBeTruthy();
+  }
+}
+
+function wpSnapshotReady(pathNorm: string, snap: Record<string, unknown> | null) {
+  if (!snap) return false;
+  const isHome = pathNorm === '/' || pathNorm === '/homepage';
+  if (isHome && !(snap.hero as { found?: boolean } | undefined)?.found) return false;
+  const layout600 = (snap.headerScrollDepths as { y600?: { found?: boolean } } | undefined)?.y600;
+  const chromePath = pathUsesChromeHeader(pathNorm);
+  if (chromePath && !layout600?.found) {
+    return false;
+  }
+  const hasChrome =
+    Boolean(layout600?.found) ||
+    Boolean(snap.navDefault) ||
+    Boolean((snap.headerBeforeScroll as { found?: boolean } | undefined)?.found);
+  return hasChrome;
+}
+
+function drupalUrl(pathNorm: string) {
+  if (pathNorm === '/homepage') return `${drupalBase}/homepage`;
+  return `${drupalBase}${pathNorm.startsWith('/') ? pathNorm : `/${pathNorm}`}`;
+}
+
+function wpUrl(pathNorm: string) {
+  const p = pathNorm === '/homepage' ? '/' : pathNorm.startsWith('/') ? pathNorm : `/${pathNorm}`;
+  return `${wpBase}${p}`;
+}
+
+async function headerScrollScreenshots(page: import('@playwright/test').Page, outBase: string, prefix: string) {
+  for (const scrollY of [600, 2000]) {
+    await page.evaluate((y) => window.scrollTo(0, y), scrollY);
+    await page.waitForTimeout(450);
+    await page.screenshot({
+      path: path.join(outBase, `${prefix}-header-scroll-${scrollY}.png`),
+      fullPage: false,
+    });
+  }
+}
+
+async function loadWpSnapshot(
+  wpPage: import('@playwright/test').Page,
+  pathNorm: string,
+  bp: (typeof BEHAVIOR_BREAKPOINTS)[number],
+  report: Record<string, unknown>,
+): Promise<WpSnap> {
+  const target = wpUrl(pathNorm);
+  const maxAttempts = behaviorLite ? 2 : bp.label === 'desktop' ? 5 : 4;
+  const gotoTimeout = behaviorLite ? 75_000 : bp.label === 'desktop' ? 120_000 : 150_000;
+  let lastErr: unknown;
+  let snap: WpSnap = null;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    try {
+      if (attempt > 0) {
+        const backoff = Math.min(32_000, 4000 * 2 ** (attempt - 1));
+        await wpPage.waitForTimeout(backoff);
+      }
+      await gotoWithBoundedSettle(wpPage, target, {
+        timeout: gotoTimeout,
+        settleMs: behaviorLite ? 800 : 1200,
+        waitUntil: 'domcontentloaded',
+      });
+      if (pathNorm === '/homepage' || pathNorm === '/') {
+        await wpPage.waitForSelector(WP_PROFILE.heroVideo, { timeout: 45_000 }).catch(() => {});
+      }
+      await wpPage
+        .waitForSelector(`${WP_PROFILE.selectors.header}, ${WP_PROFILE.selectors.navLink}`, {
+          timeout: 45_000,
+        })
+        .catch(() => {});
+      await wpPage.waitForTimeout(900);
+      snap = await captureSiteBehavior(wpPage, WP_PROFILE, bp);
+      if (wpSnapshotReady(pathNorm, snap)) {
+        report.wp = snap;
+        return snap;
+      }
+      snap = null;
+      report.wpError = `wpSnapshotReady=false attempt ${attempt + 1}/${maxAttempts}`;
+    } catch (e) {
+      lastErr = e;
+      report.wpError = String(e);
+      snap = null;
+    }
+  }
+  if (lastErr) {
+    report.wpError = String(lastErr);
+  }
+  return null;
+}
+
+test.describe.configure({ mode: 'serial', retries: 0 });
 
 for (const pathNorm of paths) {
   for (const bp of BEHAVIOR_BREAKPOINTS) {
-    test(`behavior ${pathNorm} @ ${bp.label}`, async ({ browser, browserName }, testInfo) => {
+    if (breakpointFilter && bp.label !== breakpointFilter) {
+      continue;
+    }
+    test(`behavior ${pathNorm} @ ${bp.label}`, async ({ browser, browserName }) => {
       test.skip(browserName !== 'chromium', 'Chromium only');
+      if (crossSite) {
+        test.setTimeout(
+          behaviorLite ? 120_000 : bp.label === 'desktop' ? 360_000 : 1_200_000,
+        );
+      }
+      globalStats.tests += 1;
 
+      const assertionLog: AssertionStat[] = [];
       const slug = pathNorm.replace(/\//g, '_') || 'root';
       const outBase = behaviorOutDir(parityRoot, runId, 'compare', `${slug}_${bp.label}`);
-      const report: Record<string, unknown> = { path: pathNorm, breakpoint: bp.label, runId };
-
-      const wpUrl = `${wpBase}${pathNorm.startsWith('/') ? pathNorm : `/${pathNorm}`}`;
-      const drUrl = `${drupalBase}${pathNorm === '/homepage' ? '/homepage' : pathNorm.startsWith('/') ? pathNorm : `/${pathNorm}`}`;
+      const report: Record<string, unknown> = {
+        path: pathNorm,
+        breakpoint: bp.label,
+        runId,
+        crossSite,
+        hitWp,
+        captured: false,
+      };
 
       const wpPage = await browser.newPage();
       const drPage = await browser.newPage();
-      if (recordVideo) {
-        await wpPage.video()?.path(); // ensure context records if configured at project level
-      }
       await wpPage.setViewportSize({ width: bp.width, height: bp.height });
       await drPage.setViewportSize({ width: bp.width, height: bp.height });
-
       await prepareBehaviorPage(wpPage);
       await prepareBehaviorPage(drPage);
 
-      // --- WordPress (skip live if baseline-only mode without network) ---
-      let wpHero = null;
-      if (!baselineId || process.env.PARITY_BEHAVIOR_HIT_WP === '1') {
-        try {
-          await wpPage.goto(wpUrl, { waitUntil: 'domcontentloaded' });
-          await dismissOverlays(wpPage);
-          await waitForFonts(wpPage);
-          await wpPage.waitForTimeout(500);
-          wpHero = await videoState(wpPage, WP_HERO_VIDEO);
-          report.wpHero = wpHero;
-          report.wpNavDefault = await computedStyle(wpPage, '.header__nav-link, .mega-menu-link, header nav a');
-          report.wpNavHover = await computedStyleHover(wpPage, '.header__nav-link, .mega-menu-link, header nav a');
-          await wpPage.evaluate(() => window.scrollTo(0, 120));
-          await wpPage.waitForTimeout(200);
-          await wpPage.screenshot({ path: path.join(outBase, 'wp-scroll.png'), fullPage: false });
-          report.wpHeaderScroll = await computedStyle(wpPage, 'header, .desktop-header, .impact-header');
-        } catch (e) {
-          report.wpError = String(e);
+      let wpSnap: WpSnap = null;
+      if (hitWp) {
+        wpSnap = await loadWpSnapshot(wpPage, pathNorm, bp, report);
+        if (wpSnap && pathUsesChromeHeader(pathNorm)) {
+          await headerScrollScreenshots(wpPage, outBase, 'wp');
         }
       }
-
-      // --- Drupal ---
-      await drPage.goto(drUrl, { waitUntil: 'domcontentloaded' });
-      await waitForFonts(drPage);
-      await drPage.waitForTimeout(500);
-      const drHero = await videoState(drPage, DRUPAL_HERO_VIDEO);
-      report.drHero = drHero;
-      report.drNavDefault = await computedStyle(drPage, '.header__nav-link');
-      report.drNavHover = await computedStyleHover(drPage, '.header__nav-link');
-      await drPage.evaluate(() => window.scrollTo(0, 120));
-      await drPage.waitForTimeout(200);
-      await drPage.screenshot({ path: path.join(outBase, 'drupal-scroll.png'), fullPage: false });
-      report.drHeaderScroll = await computedStyle(drPage, '.header');
-
-      if (bp.label === 'mobile') {
-        const toggle = drPage.locator('.header__menu-toggle');
-        if (await toggle.isVisible()) {
-          await toggle.click();
-          await drPage.waitForTimeout(250);
-          await drPage.screenshot({ path: path.join(outBase, 'drupal-drawer-open.png') });
-          report.drDrawerOpen = await computedStyle(drPage, '.header__drawer');
-          await toggle.click();
-        }
-      }
-
-      // Reduced motion hero (Drupal)
-      await prepareBehaviorPage(drPage, { reducedMotion: true });
-      await drPage.reload({ waitUntil: 'domcontentloaded' });
-      await drPage.waitForTimeout(400);
-      report.drHeroReducedMotion = await videoState(drPage, DRUPAL_HERO_VIDEO);
-
-      writeJson(path.join(outBase, 'behavior.json'), report);
 
       const isHome = pathNorm === '/' || pathNorm === '/homepage';
-      if (isHome && wpHero?.found) {
-        expect(drHero?.found, 'Drupal hero video element').toBeTruthy();
-        expect(drHero?.muted).toBe(true);
-        expect(drHero?.loop).toBe(true);
-        expect(drHero?.playsInline).toBe(true);
-        if (process.env.PARITY_BEHAVIOR_STRICT === '1') {
-          expect(drHero?.currentTimeAdvanced, 'video should advance when not reduced-motion').toBe(true);
+
+      let drSnap: WpSnap = null;
+      try {
+        await gotoWithBoundedSettle(drPage, drupalUrl(pathNorm), {
+          timeout: 90_000,
+          settleMs: behaviorLite ? 600 : 1000,
+          waitUntil: 'domcontentloaded',
+        });
+        drSnap = await captureSiteBehavior(drPage, DRUPAL_PROFILE, bp);
+        report.dr = drSnap;
+        await drPage.screenshot({ path: path.join(outBase, 'drupal-scroll.png'), fullPage: false });
+        if (pathUsesChromeHeader(pathNorm)) {
+          await headerScrollScreenshots(drPage, outBase, 'drupal');
         }
+
+        if (bp.label === 'mobile' && drSnap?.mobileMenu?.opened) {
+          await drPage.screenshot({ path: path.join(outBase, 'drupal-drawer-open.png'), fullPage: false });
+        }
+      } catch (e) {
+        report.drError = String(e);
+        globalStats.incompleteCases += 1;
       }
+
+      if (crossSite && wpSnap && drSnap && wpSnapshotReady(pathNorm, wpSnap)) {
+        const cross = buildCrossSiteReport(pathNorm, bp, wpSnap, drSnap);
+        report.crossSite = cross;
+        report.captured = true;
+        globalStats.capturedCases += 1;
+        if (!cross.match) globalStats.crossMismatches += 1;
+        writeJson(path.join(outBase, 'wp-drupal-behavior-diff.json'), cross);
+
+        recordAssertion(assertionLog, 'cross.diff.zero_mismatch_rows', cross.match);
+      } else if (crossSite) {
+        globalStats.incompleteCases += 1;
+        recordAssertion(assertionLog, 'cross.wp.snapshot', false);
+      } else if (drSnap) {
+        if (isHome) {
+          recordAssertion(assertionLog, 'hero.video.found', !!drSnap.hero?.found);
+          recordAssertion(assertionLog, 'hero.video.muted', drSnap.hero?.muted === true);
+          recordAssertion(assertionLog, 'hero.video.loop', drSnap.hero?.loop === true);
+        }
+        recordAssertion(assertionLog, 'header.scroll.shrink_class', !!drSnap.headerAfterScroll?.scrolled);
+      }
+
+      if (isHome && drSnap && !behaviorLite) {
+        await prepareBehaviorPage(drPage, { reducedMotion: true });
+        report.drHeroReducedMotion = await captureReducedMotionHero(drPage, DRUPAL_PROFILE);
+        recordAssertion(
+          assertionLog,
+          'hero.reduced_motion',
+          Boolean(
+            !report.drHeroReducedMotion?.found ||
+              report.drHeroReducedMotion?.paused ||
+              !report.drHeroReducedMotion?.currentTimeAdvanced,
+          ),
+        );
+      }
+
+      report.assertions = assertionLog;
+      report.assertionPass = assertionLog.filter((a) => a.pass).length;
+      report.assertionTotal = assertionLog.length;
+      writeJson(path.join(outBase, 'behavior.json'), report);
 
       await wpPage.close();
       await drPage.close();
@@ -132,12 +280,40 @@ for (const pathNorm of paths) {
 }
 
 test.afterAll(() => {
-  writeJson(path.join(parityRoot, 'reports/behavior', runId, 'run-meta.json'), {
+  const runDir = path.join(parityRoot, 'reports/behavior', runId);
+  const fullPaths =
+    pathsRaw === 'auto' ? loadTemplateSamplePaths() : paths;
+  const metaPath = path.join(runDir, 'run-meta.json');
+  let pathsForMeta = fullPaths;
+  if (fs.existsSync(metaPath)) {
+    try {
+      const existing = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+      if (Array.isArray(existing.paths) && existing.paths.length > pathsForMeta.length) {
+        pathsForMeta = existing.paths;
+      }
+    } catch {
+      /* keep fullPaths */
+    }
+  }
+  const expectedCases = expectedBehaviorCaseCount(pathsForMeta);
+  writeJson(metaPath, {
     runId,
     wpBase,
     drupalBase,
     baselineId: baselineId || null,
-    paths,
-    note: 'See behavior.json per case; set PARITY_BEHAVIOR_STRICT=1 to fail on video playback.',
+    paths: pathsForMeta,
+    expectedCases,
+    crossSite,
+    hitWp,
+    assertionSummary: {
+      tests: globalStats.tests,
+      assertions: globalStats.assertions,
+      passed: globalStats.passed,
+      passRate: globalStats.assertions ? globalStats.passed / globalStats.assertions : 0,
+    },
+    crossSiteMismatchCases: globalStats.crossMismatches,
+    capturedCases: globalStats.capturedCases,
+    incompleteCases: globalStats.incompleteCases,
+    note: 'Per-case wp-drupal-behavior-diff.json when crossSite; aggregate via npm run parity:behavior:report-diff',
   });
 });

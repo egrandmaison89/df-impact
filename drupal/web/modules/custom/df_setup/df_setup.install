@@ -11,6 +11,8 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\TermInterface;
 
 /**
  * Implements hook_install().
@@ -43,6 +45,7 @@ function _df_setup_ensure_home_landing(): void {
       'title' => 'Home',
       'uid' => 1,
       'status' => 1,
+      'moderation_state' => 'published',
       'body' => [
         'value' => '',
         'format' => 'basic_html',
@@ -55,6 +58,12 @@ function _df_setup_ensure_home_landing(): void {
     $node = $storage->load(reset($nids));
     if ($node instanceof Node) {
       $node->set('path', ['alias' => '/homepage', 'pathauto' => $pathauto_skip]);
+      if ($node->hasField('moderation_state') && $node->get('moderation_state')->value !== 'published') {
+        $node->set('moderation_state', 'published');
+      }
+      if (!$node->isPublished()) {
+        $node->setPublished();
+      }
       $node->save();
     }
   }
@@ -80,6 +89,54 @@ function df_setup_update_10001(): void {
 }
 
 /**
+ * WordPress Gutenberg block markup for About Impact (PR #25 parity).
+ */
+function df_setup_about_impact_gutenberg_body(): string {
+  return <<<'HTML'
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+<div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+<figure class="wp-block-image alignright size-full is-resized"><img src="/themes/custom/df_impact/images/Impact_About_Courage_725.jpg" alt="Wall with the words Courage, Hope, and Inspiration" width="544" height="390" style="width:544px;height:auto"/></figure>
+<p>Impact is a magazine of Dana-Farber Cancer Institute and the Jimmy Fund, published by the Division of Philanthropy. Impact features stories on the individuals, corporations, foundations, and events that support Dana-Farber and the Jimmy Fund, and the advances in cancer science and medicine made possible by their generosity.</p>
+<p>Dana-Farber Cancer Institute provides expert, compassionate, and equitable care to children and adults and is home to groundbreaking cancer discoveries. Since its founding in 1948, the Jimmy Fund has raised millions of dollars through thousands of community efforts to advance Dana-Farber’s lifesaving mission.</p>
+<p>Dana-Farber Cancer Institute has been the top-ranked cancer hospital in New England by U.S. News &amp; World Report for 25 consecutive years, and is the only cancer center in the country ranked in the top 3 for both adult and pediatric cancer programs.</p>
+<p><strong>It takes more than courage to beat cancer®</strong></p>
+</div>
+</div>
+
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+<div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading has-text-color has-montserrat-font-family" style="color:#000000">Division of Philanthropy</h2>
+<div class="wp-block-columns alignwide is-layout-flex wp-block-columns-is-layout-flex" style="gap:40px">
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<p><strong>Senior Vice President and Chief Philanthropy Officer</strong><br>Melany N. Duval</p>
+<p><strong>Assistant Vice President, Integrated Philanthropy Marketing</strong><br>Brian Beirne</p>
+<p><strong>Editor</strong><br>Tarice Gray</p>
+<p><strong>Assistant Editor</strong><br>Hannah White Hannah</p>
+</div>
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>
+<p><strong>Art Directors</strong><br>Grace Howard, Sharon Veino</p>
+<p><strong>Print Production Manager</strong><br>Danielle Gray</p>
+<p><strong>Photography Manager</strong><br>Jessamyn Martin</p>
+</div>
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<p><strong>Director, Web Development</strong><br>Sarah Cunningham</p>
+<p><strong>Web Developer</strong><br>Alicia Lazzaro</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="wp-block-group alignfull is-layout-constrained wp-block-group-is-layout-constrained">
+<div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+<p><strong>Contact Information</strong><br>Tarice Gray<br>Dana-Farber Cancer Institute &amp; The Jimmy Fund<br>Division of Philanthropy<br>10 Brookline Place West<br>Brookline, MA 02445-7295<br><a href="mailto:tarice_gray@dfci.harvard.edu">Tarice_Gray@dfci.harvard.edu</a></p>
+<p><strong>Opt-out</strong><br>If you’d like to opt out of <em>Impact</em>, please complete our <a href="https://www.jimmyfund.org/about-us/contact-us/print-opt-out/">online form</a>.</p>
+</div>
+</div>
+HTML;
+}
+
+/**
  * Creates the editable About Impact page if missing.
  */
 function _df_setup_ensure_about_impact_page(): void {
@@ -93,48 +150,7 @@ function _df_setup_ensure_about_impact_page(): void {
     ->range(0, 1)
     ->execute();
 
-  $body = <<<'HTML'
-<div class="about-impact-page__intro">
-  <div class="about-impact-page__intro-copy">
-    <p>Impact is a magazine of Dana-Farber Cancer Institute and the Jimmy Fund, published by the Division of Philanthropy. Impact features stories on the individuals, corporations, foundations, and events that support Dana-Farber and the Jimmy Fund, and the advances in cancer science and medicine made possible by their generosity.</p>
-    <p>Dana-Farber Cancer Institute provides expert, compassionate, and equitable care to children and adults and is home to groundbreaking cancer discoveries. Since its founding in 1948, the Jimmy Fund has raised millions of dollars through thousands of community efforts to advance Dana-Farber’s lifesaving mission.</p>
-    <p>Dana-Farber Cancer Institute has been the top-ranked cancer hospital in New England by U.S. News &amp; World Report for 25 consecutive years, and is the only cancer center in the country ranked in the top 3 for both adult and pediatric cancer programs.</p>
-    <p class="about-impact-page__tagline"><strong>It takes more than courage to beat cancer®</strong></p>
-  </div>
-  <figure class="about-impact-page__intro-media">
-    <img src="/themes/custom/df_impact/images/Impact_About_Courage_725.jpg" alt="Wall with the words Courage, Hope, and Inspiration" width="725" height="520">
-  </figure>
-</div>
-
-<section class="about-impact-page__section" aria-labelledby="about-impact-philanthropy">
-  <h2 id="about-impact-philanthropy" class="about-impact-page__section-title">Division of Philanthropy</h2>
-  <div class="about-impact-page__staff-grid">
-    <div class="about-impact-page__staff-column">
-      <p><strong>Senior Vice President and Chief Philanthropy Officer</strong><br>Melany N. Duval</p>
-      <p><strong>Vice President, Philanthropy Communications &amp; Marketing</strong><br>Zuhirah Khaldun-Diarra</p>
-      <p><strong>Assistant Vice President, Integrated Philanthropy Marketing</strong><br>Brian Beirne</p>
-      <p><strong>Editor</strong><br>Tarice Gray</p>
-      <p><strong>Assistant Editor</strong><br>Hannah White Hannah</p>
-    </div>
-    <div class="about-impact-page__staff-column">
-      <p><strong>Creative Director</strong><br>Claudia de Piante</p>
-      <p><strong>Art Directors</strong><br>Grace Howard, Sharon Veino</p>
-      <p><strong>Print Production Manager</strong><br>Danielle Gray</p>
-      <p><strong>Photography Manager</strong><br>Jessamyn Martin</p>
-    </div>
-    <div class="about-impact-page__staff-column">
-      <p><strong>Director, Web Development</strong><br>Sarah Cunningham</p>
-      <p><strong>Web Developer</strong><br>Alicia Lazzaro</p>
-    </div>
-  </div>
-</section>
-
-<section class="about-impact-page__section about-impact-page__section--contact" aria-labelledby="about-impact-contact">
-  <h2 id="about-impact-contact" class="visually-hidden">Contact Information</h2>
-  <p><strong>Contact Information</strong><br>Tarice Gray<br>Dana-Farber Cancer Institute &amp; The Jimmy Fund<br>Division of Philanthropy<br>10 Brookline Place West<br>Brookline, MA 02445-7295<br><a href="mailto:tarice_gray@dfci.harvard.edu">Tarice_Gray@dfci.harvard.edu</a></p>
-  <p><strong>Opt-out</strong><br>If you’d like to opt out of <em>Impact</em>, please complete our <a href="https://www.jimmyfund.org/about-us/contact-us/print-opt-out/">online form</a>.</p>
-</section>
-HTML;
+  $body = df_setup_about_impact_gutenberg_body();
 
   if (!$nids) {
     $node = Node::create([
@@ -654,4 +670,694 @@ function df_setup_update_10014(): string {
     }
   }
   return sprintf('Published %d issue node(s).', $updated);
+}
+
+/**
+ * Backfill homepage hero video + poster on the latest issue (WordPress uploads).
+ */
+function df_setup_update_10021(): string {
+  return _df_setup_backfill_latest_issue_hero_media();
+}
+
+/**
+ * Adds /about path alias (WordPress legacy) for the About Impact page.
+ */
+function df_setup_update_10023(): string {
+  return _df_setup_backfill_latest_issue_hero_media(TRUE);
+}
+
+/**
+ * Same-path URL parity: /about, /home, /category/digital-exclusives (no 301 redirects).
+ */
+function df_setup_update_10024(): string {
+  return _df_setup_apply_wordpress_manifest_paths();
+}
+
+/**
+ * Adds /about path alias (WordPress legacy) for the About Impact page.
+ */
+function df_setup_update_10022(): string {
+  _df_setup_ensure_about_impact_page();
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if (!$nids) {
+    return 'About Impact page missing.';
+  }
+  $node = $storage->load(reset($nids));
+  if (!$node instanceof Node) {
+    return 'Could not load About Impact page.';
+  }
+  $alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $existing = $alias_storage->loadByProperties(['alias' => '/about']);
+  if ($existing) {
+    return 'Path alias /about already exists.';
+  }
+  $alias_storage->create([
+    'path' => '/node/' . $node->id(),
+    'alias' => '/about',
+    'langcode' => 'en',
+  ])->save();
+  return 'Created /about alias for About Impact page.';
+}
+
+/**
+ * Copies WP uploads, creates media entities, sets issue hero fields when empty.
+ */
+function _df_setup_backfill_latest_issue_hero_media(bool $force = FALSE): string {
+  $latest_nid = df_setup_get_latest_issue_nid();
+  if ($latest_nid === NULL) {
+    return 'No published issue node for hero backfill.';
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  /** @var \Drupal\node\NodeInterface|null $issue */
+  $issue = $storage->load($latest_nid);
+  if (!$issue) {
+    return 'Could not load latest issue.';
+  }
+
+  $video_uri = _df_setup_ensure_wp_upload_file('2026/09/Impact_Ambient.mp4', 'video/mp4');
+  $poster_uri = _df_setup_ensure_wp_upload_file('2026/08/Fall2026-Cover.jpg', 'image/jpeg');
+  if ($video_uri === NULL) {
+    return 'Hero video file missing (Impact_Ambient.mp4).';
+  }
+
+  $changed = FALSE;
+  if ($issue->hasField('field_hero_video') && ($force || $issue->get('field_hero_video')->isEmpty())) {
+    $video_mid = _df_setup_get_or_create_video_media($video_uri);
+    if ($video_mid !== NULL) {
+      $issue->set('field_hero_video', ['target_id' => $video_mid]);
+      $changed = TRUE;
+    }
+  }
+  if ($poster_uri !== NULL && $issue->hasField('field_hero_poster') && ($force || $issue->get('field_hero_poster')->isEmpty())) {
+    $poster_mid = _df_setup_get_or_create_image_media($poster_uri, 'Cover of the Fall 2026 issue of Impact');
+    if ($poster_mid !== NULL) {
+      $issue->set('field_hero_poster', ['target_id' => $poster_mid]);
+      $changed = TRUE;
+    }
+  }
+  if ($changed) {
+    $issue->save();
+  }
+  return sprintf(
+    'Hero backfill on issue %d (%s): video=%s poster=%s fields_updated=%s',
+    $issue->id(),
+    $issue->label(),
+    $video_uri,
+    $poster_uri ?? 'missing',
+    $changed ? 'yes' : 'no (already set)'
+  );
+}
+
+/**
+ * Ensures a file exists at public://wp-content/uploads/{relative}.
+ */
+function _df_setup_ensure_wp_upload_file(string $relative, string $mime): ?string {
+  $relative = ltrim(str_replace('\\', '/', $relative), '/');
+  $uri = 'public://wp-content/uploads/' . $relative;
+  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $uri]);
+  if ($files) {
+    return $uri;
+  }
+
+  $candidates = [
+    DRUPAL_ROOT . '/wp-content/uploads/' . $relative,
+    dirname(DRUPAL_ROOT) . '/migration-data/private/wp-uploads/' . $relative,
+  ];
+  foreach ($candidates as $path) {
+    if (!is_readable($path)) {
+      continue;
+    }
+    $data = file_get_contents($path);
+    if ($data === FALSE) {
+      continue;
+    }
+    return _df_setup_write_public_file($uri, $data, $mime);
+  }
+
+  $url = 'https://danafarberimpact.org/wp-content/uploads/' . $relative;
+  $timeout = (int) (getenv('DF_SETUP_WP_FETCH_TIMEOUT') ?: 45);
+  $data = @file_get_contents($url, FALSE, stream_context_create([
+    'http' => ['timeout' => $timeout, 'user_agent' => 'Drupal/11 DFSetup/1.0'],
+  ]));
+  if ($data !== FALSE && strlen($data) > 1024 && stripos($data, '<html') === FALSE) {
+    return _df_setup_write_public_file($uri, $data, $mime);
+  }
+
+  return NULL;
+}
+
+/**
+ * Writes bytes to a public file URI.
+ */
+function _df_setup_write_public_file(string $uri, string $data, string $mime): ?string {
+  /** @var \Drupal\Core\File\FileSystemInterface $fs */
+  $fs = \Drupal::service('file_system');
+  $dir = $fs->dirname($uri);
+  $fs->prepareDirectory($dir, \Drupal\Core\File\FileSystemInterface::CREATE_DIRECTORY | \Drupal\Core\File\FileSystemInterface::MODIFY_PERMISSIONS);
+  /** @var \Drupal\file\FileRepositoryInterface $repo */
+  $repo = \Drupal::service('file.repository');
+  $file = $repo->writeData($data, $uri, \Drupal\Core\File\FileSystemInterface::EXISTS_REPLACE);
+  if ($file) {
+    $file->setPermanent();
+    $file->setMimeType($mime);
+    $file->save();
+    return $uri;
+  }
+  return NULL;
+}
+
+/**
+ * @return int|null Media entity ID for a video file URI.
+ */
+function _df_setup_get_or_create_video_media(string $file_uri): ?int {
+  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $file_uri]);
+  $file = reset($files);
+  if (!$file) {
+    return NULL;
+  }
+  $existing = \Drupal::entityQuery('media')
+    ->condition('bundle', 'video')
+    ->condition('field_media_video_file.target_id', $file->id())
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if ($existing) {
+    return (int) reset($existing);
+  }
+  /** @var \Drupal\media\Entity\Media $media */
+  $media = \Drupal\media\Entity\Media::create([
+    'bundle' => 'video',
+    'uid' => 1,
+    'status' => 1,
+    'name' => $file->getFilename(),
+    'field_media_video_file' => ['target_id' => $file->id()],
+  ]);
+  $media->save();
+  return (int) $media->id();
+}
+
+/**
+ * Applies WordPress manifest paths (200 at same URL, no redirects).
+ */
+function _df_setup_apply_wordpress_manifest_paths(): string {
+  _df_setup_ensure_about_impact_page();
+  $alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+
+  $about_nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if ($about_nids) {
+    $about = $storage->load(reset($about_nids));
+    if ($about instanceof Node) {
+      $about->set('path', ['alias' => '/about', 'pathauto' => PathautoState::SKIP]);
+      $about->save();
+    }
+  }
+
+  $home_nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'Home')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  $home_alias_added = FALSE;
+  if ($home_nids) {
+    $home_nid = (int) reset($home_nids);
+    $system_path = '/node/' . $home_nid;
+    foreach (['/home', '/homepage'] as $alias) {
+      $existing = $alias_storage->loadByProperties(['alias' => $alias]);
+      if (!$existing) {
+        $alias_storage->create([
+          'path' => $system_path,
+          'alias' => $alias,
+          'langcode' => 'en',
+        ])->save();
+        $home_alias_added = TRUE;
+      }
+    }
+  }
+
+  return sprintf(
+    'Manifest paths: About -> /about; home aliases ensured=%s',
+    $home_alias_added ? 'yes' : 'already present'
+  );
+}
+
+/**
+ * PostX sort fields + backfill from Mac reference pack / WP post-id order.
+ */
+function df_setup_update_10025(): string {
+  foreach (['field_postx_sort_weight', 'field_homepage_sort_weight'] as $field_name) {
+    if (!FieldStorageConfig::loadByName('node', $field_name)) {
+      FieldStorageConfig::create([
+        'field_name' => $field_name,
+        'entity_type' => 'node',
+        'type' => 'integer',
+        'cardinality' => 1,
+        'translatable' => FALSE,
+      ])->save();
+    }
+    if (!FieldConfig::loadByName('node', 'article', $field_name)) {
+      FieldConfig::create([
+        'field_storage' => FieldStorageConfig::loadByName('node', $field_name),
+        'bundle' => 'article',
+        'label' => $field_name === 'field_postx_sort_weight' ? 'Issue grid sort weight' : 'Homepage grid sort weight',
+        'required' => FALSE,
+      ])->save();
+    }
+  }
+
+  $msg = 'PostX sort weight fields ensured.';
+  $script = __DIR__ . '/../df_migrate/scripts/backfill_postx_sort_weights.php';
+  if (is_readable($script)) {
+    try {
+      require $script;
+      $msg .= ' Backfill script executed.';
+    }
+    catch (\Throwable $e) {
+      $msg .= ' Backfill skipped: ' . $e->getMessage();
+    }
+  }
+  return $msg;
+}
+
+/**
+ * Ensures Pediatrics topic term exists for /category/pediatrics (WP footer category).
+ */
+function df_setup_update_10026(): string {
+  if (df_setup_topic_term_load_by_category_slug('pediatrics') !== NULL) {
+    return 'Pediatrics topic term already present.';
+  }
+  /** @var \Drupal\taxonomy\TermStorageInterface $storage */
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $parent_tid = NULL;
+  foreach ($storage->loadTree('topics', 0, 1, TRUE) as $parent) {
+    if ($parent instanceof TermInterface && $parent->label() === 'Patient Care') {
+      $parent_tid = (int) $parent->id();
+      break;
+    }
+  }
+  $term = Term::create([
+    'vid' => 'topics',
+    'name' => 'Pediatrics',
+    'parent' => $parent_tid ? [$parent_tid] : [],
+    'status' => 1,
+  ]);
+  $term->save();
+  return 'Created Pediatrics topic term (tid ' . $term->id() . ').';
+}
+
+/**
+ * Issue landing: PostX NULLS-LAST sort, promo exclusions, WP backfills.
+ *
+ * Uses committed `df_migrate/data/issue_page_wp_fixture.json` (regenerate via
+ * `node parity/scripts/build-issue-page-fixture.mjs` after refreshing cache).
+ * Live WP is fallback only when a fixture row is missing.
+ */
+function df_setup_update_10027(): string {
+  $parts = [];
+  foreach ([
+    'backfill_postx_sort_weights.php',
+    'backfill_issue_page_from_wordpress.php',
+  ] as $script_name) {
+    $script = __DIR__ . '/../df_migrate/scripts/' . $script_name;
+    if (!is_readable($script)) {
+      $parts[] = "$script_name missing";
+      continue;
+    }
+    try {
+      require $script;
+      $parts[] = "$script_name ok";
+    }
+    catch (\Throwable $e) {
+      $parts[] = "$script_name failed: " . $e->getMessage();
+    }
+  }
+  drupal_flush_all_caches();
+  \Drupal::keyValue('df_setup')->set('update_10027_applied', \Drupal::time()->getRequestTime());
+  return implode('; ', $parts);
+}
+
+/**
+ * Sync About Impact staff block with WordPress reference (content sweep parity).
+ */
+function df_setup_update_10028(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if (!$nids) {
+    return 'About Impact page not found.';
+  }
+  $node = $storage->load(reset($nids));
+  if (!$node instanceof Node) {
+    return 'About Impact page could not be loaded.';
+  }
+  $body = (string) $node->get('body')->value;
+  $expected_claudia = '<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>';
+  if (
+    !str_contains($body, 'Zuhirah Khaldun-Diarra')
+    && str_contains($body, $expected_claudia)
+  ) {
+    return 'About Impact staff block already matches WordPress reference (no-op).';
+  }
+  $body = preg_replace(
+    '/<p><strong>Vice President, Philanthropy Communications &amp; Marketing<\/strong><br>Zuhirah Khaldun-Diarra<\/p>\s*/',
+    '',
+    $body,
+  ) ?? $body;
+  $body = str_replace(
+    '<p><strong>Creative Director</strong><br>Claudia de Piante</p>',
+    $expected_claudia,
+    $body,
+  );
+  if ($body === (string) $node->get('body')->value) {
+    return 'About Impact staff block already matches WordPress reference (no-op).';
+  }
+  $node->set('body', ['value' => $body, 'format' => 'full_html']);
+  $node->save();
+  drupal_flush_all_caches();
+  return 'About Impact staff block synced to WordPress reference.';
+}
+
+/**
+ * About Impact: WordPress Gutenberg block body (PR #25; after 10028 staff sync).
+ */
+function df_setup_update_10029(): string {
+  return _df_setup_apply_about_impact_gutenberg_body();
+}
+
+/**
+ * About Impact: idempotent staff sync on Gutenberg body (matches WP reference).
+ */
+function df_setup_update_10030(): string {
+  $node = _df_setup_load_about_impact_node();
+  if ($node === NULL) {
+    _df_setup_ensure_about_impact_page();
+    return 'Created About Impact page; run update 10029 for Gutenberg body.';
+  }
+  $body = (string) $node->get('body')->value;
+  $synced = _df_setup_sync_about_impact_staff_body($body);
+  if ($synced === $body) {
+    return 'About Impact staff block already synced.';
+  }
+  $node->set('body', ['value' => $synced, 'format' => 'full_html']);
+  $node->save();
+  return 'About Impact staff block synced on Gutenberg body.';
+}
+
+/**
+ * Search parity (PR #24): enable df_secondary and move Search API view off /search.
+ */
+function df_setup_update_10034(): string {
+  $messages = [];
+  /** @var \Drupal\Core\Extension\ModuleInstallerInterface $installer */
+  $installer = \Drupal::service('module_installer');
+  if (!\Drupal::moduleHandler()->moduleExists('df_secondary')) {
+    $installer->install(['df_secondary']);
+    $messages[] = 'Enabled df_secondary.';
+  }
+  $view = \Drupal::entityTypeManager()->getStorage('view')->load('df_impact_search');
+  if ($view) {
+    $display = &$view->getDisplay('page_1');
+    if (($display['display_options']['path'] ?? '') !== 'search-legacy') {
+      $display['display_options']['path'] = 'search-legacy';
+      $view->save();
+      $messages[] = 'Set df_impact_search page path to search-legacy.';
+    }
+  }
+  drupal_flush_all_caches();
+  return $messages !== [] ? implode(' ', $messages) : 'Search parity already configured.';
+}
+
+/**
+ * Ensures Home landing exists when page.front points at a missing nid (local VM drift).
+ */
+function df_setup_update_10035(): string {
+  _df_setup_ensure_home_landing();
+  return 'Home landing verified; page.front set to /node/NID for Home page.';
+}
+
+/**
+ * Loads the canonical About Impact page node, if present.
+ */
+function _df_setup_load_about_impact_node(): ?Node {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->condition('type', 'page')
+    ->condition('title', 'About Impact')
+    ->accessCheck(FALSE)
+    ->range(0, 1)
+    ->execute();
+  if (!$nids) {
+    return NULL;
+  }
+  $node = $storage->load(reset($nids));
+  return $node instanceof Node ? $node : NULL;
+}
+
+/**
+ * Whether the About body already uses the Gutenberg block structure.
+ */
+function _df_setup_about_impact_body_is_gutenberg(string $body): bool {
+  return str_contains($body, 'wp-block-columns-is-layout-flex')
+    && str_contains($body, 'Division of Philanthropy')
+    && str_contains($body, 'alignright');
+}
+
+/**
+ * Content-sweep staff corrections (safe after df_setup_update_10028).
+ */
+function _df_setup_sync_about_impact_staff_body(string $body): string {
+  $body = preg_replace(
+    '/<p><strong>Vice President, Philanthropy Communications &amp; Marketing<\/strong><br>Zuhirah Khaldun-Diarra<\/p>\s*/',
+    '',
+    $body,
+  ) ?? $body;
+  $body = str_replace(
+    '<p><strong>Creative Director</strong><br>Claudia de Piante</p>',
+    '<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>',
+    $body,
+  );
+  $body = str_replace(
+    '<p><strong>Creative Director</strong><br>Claudia De Piante</p>',
+    '<p><strong>Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>',
+    $body,
+  );
+  return $body;
+}
+
+/**
+ * Whether staff block matches the WordPress reference (post content-sweep).
+ */
+function _df_setup_about_impact_staff_is_synced(string $body): bool {
+  if (str_contains($body, 'Vice President, Philanthropy Communications &amp; Marketing')
+    && str_contains($body, 'Zuhirah Khaldun-Diarra')) {
+    return FALSE;
+  }
+  if (str_contains($body, '<strong>Creative Director</strong><br>Claudia de Piante</p>')) {
+    return FALSE;
+  }
+  return str_contains($body, 'Assistant Vice President, Philanthropy Communications</strong><br>Claudia De Piante</p>');
+}
+
+/**
+ * Writes Gutenberg About Impact body onto the canonical node.
+ */
+/**
+ * Idempotent content-sweep convergence (About + truncated article bodies).
+ */
+/**
+ * Replays integrator hooks after migrations (bootstrap / fresh DB).
+ */
+function _df_setup_run_post_migrate_integrator_convergence(): string {
+  $parts = [];
+  foreach ([10027, 10029, 10030, 10034, 10035] as $hook) {
+    $fn = 'df_setup_update_' . $hook;
+    if (\function_exists($fn)) {
+      $parts[] = $fn();
+    }
+  }
+  require_once __DIR__ . '/df_setup.post_update.php';
+  foreach (\get_defined_functions()['user'] as $fn) {
+    if (!\str_starts_with($fn, 'df_setup_post_update_')) {
+      continue;
+    }
+    if (\str_contains($fn, 'seed_issue_covers') || \str_contains($fn, 'seed_issue_banners')) {
+      $sandbox = NULL;
+      $parts[] = $fn($sandbox);
+    }
+    else {
+      $parts[] = $fn();
+    }
+  }
+  return implode(' | ', $parts);
+}
+
+function _df_setup_converge_content_sweep_reference_bodies(): string {
+  $about = _df_setup_apply_about_impact_gutenberg_body();
+  $script = DRUPAL_ROOT . '/modules/custom/df_migrate/scripts/df_content_sweep_body_backfill.php';
+  if (!is_readable($script)) {
+    return $about . '; article backfill script missing.';
+  }
+  require_once $script;
+  $result = df_migrate_content_sweep_body_backfill();
+  if (!empty($result['error'])) {
+    return $about . '; article backfill failed: ' . $result['error'];
+  }
+  return sprintf(
+    '%s; article bodies scanned=%d updated=%d.',
+    $about,
+    (int) ($result['scanned'] ?? 0),
+    (int) ($result['updated'] ?? 0),
+  );
+}
+
+function _df_setup_apply_about_impact_gutenberg_body(): string {
+  $node = _df_setup_load_about_impact_node();
+  if ($node === NULL) {
+    _df_setup_ensure_about_impact_page();
+    return 'Created About Impact page with Gutenberg body.';
+  }
+  // Always converge on canonical export + staff sync (never patch a bloated legacy body).
+  $body = _df_setup_sync_about_impact_staff_body(df_setup_about_impact_gutenberg_body());
+  $existing = (string) $node->get('body')->value;
+  if ($existing === $body) {
+    return 'About Impact Gutenberg body already present.';
+  }
+  $node->set('body', [
+    'value' => $body,
+    'format' => 'full_html',
+  ]);
+  $node->save();
+  return 'Updated About Impact body to Gutenberg block structure.';
+}
+
+/**
+ * Rewrites stored content links from legacy issue URL to WP tag archive.
+ */
+function _df_setup_apply_late_fall_2022_link_parity(): string {
+  $search = [
+    'https://danafarberimpact.org/late-fall-2022-issue/',
+    'http://danafarberimpact.org/late-fall-2022-issue/',
+    'https://www.danafarberimpact.org/late-fall-2022-issue/',
+    '/late-fall-2022-issue/',
+    '/late-fall-2022-issue',
+  ];
+  $replace = [
+    '/tag/late-fall-2022/',
+    '/tag/late-fall-2022/',
+    '/tag/late-fall-2022/',
+    '/tag/late-fall-2022/',
+    '/tag/late-fall-2022',
+  ];
+
+  $link_replaced = 0;
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()->accessCheck(FALSE)->execute();
+  foreach ($storage->loadMultiple($nids) as $node) {
+    if (!$node instanceof \Drupal\node\NodeInterface) {
+      continue;
+    }
+    $changed = FALSE;
+    foreach ($node->getFieldDefinitions() as $field_name => $definition) {
+      if (!$node->hasField($field_name) || $definition->getFieldStorageDefinition()->getMainPropertyName() !== 'value') {
+        continue;
+      }
+      $field = $node->get($field_name);
+      if ($field->isEmpty()) {
+        continue;
+      }
+      foreach ($field as $delta => $item) {
+        $raw = (string) $item->value;
+        if ($raw === '' || !str_contains($raw, 'late-fall-2022-issue')) {
+          continue;
+        }
+        $next = str_replace($search, $replace, $raw);
+        if ($next !== $raw) {
+          $field->get($delta)->value = $next;
+          $changed = TRUE;
+          $link_replaced++;
+        }
+      }
+    }
+    if ($changed) {
+      $node->save();
+    }
+  }
+
+  $issue_ids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'issue')
+    ->condition('field_season', 'late fall')
+    ->condition('field_year', '2022')
+    ->range(0, 1)
+    ->execute();
+  $issue_id = $issue_ids ? (int) reset($issue_ids) : 0;
+  if ($issue_id === 0) {
+    return "Late Fall 2022 links: {$link_replaced} field value(s) updated; issue node not found for byline backfill.";
+  }
+
+  $article_ids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('field_issue.target_id', $issue_id)
+    ->execute();
+  $export_path = DRUPAL_ROOT . '/modules/custom/df_migrate/data/articles.json';
+  $export_by_slug = [];
+  if (is_readable($export_path)) {
+    $rows = json_decode((string) file_get_contents($export_path), TRUE);
+    if (is_array($rows)) {
+      foreach ($rows as $row) {
+        if (!empty($row['slug'])) {
+          $export_by_slug[(string) $row['slug']] = (string) ($row['body'] ?? '');
+        }
+      }
+    }
+  }
+  $byline_removed = 0;
+  foreach ($storage->loadMultiple($article_ids) as $article) {
+    $slug = $article->hasField('path') ? NULL : NULL;
+    $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $article->id());
+    if (!preg_match('#/([^/]+)$#', $alias, $m)) {
+      continue;
+    }
+    $slug = $m[1];
+    $export_body = $export_by_slug[$slug] ?? '';
+    if ($export_body === '' || stripos($export_body, '/tag/late-fall-2022') !== FALSE) {
+      continue;
+    }
+    if (!$article->hasField('body') || $article->get('body')->isEmpty()) {
+      continue;
+    }
+    $body = (string) $article->get('body')->value;
+    $next = preg_replace(
+      '/<!-- wp:paragraph[^>]*-->\\s*<p[^>]*>\\s*<a href="\\/tag\\/late-fall-2022\\/?">Late Fall 2022<\\/a>.*?<\\/p>\\s*<!-- \\/wp:paragraph -->\\s*/is',
+      '',
+      $body,
+    );
+    if (is_string($next) && $next !== $body) {
+      $article->set('body', [
+        'value' => $next,
+        'format' => $article->get('body')->format ?? 'full_html',
+      ]);
+      $article->save();
+      $byline_removed++;
+    }
+  }
+
+  return "Late Fall 2022 link parity: {$link_replaced} link rewrite(s), {$byline_removed} synthetic byline(s) removed.";
 }

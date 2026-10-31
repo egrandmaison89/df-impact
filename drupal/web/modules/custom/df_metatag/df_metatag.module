@@ -1,0 +1,529 @@
+<?php
+
+/**
+ * @file
+ * Head / Open Graph parity with WordPress (Yoast) on danafarberimpact.org.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Render\Markup;
+
+/**
+ * Production origin for canonical, og:url, and wp-content/uploads asset URLs.
+ */
+function df_metatag_production_origin(): string {
+  return 'https://danafarberimpact.org';
+}
+
+/**
+ * Implements hook_metatags_alter().
+ */
+function df_metatag_metatags_alter(array &$tags, array &$context): void {
+  $origin = df_metatag_production_origin();
+  $path = rtrim(\Drupal::request()->getPathInfo(), '/') ?: '/';
+  /** @var \Drupal\df_metatag\WordPressHeadOverrides $overrideService */
+  $overrideService = \Drupal::service('df_metatag.head_overrides');
+  $overrides = $overrideService->forPath($path);
+
+  $map = [
+    'title' => 'title',
+    'description' => 'description',
+    'og_title' => 'og_title',
+    'og_description' => 'og_description',
+  ];
+  foreach ($map as $tagKey => $overrideKey) {
+    if (!empty($overrides[$overrideKey])) {
+      $tags[$tagKey] = $overrides[$overrideKey];
+    }
+  }
+  if (!empty($overrides['canonical'])) {
+    $tags['canonical_url'] = $overrides['canonical'];
+    $tags['og_url'] = $overrides['canonical'];
+  }
+  if (!empty($overrides['og_image'])) {
+    $tags['og_image'] = $overrides['og_image'];
+    $tags['twitter_cards_image'] = $overrides['og_image'];
+  }
+  if (!empty($overrides['og_type'])) {
+    $tags['og_type'] = $overrides['og_type'];
+  }
+
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof \Drupal\node\NodeInterface) {
+    $emptyOg = empty($tags['og_image']) || $tags['og_image'] === $origin || $tags['og_image'] === $origin . '/';
+    if ($emptyOg) {
+      $fromBody = df_metatag_first_body_upload_url($node);
+      if ($fromBody !== NULL) {
+        $tags['og_image'] = $fromBody;
+        $tags['twitter_cards_image'] = $fromBody;
+      }
+    }
+  }
+
+  foreach (['canonical_url', 'og_url', 'shortlink'] as $key) {
+    if (empty($tags[$key]) || str_contains((string) $tags[$key], '[')) {
+      continue;
+    }
+    if (($key === 'canonical_url' || $key === 'og_url') && !empty($overrides['canonical'])) {
+      continue;
+    }
+    if (preg_match('#^https://danafarberimpact\.org#i', $tags[$key])) {
+      continue;
+    }
+    if (preg_match('#^https?://#i', $tags[$key]) && !preg_match('#^https?://127\.0\.0\.1#i', $tags[$key]) && !preg_match('#^https?://localhost#i', $tags[$key]) && !preg_match('#^https?://df-impact#i', $tags[$key])) {
+      continue;
+    }
+    $tags[$key] = df_metatag_rewrite_to_production($tags[$key], $origin);
+  }
+
+  foreach (['og_image', 'og_image_secure_url', 'twitter_cards_image'] as $key) {
+    if (!empty($tags[$key]) && !str_contains((string) $tags[$key], '[')) {
+      $tags[$key] = df_metatag_rewrite_upload_url($tags[$key], $origin);
+    }
+  }
+
+  $route_match = \Drupal::routeMatch();
+  $is_search_surface = in_array($path, ['/search', '/search-legacy'], TRUE)
+    || $route_match->getRouteName() === 'view.df_impact_search.page_1';
+  $search_query = \Drupal::request()->query->get('s');
+  if ($is_search_surface && ($search_query === NULL || $search_query === '')) {
+    $tags['title'] = 'Page not found - Impact Magazine';
+    $tags['description'] = '';
+    $tags['og_title'] = 'Page not found - Impact Magazine';
+    $tags['og_description'] = '';
+    unset($tags['canonical_url'], $tags['shortlink'], $tags['twitter_cards_description']);
+  }
+  elseif ($is_search_surface) {
+    // Yoast on live: no canonical for search results; og:url uses the /search/{term}/ form.
+    unset($tags['canonical_url'], $tags['shortlink']);
+    $tags['og_url'] = rtrim($origin, '/') . '/search/' . rawurlencode(trim((string) $search_query)) . '/';
+  }
+
+  if ($route_match->getRouteName() === 'view.topic_archive.page_1') {
+    $term = df_metatag_topic_archive_term();
+    if ($term instanceof \Drupal\taxonomy\TermInterface) {
+      $name = $term->label();
+      $title = $name . ' Archives - Impact Magazine';
+      $description = 'An archive of donor stories about ' . $name . ' for the Impact Magazine by Dana-Farber Cancer Institute and the Jimmy Fund.';
+      $tags['title'] = $title;
+      $tags['description'] = $description;
+      $tags['og_title'] = $title;
+      $tags['og_description'] = $description;
+      $tags['og_type'] = 'article';
+      $archive_url = rtrim($origin, '/') . $path . '/';
+      $tags['canonical_url'] = $archive_url;
+      $tags['og_url'] = $archive_url;
+    }
+  }
+
+  if ($route_match->getRouteName() === 'view.digital_exclusives_archive.page_1') {
+    $title = 'Digital Exclusives Archives - Impact Magazine';
+    $description = 'An archive of Digital Exclusive donor stories for the Impact Magazine by Dana-Farber Cancer Institute and the Jimmy Fund.';
+    $tags['title'] = $title;
+    $tags['description'] = $description;
+    $tags['og_title'] = $title;
+    $tags['og_description'] = $description;
+    $tags['og_type'] = 'article';
+    $archive_url = rtrim($origin, '/') . $path . '/';
+    $tags['canonical_url'] = $archive_url;
+    $tags['og_url'] = $archive_url;
+  }
+
+  if ($tag_title = df_metatag_wp_tag_archive_title()) {
+    $tags['title'] = $tag_title;
+    $tags['og_title'] = $tag_title;
+  }
+
+  if ($route_match->getRouteName() === '<front>' || df_metatag_is_homepage_path()) {
+    $front_tags = \Drupal::config('metatag.metatag_defaults.front')->get('tags') ?: [];
+    if (is_array($front_tags)) {
+      $tags = array_merge($tags, $front_tags);
+    }
+  }
+
+  // Re-apply WordPress reference overrides last (after Views / route merges).
+  foreach ($map as $tagKey => $overrideKey) {
+    if (!empty($overrides[$overrideKey])) {
+      $tags[$tagKey] = $overrides[$overrideKey];
+    }
+  }
+  if (!empty($overrides['canonical'])) {
+    $tags['canonical_url'] = $overrides['canonical'];
+    $tags['og_url'] = $overrides['canonical'];
+  }
+  if (!empty($overrides['og_image'])) {
+    $tags['og_image'] = $overrides['og_image'];
+    $tags['twitter_cards_image'] = $overrides['og_image'];
+  }
+  if (!empty($overrides['og_type'])) {
+    $tags['og_type'] = $overrides['og_type'];
+  }
+}
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function df_metatag_preprocess_html(array &$variables): void {
+  $path = rtrim(\Drupal::request()->getPathInfo(), '/') ?: '/';
+  $overrides = \Drupal::service('df_metatag.head_overrides')->forPath($path);
+  if (!empty($overrides['title']) && !empty($variables['head_title']) && is_array($variables['head_title'])) {
+    $variables['head_title']['title'] = $overrides['title'];
+  }
+  elseif (\Drupal::routeMatch()->getRouteName() === 'view.topic_archive.page_1') {
+    $term = df_metatag_topic_archive_term();
+    if ($term instanceof \Drupal\taxonomy\TermInterface) {
+      $variables['head_title']['title'] = $term->label() . ' Archives - Impact Magazine';
+    }
+  }
+  elseif (\Drupal::routeMatch()->getRouteName() === 'view.digital_exclusives_archive.page_1') {
+    $variables['head_title']['title'] = 'Digital Exclusives Archives - Impact Magazine';
+  }
+  elseif ($tag_title = df_metatag_wp_tag_archive_title()) {
+    $variables['head_title']['title'] = $tag_title;
+  }
+}
+
+/**
+ * WP tag archive document title ("{Tag} Archives - Impact Magazine").
+ */
+function df_metatag_wp_tag_archive_title(): ?string {
+  $route_match = \Drupal::routeMatch();
+  if (!in_array($route_match->getRouteName(), ['df_setup.wp_tag_archive', 'df_setup.wp_tag_archive_page'], TRUE)) {
+    return NULL;
+  }
+  $slug = (string) $route_match->getRawParameter('slug');
+  if ($slug === '') {
+    return NULL;
+  }
+  return ucwords(str_replace('-', ' ', $slug)) . ' Archives - Impact Magazine';
+}
+
+/**
+ * Resolves the topics term for /category/{slug} archive routes.
+ */
+function df_metatag_topic_archive_term(): ?\Drupal\taxonomy\TermInterface {
+  $route_match = \Drupal::routeMatch();
+  if ($route_match->getRouteName() !== 'view.topic_archive.page_1') {
+    return NULL;
+  }
+  $term = $route_match->getParameter('taxonomy_term');
+  if ($term instanceof \Drupal\taxonomy\TermInterface) {
+    return $term;
+  }
+  $slug = $route_match->getRawParameter('arg_0') ?? $route_match->getParameter('arg_0');
+  if (!is_string($slug) || $slug === '') {
+    return NULL;
+  }
+  $normalized_slug = strtolower(str_replace('_', '-', $slug));
+  if (function_exists('df_setup_topic_term_load_by_category_slug')) {
+    $term = df_setup_topic_term_load_by_category_slug($normalized_slug);
+    if ($term instanceof \Drupal\taxonomy\TermInterface) {
+      return $term;
+    }
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $ids = $storage->getQuery()
+    ->condition('vid', 'topics')
+    ->accessCheck(FALSE)
+    ->execute();
+  foreach ($storage->loadMultiple($ids) as $candidate) {
+    if (!$candidate instanceof \Drupal\taxonomy\TermInterface) {
+      continue;
+    }
+    $candidate_slug = strtolower(preg_replace('/[^a-z0-9]+/', '-', mb_strtolower($candidate->label())));
+    $candidate_slug = trim($candidate_slug, '-');
+    if ($candidate_slug === $normalized_slug) {
+      return $candidate;
+    }
+  }
+  return NULL;
+}
+
+function df_metatag_is_homepage_path(): bool {
+  $path = \Drupal::request()->getPathInfo();
+  $path = rtrim($path, '/') ?: '/';
+  return $path === '/homepage' || $path === '/home';
+}
+
+/**
+ * Whether a URL is an off-site production canonical (e.g. defycancer.dana-farber.org).
+ */
+function df_metatag_is_external_production_url(string $url): bool {
+  if (!preg_match('#^https?://#i', $url)) {
+    return FALSE;
+  }
+  $host = strtolower(parse_url($url, PHP_URL_HOST) ?? '');
+  if ($host === '' || $host === '127.0.0.1' || $host === 'localhost' || str_contains($host, 'df-impact')) {
+    return FALSE;
+  }
+  return $host !== 'danafarberimpact.org' && !str_ends_with($host, '.danafarberimpact.org');
+}
+
+/**
+ * Rewrites a local or alias URL to the production origin, keeping path/query.
+ */
+function df_metatag_rewrite_to_production(string $url, string $origin): string {
+  if ($url === '' || str_contains($url, '[') || str_starts_with($url, 'mailto:') || str_starts_with($url, 'tel:')) {
+    return $url;
+  }
+  $url = trim($url);
+  if (preg_match('#^https://danafarberimpact\.org/(https?://.+)$#i', $url, $m)) {
+    return df_metatag_rewrite_to_production($m[1], $origin);
+  }
+  if (preg_match('#https?://[^/]+/https?://#i', $url)) {
+    if (preg_match('#(https?://[^/]+(/.*))$#i', $url, $m)) {
+      $url = $m[1];
+    }
+  }
+  // Strip a leading slash before a full URL (corrupted token), not normal https URLs.
+  if (preg_match('#^/(https?://.+)$#i', $url, $m)) {
+    return df_metatag_rewrite_to_production($m[1], $origin);
+  }
+  $query = '';
+  if (preg_match('#^https?://#i', $url)) {
+    $parts = parse_url($url);
+    if ($parts === FALSE) {
+      return $url;
+    }
+    $host = strtolower($parts['host'] ?? '');
+    $is_local = $host === '127.0.0.1'
+      || $host === 'localhost'
+      || str_contains($host, 'df-impact');
+    $is_production = $host === 'danafarberimpact.org' || str_ends_with($host, '.danafarberimpact.org');
+    if (!$is_local && !$is_production) {
+      return $url;
+    }
+    $path = $parts['path'] ?? '/';
+    if (preg_match('#^/(https?://.+)$#i', $path, $m)) {
+      return df_metatag_rewrite_to_production($m[1], $origin);
+    }
+    $query = $parts['query'] ?? '';
+  }
+  else {
+    $path = str_starts_with($url, '/') ? $url : '/' . $url;
+  }
+  if (!str_starts_with($path, '/')) {
+    $path = '/' . $path;
+  }
+  $out = rtrim($origin, '/') . $path;
+  if ($query !== '') {
+    $out .= '?' . $query;
+  }
+  return $out;
+}
+
+/**
+ * First wp-content/uploads image URL in article body HTML.
+ */
+function df_metatag_first_body_upload_url(\Drupal\node\NodeInterface $node): ?string {
+  if (!$node->hasField('body') || $node->get('body')->isEmpty()) {
+    return NULL;
+  }
+  $html = (string) $node->get('body')->value;
+  if (preg_match('#https://danafarberimpact\.org/wp-content/uploads/[^"\'\s>]+\.(?:jpe?g|png|webp|gif)#i', $html, $m)) {
+    return $m[0];
+  }
+  return NULL;
+}
+
+/**
+ * Maps Drupal file URLs to WordPress uploads paths on the production host.
+ */
+function df_metatag_rewrite_upload_url(string $url, string $origin): string {
+  if (str_starts_with($url, $origin . '/wp-content/uploads/')) {
+    return $url;
+  }
+  if (preg_match('#/wp-content/uploads/(.+)$#', $url, $m)) {
+    $mapped = df_metatag_map_wp_upload_path($m[1], $origin);
+    return $mapped ?? ($origin . '/wp-content/uploads/' . $m[1]);
+  }
+  if (preg_match('#/sites/default/files/(.+)$#', $url, $m)) {
+    $mapped = df_metatag_map_wp_upload_path($m[1], $origin);
+    return $mapped ?? ($origin . '/wp-content/uploads/' . $m[1]);
+  }
+  return df_metatag_rewrite_to_production($url, $origin);
+}
+
+/**
+ * Maps vendored wp-images basenames to Yoast-style wp-content/uploads URLs.
+ */
+function df_metatag_map_wp_upload_path(string $relative, string $origin): ?string {
+  $relative = ltrim($relative, '/');
+  if (!str_starts_with($relative, 'wp-images/')) {
+    return NULL;
+  }
+  $basename = basename($relative);
+  $stem = strtolower(pathinfo($basename, PATHINFO_FILENAME));
+  $index = df_metatag_media_source_url_index();
+  if (isset($index[$stem])) {
+    return $index[$stem];
+  }
+  return NULL;
+}
+
+/**
+ * @return array<string, string>
+ *   Lowercase filename stem => production source_url from migrate media.json.
+ */
+function df_metatag_media_source_url_index(): array {
+  static $index = NULL;
+  if ($index !== NULL) {
+    return $index;
+  }
+  $index = [];
+  $path = DRUPAL_ROOT . '/modules/custom/df_migrate/data/media.json';
+  if (!is_readable($path)) {
+    return $index;
+  }
+  $items = json_decode(file_get_contents($path), TRUE);
+  if (!is_array($items)) {
+    return $index;
+  }
+  foreach ($items as $item) {
+    if (empty($item['source_url']) || !is_string($item['source_url'])) {
+      continue;
+    }
+    $filename = $item['filename'] ?? basename(parse_url($item['source_url'], PHP_URL_PATH) ?: '');
+    if ($filename === '') {
+      continue;
+    }
+    $stem = strtolower(pathinfo($filename, PATHINFO_FILENAME));
+    $index[$stem] = $item['source_url'];
+  }
+  return $index;
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function df_metatag_page_attachments_alter(array &$attachments): void {
+  df_metatag_rewrite_attached_head_urls($attachments);
+
+  $path = rtrim(\Drupal::request()->getPathInfo(), '/') ?: '/';
+  $overrides = \Drupal::service('df_metatag.head_overrides')->forPath($path);
+  $json = !empty($overrides['json_ld']) ? $overrides['json_ld'] : df_metatag_build_schema_graph();
+  if ($json === NULL || $json === '') {
+    return;
+  }
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'script',
+      '#attributes' => [
+        'type' => 'application/ld+json',
+        'class' => ['yoast-schema-graph'],
+      ],
+      '#value' => Markup::create($json),
+    ],
+    'df_metatag_schema_graph',
+  ];
+}
+
+/**
+ * Rewrites resolved canonical/OG URLs in html_head after metatag token replacement.
+ */
+function df_metatag_rewrite_attached_head_urls(array &$attachments): void {
+  if (empty($attachments['#attached']['html_head'])) {
+    return;
+  }
+  $origin = df_metatag_production_origin();
+  foreach ($attachments['#attached']['html_head'] as &$entry) {
+    if (!is_array($entry[0] ?? NULL)) {
+      continue;
+    }
+    $element = &$entry[0];
+    $tag = $element['#tag'] ?? '';
+    $attrs = &$element['#attributes'];
+    if ($tag === 'link' && ($attrs['rel'] ?? '') === 'canonical' && !empty($attrs['href'])) {
+      if (!df_metatag_is_external_production_url($attrs['href'])) {
+        $attrs['href'] = df_metatag_rewrite_to_production($attrs['href'], $origin);
+      }
+    }
+    if ($tag === 'meta' && !empty($attrs['property'])) {
+      if (in_array($attrs['property'], ['og:url', 'og:image', 'og:image:secure_url'], TRUE) && !empty($attrs['content'])) {
+        $attrs['content'] = $attrs['property'] === 'og:image' || str_starts_with($attrs['property'], 'og:image')
+          ? df_metatag_rewrite_upload_url($attrs['content'], $origin)
+          : (df_metatag_is_external_production_url($attrs['content'])
+            ? $attrs['content']
+            : df_metatag_rewrite_to_production($attrs['content'], $origin));
+      }
+    }
+    if ($tag === 'meta' && !empty($attrs['name']) && $attrs['name'] === 'twitter:image' && !empty($attrs['content'])) {
+      $attrs['content'] = df_metatag_rewrite_upload_url($attrs['content'], $origin);
+    }
+  }
+}
+
+/**
+ * Builds a Yoast-style schema.org graph for the current page.
+ */
+function df_metatag_build_schema_graph(): ?string {
+  $origin = df_metatag_production_origin();
+  $request = \Drupal::request();
+  $path = rtrim($request->getPathInfo(), '/') ?: '/';
+  $page_url = rtrim($origin, '/') . ($path === '/' ? '/' : $path);
+
+  $title = 'Impact Magazine';
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof \Drupal\node\NodeInterface) {
+    $title = $node->label() . ' - Impact Magazine';
+  }
+  elseif (df_metatag_is_homepage_path() || \Drupal::routeMatch()->getRouteName() === '<front>') {
+    $title = 'Homepage - Impact Magazine';
+  }
+
+  $description = '';
+  $route = \Drupal::routeMatch();
+  $node = $route->getParameter('node');
+  if ($node instanceof \Drupal\node\NodeInterface) {
+    if ($node->hasField('field_meta_description') && !$node->get('field_meta_description')->isEmpty()) {
+      $description = (string) $node->get('field_meta_description')->value;
+    }
+    elseif ($node->hasField('field_description') && !$node->get('field_description')->isEmpty()) {
+      $description = strip_tags((string) $node->get('field_description')->value);
+    }
+  }
+
+  $modified = NULL;
+  if ($node instanceof \Drupal\node\NodeInterface) {
+    $modified = gmdate('c', (int) $node->getChangedTime());
+  }
+
+  $graph = [
+    [
+      '@type' => 'WebPage',
+      '@id' => $page_url . '#webpage',
+      'url' => $page_url,
+      'name' => $title,
+      'isPartOf' => ['@id' => $origin . '/#website'],
+      'description' => $description ?: NULL,
+      'inLanguage' => 'en-US',
+    ],
+    [
+      '@type' => 'WebSite',
+      '@id' => $origin . '/#website',
+      'url' => $origin . '/',
+      'name' => 'Impact Magazine',
+      'description' => 'Stories from our community of support',
+      'inLanguage' => 'en-US',
+    ],
+    [
+      '@type' => 'Organization',
+      '@id' => $origin . '/#organization',
+      'name' => 'Impact Magazine',
+      'url' => $origin . '/',
+    ],
+  ];
+
+  if ($modified !== NULL) {
+    $graph[0]['dateModified'] = $modified;
+  }
+
+  $payload = [
+    '@context' => 'https://schema.org',
+    '@graph' => array_values(array_filter($graph, static fn ($item) => $item !== NULL)),
+  ];
+
+  return json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}

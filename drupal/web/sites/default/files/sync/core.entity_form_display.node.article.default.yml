@@ -13,7 +13,9 @@ dependencies:
     - field.field.node.article.field_excerpt
     - field.field.node.article.field_featured_image
     - field.field.node.article.field_homepage_placement
+    - field.field.node.article.field_homepage_sort_weight
     - field.field.node.article.field_image
+    - field.field.node.article.field_postx_sort_weight
     - field.field.node.article.field_issue
     - field.field.node.article.field_meta_description
     - field.field.node.article.field_photo_credit
@@ -51,6 +53,7 @@ third_party_settings:
       format_type: tab
       format_settings:
         label: Content
+        formatter: open
         direction: vertical
     group_metadata:
       children:
@@ -61,6 +64,8 @@ third_party_settings:
         - field_cancer_types
         - field_content_type
         - field_homepage_placement
+        - field_postx_sort_weight
+        - field_homepage_sort_weight
       label: 'Publication & placement'
       region: content
       parent_name: ''
@@ -129,6 +134,16 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_channels:
+    type: entity_reference_autocomplete
+    weight: 11
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_content_sections:
     type: entity_reference_paragraphs
     weight: 5
@@ -140,16 +155,6 @@ content:
       add_mode: dropdown
       form_display_mode: default
       default_paragraph_type: ''
-    third_party_settings: {  }
-  field_channels:
-    type: entity_reference_autocomplete
-    weight: 11
-    region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
     third_party_settings: {  }
   field_content_type:
     type: options_select
@@ -179,6 +184,20 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_homepage_sort_weight:
+    type: number
+    weight: 16
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_postx_sort_weight:
+    type: number
+    weight: 17
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
   field_issue:
     type: entity_reference_autocomplete
     weight: 10
@@ -197,17 +216,17 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_photo_credit:
+  field_photo_caption:
     type: string_textfield
-    weight: 3
+    weight: 7
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_photo_caption:
+  field_photo_credit:
     type: string_textfield
-    weight: 7
+    weight: 3
     region: content
     settings:
       size: 60
@@ -312,7 +331,12 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  publish_on:
+    type: datetime_timestamp
+    weight: 102
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   field_image: true
-  publish_on: true
   unpublish_on: true

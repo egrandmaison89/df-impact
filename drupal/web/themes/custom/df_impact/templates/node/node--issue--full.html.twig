@@ -1,72 +1,71 @@
 {#
-/**
- * @file
- * Theme override for Issue nodes (full view mode).
- *
- * Order: hero → intro → In This Issue (grid + pager) → In Brief banner (CTA only) →
- * featured items (no section header; image + title promos).
- */
+  Issue landing — WordPress fall-2026-issue reference DOM.
 #}
-<div{{ attributes.addClass('issue-page') }}>
+<article{{ attributes.addClass('issue-page') }}>
 
-  {% if content.field_banner_image|render|trim %}
-    <div class="issue-page__banner">
-      {{ content.field_banner_image }}
-      <div class="issue-page__banner-overlay">
-        <div class="issue-page__banner-panel">
-          <h1 class="issue-page__banner-title">{{ label }}</h1>
+  {% if issue_banner_url %}
+    <div class="wp-block-cover alignfull{{ issue_banner_is_light ? ' is-light' : '' }} issue-page-banner" style="margin-bottom:40px;min-height:481px;height:481px;">
+      <img decoding="async" fetchpriority="high" loading="eager" src="{{ issue_banner_url }}" width="1024" height="396" class="wp-block-cover__image-background wp-image-issue-banner size-large" alt="{{ issue_banner_alt }}" data-object-fit="cover" style="object-fit:cover">
+      <span aria-hidden="true" class="wp-block-cover__background has-background-background-color has-background-dim-0 has-background-dim"></span>
+      <div class="wp-block-cover__inner-container is-layout-flow wp-block-cover-is-layout-flow">
+        <div class="wp-block-ultimate-post-heading ultp-block-73dec1 issue-page-header">
+          <div class="ultp-block-wrapper">
+            <div class="ultp-heading-wrap ultp-heading-style1 ultp-heading-center">
+              <h1 class="ultp-heading-inner"><span>{{ label }}</span></h1>
+              <div class="ultp-sub-heading"><div class="ultp-sub-heading-inner"></div></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   {% else %}
-    <div class="container">
-      <h1 class="issue-page__title-fallback">{{ label }}</h1>
-    </div>
+    <h1 class="wp-block-heading alignwide">{{ label }}</h1>
   {% endif %}
 
   {% if content.field_description|render|trim %}
-    <div class="issue-page__description">
-      {{ content.field_description }}
-    </div>
+    <div class="issue-page__description alignwide">{{ content.field_description }}</div>
   {% endif %}
 
-  <section class="issue-page__stories-region" aria-labelledby="issue-stories-heading">
-    <div class="issue-page__stories-heading">
-      <div class="container">
-        <h2 id="issue-stories-heading" class="issue-page__stories-title">{{ 'In This Issue'|t }}</h2>
-      </div>
-    </div>
-    <div class="issue-page__articles">
-      {{ drupal_view('issue_articles', 'block_1', node.id) }}
-    </div>
-  </section>
+  <h2 class="wp-block-heading alignwide orange-border-header has-background-background-color has-text-color has-background has-montserrat-font-family" id="IN_THIS_ISSUE" style="color:#63666a;margin-bottom:0px;padding-top:5px;padding-right:20px;padding-bottom:5px;padding-left:15px;font-size:28px;font-style:normal;font-weight:600">{{ 'In This Issue'|t }}</h2>
 
-  <section class="issue-page__in-brief-region" aria-labelledby="issue-in-brief-heading">
-    <div class="container">
-      <div class="issue-page__in-brief-banner">
-        <header class="issue-page__in-brief-header">
-          <h2 id="issue-in-brief-heading" class="issue-page__in-brief-title">{{ 'In Brief'|t }}</h2>
-          <p class="issue-page__in-brief-dek">{{ 'More highlights from our generous community'|t }}</p>
-        </header>
-        <p class="issue-page__in-brief-action">
-          <a href="{{ path('view.in_brief_listing.page_1') }}" class="issue-page__view-all-briefs">{% trans %}<strong>V</strong>iew All Briefs{% endtrans %}</a>
-        </p>
-      </div>
-    </div>
-  </section>
+  {{ drupal_view('issue_articles', 'block_1', node.id) }}
 
-  {% if issue_promo_cards is not empty %}
-    <div class="issue-page__promos">
-      <div class="container">
-        <div class="issue-page__promo-grid">
-          {% for card in issue_promo_cards %}
-            <div class="issue-page__promo">
-              {{ card }}
+  <div class="wp-block-stackable-columns alignwide stk-block-columns stk-block stk-c3abd9d stk-block-background" data-block-id="c3abd9d">
+    <div class="stk-row stk-inner-blocks stk-block-content stk-content-align stk-c3abd9d-column alignwide">
+      <div class="wp-block-stackable-column stk-block-column stk-column stk-block stk-f37234b" data-v="4" data-block-id="f37234b">
+        <div class="stk-column-wrapper stk-block-column__content stk-container stk-f37234b-container stk--no-background stk--no-padding">
+          <div class="stk--column-flex stk-block-content stk-inner-blocks stk-f37234b-inner-blocks">
+            <div class="wp-block-group is-content-justification-left is-layout-constrained wp-container-core-group-is-layout-1a3fbd13 wp-block-group-is-layout-constrained" style="border-left-color:#ffa300;border-left-width:3px;padding-left:25px">
+              <p class="has-background-color has-text-color wp-block-paragraph" style="line-height:1.3"><span style="font-size: 34px;font-weight: 700">{{ 'In Brief'|t }}</span><br><span style="font-size: 22px;font-weight: 500">{{ 'More highlights from our generous community'|t }}</span></p>
             </div>
-          {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div class="wp-block-stackable-column stk-block-column stk-column stk-block stk-74f6241" data-v="4" data-block-id="74f6241">
+        <div class="stk-column-wrapper stk-block-column__content stk-container stk-74f6241-container stk--no-background stk--no-padding">
+          <div class="stk--column-flex stk-block-content stk-inner-blocks stk-74f6241-inner-blocks">
+            <div class="wp-block-buttons is-horizontal is-content-justification-center is-layout-flex wp-container-core-buttons-is-layout-b0be8b0e wp-block-buttons-is-layout-flex">
+              <div class="wp-block-button in-brief-button">
+                <a class="wp-block-button__link has-background-color has-text-color has-background has-montserrat-font-family has-medium-font-size has-custom-font-size wp-element-button" href="{{ path('view.in_brief_listing.page_1') }}" style="border-radius:5px;background-color:#00629b;font-style:normal;font-weight:700;text-transform:none">{% trans %}<strong>V</strong>iew All Briefs{% endtrans %}</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+  </div>
+
+  {% if issue_promo_cards is not empty %}
+    <div class="ultp-post-grid-block wp-block-ultimate-post-post-grid-1 ultp-block-dd35a6 alignwide">
+      <div class="ultp-block-wrapper">
+        <div class="ultp-block-items-wrap ultp-block-row ultp-pg1a-style4 ultp-layout1">
+          {% for card in issue_promo_cards %}
+            {{ card }}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="pagination-block-html" aria-hidden="true" style="display: none;"></div>
+    </div>
   {% endif %}
 
-</div>
+</article>

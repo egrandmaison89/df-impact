@@ -54,11 +54,15 @@ class DownloadImage extends ProcessPluginBase {
     if ($url === '') {
       return NULL;
     }
+    if (!preg_match('#wp-content/uploads|/wp-images/|[.](?:jpe?g|png|webp|gif)(?:\?|$)#i', $url)) {
+      return NULL;
+    }
 
     if (isset(static::$fileCache[$url])) {
       return static::$fileCache[$url];
     }
 
+    $fs = \Drupal::service('file_system');
     $uri = static::urlToUri($url);
     $existing = \Drupal::entityQuery('file')
       ->condition('uri', $uri)
@@ -67,14 +71,42 @@ class DownloadImage extends ProcessPluginBase {
 
     if (!empty($existing)) {
       $fid = (int) reset($existing);
-      static::$fileCache[$url] = $fid;
-      return $fid;
+      /** @var \Drupal\file\FileInterface|null $existing_file */
+      $existing_file = \Drupal::entityTypeManager()->getStorage('file')->load($fid);
+      if ($existing_file instanceof FileInterface) {
+        $real = $fs->realpath($existing_file->getFileUri());
+        $size = is_string($real) && is_readable($real) ? filesize($real) : FALSE;
+        $info = is_string($real) && is_readable($real) ? @getimagesize($real) : FALSE;
+        if ($size !== FALSE && $size >= 512 && is_array($info) && !empty($info[0])) {
+          static::$fileCache[$url] = $fid;
+          return $fid;
+        }
+        $existing_file->delete();
+      }
+    }
+
+    $local_path = $fs->realpath($uri);
+    if (is_string($local_path) && is_readable($local_path) && filesize($local_path) > 256) {
+      $file_data = file_get_contents($local_path);
+      if ($file_data !== FALSE) {
+        /** @var \Drupal\file\FileInterface|false $file */
+        $file = \Drupal::service('file.repository')->writeData(
+          $file_data,
+          $uri,
+          FileSystemInterface::EXISTS_REPLACE
+        );
+        if ($file) {
+          $fid = (int) $file->id();
+          static::$fileCache[$url] = $fid;
+          return $fid;
+        }
+      }
     }
 
     try {
       $file_data = @file_get_contents($url, FALSE, stream_context_create([
         'http' => [
-          'timeout' => 30,
+          'timeout' => 12,
           'user_agent' => 'Drupal/11 DFMigrate/1.0',
         ],
       ]));

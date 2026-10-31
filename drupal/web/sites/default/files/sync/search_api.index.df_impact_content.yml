@@ -14,60 +14,53 @@ name: 'Dana-Farber Impact Content'
 description: 'Search index for articles, issues, pages, and in-brief items.'
 read_only: false
 field_settings:
-  title:
-    label: Title
+  body:
+    label: Body
     datasource_id: 'entity:node'
-    property_path: title
+    property_path: 'body:value'
     type: text
-    boost: '5.0'
+    boost: 1.0
     dependencies: {  }
-  field_excerpt:
-    label: Excerpt
+  created:
+    label: Created
     datasource_id: 'entity:node'
-    property_path: field_excerpt
-    type: text
-    boost: '2.0'
-    dependencies: {  }
-  field_subtitle:
-    label: Subtitle
-    datasource_id: 'entity:node'
-    property_path: field_subtitle
-    type: text
-    boost: '3.0'
+    property_path: created
+    type: date
     dependencies: {  }
   field_byline:
     label: Byline
     datasource_id: 'entity:node'
     property_path: field_byline
     type: text
-    boost: '1.0'
-    dependencies: {  }
-  body:
-    label: Body
-    datasource_id: 'entity:node'
-    property_path: 'body:value'
-    type: text
-    boost: '1.0'
-    dependencies: {  }
-  field_topics:
-    label: Topics
-    datasource_id: 'entity:node'
-    property_path: field_topics
-    type: integer
-    boost: '1.0'
+    boost: 1.0
     dependencies: {  }
   field_cancer_types:
     label: 'Cancer Types'
     datasource_id: 'entity:node'
     property_path: field_cancer_types
     type: integer
-    boost: '1.0'
+    boost: 1.0
     dependencies: {  }
-  type:
-    label: 'Content type'
+  field_excerpt:
+    label: Excerpt
     datasource_id: 'entity:node'
-    property_path: type
-    type: string
+    property_path: field_excerpt
+    type: text
+    boost: 2.0
+    dependencies: {  }
+  field_subtitle:
+    label: Subtitle
+    datasource_id: 'entity:node'
+    property_path: field_subtitle
+    type: text
+    boost: 3.0
+    dependencies: {  }
+  field_topics:
+    label: Topics
+    datasource_id: 'entity:node'
+    property_path: field_topics
+    type: integer
+    boost: 1.0
     dependencies: {  }
   status:
     label: Published
@@ -75,11 +68,18 @@ field_settings:
     property_path: status
     type: boolean
     dependencies: {  }
-  created:
-    label: Created
+  title:
+    label: Title
     datasource_id: 'entity:node'
-    property_path: created
-    type: date
+    property_path: title
+    type: text
+    boost: 5.0
+    dependencies: {  }
+  type:
+    label: 'Content type'
+    datasource_id: 'entity:node'
+    property_path: type
+    type: string
     dependencies: {  }
 datasource_settings:
   'entity:node':
@@ -95,15 +95,11 @@ datasource_settings:
       languages:
         default: true
         selected: {  }
-tracker_settings:
-  default:
-    plugin_id: default
-    settings: {  }
 processor_settings:
   html_filter:
-    plugin_id: html_filter
     weights:
       preprocessor: -15
+    plugin_id: html_filter
     settings:
       title: false
       alt: true
@@ -114,24 +110,60 @@ processor_settings:
         strong: 2
         b: 2
   ignorecase:
-    plugin_id: ignorecase
     weights:
       postprocessor: 0
+    plugin_id: ignorecase
     settings: {  }
   stopwords:
+    weights:
+      postprocessor: 0
     plugin_id: stopwords
-    weights:
-      postprocessor: 0
     settings:
-      stopwords: "a\nan\nare\nas\nat\nbe\nbut\nby\nfor\nif\nin\ninto\nis\nit\nno\nnot\nof\non\nor\nsuch\nthat\nthe\ntheir\nthen\nthere\nthese\nthey\nthis\nto\nwas\nwill\nwith"
+      stopwords: |-
+        a
+        an
+        are
+        as
+        at
+        be
+        but
+        by
+        for
+        if
+        in
+        into
+        is
+        it
+        no
+        not
+        of
+        on
+        or
+        such
+        that
+        the
+        their
+        then
+        there
+        these
+        they
+        this
+        to
+        was
+        will
+        with
   tokenizer:
-    plugin_id: tokenizer
     weights:
       postprocessor: 0
+    plugin_id: tokenizer
     settings:
       spaces: ''
       ignored: ''
+tracker_settings:
+  default:
+    plugin_id: default
+    settings: {  }
 options:
-  index_directly: false
   cron_limit: 100
+  index_directly: false
 server: df_impact_search

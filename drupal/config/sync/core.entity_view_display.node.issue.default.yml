@@ -37,14 +37,6 @@ content:
     third_party_settings: {  }
     weight: 1
     region: content
-  field_leadership_message:
-    type: entity_reference_label
-    label: hidden
-    settings:
-      link: true
-    third_party_settings: {  }
-    weight: 2
-    region: content
   field_issue_promo_2:
     type: entity_reference_label
     label: hidden
@@ -53,8 +45,21 @@ content:
     third_party_settings: {  }
     weight: 3
     region: content
+  field_leadership_message:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 2
+    region: content
 hidden:
   field_cover_image: true
+  field_hero_heading: true
+  field_hero_poster: true
+  field_hero_video: true
+  field_issue_banner_is_light: true
   field_season: true
   field_year: true
   links: true
+  search_api_excerpt: true

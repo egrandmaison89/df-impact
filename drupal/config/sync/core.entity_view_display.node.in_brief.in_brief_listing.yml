@@ -47,6 +47,8 @@ content:
     weight: 2
     region: content
 hidden:
+  field_excerpt: true
   field_issue: true
   field_related_articles: true
   links: true
+  search_api_excerpt: true

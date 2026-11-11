@@ -191,13 +191,6 @@ content:
     settings:
       placeholder: ''
     third_party_settings: {  }
-  field_postx_sort_weight:
-    type: number
-    weight: 17
-    region: content
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
   field_issue:
     type: entity_reference_autocomplete
     weight: 10
@@ -230,6 +223,13 @@ content:
     region: content
     settings:
       size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_postx_sort_weight:
+    type: number
+    weight: 17
+    region: content
+    settings:
       placeholder: ''
     third_party_settings: {  }
   field_related_articles:
@@ -289,6 +289,12 @@ content:
     settings:
       display_label: true
     third_party_settings: {  }
+  publish_on:
+    type: datetime_timestamp
+    weight: 102
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   simple_sitemap:
     weight: 10
     region: content
@@ -328,12 +334,6 @@ content:
     third_party_settings: {  }
   url_redirects:
     weight: 50
-    region: content
-    settings: {  }
-    third_party_settings: {  }
-  publish_on:
-    type: datetime_timestamp
-    weight: 102
     region: content
     settings: {  }
     third_party_settings: {  }

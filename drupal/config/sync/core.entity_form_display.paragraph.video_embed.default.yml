@@ -13,14 +13,6 @@ targetEntityType: paragraph
 bundle: video_embed
 mode: default
 content:
-  field_video_url:
-    type: link_default
-    weight: 0
-    region: content
-    settings:
-      placeholder_url: ''
-      placeholder_title: ''
-    third_party_settings: {  }
   field_video_caption:
     type: string_textfield
     weight: 1
@@ -28,6 +20,14 @@ content:
     settings:
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  field_video_url:
+    type: link_default
+    weight: 0
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
     third_party_settings: {  }
 hidden:
   created: true

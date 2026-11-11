@@ -119,6 +119,7 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_excerpt: true
   promote: true
   publish_on: true
   sticky: true

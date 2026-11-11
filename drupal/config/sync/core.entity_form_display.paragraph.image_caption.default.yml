@@ -15,14 +15,6 @@ targetEntityType: paragraph
 bundle: image_caption
 mode: default
 content:
-  field_para_image:
-    type: media_library_widget
-    weight: 0
-    region: content
-    settings:
-      media_types:
-        - image
-    third_party_settings: {  }
   field_caption:
     type: string_textfield
     weight: 1
@@ -36,6 +28,14 @@ content:
     weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_para_image:
+    type: media_library_widget
+    weight: 0
+    region: content
+    settings:
+      media_types:
+        - image
     third_party_settings: {  }
 hidden:
   created: true

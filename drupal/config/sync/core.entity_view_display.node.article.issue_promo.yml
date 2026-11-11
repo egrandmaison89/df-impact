@@ -18,6 +18,13 @@ targetEntityType: node
 bundle: article
 mode: issue_promo
 content:
+  field_excerpt:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
   field_featured_image:
     type: entity_reference_entity_view
     label: hidden
@@ -26,13 +33,6 @@ content:
       link: false
     third_party_settings: {  }
     weight: 0
-    region: content
-  field_excerpt:
-    type: text_default
-    label: hidden
-    settings: {  }
-    third_party_settings: {  }
-    weight: 1
     region: content
 hidden:
   body: true
@@ -43,11 +43,13 @@ hidden:
   field_content_sections: true
   field_content_type: true
   field_homepage_placement: true
+  field_homepage_sort_weight: true
   field_image: true
   field_issue: true
   field_meta_description: true
-  field_photo_credit: true
   field_photo_caption: true
+  field_photo_credit: true
+  field_postx_sort_weight: true
   field_related_articles: true
   field_subtitle: true
   field_tags: true

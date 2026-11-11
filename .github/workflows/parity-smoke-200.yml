@@ -1,5 +1,8 @@
-# Fast Drupal HTTP guard for PRs targeting the phase4 integration branch (PR #5).
-# Requires a reachable DRUPAL_BASE_URL (Cloud Agent VM, DDEV, or self-hosted runner with DB).
+# Fast Drupal HTTP guard for PRs targeting the phase4 integration branch.
+# The parity harness is not part of the ACSF deliverable tree. When parity/
+# is absent, this job records that and exits. Restore the harness from tag
+# archive/pre-acsf-handoff-47352229 to run it:
+#   git checkout archive/pre-acsf-handoff-47352229 -- parity
 name: Parity smoke 200
 
 on:
@@ -13,18 +16,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Parity tooling present?
+        id: parity
+        run: |
+          if [ -f parity/package-lock.json ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::parity/ is not in this tree. The harness is archived at tag archive/pre-acsf-handoff-47352229."
+          fi
+
       - uses: actions/setup-node@v4
+        if: steps.parity.outputs.present == 'true'
         with:
           node-version: '22'
           cache: npm
           cache-dependency-path: parity/package-lock.json
 
       - name: Install parity dependencies
+        if: steps.parity.outputs.present == 'true'
         working-directory: parity
         run: npm ci
 
       - name: Probe Drupal
         id: drupal
+        if: steps.parity.outputs.present == 'true'
         env:
           DRUPAL_BASE_URL: ${{ vars.DRUPAL_SMOKE_BASE_URL || 'http://127.0.0.1:8888' }}
         run: |
@@ -35,7 +51,7 @@ jobs:
           fi
 
       - name: Run smoke-200 guard
-        if: steps.drupal.outputs.reachable == 'true'
+        if: steps.parity.outputs.present == 'true' && steps.drupal.outputs.reachable == 'true'
         working-directory: parity
         env:
           DRUPAL_BASE_URL: ${{ vars.DRUPAL_SMOKE_BASE_URL || 'http://127.0.0.1:8888' }}
@@ -43,6 +59,6 @@ jobs:
         run: npm run parity:smoke:200
 
       - name: Drupal not reachable (skipped)
-        if: steps.drupal.outputs.reachable != 'true'
+        if: steps.parity.outputs.present == 'true' && steps.drupal.outputs.reachable != 'true'
         run: |
           echo "::warning::Drupal not reachable at DRUPAL_SMOKE_BASE_URL or http://127.0.0.1:8888 — run npm run parity:smoke:200 locally before merge (parity/docs/MEASUREMENT.md)."

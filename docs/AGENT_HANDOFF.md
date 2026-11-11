@@ -1,6 +1,6 @@
 # Agent handoff — Dana-Farber Impact (Drupal)
 
-Quick context for engineers and AI agents picking up this repository.
+The current handoff for Enterprise Web Solutions is [HANDOFF.md](../HANDOFF.md). This file is older project context. Config sync is `drupal/config/sync`, not `sites/default/files/sync`. The WordPress migration pipeline and the parity harness are archived on tag `archive/pre-acsf-handoff-47352229`.
 
 ## Canonical docs
 

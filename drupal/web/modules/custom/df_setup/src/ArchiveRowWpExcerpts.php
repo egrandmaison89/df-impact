@@ -26,7 +26,7 @@ final class ArchiveRowWpExcerpts {
       return self::$map;
     }
     self::$map = [];
-    $file = DRUPAL_ROOT . '/modules/custom/df_migrate/data/archive_row_wp_excerpts.json';
+    $file = DRUPAL_ROOT . '/modules/custom/df_setup/data/archive_row_wp_excerpts.json';
     if (!is_readable($file)) {
       return self::$map;
     }

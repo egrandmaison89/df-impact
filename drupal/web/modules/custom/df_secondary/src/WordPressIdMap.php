@@ -53,16 +53,12 @@ final class WordPressIdMap {
       return $this->map;
     }
     $this->map = [];
-    $root = $this->moduleList->getPath('df_migrate');
+    $root = $this->moduleList->getPath('df_setup');
     $files = [
       $root . '/data/articles.json',
       $root . '/data/in_brief.json',
       $root . '/data/issues.json',
     ];
-    $pages_file = dirname($root, 2) . '/migration-data/pages_raw.json';
-    if (is_readable($pages_file)) {
-      $files[] = $pages_file;
-    }
     foreach ($files as $path) {
       if (!is_readable($path)) {
         continue;

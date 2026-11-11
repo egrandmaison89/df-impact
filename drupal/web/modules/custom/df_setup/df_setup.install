@@ -1316,7 +1316,7 @@ function _df_setup_apply_late_fall_2022_link_parity(): string {
     ->condition('type', 'article')
     ->condition('field_issue.target_id', $issue_id)
     ->execute();
-  $export_path = DRUPAL_ROOT . '/modules/custom/df_migrate/data/articles.json';
+  $export_path = DRUPAL_ROOT . '/modules/custom/df_setup/data/articles.json';
   $export_by_slug = [];
   if (is_readable($export_path)) {
     $rows = json_decode((string) file_get_contents($export_path), TRUE);

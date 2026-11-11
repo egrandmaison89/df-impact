@@ -47,7 +47,7 @@ final class WordPressHeadOverrides {
     }
     $this->map = [];
     foreach (['articles.json', 'in_brief.json'] as $file) {
-      $path = DRUPAL_ROOT . '/modules/custom/df_migrate/data/' . $file;
+      $path = DRUPAL_ROOT . '/modules/custom/df_setup/data/' . $file;
       if (!is_readable($path)) {
         continue;
       }

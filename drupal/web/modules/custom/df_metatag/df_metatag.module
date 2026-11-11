@@ -372,7 +372,7 @@ function df_metatag_media_source_url_index(): array {
     return $index;
   }
   $index = [];
-  $path = DRUPAL_ROOT . '/modules/custom/df_migrate/data/media.json';
+  $path = DRUPAL_ROOT . '/modules/custom/df_setup/data/media.json';
   if (!is_readable($path)) {
     return $index;
   }

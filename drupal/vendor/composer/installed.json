@@ -25,7 +25,6 @@
                 "squizlabs/php_codesniffer": "^3.5"
             },
             "time": "2026-01-28T13:08:04+00:00",
-            "published-time": "2026-01-28T13:08:38+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -946,7 +945,6 @@
                 "squizlabs/php_codesniffer": "^3"
             },
             "time": "2026-06-07T03:26:06+00:00",
-            "published-time": "2026-06-07T03:26:26+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1090,7 +1088,6 @@
                 "psr/log": "Allows logging deprecations via PSR-3 logger implementation"
             },
             "time": "2026-02-07T07:09:04+00:00",
-            "published-time": "2026-02-07T07:10:09+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1207,7 +1204,6 @@
                 "phpunit/phpunit": "^10.5.58 || ^12.5.4"
             },
             "time": "2026-10-01T06:59:29+00:00",
-            "published-time": "2026-10-01T07:01:28+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1432,87 +1428,6 @@
             "install-path": "../../web/modules/contrib/coffee"
         },
         {
-            "name": "drupal/config_split",
-            "version": "2.0.2",
-            "version_normalized": "2.0.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/config_split.git",
-                "reference": "2.0.2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/config_split-2.0.2.zip",
-                "reference": "2.0.2",
-                "shasum": "efde01f790ca6f6023982e918fe51740da931d3e"
-            },
-            "require": {
-                "drupal/core": "^8.8 || ^9 || ^10 || ^11"
-            },
-            "conflict": {
-                "drush/drush": "<10"
-            },
-            "require-dev": {
-                "drupal/config_filter": "^1||^2"
-            },
-            "suggest": {
-                "drupal/chosen": "Chosen uses the Chosen jQuery plugin to make the <select> elements more user-friendly.",
-                "drupal/select2_all": "Applies the Select2 library to all select fields on the site similar to the Chosen module."
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.0.2",
-                    "datestamp": "1739381800",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                },
-                "drush": {
-                    "services": {
-                        "drush.services.yml": "^10 || ^11"
-                    }
-                }
-            },
-            "installation-source": "dist",
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Fabian Bircher",
-                    "homepage": "https://www.drupal.org/u/bircher",
-                    "email": "opensource@fabianbircher.com",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Nuvole Web",
-                    "homepage": "http://nuvole.org",
-                    "email": "info@nuvole.org",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "pescetti",
-                    "homepage": "https://www.drupal.org/user/436244"
-                }
-            ],
-            "description": "Configuration filter for importing and exporting extra config",
-            "homepage": "https://www.drupal.org/project/config_split",
-            "keywords": [
-                "Drupal",
-                "configuration",
-                "configuration management"
-            ],
-            "support": {
-                "source": "https://git.drupalcode.org/project/config_split",
-                "issues": "https://www.drupal.org/project/issues/config_split",
-                "slack": "https://drupal.slack.com/archives/C45342CDD"
-            },
-            "install-path": "../../web/modules/contrib/config_split"
-        },
-        {
             "name": "drupal/core",
             "version": "11.4.11",
             "version_normalized": "11.4.11.0",
@@ -1622,7 +1537,6 @@
                 "ext-zip": "Needed to extend the plugin.manager.archiver service capability with the handling of files in the ZIP format."
             },
             "time": "2026-10-21T10:18:50+00:00",
-            "published-time": "2026-10-21T10:46:01+00:00",
             "bin": [
                 "scripts/dr"
             ],
@@ -1736,7 +1650,6 @@
                 "composer/composer": "^1.8@stable"
             },
             "time": "2026-07-09T23:23:24+00:00",
-            "published-time": "2026-10-21T10:47:09+00:00",
             "type": "composer-plugin",
             "extra": {
                 "class": "Drupal\\Composer\\Plugin\\Scaffold\\Plugin",
@@ -1784,7 +1697,6 @@
                 "php": ">=7.3.0"
             },
             "time": "2026-01-07T19:00:53+00:00",
-            "published-time": "2026-10-21T10:46:36+00:00",
             "type": "composer-plugin",
             "extra": {
                 "class": "Drupal\\Composer\\Plugin\\ProjectMessage\\MessagePlugin",
@@ -1835,7 +1747,6 @@
                 "composer/composer": "^2.7"
             },
             "time": "2026-01-07T19:00:53+00:00",
-            "published-time": "2026-10-21T10:47:10+00:00",
             "type": "composer-plugin",
             "extra": {
                 "class": "Drupal\\Composer\\Plugin\\RecipeUnpack\\Plugin",
@@ -1929,7 +1840,6 @@
                 "webflo/drupal-core-strict": "*"
             },
             "time": "2026-10-21T10:18:50+00:00",
-            "published-time": "2026-10-21T10:46:49+00:00",
             "type": "metapackage",
             "extra": {
                 "branch-alias": {
@@ -2024,7 +1934,6 @@
             "require": {
                 "drupal/core": "^9.5 || ^10 || ^11"
             },
-            "published-time": "2026-07-24T20:53:16+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -2124,7 +2033,6 @@
             "conflict": {
                 "drupal/csp": "<1.24"
             },
-            "published-time": "2026-10-07T19:27:11+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -2237,96 +2145,6 @@
             "install-path": "../../web/modules/contrib/entity_reference_revisions"
         },
         {
-            "name": "drupal/facets",
-            "version": "3.0.7",
-            "version_normalized": "3.0.7.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/facets.git",
-                "reference": "3.0.7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/facets-3.0.7.zip",
-                "reference": "3.0.7",
-                "shasum": "a301cd8bc12afdcf130be5704da33bb505146d58"
-            },
-            "require": {
-                "drupal/core": "^10.1 || ^11"
-            },
-            "conflict": {
-                "drupal/core": "<10.1.0",
-                "drupal/search_api": "<1.14"
-            },
-            "require-dev": {
-                "drupal/better_exposed_filters": "~7.0",
-                "drupal/default_content": "~2.0@alpha",
-                "drupal/facets_exposed_filters": "*",
-                "drupal/jquery_ui_slider": "~2.1",
-                "drupal/jquery_ui_touch_punch": "~1.1",
-                "drupal/search_api": "1.x-dev",
-                "drupal/search_api_db": "*",
-                "drupal/views_ajax_history": "~1.8",
-                "drupal/views_filters_summary": "~3.2"
-            },
-            "suggest": {
-                "drupal/better_exposed_filters": "Required for AJAX support for facets rendered as views exposed filters",
-                "drupal/jquery_ui_slider": "Required for the 'Facets Range Widget' module to work",
-                "drupal/jquery_ui_touch_punch": "Required for the 'Facets Range Widget' module to work"
-            },
-            "published-time": "2026-09-05T23:10:02+00:00",
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "3.0.7",
-                    "datestamp": "1788649823",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "installation-source": "dist",
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "See all contributors",
-                    "homepage": "https://www.drupal.org/node/2348769/committers"
-                },
-                {
-                    "name": "drunken monkey",
-                    "homepage": "https://www.drupal.org/user/205582"
-                },
-                {
-                    "name": "joelpittet",
-                    "homepage": "https://www.drupal.org/user/160302"
-                },
-                {
-                    "name": "mkalkbrenner",
-                    "homepage": "https://www.drupal.org/user/124705"
-                },
-                {
-                    "name": "nick_vh",
-                    "homepage": "https://www.drupal.org/user/122682"
-                },
-                {
-                    "name": "strykaizer",
-                    "homepage": "https://www.drupal.org/user/462700"
-                }
-            ],
-            "description": "The Facet module allows site builders to easily create and manage faceted search interfaces.",
-            "homepage": "https://www.drupal.org/project/facets",
-            "support": {
-                "source": "https://git.drupalcode.org/project/facets.git",
-                "issues": "https://www.drupal.org/project/issues/facets",
-                "irc": "irc://irc.freenode.org/drupal-search-api"
-            },
-            "install-path": "../../web/modules/contrib/facets"
-        },
-        {
             "name": "drupal/field_group",
             "version": "4.0.0",
             "version_normalized": "4.0.0.0",
@@ -2427,7 +2245,6 @@
             "require-dev": {
                 "drupal/crop": "*"
             },
-            "published-time": "2026-09-23T14:53:26+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -2483,7 +2300,6 @@
                 "drupal/core": "^11.2",
                 "drupal/gin_toolbar": "^3.0"
             },
-            "published-time": "2026-10-14T15:17:27+00:00",
             "type": "drupal-theme",
             "extra": {
                 "drupal": {
@@ -2767,7 +2583,6 @@
             "require": {
                 "drupal/core": "^9 || ^10 || ^11"
             },
-            "published-time": "2026-04-24T15:45:12+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -2823,7 +2638,6 @@
             "require": {
                 "drupal/core": "^10.2 || ^11 || ^12"
             },
-            "published-time": "2026-09-17T20:08:03+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -2907,7 +2721,6 @@
                 "ergebnis/composer-normalize": "*",
                 "mpyw/phpunit-patch-serializable-comparison": "*"
             },
-            "published-time": "2026-10-29T01:57:08+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -2953,204 +2766,6 @@
             "install-path": "../../web/modules/contrib/metatag"
         },
         {
-            "name": "drupal/migrate_plus",
-            "version": "6.0.10",
-            "version_normalized": "6.0.10.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/migrate_plus.git",
-                "reference": "6.0.10"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/migrate_plus-6.0.10.zip",
-                "reference": "6.0.10",
-                "shasum": "f891dd9485c8937e90d169c5bf70303a36ca73ac"
-            },
-            "require": {
-                "drupal/core": "^10.5 || ^11",
-                "php": ">=8.2"
-            },
-            "require-dev": {
-                "drupal/migrate_example_advanced_setup": "*",
-                "drupal/migrate_example_setup": "*",
-                "sainsburys/guzzle-oauth2-plugin": "^3"
-            },
-            "suggest": {
-                "ext-soap": "*",
-                "sainsburys/guzzle-oauth2-plugin": "3.0 required for the OAuth2 authentication plugin"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "6.0.10",
-                    "datestamp": "1769180622",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "installation-source": "dist",
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Mike Ryan",
-                    "homepage": "https://www.drupal.org/u/mikeryan",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Lucas Hedding",
-                    "homepage": "https://www.drupal.org/u/heddn",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "mikeryan",
-                    "homepage": "https://www.drupal.org/user/4420"
-                }
-            ],
-            "description": "Enhancements to core migration support.",
-            "homepage": "https://www.drupal.org/project/migrate_plus",
-            "support": {
-                "source": "https://git.drupalcode.org/project/migrate_plus",
-                "issues": "https://www.drupal.org/project/issues/migrate_plus",
-                "slack": "#migrate"
-            },
-            "install-path": "../../web/modules/contrib/migrate_plus"
-        },
-        {
-            "name": "drupal/migrate_source_csv",
-            "version": "3.8.0",
-            "version_normalized": "3.8.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/migrate_source_csv.git",
-                "reference": "8.x-3.8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/migrate_source_csv-8.x-3.8.zip",
-                "reference": "8.x-3.8",
-                "shasum": "2e9ba702d7d2186994abd52393b391f976091ccb"
-            },
-            "require": {
-                "drupal/core": ">=9.1",
-                "league/csv": "^9.1",
-                "php": ">=7.1"
-            },
-            "require-dev": {
-                "drupal/migrate_plus": ">=5.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "8.x-3.8",
-                    "datestamp": "1771859237",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "installation-source": "dist",
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Lucas Hedding",
-                    "homepage": "https://www.drupal.org/u/heddn",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "CSV source migration.",
-            "homepage": "https://www.drupal.org/project/migrate_source_csv",
-            "support": {
-                "source": "https://cgit.drupalcode.org/migrate_source_csv",
-                "issues": "https://www.drupal.org/project/issues/migrate_source_csv"
-            },
-            "install-path": "../../web/modules/contrib/migrate_source_csv"
-        },
-        {
-            "name": "drupal/migrate_tools",
-            "version": "6.1.4",
-            "version_normalized": "6.1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/migrate_tools.git",
-                "reference": "6.1.4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/migrate_tools-6.1.4.zip",
-                "reference": "6.1.4",
-                "shasum": "e530f045756bbae635b3e8f30b80a1760b95d486"
-            },
-            "require": {
-                "drupal/core": "^9.1 || ^10 || ^11",
-                "php": ">=8.0"
-            },
-            "require-dev": {
-                "drupal/migrate_plus": "^5 || ^6",
-                "drupal/migrate_source_csv": "^3",
-                "drush/drush": "^11 || ^12 || ^13"
-            },
-            "suggest": {
-                "drupal/migrate_plus": "^5 || ^6",
-                "drush/drush": "^11 || ^12 || ^13"
-            },
-            "published-time": "2026-05-13T16:24:36+00:00",
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "6.1.4",
-                    "datestamp": "1778689495",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                },
-                "drush": {
-                    "services": {
-                        "drush.services.yml": "^11 || ^12 || ^13"
-                    }
-                }
-            },
-            "installation-source": "dist",
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Mike Ryan",
-                    "homepage": "https://www.drupal.org/u/mikeryan",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Lucas Hedding",
-                    "homepage": "https://www.drupal.org/u/heddn",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "mikeryan",
-                    "homepage": "https://www.drupal.org/user/4420"
-                }
-            ],
-            "description": "Tools to assist in developing and running migrations.",
-            "homepage": "http://drupal.org/project/migrate_tools",
-            "support": {
-                "source": "https://git.drupalcode.org/project/migrate_tools",
-                "issues": "https://www.drupal.org/project/issues/migrate_tools",
-                "slack": "#migrate"
-            },
-            "install-path": "../../web/modules/contrib/migrate_tools"
-        },
-        {
             "name": "drupal/paragraphs",
             "version": "1.23.0",
             "version_normalized": "1.23.0.0",
@@ -3185,7 +2800,6 @@
             "suggest": {
                 "drupal/entity_browser": "Recommended for an improved user experience when using the Paragraphs library module"
             },
-            "published-time": "2026-08-05T05:31:41+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -3264,7 +2878,6 @@
             "suggest": {
                 "drupal/redirect": "When installed Pathauto will provide a new \"Update Action\" in case your URLs change. This is the recommended update action and is considered the best practice for SEO and usability."
             },
-            "published-time": "2026-05-04T21:43:38+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -3334,7 +2947,6 @@
             "require": {
                 "drupal/core": "^10 || ^11"
             },
-            "published-time": "2026-04-24T05:02:35+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -3404,7 +3016,6 @@
                 "drupal/workbench_moderation_actions": "*",
                 "drush/drush": ">=9"
             },
-            "published-time": "2026-06-05T10:10:14+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -3488,7 +3099,6 @@
                 "drupal/search_api_autocomplete": "Allows adding autocomplete suggestions to search fields.",
                 "drupal/search_api_solr": "Adds support for using Apache Solr as a backend."
             },
-            "published-time": "2026-10-28T09:14:58+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -3539,7 +3149,6 @@
                 "drupal/core": "^10.2 || ^11",
                 "drupal/search_api": "*"
             },
-            "published-time": "2026-10-28T09:14:58+00:00",
             "type": "metapackage",
             "extra": {
                 "drupal": {
@@ -3781,7 +3390,6 @@
                 "drupal/coder": "^8.3",
                 "drush/drush": ">=12"
             },
-            "published-time": "2026-10-28T14:04:16+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -3872,7 +3480,6 @@
             "require": {
                 "drupal/core": "^10.3 || ^11 || ^12"
             },
-            "published-time": "2026-10-30T10:26:03+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -3951,7 +3558,6 @@
             "suggest": {
                 "symfony/var-dumper": "Better dump() function for debugging Twig variables"
             },
-            "published-time": "2026-04-21T14:30:12+00:00",
             "type": "drupal-module",
             "extra": {
                 "drupal": {
@@ -4127,7 +3733,6 @@
                 "squizlabs/php_codesniffer": "^3.7"
             },
             "time": "2026-09-08T18:24:55+00:00",
-            "published-time": "2026-09-08T18:48:45+00:00",
             "bin": [
                 "drush",
                 "drush.php"
@@ -4449,7 +4054,6 @@
                 "psr/log": "Required for using the Log middleware"
             },
             "time": "2026-10-25T21:35:21+00:00",
-            "published-time": "2026-10-25T21:37:23+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -4563,7 +4167,6 @@
                 "phpunit/phpunit": "^8.5.52 || ^9.6.34"
             },
             "time": "2026-10-18T12:46:59+00:00",
-            "published-time": "2026-10-18T12:47:39+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -4664,7 +4267,6 @@
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
             "time": "2026-10-17T23:49:46+00:00",
-            "published-time": "2026-10-17T23:51:00+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -4779,7 +4381,6 @@
                 "phpunit/phpunit": "^8.5"
             },
             "time": "2026-05-05T05:39:01+00:00",
-            "published-time": "2026-05-05T05:39:05+00:00",
             "bin": [
                 "bin/validate-json"
             ],
@@ -4865,7 +4466,6 @@
                 "ext-pcntl": "Required for the spinner to be animated."
             },
             "time": "2026-10-09T14:45:13+00:00",
-            "published-time": "2026-10-13T15:18:36+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -4977,100 +4577,6 @@
             "install-path": "../league/container"
         },
         {
-            "name": "league/csv",
-            "version": "9.28.0",
-            "version_normalized": "9.28.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thephpleague/csv.git",
-                "reference": "6582ace29ae09ba5b07049d40ea13eb19c8b5073"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/csv/zipball/6582ace29ae09ba5b07049d40ea13eb19c8b5073",
-                "reference": "6582ace29ae09ba5b07049d40ea13eb19c8b5073",
-                "shasum": ""
-            },
-            "require": {
-                "ext-filter": "*",
-                "php": "^8.1.2"
-            },
-            "require-dev": {
-                "ext-dom": "*",
-                "ext-xdebug": "*",
-                "friendsofphp/php-cs-fixer": "^3.92.3",
-                "phpbench/phpbench": "^1.4.3",
-                "phpstan/phpstan": "^1.12.32",
-                "phpstan/phpstan-deprecation-rules": "^1.2.1",
-                "phpstan/phpstan-phpunit": "^1.4.2",
-                "phpstan/phpstan-strict-rules": "^1.6.2",
-                "phpunit/phpunit": "^10.5.16 || ^11.5.22 || ^12.5.4",
-                "symfony/var-dumper": "^6.4.8 || ^7.4.0 || ^8.0"
-            },
-            "suggest": {
-                "ext-dom": "Required to use the XMLConverter and the HTMLConverter classes",
-                "ext-iconv": "Needed to ease transcoding CSV using iconv stream filters",
-                "ext-mbstring": "Needed to ease transcoding CSV using mb stream filters",
-                "ext-mysqli": "Requiered to use the package with the MySQLi extension",
-                "ext-pdo": "Required to use the package with the PDO extension",
-                "ext-pgsql": "Requiered to use the package with the PgSQL extension",
-                "ext-sqlite3": "Required to use the package with the SQLite3 extension"
-            },
-            "time": "2025-12-27T15:18:42+00:00",
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "9.x-dev"
-                }
-            },
-            "installation-source": "dist",
-            "autoload": {
-                "files": [
-                    "src/functions_include.php"
-                ],
-                "psr-4": {
-                    "League\\Csv\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ignace Nyamagana Butera",
-                    "email": "nyamsprod@gmail.com",
-                    "homepage": "https://github.com/nyamsprod/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "CSV data manipulation made easy in PHP",
-            "homepage": "https://csv.thephpleague.com",
-            "keywords": [
-                "convert",
-                "csv",
-                "export",
-                "filter",
-                "import",
-                "read",
-                "transform",
-                "write"
-            ],
-            "support": {
-                "docs": "https://csv.thephpleague.com",
-                "issues": "https://github.com/thephpleague/csv/issues",
-                "rss": "https://github.com/thephpleague/csv/releases.atom",
-                "source": "https://github.com/thephpleague/csv"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/sponsors/nyamsprod",
-                    "type": "github"
-                }
-            ],
-            "install-path": "../league/csv"
-        },
-        {
             "name": "marc-mabe/php-enum",
             "version": "v4.7.2",
             "version_normalized": "4.7.2.0",
@@ -5096,7 +4602,6 @@
                 "vimeo/psalm": "^4.17.0 | ^5.26.1"
             },
             "time": "2025-09-14T11:18:39+00:00",
-            "published-time": "2025-09-14T11:32:17+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5170,7 +4675,6 @@
                 "phpunit/phpunit": "^4.8.35 || ^5.7.21 || ^6 || ^7 || ^8 || ^9 || ^10"
             },
             "time": "2026-06-23T18:43:15+00:00",
-            "published-time": "2026-06-23T18:44:11+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5241,7 +4745,6 @@
                 "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0"
             },
             "time": "2026-07-21T11:56:06+00:00",
-            "published-time": "2026-07-21T11:56:54+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5477,7 +4980,6 @@
                 "ext-zlib": "Gzip compression support."
             },
             "time": "2026-08-19T17:37:49+00:00",
-            "published-time": "2026-08-19T17:39:29+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5971,7 +5473,6 @@
                 "symfony/translation": "For internationalization tools"
             },
             "time": "2026-07-07T14:30:49+00:00",
-            "published-time": "2026-07-07T14:31:53+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -7256,7 +6757,6 @@
                 "ext-posix": "If you have PCNTL, you'll want the POSIX extension as well."
             },
             "time": "2026-06-29T15:41:09+00:00",
-            "published-time": "2026-06-29T15:41:53+00:00",
             "bin": [
                 "bin/psysh"
             ],
@@ -7375,7 +6875,6 @@
                 "psalm/phar": "6.16.*"
             },
             "time": "2026-05-16T17:55:38+00:00",
-            "published-time": "2026-05-16T18:04:08+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -7784,7 +7283,6 @@
                 "symfony/process": "^4.2 || ^5"
             },
             "time": "2024-07-03T04:53:05+00:00",
-            "published-time": "2024-07-03T04:53:18+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -8636,7 +8134,6 @@
                 "symfony/var-dumper": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-28T11:08:27+00:00",
-            "published-time": "2026-10-28T18:21:33+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -8802,7 +8299,6 @@
                 "symfony/yaml": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-25T14:40:16+00:00",
-            "published-time": "2026-10-28T18:20:45+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -8871,7 +8367,6 @@
                 "php": ">=8.1"
             },
             "time": "2026-06-05T06:23:12+00:00",
-            "published-time": "2026-06-27T21:46:34+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -9035,7 +8530,6 @@
                 "symfony/webpack-encore-bundle": "^1.0|^2.0"
             },
             "time": "2026-10-25T14:40:16+00:00",
-            "published-time": "2026-10-28T18:20:15+00:00",
             "bin": [
                 "Resources/bin/patch-type-declarations"
             ],
@@ -9127,7 +8621,6 @@
                 "symfony/stopwatch": "^6.4|^7.0|^8.0"
             },
             "time": "2026-08-21T17:40:08+00:00",
-            "published-time": "2026-08-22T13:44:01+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -9197,7 +8690,6 @@
                 "psr/event-dispatcher": "^1"
             },
             "time": "2026-06-05T06:23:12+00:00",
-            "published-time": "2026-06-27T21:46:35+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -9285,7 +8777,6 @@
                 "symfony/process": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-06T20:05:19+00:00",
-            "published-time": "2026-10-14T06:45:33+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -9357,7 +8848,6 @@
                 "symfony/filesystem": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-19T16:56:54+00:00",
-            "published-time": "2026-10-28T18:21:14+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -9443,7 +8933,6 @@
                 "symfony/rate-limiter": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-27T13:26:03+00:00",
-            "published-time": "2026-10-28T18:20:39+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -9566,7 +9055,6 @@
                 "twig/twig": "^3.12|^4.0"
             },
             "time": "2026-10-28T18:18:28+00:00",
-            "published-time": "2026-10-28T18:21:03+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -9654,7 +9142,6 @@
                 "symfony/twig-bridge": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-23T16:51:52+00:00",
-            "published-time": "2026-10-28T18:19:49+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -9743,7 +9230,6 @@
                 "symfony/serializer": "^6.4.44|^7.4.17|^8.1.5"
             },
             "time": "2026-10-28T17:57:58+00:00",
-            "published-time": "2026-10-28T18:20:24+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -9822,7 +9308,6 @@
                 "ext-ctype": "For best performance"
             },
             "time": "2026-04-10T16:19:22+00:00",
-            "published-time": "2026-04-26T14:44:50+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -9909,7 +9394,6 @@
                 "ext-iconv": "For best performance"
             },
             "time": "2026-09-29T06:25:14+00:00",
-            "published-time": "2026-09-30T10:23:39+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -9994,7 +9478,6 @@
                 "ext-intl": "For best performance"
             },
             "time": "2026-10-15T09:18:53+00:00",
-            "published-time": "2026-10-28T10:07:44+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -10081,7 +9564,6 @@
                 "ext-intl": "For best performance"
             },
             "time": "2026-09-23T14:40:04+00:00",
-            "published-time": "2026-09-30T10:23:39+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -10171,7 +9653,6 @@
                 "ext-intl": "For best performance"
             },
             "time": "2026-09-23T22:02:09+00:00",
-            "published-time": "2026-09-30T10:23:47+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -10264,7 +9745,6 @@
                 "ext-mbstring": "For best performance"
             },
             "time": "2026-10-28T09:35:49+00:00",
-            "published-time": "2026-10-28T10:07:45+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -10346,7 +9826,6 @@
                 "php": ">=7.2"
             },
             "time": "2026-09-25T15:50:05+00:00",
-            "published-time": "2026-09-30T10:23:35+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -10434,7 +9913,6 @@
                 "php": ">=7.2"
             },
             "time": "2026-05-26T12:45:58+00:00",
-            "published-time": "2026-05-26T13:40:34+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -10518,7 +9996,6 @@
                 "php": ">=7.2"
             },
             "time": "2026-09-25T15:50:05+00:00",
-            "published-time": "2026-09-30T10:23:43+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -10602,7 +10079,6 @@
                 "php": ">=7.2"
             },
             "time": "2026-09-23T22:01:09+00:00",
-            "published-time": "2026-09-30T10:23:33+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -10686,7 +10162,6 @@
                 "php": ">=7.2"
             },
             "time": "2026-09-25T15:46:47+00:00",
-            "published-time": "2026-09-30T10:23:32+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -10770,7 +10245,6 @@
                 "php": ">=7.2"
             },
             "time": "2026-09-25T15:46:47+00:00",
-            "published-time": "2026-09-30T10:23:43+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -10854,7 +10328,6 @@
                 "php": ">=8.2"
             },
             "time": "2026-10-25T14:40:16+00:00",
-            "published-time": "2026-10-28T18:21:18+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -10940,7 +10413,6 @@
                 "symfony/runtime": "^6.4.13|^7.1.6|^8.0"
             },
             "time": "2026-10-07T08:20:48+00:00",
-            "published-time": "2026-10-14T06:46:24+00:00",
             "type": "symfony-bridge",
             "installation-source": "dist",
             "autoload": {
@@ -11029,7 +10501,6 @@
                 "symfony/yaml": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-26T21:52:50+00:00",
-            "published-time": "2026-10-28T18:21:27+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -11117,7 +10588,6 @@
                 "symfony/http-kernel": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-23T12:52:46+00:00",
-            "published-time": "2026-10-28T18:21:05+00:00",
             "type": "composer-plugin",
             "extra": {
                 "class": "Symfony\\Component\\Runtime\\Internal\\ComposerPlugin"
@@ -11232,7 +10702,6 @@
                 "symfony/yaml": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-25T14:40:16+00:00",
-            "published-time": "2026-10-28T18:20:33+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -11306,7 +10775,6 @@
                 "ext-psr": "<1.1|>=2"
             },
             "time": "2026-07-27T15:39:01+00:00",
-            "published-time": "2026-08-30T19:56:37+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -11407,7 +10875,6 @@
                 "symfony/var-exporter": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-23T16:51:52+00:00",
-            "published-time": "2026-10-28T18:21:18+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -11487,7 +10954,6 @@
                 "php": ">=8.1"
             },
             "time": "2026-06-05T06:23:12+00:00",
-            "published-time": "2026-06-27T21:46:40+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -11611,7 +11077,6 @@
                 "symfony/yaml": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-27T13:52:57+00:00",
-            "published-time": "2026-10-28T18:20:38+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -11693,7 +11158,6 @@
                 "twig/twig": "^3.12|^4.0"
             },
             "time": "2026-10-25T21:04:04+00:00",
-            "published-time": "2026-10-28T18:20:00+00:00",
             "bin": [
                 "Resources/bin/var-dump-server"
             ],
@@ -11778,7 +11242,6 @@
                 "symfony/var-dumper": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-22T14:50:44+00:00",
-            "published-time": "2026-10-28T18:20:27+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -11865,7 +11328,6 @@
                 "symfony/console": "^6.4|^7.0|^8.0"
             },
             "time": "2026-10-18T14:39:27+00:00",
-            "published-time": "2026-10-28T18:20:33+00:00",
             "bin": [
                 "Resources/bin/yaml-lint"
             ],
@@ -11996,7 +11458,6 @@
                 "symfony/phpunit-bridge": "^6.4|^7.0"
             },
             "time": "2026-09-06T20:35:36+00:00",
-            "published-time": "2026-09-18T09:10:36+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -12071,7 +11532,6 @@
                 "symfony/phpunit-bridge": "^5.4.9|^6.4|^7.0"
             },
             "time": "2026-09-25T13:20:01+00:00",
-            "published-time": "2026-09-25T13:20:14+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {

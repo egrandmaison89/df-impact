@@ -421,7 +421,7 @@ final class ArticleBodyCleaner {
     static $by_slug = NULL;
     if ($by_slug === NULL) {
       $by_slug = [];
-      $module_path = \Drupal::service('extension.list.module')->getPath('df_migrate');
+      $module_path = \Drupal::service('extension.list.module')->getPath('df_setup');
       foreach (['articles.json', 'in_brief.json'] as $file) {
         $json_path = DRUPAL_ROOT . '/' . $module_path . '/data/' . $file;
         if (!is_readable($json_path)) {

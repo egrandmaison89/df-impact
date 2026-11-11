@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# VM bootstrap without DDEV: PHP 8.3 + MariaDB + config import + migrations.
+# VM bootstrap without DDEV: PHP 8.3 + MariaDB + config import.
+# Content comes from a database dump (see HANDOFF.md), not a WordPress migration.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -39,7 +40,7 @@ cat > "$SETTINGS_LOCAL" <<PHP
 ];
 
 \$settings['hash_salt'] = getenv('DRUPAL_HASH_SALT') ?: 'vm-local-dev-only-change-me-58f71e08';
-\$settings['config_sync_directory'] = 'sites/default/files/sync';
+\$settings['config_sync_directory'] = dirname(__DIR__, 3) . '/config/sync';
 \$settings['trusted_host_patterns'] = ['.*'];
 
 \$config['system.performance']['css']['preprocess'] = FALSE;
@@ -50,7 +51,11 @@ if ! grep -q settings.local.php "$DRUPAL/web/sites/default/settings.php" 2>/dev/
   echo "Enable settings.local.php include in settings.php manually if missing."
 fi
 
-bash "$ROOT/scripts/repro/vendor-wp-assets.sh"
+if [[ -d "$ROOT/parity/reference-pack/assets" ]]; then
+  bash "$ROOT/scripts/repro/vendor-wp-assets.sh"
+else
+  echo "==> parity/reference-pack not in this tree; theme wp-assets already vendored."
+fi
 
 DRUSH=(./vendor/bin/drush -r web)
 
@@ -67,32 +72,13 @@ echo "==> Config import"
 # site:install seeds Basic page content that blocks a full config sync.
 "${DRUSH[@]}" sql:query "DELETE FROM node_field_data; DELETE FROM node_field_revision; DELETE FROM node; DELETE FROM node_revision;" 2>/dev/null || true
 # node.type.* must exist before field config that references bundles (issue, article, …).
-SYNC="${DRUPAL}/web/sites/default/files/sync"
+SYNC="${DRUPAL}/config/sync"
 mkdir -p /tmp/cim-node-types
 cp "${SYNC}"/node.type.*.yml /tmp/cim-node-types/
 "${DRUSH[@]}" cim -y --partial --source=/tmp/cim-node-types
 "${DRUSH[@]}" cim -y
 "${DRUSH[@]}" updatedb -y
-"${DRUSH[@]}" pm:enable df_editor -y 2>/dev/null || true
-# Migration plugin config ships in df_migrate/config/install (not sync).
-"${DRUSH[@]}" pm:uninstall df_migrate -y || true
-"${DRUSH[@]}" pm:enable df_migrate -y
-"${DRUSH[@]}" updatedb -y
-
-mkdir -p web/sites/default/files/wp-content/uploads web/wp-content
-ln -sfn ../sites/default/files/wp-content/uploads web/wp-content/uploads
-
-echo "==> Migrations"
-for m in df_taxonomy_topics df_taxonomy_cancer_types df_taxonomy_channels df_media_images df_issues df_articles df_in_brief; do
-  echo "--- $m"
-  "${DRUSH[@]}" migrate:import "$m" -y || true
-done
-
-"${DRUSH[@]}" pm:enable df_secondary -y
-"${DRUSH[@]}" df-migrate:sync-wordpress-paths
-"${DRUSH[@]}" php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); echo _df_setup_run_post_migrate_integrator_convergence();"
-"${DRUSH[@]}" php:eval "\Drupal::moduleHandler()->loadInclude('df_setup', 'install'); _df_setup_ensure_home_landing();"
-"${DRUSH[@]}" search-api:index
 "${DRUSH[@]}" cr
 
+echo "Config imported. A content-bearing site needs a database dump and public files (HANDOFF.md)."
 echo "Done. Start server: cd drupal && ./vendor/bin/drush -r web serve 127.0.0.1:8888"

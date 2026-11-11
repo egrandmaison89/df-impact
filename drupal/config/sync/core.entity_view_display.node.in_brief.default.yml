@@ -55,6 +55,7 @@ content:
     weight: 2
     region: content
 hidden:
+  content_moderation_control: true
   field_excerpt: true
   field_related_articles: true
   links: true

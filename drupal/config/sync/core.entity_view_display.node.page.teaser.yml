@@ -40,5 +40,6 @@ content:
     weight: 101
     region: content
 hidden:
+  content_moderation_control: true
   field_content_sections: true
   search_api_excerpt: true

@@ -397,7 +397,9 @@ body.search-results .wp-block-post-template .wp-block-post-title a {
 .entry-content figure.wp-block-pullquote,
 .entry-content .wp-block-pullquote {
   font-family: "Libre Baskerville", serif;
-  font-size: 30px;
+  /* Live body type is clamp(18px, 1.6vw, 20px) and the quote is 1.5em of that:
+     30px at 1280px, 27px at 390px. A fixed 30px stayed 30px on a phone. */
+  font-size: calc(1.5 * clamp(18px, 1.6vw, 20px));
   font-weight: 600;
   line-height: 48px;
   color: rgb(0, 51, 84);
@@ -423,7 +425,8 @@ body.search-results .wp-block-post-template .wp-block-post-title a {
 .entry-content figure.wp-block-pullquote cite,
 .entry-content .wp-block-pullquote cite {
   font-family: Montserrat, sans-serif;
-  font-size: 24.375px;
+  /* 0.8125em of the quote: 24.375px at 1280px, 21.9375px at 390px. */
+  font-size: 0.8125em;
   font-weight: 500;
   font-style: normal;
   line-height: 39px;

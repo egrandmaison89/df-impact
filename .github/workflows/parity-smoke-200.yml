@@ -1,8 +1,6 @@
-# Fast Drupal HTTP guard for PRs targeting the phase4 integration branch.
-# The parity harness is not part of the ACSF deliverable tree. When parity/
-# is absent, this job records that and exits. Restore the harness from tag
-# archive/pre-acsf-handoff-47352229 to run it:
-#   git checkout archive/pre-acsf-handoff-47352229 -- parity
+# HTTP guard for PRs targeting the phase4 integration branch.
+# Requires a reachable Drupal site. Missing parity tooling or an unreachable
+# site fails the job (it does not pass silently).
 name: Parity smoke 200
 
 on:
@@ -13,52 +11,58 @@ on:
 jobs:
   smoke-200:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: dfimpact
+          MYSQL_USER: dfimpact
+          MYSQL_PASSWORD: dfimpact
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      DF_DB_HOST: 127.0.0.1
+      DF_DB_NAME: dfimpact
+      DF_DB_USER: dfimpact
+      DF_DB_PASS: dfimpact
+      DRUPAL_BASE_URL: http://127.0.0.1:8888
     steps:
       - uses: actions/checkout@v4
 
-      - name: Parity tooling present?
-        id: parity
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: dom, curl, libxml, mbstring, zip, pdo, pdo_mysql, gd
+          coverage: none
+
+      - name: Require parity tooling
         run: |
-          if [ -f parity/package-lock.json ]; then
-            echo "present=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "present=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::parity/ is not in this tree. The harness is archived at tag archive/pre-acsf-handoff-47352229."
+          if [ ! -f parity/package-lock.json ]; then
+            echo "::error::parity/ is not in this tree. Restore it from tag archive/pre-acsf-handoff-47352229."
+            exit 1
           fi
 
       - uses: actions/setup-node@v4
-        if: steps.parity.outputs.present == 'true'
         with:
           node-version: '22'
           cache: npm
           cache-dependency-path: parity/package-lock.json
 
       - name: Install parity dependencies
-        if: steps.parity.outputs.present == 'true'
         working-directory: parity
         run: npm ci
 
-      - name: Probe Drupal
-        id: drupal
-        if: steps.parity.outputs.present == 'true'
-        env:
-          DRUPAL_BASE_URL: ${{ vars.DRUPAL_SMOKE_BASE_URL || 'http://127.0.0.1:8888' }}
-        run: |
-          if curl -sf --max-time 5 "${DRUPAL_BASE_URL}/" >/dev/null; then
-            echo "reachable=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "reachable=false" >> "$GITHUB_OUTPUT"
-          fi
+      - name: Install Drupal and rebuild caches
+        run: bash scripts/ci/search-api-index-gate.sh
 
       - name: Run smoke-200 guard
-        if: steps.parity.outputs.present == 'true' && steps.drupal.outputs.reachable == 'true'
         working-directory: parity
         env:
-          DRUPAL_BASE_URL: ${{ vars.DRUPAL_SMOKE_BASE_URL || 'http://127.0.0.1:8888' }}
           SMOKE_DRUPAL_REQUIRED: '1'
         run: npm run parity:smoke:200
-
-      - name: Drupal not reachable (skipped)
-        if: steps.parity.outputs.present == 'true' && steps.drupal.outputs.reachable != 'true'
-        run: |
-          echo "::warning::Drupal not reachable at DRUPAL_SMOKE_BASE_URL or http://127.0.0.1:8888 — run npm run parity:smoke:200 locally before merge (parity/docs/MEASUREMENT.md)."

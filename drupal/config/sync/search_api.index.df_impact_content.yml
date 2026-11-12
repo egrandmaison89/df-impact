@@ -107,6 +107,11 @@ datasource_settings:
         default: true
         selected: {  }
 processor_settings:
+  publication_sort:
+    weights:
+      add_properties: 0
+    plugin_id: publication_sort
+    settings: {  }
   html_filter:
     weights:
       preprocessor: -15

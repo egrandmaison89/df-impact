@@ -10,7 +10,7 @@ field_name: field_photo_caption
 entity_type: node
 bundle: article
 label: 'Photo caption'
-description: 'Optional caption for the featured image (e.g., subject name and title). Only shown when a featured image is present.'
+description: 'Shown under the featured image at the top right of the story. Stories whose body already includes this image keep that existing caption and are not given a second copy.'
 required: false
 translatable: true
 default_value: {  }

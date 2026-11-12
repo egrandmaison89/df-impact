@@ -52,7 +52,6 @@ permissions:
   - 'mark as hidden in editoria11y'
   - 'mark as ok in editoria11y'
   - 'publish issue with articles'
-  - 'schedule publishing of nodes'
   - 'update any media'
   - 'use editorial transition create_new_draft'
   - 'use editorial transition publish'
@@ -67,6 +66,5 @@ permissions:
   - 'view in_brief revisions'
   - 'view issue revisions'
   - 'view latest version'
-  - 'view scheduled content'
   - 'view the administration theme'
 

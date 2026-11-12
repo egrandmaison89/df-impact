@@ -1,0 +1,6 @@
+services:
+  df_setup.commands:
+    class: Drupal\df_setup\Drush\Commands\DfSetupCommands
+    arguments: ['@df_setup.wp_inline_image_localizer']
+    tags:
+      - { name: drush.command }

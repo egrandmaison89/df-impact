@@ -1,0 +1,21 @@
+uuid: 2a9b6c10-88e4-4f71-b0d2-55c1e7a09433
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_explore_order
+    - node.type.article
+  module:
+    - options
+id: node.article.field_explore_order
+field_name: field_explore_order
+entity_type: node
+bundle: article
+label: 'Explore slot'
+description: 'Order in the three Explore the Latest Issue slots when Homepage placement is Explore the Latest Issue. 1 is the large card.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

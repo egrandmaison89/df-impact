@@ -12,7 +12,7 @@ field_name: field_homepage_placement
 entity_type: node
 bundle: article
 label: 'Homepage Placement'
-description: 'Featured and Recent Highlights placement on the homepage. For the Digital Exclusives homepage row and the /category/digital-exclusives archive, use Channels (Digital Exclusives taxonomy) on each article.'
+description: 'Explore the Latest Issue is the three homepage slots (set Explore slot to 1, 2, or 3). Recent Highlights is the highlights row. Digital Exclusives use the Digital Exclusives checkbox, not this field. In Brief cannot be featured.'
 required: false
 translatable: true
 default_value:

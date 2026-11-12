@@ -1,0 +1,31 @@
+uuid: d09c55e8-1a47-4e62-8b33-90f6c1d27aa4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_gallery_items
+    - paragraphs.paragraphs_type.gallery_item
+    - paragraphs.paragraphs_type.image_gallery
+  module:
+    - entity_reference_revisions
+id: paragraph.image_gallery.field_gallery_items
+field_name: field_gallery_items
+entity_type: paragraph
+bundle: image_gallery
+label: Images
+description: 'Add one row per image. Each row has the image and its caption. Rows are not overwritten when you add the next image.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      gallery_item: gallery_item
+    negate: 0
+    target_bundles_drag_drop:
+      gallery_item:
+        weight: 0
+        enabled: true
+field_type: entity_reference_revisions

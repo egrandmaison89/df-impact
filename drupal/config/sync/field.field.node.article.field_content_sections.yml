@@ -7,6 +7,7 @@ dependencies:
     - node.type.article
     - paragraphs.paragraphs_type.cta
     - paragraphs.paragraphs_type.image_caption
+    - paragraphs.paragraphs_type.image_gallery
     - paragraphs.paragraphs_type.pull_quote
     - paragraphs.paragraphs_type.stat_highlight
     - paragraphs.paragraphs_type.text_block
@@ -18,7 +19,7 @@ field_name: field_content_sections
 entity_type: node
 bundle: article
 label: 'Content Sections'
-description: 'Add structured components like pull quotes, images, CTAs, and stats.'
+description: 'Add structured components like pull quotes, images, an image gallery (several images with captions), CTAs, and stats.'
 required: false
 translatable: true
 default_value: {  }
@@ -29,6 +30,7 @@ settings:
     target_bundles:
       pull_quote: pull_quote
       image_caption: image_caption
+      image_gallery: image_gallery
       text_block: text_block
       cta: cta
       stat_highlight: stat_highlight
@@ -39,6 +41,9 @@ settings:
         enabled: true
       image_caption:
         weight: 1
+        enabled: true
+      image_gallery:
+        weight: 6
         enabled: true
       pull_quote:
         weight: 0

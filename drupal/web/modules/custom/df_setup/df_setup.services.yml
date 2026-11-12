@@ -1,4 +1,8 @@
 services:
+  df_setup.wp_inline_image_localizer:
+    class: Drupal\df_setup\WpInlineImageLocalizer
+    arguments: ['@entity_type.manager', '@file_system', '@file.repository', '@http_client']
+
   df_setup.article_body_cleaner:
     class: Drupal\df_setup\ArticleBodyCleaner
     arguments:
@@ -50,6 +54,16 @@ services:
     class: Drupal\df_setup\EventSubscriber\TopicCategoryArchivePaginateSubscriber
     tags:
       - { name: event_subscriber }
+
+  df_setup.unpublished_issue_redirect:
+    class: Drupal\df_setup\EventSubscriber\UnpublishedIssueRedirectSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  df_setup.path_processor.unpublished_issue:
+    class: Drupal\df_setup\PathProcessor\UnpublishedIssueOutboundPathProcessor
+    tags:
+      - { name: path_processor_outbound, priority: 100 }
 
   df_setup.path_processor.topic_archive:
     class: Drupal\df_setup\PathProcessor\TopicTermArchivePathProcessor

@@ -16,7 +16,7 @@ settings:
       label: None
     -
       value: featured
-      label: 'Featured (Hero Section)'
+      label: 'Explore the Latest Issue'
     -
       value: recent_highlights
       label: 'Recent Highlights'

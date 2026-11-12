@@ -6,6 +6,7 @@ dependencies:
     - df_editor
     - editor
     - filter
+    - media
 name: 'Editor HTML'
 format: editor_html
 weight: -5
@@ -46,7 +47,7 @@ filters:
     status: true
     weight: -10
     settings:
-      allowed_html: '<a href hreflang class target rel> <p class> <h2 id class> <h3 id class> <h4 id class> <h5 id class> <h6 id class> <cite> <dl> <dt> <dd> <blockquote cite class> <ul type class> <ol start type class> <li> <strong> <em> <code> <br> <figure class> <figcaption class> <div class style aria-hidden> <img src alt width height class loading data-entity-type data-entity-uuid data-caption data-align> <iframe src width height frameborder allow allowfullscreen title loading>'
+      allowed_html: '<a href hreflang class target rel> <p class> <h2 id class> <h3 id class> <h4 id class> <h5 id class> <h6 id class> <cite> <dl> <dt> <dd> <blockquote cite class> <ul type class> <ol start type class> <li> <strong> <em> <code> <br> <figure class> <figcaption class> <div class style aria-hidden> <img src alt width height class loading data-entity-type data-entity-uuid data-caption data-align> <drupal-media data-entity-type data-entity-uuid data-view-mode data-align data-caption alt> <iframe src width height frameborder allow allowfullscreen title loading>'
       filter_html_help: true
       filter_html_nofollow: false
   filter_htmlcorrector:
@@ -61,3 +62,15 @@ filters:
     status: true
     weight: 15
     settings: {  }
+  media_embed:
+    id: media_embed
+    provider: media
+    status: true
+    weight: 100
+    settings:
+      default_view_mode: default
+      allowed_view_modes:
+        default: default
+      allowed_media_types:
+        image: image
+

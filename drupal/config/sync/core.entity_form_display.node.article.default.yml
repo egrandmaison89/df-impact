@@ -12,8 +12,10 @@ dependencies:
     - field.field.node.article.field_content_type
     - field.field.node.article.field_excerpt
     - field.field.node.article.field_featured_image
+    - field.field.node.article.field_explore_order
     - field.field.node.article.field_homepage_placement
     - field.field.node.article.field_homepage_sort_weight
+    - field.field.node.article.field_issue_story_rank
     - field.field.node.article.field_image
     - field.field.node.article.field_postx_sort_weight
     - field.field.node.article.field_issue
@@ -62,8 +64,9 @@ third_party_settings:
         - field_channels
         - field_topics
         - field_cancer_types
-        - field_content_type
         - field_homepage_placement
+        - field_explore_order
+        - field_issue_story_rank
         - field_postx_sort_weight
         - field_homepage_sort_weight
       label: 'Publication & placement'
@@ -156,12 +159,6 @@ content:
       form_display_mode: default
       default_paragraph_type: ''
     third_party_settings: {  }
-  field_content_type:
-    type: options_select
-    weight: 14
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_excerpt:
     type: text_textarea
     weight: 15
@@ -169,6 +166,12 @@ content:
     settings:
       rows: 3
       placeholder: ''
+    third_party_settings: {  }
+  field_explore_order:
+    type: options_select
+    weight: 15
+    region: content
+    settings: {  }
     third_party_settings: {  }
   field_featured_image:
     type: media_library_widget
@@ -200,6 +203,12 @@ content:
       match_limit: 10
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  field_issue_story_rank:
+    type: options_select
+    weight: 11
+    region: content
+    settings: {  }
     third_party_settings: {  }
   field_meta_description:
     type: string_textfield
@@ -338,5 +347,7 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_content_type: true
   field_image: true
   unpublish_on: true
+

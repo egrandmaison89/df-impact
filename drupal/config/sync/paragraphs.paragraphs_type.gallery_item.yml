@@ -1,0 +1,10 @@
+uuid: 5e0c1a77-9b24-4c6d-8f10-2d88aa01c641
+langcode: en
+status: true
+dependencies: {  }
+id: gallery_item
+label: 'Gallery image'
+icon_uuid: null
+icon_default: null
+description: 'One gallery image and its caption.'
+behavior_plugins: {  }

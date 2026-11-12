@@ -16,7 +16,7 @@
             return;
           }
           const message = Drupal.t(
-            'This issue has no attached articles. Publish it anyway?',
+            'This issue has no attached articles or briefs. Publish it anyway?',
           );
           if (!window.confirm(message)) {
             event.preventDefault();

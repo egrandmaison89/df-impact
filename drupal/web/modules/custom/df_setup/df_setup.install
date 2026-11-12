@@ -1112,6 +1112,96 @@ function df_setup_update_10035(): string {
 }
 
 /**
+ * Rewrites inline wp.com and wp-content image URLs onto local public files.
+ */
+function df_setup_update_10036(): string {
+  if (!\Drupal::hasService('df_setup.wp_inline_image_localizer')) {
+    return 'Inline image localizer is not available.';
+  }
+  /** @var \Drupal\df_setup\WpInlineImageLocalizer $localizer */
+  $localizer = \Drupal::service('df_setup.wp_inline_image_localizer');
+  $saved = $localizer->rewriteContentFields();
+  return "Localized inline WordPress images on {$saved} nodes. Re-run with drush df-setup:localize-wp-images.";
+}
+
+/**
+ * Rewrites leftover upload URLs and attachment permalinks, including nids 37, 38, 42, and 54.
+ */
+function df_setup_update_10037(): string {
+  if (!\Drupal::hasService('df_setup.wp_inline_image_localizer')) {
+    return 'Inline image localizer is not available.';
+  }
+  /** @var \Drupal\df_setup\WpInlineImageLocalizer $localizer */
+  $localizer = \Drupal::service('df_setup.wp_inline_image_localizer');
+  $saved = $localizer->rewriteContentFields();
+  $present = [];
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  foreach ([37, 38, 42, 54] as $nid) {
+    if ($storage->load($nid)) {
+      $present[] = (string) $nid;
+    }
+  }
+  $which = $present === [] ? 'nids 37, 38, 42, and 54 are not in this database' : 'present nids ' . implode(', ', $present);
+  return "Rewrote leftover WordPress URLs on {$saved} nodes ({$which}).";
+}
+
+/**
+ * Keeps Video Embed on the article form and its URL field external-only.
+ */
+function df_setup_update_10038(): string {
+  $notes = [];
+  $field_storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  $url_field = $field_storage->load('paragraph.video_embed.field_video_url');
+  if ($url_field) {
+    $settings = $url_field->getSettings();
+    if ((int) ($settings['link_type'] ?? 0) !== 16 || (int) ($settings['title'] ?? 1) !== 0) {
+      $settings['link_type'] = 16;
+      $settings['title'] = 0;
+      $url_field->set('settings', $settings);
+      $url_field->save();
+      $notes[] = 'video URL field is external';
+    }
+  }
+  $sections = $field_storage->load('node.article.field_content_sections');
+  if ($sections) {
+    $handler = $sections->getSetting('handler_settings') ?? [];
+    $bundles = $handler['target_bundles'] ?? [];
+    $enabled = !empty($handler['target_bundles_drag_drop']['video_embed']['enabled']);
+    if (!isset($bundles['video_embed']) || !$enabled) {
+      $handler['target_bundles']['video_embed'] = 'video_embed';
+      $handler['target_bundles_drag_drop']['video_embed'] = [
+        'weight' => 5,
+        'enabled' => TRUE,
+      ];
+      $sections->setSetting('handler_settings', $handler);
+      $sections->save();
+      $notes[] = 'video_embed is an allowed article paragraph';
+    }
+  }
+  $display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.article.default');
+  if ($display && $display->getComponent('field_content_sections') === NULL) {
+    $display->setComponent('field_content_sections', [
+      'type' => 'entity_reference_paragraphs',
+      'weight' => 5,
+      'region' => 'content',
+      'settings' => [
+        'title' => 'Paragraph',
+        'title_plural' => 'Paragraphs',
+        'edit_mode' => 'open',
+        'add_mode' => 'dropdown',
+        'form_display_mode' => 'default',
+        'default_paragraph_type' => '',
+      ],
+    ]);
+    $display->save();
+    $notes[] = 'content sections are on the article form';
+  }
+  return $notes === []
+    ? 'Video Embed was already on the article form with an external URL field.'
+    : 'Updated Video Embed: ' . implode('; ', $notes) . '.';
+}
+
+/**
  * Loads the canonical About Impact page node, if present.
  */
 function _df_setup_load_about_impact_node(): ?Node {

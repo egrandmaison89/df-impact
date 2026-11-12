@@ -1,16 +1,13 @@
 {#
-/**
- * @file
- * Theme override for Video Embed paragraphs.
- */
+  Video Embed — YouTube or Vimeo iframe in the same wrapper as migrated embeds.
 #}
-<div{{ attributes.addClass('paragraph--video-embed') }}>
-  <div class="paragraph--video-embed__wrapper">
-    {{ content.field_video_url }}
-  </div>
-  {% if content.field_video_caption|render|trim %}
-    <div class="paragraph--video-embed__caption">
-      {{ content.field_video_caption }}
+{% if video_embed_src %}
+  <figure class="wp-block-embed is-type-video wp-block-embed-{{ video_embed_provider|default('youtube') }} wp-embed-aspect-16-9">
+    <div class="wp-block-embed__wrapper">
+      <iframe src="{{ video_embed_src }}" title="{{ video_embed_caption|default('Video') }}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
-  {% endif %}
-</div>
+    {% if video_embed_caption %}
+      <figcaption class="wp-element-caption">{{ video_embed_caption }}</figcaption>
+    {% endif %}
+  </figure>
+{% endif %}

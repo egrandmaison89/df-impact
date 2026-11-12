@@ -5,6 +5,7 @@ package: 'Dana-Farber Impact'
 core_version_requirement: ^10.3 || ^11
 weight: 100
 dependencies:
+  - df_setup:df_setup
   - drupal:metatag
   - metatag:metatag_open_graph
   - metatag:metatag_twitter_cards

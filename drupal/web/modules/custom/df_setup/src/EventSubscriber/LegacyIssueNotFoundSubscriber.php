@@ -10,7 +10,10 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Sets HTTP 404 on legacy issue URLs that WordPress no longer serves.
+ * Sets HTTP 404 on an issue URL only when that issue is not published.
+ *
+ * Late Fall 2022 used to be flagged as a WordPress archive error. A published
+ * issue node renders its issue page instead.
  */
 final class LegacyIssueNotFoundSubscriber implements EventSubscriberInterface {
 
@@ -22,7 +25,9 @@ final class LegacyIssueNotFoundSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Marks legacy issue node responses as 404 to match live WordPress.
+   * Marks an unpublished legacy issue response as 404.
+   *
+   * A published issue is left alone, including Late Fall 2022.
    */
   public function onResponse(ResponseEvent $event): void {
     if (!$event->isMainRequest()) {
@@ -33,7 +38,7 @@ final class LegacyIssueNotFoundSubscriber implements EventSubscriberInterface {
       return;
     }
     $node = $request->attributes->get('node');
-    if (!$node instanceof NodeInterface || $node->bundle() !== 'issue') {
+    if (!$node instanceof NodeInterface || $node->bundle() !== 'issue' || $node->isPublished()) {
       return;
     }
     $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $node->id());

@@ -17,7 +17,13 @@ use Drupal\views\ViewExecutable;
  * Implements hook_page_attachments().
  */
 function df_secondary_page_attachments(array &$attachments): void {
-  $origin = 'https://danafarberimpact.org';
+  $feed = '/rss.xml';
+  try {
+    $feed = \Drupal\Core\Url::fromRoute('view.frontpage.feed_1')->toString();
+  }
+  catch (\Exception) {
+    $feed = '/rss.xml';
+  }
   $attachments['#attached']['html_head'][] = [
     [
       '#type' => 'html_tag',
@@ -26,17 +32,18 @@ function df_secondary_page_attachments(array &$attachments): void {
         'rel' => 'alternate',
         'type' => 'application/rss+xml',
         'title' => 'Impact Magazine » Feed',
-        'href' => $origin . '/feed/',
+        'href' => $feed,
       ],
     ],
     'df_secondary_rss_feed',
   ];
 
-  $icon_base = 'https://i0.wp.com/danafarberimpact.org/wp-content/uploads/2023/01/JimmyFund_logoicon.png';
+  $theme_path = \Drupal::service('extension.list.theme')->getPath('df_impact');
+  $icon_base = \Drupal::request()->getBasePath() . '/' . $theme_path . '/assets/JimmyFund_logoicon.png';
   $icons = [
-    ['rel' => 'icon', 'sizes' => '32x32', 'href' => $icon_base . '?fit=32%2C29&ssl=1'],
-    ['rel' => 'icon', 'sizes' => '192x192', 'href' => $icon_base . '?fit=192%2C177&ssl=1'],
-    ['rel' => 'apple-touch-icon', 'href' => $icon_base . '?fit=180%2C166&ssl=1'],
+    ['rel' => 'icon', 'sizes' => '32x32', 'href' => $icon_base],
+    ['rel' => 'icon', 'sizes' => '192x192', 'href' => $icon_base],
+    ['rel' => 'apple-touch-icon', 'href' => $icon_base],
   ];
   foreach ($icons as $icon) {
     $attachments['#attached']['html_head'][] = [
@@ -54,7 +61,7 @@ function df_secondary_page_attachments(array &$attachments): void {
       '#tag' => 'meta',
       '#attributes' => [
         'name' => 'msapplication-TileImage',
-        'content' => $icon_base . '?fit=270%2C249&ssl=1',
+        'content' => $icon_base,
       ],
     ],
     'df_secondary_tile_image',
@@ -91,11 +98,7 @@ function df_secondary_preprocess_node(array &$variables): void {
   if ($node->isNew() || !$node->id()) {
     return;
   }
-  $origin = 'https://danafarberimpact.org';
-  $permalink = $origin . $node->toUrl()->toString();
-  if (!str_ends_with($permalink, '/')) {
-    $permalink .= '/';
-  }
+  $permalink = $node->toUrl('canonical', ['absolute' => TRUE])->toString();
   $title = $node->label();
   $encoded_title = rawurlencode($title);
   $encoded_url = rawurlencode($permalink);

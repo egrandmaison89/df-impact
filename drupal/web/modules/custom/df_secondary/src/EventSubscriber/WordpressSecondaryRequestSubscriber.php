@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Drupal\df_secondary\EventSubscriber;
 
 use Drupal\df_secondary\WordPressIdMap;
+use Drupal\df_setup\LocalWpImage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -95,9 +97,30 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
       }
     }
 
+    if ($request->query->has('attachment_id')) {
+      $attachment_id = (int) $request->query->get('attachment_id');
+      if ($attachment_id > 0) {
+        $event->setResponse(new RedirectResponse($this->attachmentTarget($attachment_id, NULL), 301));
+        return;
+      }
+    }
+
+    if (preg_match('#^/(\d{4}/\d{2}/[^/]+)/([^/]+)$#', $path, $attachment) === 1 && $attachment[2] !== 'feed') {
+      $parent = '/' . $attachment[1];
+      $system = \Drupal::service('path_alias.manager')->getPathByAlias($parent);
+      $parent_known = is_string($system) && preg_match('#^/node/\d+$#', $system) === 1;
+      $event->setResponse(new RedirectResponse($this->attachmentTarget(0, $parent_known ? $parent : NULL, $attachment[2]), 301));
+      return;
+    }
+
     if (str_starts_with($path, '/wp-content/uploads/')) {
       $suffix = substr($path, strlen('/wp-content/uploads/'));
-      $this->rebuildRequest($request, '/sites/default/files/wp-images/' . $suffix, $request->query->all());
+      $file = $this->uploadFilesystemPath($suffix);
+      if ($file !== NULL) {
+        $response = new BinaryFileResponse($file);
+        $response->setAutoEtag(TRUE);
+        $event->setResponse($response);
+      }
       return;
     }
 
@@ -216,6 +239,76 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
       $new->server->all(),
       $new->getContent(),
     );
+  }
+
+  /**
+   * Parent story when that alias exists, otherwise the local file.
+   */
+  private function attachmentTarget(int $wp_id, ?string $parent, ?string $basename = NULL): string {
+    if ($parent !== NULL && $parent !== '') {
+      return $parent;
+    }
+    $name = $basename;
+    if ($wp_id > 0) {
+      $name = $this->filenameForAttachmentId($wp_id) ?? $basename;
+    }
+    if (is_string($name) && $name !== '') {
+      return $this->uploadWebPath($name);
+    }
+    return $this->placeholderWebPath();
+  }
+
+  private function uploadWebPath(string $relative): string {
+    $file = $this->uploadFilesystemPath($relative);
+    if ($file === NULL) {
+      return $this->placeholderWebPath();
+    }
+    $web = DRUPAL_ROOT;
+    if (str_starts_with($file, $web)) {
+      return substr($file, strlen($web));
+    }
+    return $this->placeholderWebPath();
+  }
+
+  private function uploadFilesystemPath(string $relative): ?string {
+    $basename = basename(rawurldecode($relative));
+    $found = LocalWpImage::findInDirectory(DRUPAL_ROOT . '/sites/default/files/wp-images', $basename);
+    if ($found !== NULL) {
+      return $found;
+    }
+    $theme = \Drupal::service('extension.list.theme')->getPath('df_impact');
+    foreach (['assets', 'images'] as $subdir) {
+      $found = LocalWpImage::findInDirectory(DRUPAL_ROOT . '/' . $theme . '/' . $subdir, $basename);
+      if ($found !== NULL) {
+        return $found;
+      }
+    }
+    $placeholder = DRUPAL_ROOT . '/' . $theme . '/assets/image-placeholder.png';
+    return is_file($placeholder) ? $placeholder : NULL;
+  }
+
+  private function filenameForAttachmentId(int $wp_id): ?string {
+    static $index = NULL;
+    if ($index === NULL) {
+      $index = [];
+      $path = DRUPAL_ROOT . '/modules/custom/df_setup/data/media.json';
+      if (is_readable($path)) {
+        $items = json_decode((string) file_get_contents($path), TRUE);
+        if (is_array($items)) {
+          foreach ($items as $item) {
+            if (is_array($item) && !empty($item['wp_id']) && !empty($item['filename'])) {
+              $index[(int) $item['wp_id']] = (string) $item['filename'];
+            }
+          }
+        }
+      }
+    }
+    return $index[$wp_id] ?? NULL;
+  }
+
+  private function placeholderWebPath(): string {
+    $theme = \Drupal::service('extension.list.theme')->getPath('df_impact');
+    return '/' . $theme . '/assets/image-placeholder.png';
   }
 
 }

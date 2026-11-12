@@ -18,17 +18,16 @@ settings:
       - '|'
       - link
       - '|'
+      - drupalInsertImage
+      - drupalMedia
+      - insertTable
+      - sourceEditing
+      - '|'
       - bulletedList
       - numberedList
       - '|'
       - blockQuote
-      - '|'
-      - drupalInsertImage
-      - drupalMedia
-      - '|'
-      - insertTable
-      - '|'
-      - sourceEditing
+      - '-'
       - '|'
       - undo
       - redo
@@ -64,7 +63,7 @@ settings:
         - '<figure class>'
         - '<figcaption class>'
         - '<div class style aria-hidden>'
-        - '<img src alt width height class loading>'
+        - '<img src alt width height class loading data-entity-type data-entity-uuid data-caption data-align>'
         - '<iframe src width height frameborder allow allowfullscreen title loading>'
         - '<strong>'
         - '<em>'

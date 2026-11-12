@@ -33,11 +33,12 @@ final class WpTagArchiveController extends ControllerBase {
       }
       $build = views_embed_view('digital_exclusives_archive', 'page_1');
     }
-    elseif (ArchivePageWpOrder::pathsForArchive($tag_path) === []) {
+    elseif (ArchivePageWpOrder::pathsForArchive($tag_path) === [] && df_setup_topic_term_tids_for_category_slug($slug) === []) {
       throw new NotFoundHttpException();
     }
     else {
-      $build = views_embed_view('topic_archive', 'page_1', 'all');
+      $argument = df_setup_topic_term_tids_for_category_slug($slug) !== [] ? $slug : 'all';
+      $build = views_embed_view('topic_archive', 'page_1', $argument);
     }
     if (!is_array($build)) {
       throw new NotFoundHttpException();

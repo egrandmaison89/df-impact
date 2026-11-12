@@ -16,8 +16,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Normalizes system.site:page.front to /node/NID so isFrontPage() works.
  *
- * Storing the /home alias (or any non-internal path) breaks front page detection
- * because PathMatcher compares the active route's internal path to this setting.
+ * Exported config uses /node/1, the Home landing on the standard database.
+ * This subscriber leaves that value alone when node 1 is the published Home
+ * page, so config:status stays clean. It still rewrites /homepage or a
+ * non-Home node id, because PathMatcher compares the internal path.
  */
 final class FixHomeFrontPageConfigSubscriber implements EventSubscriberInterface {
 

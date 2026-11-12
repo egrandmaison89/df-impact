@@ -1,3 +1,11 @@
+df_setup.late_fall_2022_issue:
+  path: '/late-fall-2022-issue'
+  defaults:
+    _controller: '\Drupal\df_setup\Controller\LegacyIssueController::lateFall2022'
+    _title: 'Late Fall 2022'
+  requirements:
+    _access: 'TRUE'
+
 df_setup.topics_index:
   path: '/topics'
   defaults:

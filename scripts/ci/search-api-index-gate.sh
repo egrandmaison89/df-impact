@@ -4,6 +4,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 DRUPAL="$ROOT/drupal"
+bash "$ROOT/scripts/ci/no-wp-hotlinks.sh"
 DB_NAME="${DF_DB_NAME:-dfimpact}"
 DB_USER="${DF_DB_USER:-dfimpact}"
 DB_PASS="${DF_DB_PASS:-dfimpact}"
@@ -119,9 +120,82 @@ http_code() {
 }
 
 http_code "/"
-for path in "/search?s=" "/search?s=cancer" "/browse-issues" "/in-brief" "/user/login"; do
+for path in "/search?s=" "/search?s=cancer" "/browse-issues" "/in-brief" "/late-fall-2022-issue" "/user/login" "/tag/digital-exclusives" "/tag/digital-exclusives/" "/rss.xml"; do
   http_code "$path"
 done
+
+assert_no_wp_hosts() {
+  local path="$1"
+  curl -s -L -o /tmp/df-http-body --max-time 30 "${BASE_URL}${path}" || fail "Could not fetch ${path} for host check"
+  python3 - "$path" <<'PY' || fail "Rendered page requests a WordPress host"
+import re, sys
+path = sys.argv[1]
+html = open("/tmp/df-http-body", "r", errors="replace").read()
+pattern = re.compile(r"(?:https?:)?//(?:[a-z0-9.-]+\.)?(?:danafarberimpact\.org|wp\.com)\b", re.I)
+hits = pattern.findall(html)
+if hits:
+    print(path, "off-domain WordPress URLs:", len(hits), file=sys.stderr)
+    for hit in hits[:8]:
+        print(" ", hit, file=sys.stderr)
+    sys.exit(1)
+print("no wordpress hosts", path)
+PY
+}
+
+for path in "/" "/search?s=cancer" "/browse-issues" "/in-brief" "/late-fall-2022-issue" "/rss.xml"; do
+  assert_no_wp_hosts "$path"
+done
+
+curl -s -L -o /tmp/df-search-body --max-time 30 "${BASE_URL}/search?s=cancer" || fail "Could not fetch search"
+python3 - <<'PY' || fail "Search canonical is not /search?s=cancer"
+import re
+html = open("/tmp/df-search-body", "r", errors="replace").read()
+match = re.search(r'rel="canonical" href="([^"]+)"', html)
+if not match:
+    raise SystemExit("missing canonical")
+href = match.group(1)
+if not href.endswith("/search?s=cancer") and "search?s=cancer" not in href:
+    raise SystemExit(href)
+print("canonical", href)
+PY
+
+php "$ROOT/scripts/ci/wp-image-stubs.php" || fail "HTML files are committed as images"
+
+if [[ ! -d /tmp/df-blocked-host/node_modules/puppeteer-core ]]; then
+  npm install --prefix /tmp/df-blocked-host --no-save --silent puppeteer-core
+fi
+
+find_chrome() {
+  local candidate
+  for candidate in \
+    "${CHROME_PATH:-}" \
+    /usr/local/bin/google-chrome \
+    /usr/bin/google-chrome \
+    /usr/bin/google-chrome-stable \
+    /usr/bin/chromium \
+    /usr/bin/chromium-browser
+  do
+    if [[ -n "$candidate" && -x "$candidate" ]]; then
+      echo "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+if ! CHROME="$(find_chrome)"; then
+  if [[ ! -d /tmp/df-blocked-host/node_modules/@puppeteer/browsers ]]; then
+    npm install --prefix /tmp/df-blocked-host --no-save --silent @puppeteer/browsers
+  fi
+  install_log=$(cd /tmp/df-blocked-host && npx --no-install @puppeteer/browsers install chrome-headless-shell --path /tmp/df-chrome)
+  echo "$install_log"
+  CHROME=$(printf '%s\n' "$install_log" | awk '{print $NF}' | tail -1)
+  if [[ ! -x "$CHROME" ]]; then
+    CHROME=$(find /tmp/df-chrome -type f -name chrome-headless-shell -perm -111 | head -1)
+  fi
+fi
+[[ -n "${CHROME:-}" && -x "$CHROME" ]] || fail "No Chrome or Chromium binary for the blocked-host image check"
+PUPPETEER_CORE_ROOT=/tmp/df-blocked-host CHROME_PATH="$CHROME" BASE_URL="$BASE_URL" node "$ROOT/scripts/ci/blocked-host-images.mjs" || fail "Blocked-host image check failed"
 
 # Saved article preview must not 500 after a cold cache rebuild.
 "${DRUSH[@]}" php:eval '

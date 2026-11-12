@@ -33,8 +33,9 @@ final class WordpressSecondaryRequestSubscriber implements EventSubscriberInterf
    * WordPress search URL (/?s=term&id=701, /page/N/?s=term) → 0-based view page, or NULL.
    */
   public static function wordpressSearchPage(string $path, Request $request): ?int {
-    $search_term = $request->query->get('s');
-    if ($search_term === NULL || $search_term === '') {
+    // A present but empty s is still a search. Live /?s= lists recent posts.
+    // A missing s stays the normal page (the homepage, for /).
+    if (!$request->query->has('s')) {
       return NULL;
     }
     if (in_array($path, ['/', '/homepage', '/home'], TRUE)) {

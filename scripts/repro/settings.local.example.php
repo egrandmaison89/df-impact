@@ -19,7 +19,9 @@ $databases['default']['default'] = [
 // Copy from settings.ddev.php after `ddev start`, or from `drush php:eval "echo \Drupal::service('private_key')->get();"`.
 $settings['hash_salt'] = getenv('DRUPAL_HASH_SALT') ?: 'local-dev-only-change-me';
 
-$settings['config_sync_directory'] = 'sites/default/files/sync';
+// This file is copied to web/sites/default/settings.local.php. The path is
+// absolute from that location: the docroot's ../config/sync.
+$settings['config_sync_directory'] = dirname(__DIR__, 3) . '/config/sync';
 $settings['trusted_host_patterns'] = ['.*'];
 
 $config['system.performance']['css']['preprocess'] = FALSE;

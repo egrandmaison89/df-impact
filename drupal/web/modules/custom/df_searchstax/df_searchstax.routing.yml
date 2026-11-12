@@ -1,7 +1,0 @@
-df_searchstax.settings:
-  path: '/admin/config/search/df-searchstax'
-  defaults:
-    _form: '\Drupal\df_searchstax\Form\SearchstaxSettingsForm'
-    _title: 'DF SearchStax settings'
-  requirements:
-    _permission: 'administer site configuration'

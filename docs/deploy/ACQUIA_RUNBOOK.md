@@ -6,8 +6,8 @@ Documentation only. Does not perform deploys.
 
 | Layer | Location | Notes |
 | --- | --- | --- |
-| **Canonical config** | `drupal/web/sites/default/files/sync/` | Export with `drush cex -y` from staging after QA. Import on Acquia with `drush cim -y`. |
-| **Secrets / overrides** | Acquia `$AH_SITE_ENVIRONMENT` settings include or `settings.php` `$config` overrides | SearchStax keys, SMTP, API keys — never commit. |
+| **Canonical config** | `drupal/config/sync/` (outside the webroot; `$settings['config_sync_directory']`) | Export with `drush cex -y` from staging after QA. Import on Acquia with `drush cim -y`. |
+| **Secrets / overrides** | Acquia `$AH_SITE_ENVIRONMENT` settings include or `settings.php` `$config` overrides | SMTP, API keys — never commit. |
 | **Site snippets** | `df_site_snippets.settings` | Optional extra header/footer HTML; prefer `df_launch.settings` for standard tags. |
 | **Launch tags** | `df_launch.settings` + `LaunchEnvironment` | Tag URLs in sync; **`enabled: false`** in repo. Tags inject only when config is enabled **and** the request is a production context (see below). |
 | **Front page** | `system.site:page.front` | Must be `/node/{Home}` internal path (see `df_setup`); aliases `/homepage`, `/` served via subscribers. |
@@ -42,7 +42,7 @@ WordPress media parity lives under:
 
 | Step | Action |
 | --- | --- |
-| Source of truth | Migration exports + `df_migrate` scripts (`restore_wp_images.php`, etc.) |
+| Source of truth | Public files shipped with the database dump (`sites/default/files/wp-images/`) |
 | Deploy | Rsync or Acquia files sync from staging → prod (exclude `php`, `css/js` aggregates) |
 | Legacy URLs | `/wp-content/uploads/*` → internal rewrite to `wp-images` (`df_secondary`) |
 | Verify | Spot-check article hero images and Photon-style URLs on prod domain |
@@ -51,11 +51,10 @@ WordPress media parity lives under:
 
 | Item | Detail |
 | --- | --- |
-| Backend | Search API index `df_impact_content` (DB backend in dev; confirm Acquia backend) |
-| Public UI | View `df_impact_search` at `/search`; `/?s=` rewrite via `df_secondary` |
-| SearchStax | Indexing/admin only (`df_searchstax`); no public `/search` Studio UI |
+| Backend | Search API index `df_impact_content` on the Search API DB server `df_impact_search` |
+| Public UI | View `df_impact_search` (`/search-legacy`); `/?s=` is rewritten there by `df_secondary` |
 | Reindex | After content deploy: `drush search-api:clear df_impact_content && drush search-api:index df_impact_content` |
-| Cron | Ensure `search_api_cron` / queue workers run on Acquia cron |
+| Cron | Ensure `search_api_cron` runs on Acquia cron |
 
 ## Cron
 
@@ -63,7 +62,6 @@ Acquia cron should invoke Drupal cron (`drush cron` or `/cron/{key}`):
 
 - Search API pending items  
 - `simple_sitemap` generation (weekly or post-deploy)  
-- `df_searchstax` node index queue (if enabled)  
 - Core `automated_cron` disabled in config — rely on Acquia schedule  
 
 ## DNS cutover checklist

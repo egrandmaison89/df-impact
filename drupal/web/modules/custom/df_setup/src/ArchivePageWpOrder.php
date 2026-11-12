@@ -39,8 +39,8 @@ final class ArchivePageWpOrder {
       return self::$cache;
     }
     $paths = [
-      DRUPAL_ROOT . '/modules/custom/df_migrate/data/archive_page_wp_order.json',
-      dirname(DRUPAL_ROOT, 2) . '/drupal/web/modules/custom/df_migrate/data/archive_page_wp_order.json',
+      DRUPAL_ROOT . '/modules/custom/df_setup/data/archive_page_wp_order.json',
+      dirname(DRUPAL_ROOT, 2) . '/drupal/web/modules/custom/df_setup/data/archive_page_wp_order.json',
     ];
     foreach ($paths as $path) {
       if (!is_readable($path)) {

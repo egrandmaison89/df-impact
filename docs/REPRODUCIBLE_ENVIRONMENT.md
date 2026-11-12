@@ -1,6 +1,6 @@
 # Reproducible environment (Phase 1)
 
-This document describes how to build a **content-bearing** Dana-Farber Impact Drupal site from Git alone, without the owner’s laptop database.
+A content-bearing site is a database dump plus public files. See [HANDOFF.md](../HANDOFF.md). Rebuilding from WordPress is no longer part of this tree; that pipeline is on tag `archive/pre-acsf-handoff-47352229`.
 
 ## Primary path: DDEV (recommended)
 

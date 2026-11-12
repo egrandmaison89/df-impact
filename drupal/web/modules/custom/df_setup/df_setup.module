@@ -486,8 +486,7 @@ function df_setup_digital_exclusive_archive_slugs(): array {
 
   $cache = [];
   $candidates = [
-    DRUPAL_ROOT . '/modules/custom/df_migrate/data/articles.json',
-    dirname(DRUPAL_ROOT) . '/migration-data/articles.json',
+    DRUPAL_ROOT . '/modules/custom/df_setup/data/articles.json',
   ];
   $raw = NULL;
   foreach ($candidates as $path) {
@@ -1195,7 +1194,7 @@ function df_setup_issue_tag_slug_for_path_alias(string $alias): string {
   static $by_alias = NULL;
   if ($by_alias === NULL) {
     $by_alias = [];
-    $path = DRUPAL_ROOT . '/modules/custom/df_migrate/data/issues.json';
+    $path = DRUPAL_ROOT . '/modules/custom/df_setup/data/issues.json';
     if (is_readable($path)) {
       $rows = json_decode((string) file_get_contents($path), TRUE);
       if (is_array($rows)) {
@@ -1237,10 +1236,7 @@ function df_setup_wordpress_not_found_page_build(): array {
  * When WP had no issue landing, map the issue URL to its tag archive slug.
  */
 function df_setup_legacy_issue_tag_slug_for_request_path(string $path): string {
-  if (!\Drupal::moduleHandler()->moduleExists('df_migrate')) {
-    return '';
-  }
-  $fixture = \Drupal\df_migrate\IssuePageWpFixture::rowForPathAlias($path);
+  $fixture = \Drupal\df_setup\IssuePageWpFixture::rowForPathAlias($path);
   if (!is_array($fixture) || empty($fixture['wp_archive_error'])) {
     return '';
   }

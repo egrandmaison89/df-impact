@@ -258,7 +258,9 @@ $databases = [];
  * directory in the public files path. The setting below allows you to set
  * its location.
  */
-# $settings['config_sync_directory'] = '/directory/outside/webroot';
+# Outside the webroot. Relative to the docroot this is ../config/sync.
+# Absolute so it does not depend on the process working directory (php-fpm, Drush).
+$settings['config_sync_directory'] = dirname(__DIR__, 3) . '/config/sync';
 
 /**
  * Settings:
@@ -863,33 +865,6 @@ $settings['migrate_node_migrate_type_classic'] = FALSE;
 if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev.php')) {
   include __DIR__ . '/settings.ddev.php';
 }
-
-/**
- * SearchStax runtime settings.
- *
- * These values override config at runtime and should be sourced from env vars
- * in non-local environments so API keys are never committed to config export.
- */
-$settings['df_searchstax'] = array_filter([
-  // Optional endpoint overrides.
-  'search_url' => getenv('DF_SEARCHSTAX_SEARCH_URL') ?: NULL,
-  'update_url' => getenv('DF_SEARCHSTAX_UPDATE_URL') ?: NULL,
-  'public_base_url' => getenv('DF_SEARCHSTAX_PUBLIC_BASE_URL') ?: NULL,
-  'suggester_url' => getenv('DF_SEARCHSTAX_SUGGESTER_URL') ?: NULL,
-  'related_searches_url' => getenv('DF_SEARCHSTAX_RELATED_SEARCHES_URL') ?: NULL,
-  'popular_searches_url' => getenv('DF_SEARCHSTAX_POPULAR_SEARCHES_URL') ?: NULL,
-  'analytics_base_url' => getenv('DF_SEARCHSTAX_ANALYTICS_BASE_URL') ?: NULL,
-  'analytics_src' => getenv('DF_SEARCHSTAX_ANALYTICS_SRC') ?: NULL,
-  'question_url' => getenv('DF_SEARCHSTAX_QUESTION_URL') ?: NULL,
-  'geocoding_url' => getenv('DF_SEARCHSTAX_GEOCODING_URL') ?: NULL,
-  'country_code' => getenv('DF_SEARCHSTAX_COUNTRY_CODE') ?: NULL,
-  'app_id' => getenv('DF_SEARCHSTAX_APP_ID') ?: NULL,
-  // Secret tokens/keys.
-  'search_auth' => getenv('DF_SEARCHSTAX_SEARCH_AUTH') ?: NULL,
-  'index_auth' => getenv('DF_SEARCHSTAX_INDEX_AUTH') ?: NULL,
-  'track_api_key' => getenv('DF_SEARCHSTAX_TRACK_API_KEY') ?: NULL,
-  'related_searches_api_key' => getenv('DF_SEARCHSTAX_DISCOVERY_API_KEY') ?: NULL,
-], static fn($value) => $value !== NULL && $value !== '');
 
 /**
  * Load local development override configuration, if available.

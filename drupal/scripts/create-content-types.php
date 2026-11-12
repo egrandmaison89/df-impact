@@ -283,7 +283,7 @@ _create_field_storage('field_channels', 'node', 'entity_reference', [
 ]);
 _create_field_instance('field_channels', 'node', 'article', 'Channels', [
   'required' => FALSE,
-  'description' => 'Assign Digital Exclusives to list this story in the homepage Digital Exclusives row and on /digital-exclusives.',
+  'description' => 'Assign Digital Exclusives to list this story in the homepage Digital Exclusives row and on /category/digital-exclusives.',
   'settings' => [
     'handler' => 'default:taxonomy_term',
     'handler_settings' => [

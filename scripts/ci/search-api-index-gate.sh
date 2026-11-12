@@ -164,7 +164,38 @@ php "$ROOT/scripts/ci/wp-image-stubs.php" || fail "HTML files are committed as i
 if [[ ! -d /tmp/df-blocked-host/node_modules/puppeteer-core ]]; then
   npm install --prefix /tmp/df-blocked-host --no-save --silent puppeteer-core
 fi
-PUPPETEER_CORE_ROOT=/tmp/df-blocked-host BASE_URL="$BASE_URL" node "$ROOT/scripts/ci/blocked-host-images.mjs" || fail "Blocked-host image check failed"
+
+find_chrome() {
+  local candidate
+  for candidate in \
+    "${CHROME_PATH:-}" \
+    /usr/local/bin/google-chrome \
+    /usr/bin/google-chrome \
+    /usr/bin/google-chrome-stable \
+    /usr/bin/chromium \
+    /usr/bin/chromium-browser
+  do
+    if [[ -n "$candidate" && -x "$candidate" ]]; then
+      echo "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+if ! CHROME="$(find_chrome)"; then
+  if [[ ! -d /tmp/df-blocked-host/node_modules/@puppeteer/browsers ]]; then
+    npm install --prefix /tmp/df-blocked-host --no-save --silent @puppeteer/browsers
+  fi
+  install_log=$(cd /tmp/df-blocked-host && npx --no-install @puppeteer/browsers install chrome-headless-shell --path /tmp/df-chrome)
+  echo "$install_log"
+  CHROME=$(printf '%s\n' "$install_log" | awk '{print $NF}' | tail -1)
+  if [[ ! -x "$CHROME" ]]; then
+    CHROME=$(find /tmp/df-chrome -type f -name chrome-headless-shell -perm -111 | head -1)
+  fi
+fi
+[[ -n "${CHROME:-}" && -x "$CHROME" ]] || fail "No Chrome or Chromium binary for the blocked-host image check"
+PUPPETEER_CORE_ROOT=/tmp/df-blocked-host CHROME_PATH="$CHROME" BASE_URL="$BASE_URL" node "$ROOT/scripts/ci/blocked-host-images.mjs" || fail "Blocked-host image check failed"
 
 # Saved article preview must not 500 after a cold cache rebuild.
 "${DRUSH[@]}" php:eval '

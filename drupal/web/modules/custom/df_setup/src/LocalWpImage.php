@@ -66,10 +66,36 @@ final class LocalWpImage {
    * sibling with an extension exists, and then a copy with an extension is
    * returned so the URL is not served as application/octet-stream.
    */
+  /**
+   * Fountain photo basenames that collide with the ski photo on case-insensitive disks.
+   *
+   * Keys are case-sensitive. The lowercase ski files stay DFI_suzanne.jpg.
+   *
+   * @return array<string, string>
+   */
+  public static function caseCollisionRenames(): array {
+    return [
+      'DFI_Suzanne.jpg' => 'DFI_Suzanne-Fountain-2024-11.jpg',
+      'DFI_Suzanne-1024x734.jpg' => 'DFI_Suzanne-Fountain-2024-11.jpg',
+    ];
+  }
+
+  /**
+   * Unique basename for a known case collision, or NULL when the name can stay.
+   */
+  public static function caseCollisionRename(string $basename): ?string {
+    return self::caseCollisionRenames()[basename($basename)] ?? NULL;
+  }
+
   public static function findInDirectory(string $directory, string $basename): ?string {
     $basename = basename($basename);
     if ($basename === '' || !is_dir($directory)) {
       return NULL;
+    }
+    $renamed = self::caseCollisionRename($basename);
+    if ($renamed !== NULL) {
+      $target = $directory . '/' . $renamed;
+      return self::isImageFile($target) ? $target : NULL;
     }
     $exact = $directory . '/' . $basename;
     if (self::hasImageExtension($basename) && self::isImageFile($exact)) {

@@ -120,7 +120,7 @@ final class WpInlineImageLocalizer {
    */
   public function ensureLocal(string $relative): ?string {
     $relative = ltrim($relative, '/');
-    $basename = basename($relative);
+    $basename = LocalWpImage::caseCollisionRename(basename($relative)) ?? basename($relative);
     $flat = $this->realFlatImage($basename);
     if ($flat !== NULL) {
       return $flat;

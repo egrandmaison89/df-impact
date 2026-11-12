@@ -71,6 +71,24 @@ final class LocalWpImageTest extends TestCase {
     $this->assertStringEndsWith('Impact-InBrief10-1450.jpg', $found);
   }
 
+  public function testFountainNameDoesNotResolveToTheSkiPhoto(): void {
+    file_put_contents($this->dir . '/DFI_suzanne.jpg', "\xFF\xD8\xFF" . str_repeat('s', 32));
+    file_put_contents($this->dir . '/DFI_suzanne-1024x734.jpg', "\xFF\xD8\xFF" . str_repeat('c', 32));
+    $this->assertNull(LocalWpImage::findInDirectory($this->dir, 'DFI_Suzanne.jpg'));
+    $this->assertNull(LocalWpImage::findInDirectory($this->dir, 'DFI_Suzanne-1024x734.jpg'));
+    $ski = LocalWpImage::findInDirectory($this->dir, 'DFI_suzanne.jpg');
+    $this->assertNotNull($ski);
+    $this->assertStringEndsWith('/DFI_suzanne.jpg', $ski);
+
+    file_put_contents($this->dir . '/DFI_Suzanne-Fountain-2024-11.jpg', "\xFF\xD8\xFF" . str_repeat('f', 32));
+    $fountain = LocalWpImage::findInDirectory($this->dir, 'DFI_Suzanne.jpg');
+    $this->assertNotNull($fountain);
+    $this->assertStringEndsWith('/DFI_Suzanne-Fountain-2024-11.jpg', $fountain);
+    $crop = LocalWpImage::findInDirectory($this->dir, 'DFI_Suzanne-1024x734.jpg');
+    $this->assertNotNull($crop);
+    $this->assertStringEndsWith('/DFI_Suzanne-Fountain-2024-11.jpg', $crop);
+  }
+
   public function testExtensionlessImageIsCopiedWithAnExtension(): void {
     file_put_contents($this->dir . '/lonely-1450', "\xFF\xD8\xFF" . str_repeat('c', 32));
     $found = LocalWpImage::findInDirectory($this->dir, 'lonely-1450');

@@ -74,4 +74,21 @@ final class EditorialWorkflowConfigTest extends TestCase {
     }
   }
 
+  /**
+   * Revision history is visible. Revert and delete stay closed.
+   */
+  public function testRevisionViewWithoutRevertOrDelete(): void {
+    foreach (['web_editor', 'site_admin'] as $role) {
+      $permissions = $this->readYaml('user.role.' . $role . '.yml')['permissions'];
+      $this->assertContains('view all revisions', $permissions);
+      foreach (['article', 'in_brief', 'issue'] as $bundle) {
+        $this->assertContains("view $bundle revisions", $permissions);
+        $this->assertNotContains("revert $bundle revisions", $permissions);
+        $this->assertNotContains("delete $bundle revisions", $permissions);
+      }
+      $this->assertNotContains('revert all revisions', $permissions);
+      $this->assertNotContains('delete all revisions', $permissions);
+    }
+  }
+
 }

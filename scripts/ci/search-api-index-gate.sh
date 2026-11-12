@@ -160,6 +160,8 @@ print("canonical", href)
 PY
 
 php "$ROOT/scripts/ci/wp-image-stubs.php" || fail "HTML files are committed as images"
+DF_DB_HOST="$DB_HOST" DF_DB_NAME="$DB_NAME" DF_DB_USER="$DB_USER" DF_DB_PASS="$DB_PASS" \
+  php "$ROOT/scripts/ci/case-collisions.php" || fail "Tracked files or file_managed URIs differ only by case"
 
 if [[ ! -d /tmp/df-blocked-host/node_modules/puppeteer-core ]]; then
   npm install --prefix /tmp/df-blocked-host --no-save --silent puppeteer-core

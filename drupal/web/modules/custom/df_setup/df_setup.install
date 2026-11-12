@@ -7,6 +7,7 @@
 
 use Drupal\Component\Utility\Html;
 use Drupal\df_setup\ArticleCreditLabels;
+use Drupal\df_setup\LocalWpImage;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\Entity\Node;
@@ -1202,6 +1203,17 @@ function df_setup_update_10038(): string {
 }
 
 /**
+ * Gives the Suzanne Fountain photo a filename that does not collide with the ski photo.
+ *
+ * DFI_suzanne.jpg (June 2024, Suzanne Michels Obenshain) stays. The November
+ * Fountain original and its 1024x734 crop both become
+ * public://wp-images/DFI_Suzanne-Fountain-2024-11.jpg.
+ */
+function df_setup_update_10039(): string {
+  return _df_setup_repoint_suzanne_fountain();
+}
+
+/**
  * Loads the canonical About Impact page node, if present.
  */
 function _df_setup_load_about_impact_node(): ?Node {
@@ -1450,4 +1462,153 @@ function _df_setup_apply_late_fall_2022_link_parity(): string {
   }
 
   return "Late Fall 2022 link parity: {$link_replaced} link rewrite(s), {$byline_removed} synthetic byline(s) removed.";
+}
+
+/**
+ * Repoints the Fountain file and any stored references to its old basename.
+ */
+function _df_setup_repoint_suzanne_fountain(): string {
+  $map = LocalWpImage::caseCollisionRenames();
+  $database = \Drupal::database();
+  $target_name = $map['DFI_Suzanne.jpg'];
+  $target_uri = 'public://wp-images/' . $target_name;
+  $files = _df_setup_repoint_fountain_files($database, $map, $target_uri, $target_name);
+  $fields = _df_setup_repoint_fountain_text($database, $map, $target_name);
+  return $files . ' ' . $fields;
+}
+
+/**
+ * Moves file_managed rows whose URI basename is the Fountain photo.
+ */
+function _df_setup_repoint_fountain_files($database, array $map, string $target_uri, string $target_name): string {
+  if (!$database->schema()->tableExists('file_managed')) {
+    return 'file_managed is not installed.';
+  }
+  $rows = $database->select('file_managed', 'f')
+    ->fields('f', ['fid', 'uri', 'filename'])
+    ->execute()
+    ->fetchAll();
+  $keeper = NULL;
+  $matches = [];
+  foreach ($rows as $row) {
+    if ((string) $row->uri === $target_uri) {
+      $keeper = (int) $row->fid;
+    }
+    if (isset($map[basename((string) $row->uri)])) {
+      $matches[] = $row;
+    }
+  }
+  if ($matches === []) {
+    return 'No file_managed URI used the Fountain basename.';
+  }
+  usort($matches, static fn ($a, $b) => ((int) $a->fid) <=> ((int) $b->fid));
+  if ($keeper === NULL) {
+    $keeper = (int) $matches[0]->fid;
+  }
+  $database->update('file_managed')
+    ->fields(['uri' => $target_uri, 'filename' => $target_name])
+    ->condition('fid', $keeper)
+    ->execute();
+  $merged = 0;
+  foreach ($matches as $row) {
+    $fid = (int) $row->fid;
+    if ($fid === $keeper) {
+      continue;
+    }
+    _df_setup_merge_managed_file($database, $fid, $keeper);
+    $merged++;
+  }
+  return "Repointed file {$keeper} at {$target_uri}; merged {$merged} duplicate file(s).";
+}
+
+/**
+ * Points file usages and image fields at the kept file, then drops the duplicate row.
+ */
+function _df_setup_merge_managed_file($database, int $from, int $to): void {
+  if ($database->schema()->tableExists('file_usage')) {
+    $database->update('file_usage')
+      ->fields(['fid' => $to])
+      ->condition('fid', $from)
+      ->execute();
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  foreach (['image', 'file'] as $type) {
+    foreach ($storage->loadByProperties(['type' => $type]) as $field) {
+      $column = $field->getName() . '_target_id';
+      foreach ([$field->getTargetEntityTypeId() . '__' . $field->getName(), $field->getTargetEntityTypeId() . '_revision__' . $field->getName()] as $table) {
+        if ($database->schema()->tableExists($table) && $database->schema()->fieldExists($table, $column)) {
+          $database->update($table)
+            ->fields([$column => $to])
+            ->condition($column, $from)
+            ->execute();
+        }
+      }
+    }
+  }
+  $database->delete('file_managed')->condition('fid', $from)->execute();
+}
+
+/**
+ * Rewrites stored text that names the Fountain file, leaving the ski filename alone.
+ */
+function _df_setup_repoint_fountain_text($database, array $map, string $target_name): string {
+  $needles = array_keys($map);
+  usort($needles, static fn (string $a, string $b): int => strlen($b) <=> strlen($a));
+  $prefixes = [
+    'node__',
+    'node_revision__',
+    'media__',
+    'media_revision__',
+    'paragraph__',
+    'paragraph_revision__',
+    'block_content__',
+    'block_content_revision__',
+    'taxonomy_term__',
+    'taxonomy_term_revision__',
+  ];
+  $tables = [];
+  foreach ($prefixes as $prefix) {
+    foreach ($database->schema()->findTables($prefix . '%') as $table) {
+      $tables[$table] = TRUE;
+    }
+  }
+  $updated = 0;
+  foreach (array_keys($tables) as $table) {
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $table)) {
+      continue;
+    }
+    $columns = $database->query(
+      "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table AND DATA_TYPE IN ('char', 'varchar', 'tinytext', 'text', 'mediumtext', 'longtext')",
+      [':table' => $table],
+    )->fetchCol();
+    foreach ($columns as $column) {
+      if (!is_string($column) || !preg_match('/^[A-Za-z0-9_]+$/', $column)) {
+        continue;
+      }
+      $where = [];
+      $args = [];
+      foreach ($needles as $index => $needle) {
+        $where[] = "BINARY `{$column}` LIKE :needle{$index}";
+        $args[":needle{$index}"] = '%' . $needle . '%';
+      }
+      $values = $database->query(
+        "SELECT `{$column}` FROM {" . $table . "} WHERE " . implode(' OR ', $where),
+        $args,
+      )->fetchCol();
+      foreach (array_unique($values) as $value) {
+        if (!is_string($value)) {
+          continue;
+        }
+        $next = str_replace($needles, $target_name, $value);
+        if ($next === $value) {
+          continue;
+        }
+        $updated += $database->update($table)
+          ->fields([$column => $next])
+          ->where("BINARY `{$column}` = :previous", [':previous' => $value])
+          ->execute();
+      }
+    }
+  }
+  return "Rewrote {$updated} field value(s) to {$target_name}.";
 }

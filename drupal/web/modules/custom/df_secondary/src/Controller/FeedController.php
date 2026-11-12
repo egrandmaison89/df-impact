@@ -8,6 +8,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -16,7 +17,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 final class FeedController extends ControllerBase {
 
-  private const ORIGIN = 'https://danafarberimpact.org';
+  public function __construct(
+    private readonly RequestStack $requestStack,
+  ) {}
+
+  public static function create(\Symfony\Component\DependencyInjection\ContainerInterface $container): static {
+    return new static(
+      $container->get('request_stack'),
+    );
+  }
 
   /**
    * Site-wide RSS (WordPress /feed and Drupal rss.xml parity).
@@ -35,7 +44,7 @@ final class FeedController extends ControllerBase {
         $items[] = $this->buildItemFromNode($node);
       }
     }
-    return $this->xmlResponse($this->buildRss('Impact Magazine', self::ORIGIN . '/', $items));
+    return $this->xmlResponse($this->buildRss('Impact Magazine', $this->origin() . '/', $items));
   }
 
   /**
@@ -71,7 +80,7 @@ final class FeedController extends ControllerBase {
       ->accessCheck(FALSE)
       ->execute();
 
-    $channel_link = self::ORIGIN . '/category/' . $slug . '/';
+    $channel_link = $this->origin() . '/category/' . $slug . '/';
     $title = $term->label() . ' Archives - Impact Magazine';
     $items = [];
     foreach (Node::loadMultiple($nids) as $node) {
@@ -88,7 +97,7 @@ final class FeedController extends ControllerBase {
     if (!$node->isPublished()) {
       throw new NotFoundHttpException();
     }
-    $link = self::originUrlForNode($node);
+    $link = $this->originUrlForNode($node);
     $items = [$this->buildItemFromNode($node)];
     return $this->xmlResponse($this->buildRss($node->label() . ' - Impact Magazine', $link, $items));
   }
@@ -97,7 +106,7 @@ final class FeedController extends ControllerBase {
    * @return array{title: string, link: string, guid: string, description: string, pubDate: string}
    */
   private function buildItemFromNode(NodeInterface $node): array {
-    $link = self::originUrlForNode($node);
+    $link = $this->originUrlForNode($node);
     $guid = $link;
     $description = '';
     if ($node->hasField('body') && !$node->get('body')->isEmpty()) {
@@ -145,13 +154,19 @@ final class FeedController extends ControllerBase {
     return new Response($xml, 200, ['Content-Type' => 'application/rss+xml; charset=utf-8']);
   }
 
-  private static function originUrlForNode(NodeInterface $node): string {
-    $alias = $node->toUrl()->toString();
-    $url = self::ORIGIN . $alias;
-    if (!str_ends_with($url, '/')) {
-      $url .= '/';
+  private function origin(): string {
+    if (function_exists('df_metatag_public_origin')) {
+      return df_metatag_public_origin();
     }
-    return $url;
+    $request = $this->requestStack->getCurrentRequest();
+    if ($request === NULL) {
+      return '';
+    }
+    return $request->getSchemeAndHttpHost() . $request->getBasePath();
+  }
+
+  private function originUrlForNode(NodeInterface $node): string {
+    return $node->toUrl('canonical', ['absolute' => TRUE])->toString();
   }
 
   private function slugify(string $label): string {

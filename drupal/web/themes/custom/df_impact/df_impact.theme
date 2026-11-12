@@ -10,6 +10,7 @@ use Drupal\Core\Render\Markup;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
 use Drupal\df_setup\ArticleCreditLabels;
+use Drupal\df_setup\VideoEmbedUrl;
 use Drupal\node\NodeInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
@@ -553,6 +554,24 @@ function df_impact_preprocess_page(&$variables) {
 }
 
 /**
+ * Implements hook_preprocess_paragraph().
+ */
+function df_impact_preprocess_paragraph(array &$variables): void {
+  $paragraph = $variables['paragraph'] ?? NULL;
+  if (!$paragraph || $paragraph->bundle() !== 'video_embed' || !$paragraph->hasField('field_video_url')) {
+    return;
+  }
+  $url = $paragraph->get('field_video_url')->isEmpty() ? '' : (string) $paragraph->get('field_video_url')->uri;
+  $variables['video_embed_src'] = VideoEmbedUrl::iframeSrc($url);
+  $variables['video_embed_provider'] = VideoEmbedUrl::provider($url);
+  $caption = '';
+  if ($paragraph->hasField('field_video_caption') && !$paragraph->get('field_video_caption')->isEmpty()) {
+    $caption = trim((string) $paragraph->get('field_video_caption')->value);
+  }
+  $variables['video_embed_caption'] = $caption;
+}
+
+/**
  * Implements hook_preprocess_node().
  */
 function df_impact_preprocess_node(&$variables) {
@@ -769,13 +788,26 @@ function df_impact_preprocess_node(&$variables) {
     if (isset($variables['content']['field_featured_image'])) {
       $variables['content']['field_featured_image']['#access'] = FALSE;
     }
-    // WP has no featured-image slot on single posts: the lead figure is the body's own opening image block.
-    $body_leads_with_image = $node->hasField('body') && !$node->get('body')->isEmpty()
-      && preg_match('/^\s*<!-- wp:image\b/', (string) $node->get('body')->value) === 1;
-    $variables['article_lead_figure'] = $body_leads_with_image ? df_impact_article_lead_figure_build($node) : NULL;
+    if (isset($variables['content']['field_photo_caption'])) {
+      $variables['content']['field_photo_caption']['#access'] = FALSE;
+    }
+    // Lead figure: the opening Gutenberg image, or the Featured Image field
+    // when that file is not already in the body (no second copy of a migrated hero).
+    $body_value = ($node->hasField('body') && !$node->get('body')->isEmpty())
+      ? (string) $node->get('body')->value
+      : '';
+    $body_leads_with_image = preg_match('/^\s*<!-- wp:image\b/', $body_value) === 1;
+    $featured_set = $node->hasField('field_featured_image') && !$node->get('field_featured_image')->isEmpty();
+    $featured_already_in_body = $featured_set && df_impact_article_body_contains_featured_image($node, $body_value);
+    if ($body_leads_with_image || ($featured_set && !$featured_already_in_body)) {
+      $variables['article_lead_figure'] = df_impact_article_lead_figure_build($node);
+    }
+    else {
+      $variables['article_lead_figure'] = NULL;
+    }
     if ($node->hasField('body') && !$node->get('body')->isEmpty()) {
-      $body_html = (string) $node->get('body')->value;
-      if ($variables['article_lead_figure']) {
+      $body_html = $body_value;
+      if ($variables['article_lead_figure'] && $body_leads_with_image) {
         $body_html = df_impact_article_strip_leading_wp_image_block($body_html);
       }
       if (isset($variables['content']['body'])) {
@@ -1416,6 +1448,43 @@ function df_impact_issue_banner_meta(NodeInterface $node): ?array {
 }
 
 /**
+ * Whether the featured media file is already present in the stored body.
+ */
+function df_impact_article_body_contains_featured_image(NodeInterface $node, string $body): bool {
+  if ($body === '' || !$node->hasField('field_featured_image') || $node->get('field_featured_image')->isEmpty()) {
+    return FALSE;
+  }
+  $media = $node->get('field_featured_image')->entity;
+  if (!$media) {
+    return FALSE;
+  }
+  $needles = [];
+  $uuid = method_exists($media, 'uuid') ? (string) $media->uuid() : '';
+  if ($uuid !== '') {
+    $needles[] = $uuid;
+  }
+  if ($media->hasField('field_media_image') && !$media->get('field_media_image')->isEmpty()) {
+    $file = $media->get('field_media_image')->entity;
+    if ($file) {
+      $filename = basename((string) $file->getFileUri());
+      if ($filename !== '' && $filename !== '.' && $filename !== '..') {
+        $needles[] = $filename;
+      }
+      $stem = pathinfo($filename, PATHINFO_FILENAME);
+      if (is_string($stem) && strlen($stem) >= 8) {
+        $needles[] = $stem;
+      }
+    }
+  }
+  foreach ($needles as $needle) {
+    if (str_contains($body, $needle)) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
  * Removes the first Gutenberg lead image block when rendered separately as featured media.
  */
 function df_impact_article_strip_leading_wp_image_block(string $body): string {
@@ -1718,57 +1787,49 @@ function df_impact_card_image_url_for_parity(string $uri): string {
     }
     return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
   }
-  if (preg_match('/-870x570\.(jpe?g|png|webp)$/i', $uri)) {
-    return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+  $theme_url = df_impact_theme_image_url_for_basename(basename(str_replace('public://', '', $uri)));
+  if ($theme_url !== NULL) {
+    return $theme_url;
   }
-  $vendored = df_impact_wp_vendored_derivative_url($uri, '870x570');
-  if ($vendored) {
-    return $vendored;
-  }
-  foreach (['wp_card_870x570', 'card_large'] as $style_id) {
-    $style = \Drupal::entityTypeManager()->getStorage('image_style')->load($style_id);
-    if ($style) {
-      return $style->buildUrl($uri);
-    }
-  }
-  return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+  return df_impact_placeholder_image_url();
 }
 
 /**
  * Resolves public://wp-images/* URIs when files omit extensions or use WP stems.
  */
 function df_impact_resolve_wp_images_uri(string $uri): ?string {
-  $relative = str_replace('public://', '', $uri);
-  if (!str_starts_with($relative, 'wp-images/')) {
-    if (str_starts_with($relative, 'wp-content/uploads/')) {
-      $basename = basename($relative);
-      $uri = 'public://wp-images/' . $basename;
-      $relative = 'wp-images/' . $basename;
-    }
-    else {
-      return NULL;
-    }
-  }
-  $stem = pathinfo($relative, PATHINFO_FILENAME);
-  $dir = DRUPAL_ROOT . '/sites/default/files/wp-images';
-  if (!is_dir($dir) || $stem === '') {
+  $basename = basename(str_replace('public://', '', $uri));
+  if ($basename === '' || $basename === '.' || $basename === '..') {
     return NULL;
   }
-  $exact_uri = 'public://wp-images/' . basename($relative);
-  if (is_file($dir . '/' . basename($relative)) && df_impact_public_file_is_image($exact_uri)) {
-    return $exact_uri;
-  }
-  $glob = glob($dir . '/' . $stem . '*');
-  if (!is_array($glob)) {
+  $found = \Drupal\df_setup\LocalWpImage::findInDirectory(DRUPAL_ROOT . '/sites/default/files/wp-images', $basename);
+  if ($found === NULL) {
     return NULL;
   }
-  foreach ($glob as $path) {
-    $candidate = 'public://wp-images/' . basename($path);
-    if (is_file($path) && preg_match('/\.(jpe?g|png|gif|webp)$/i', $path) && df_impact_public_file_is_image($candidate)) {
-      return $candidate;
+  return 'public://wp-images/' . basename($found);
+}
+
+/**
+ * Theme copy of a basename when the wp-images file is a captcha stub.
+ */
+function df_impact_theme_image_url_for_basename(string $basename): ?string {
+  $theme_path = \Drupal::service('extension.list.theme')->getPath('df_impact');
+  foreach (['assets', 'images'] as $subdir) {
+    $found = \Drupal\df_setup\LocalWpImage::findInDirectory(DRUPAL_ROOT . '/' . $theme_path . '/' . $subdir, $basename);
+    if ($found === NULL) {
+      continue;
     }
+    $base = rtrim(\Drupal::request()->getBasePath(), '/');
+    return $base . '/' . $theme_path . '/' . $subdir . '/' . rawurlencode(basename($found));
   }
   return NULL;
+}
+
+/**
+ * Neutral image used when no local file or crop exists.
+ */
+function df_impact_placeholder_image_url(): string {
+  return df_impact_theme_asset_url('image-placeholder.png');
 }
 
 function df_impact_card_image_url_for_parity_from_src(string $src): string {
@@ -2005,6 +2066,9 @@ function df_impact_article_more_story_cards(NodeInterface $node): array {
       $meta = df_impact_article_card_image_meta($related);
       $image_url = $live_thumb ?? df_impact_jetpack_related_image_for_article($related);
     }
+    if (!is_string($image_url) || $image_url === '' || df_impact_is_remote_wordpress_image_url($image_url)) {
+      $image_url = df_impact_placeholder_image_url();
+    }
     $cards[] = [
       'url' => $url,
       'title' => $related->label(),
@@ -2033,7 +2097,10 @@ function df_impact_jetpack_live_thumb_index(): array {
     foreach ($entry['related'] ?? [] as $rel) {
       $path = rtrim((string) parse_url((string) ($rel['url'] ?? ''), PHP_URL_PATH), '/');
       if ($path !== '' && !empty($rel['image_src'])) {
-        $index[$path] = (string) $rel['image_src'];
+        $local = df_impact_card_image_url_for_parity_from_src((string) $rel['image_src']);
+        if ($local !== '' && !df_impact_is_remote_wordpress_image_url($local)) {
+          $index[$path] = $local;
+        }
       }
     }
   }
@@ -2300,6 +2367,9 @@ function df_impact_build_homepage_hero(?NodeInterface $issue): ?array {
     return NULL;
   }
   $video_url = df_impact_media_file_url($issue, 'field_hero_video', 'field_media_video_file');
+  if ($video_url !== NULL && df_impact_is_remote_wordpress_image_url($video_url)) {
+    $video_url = NULL;
+  }
   if ($video_url === NULL) {
     $video_url = df_impact_theme_asset_url('Impact_Ambient.mp4');
   }
@@ -2342,7 +2412,11 @@ function df_impact_media_file_url(NodeInterface $node, string $field_name, strin
   if (!$file) {
     return NULL;
   }
-  return \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+  $url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+  if (df_impact_is_remote_wordpress_image_url($url)) {
+    return NULL;
+  }
+  return $url;
 }
 
 /**
@@ -2569,10 +2643,7 @@ function df_impact_article_fallback_image_src(string $url): ?string {
       $glob = glob($wp_images_dir . '/' . $stem . '*');
       if (is_array($glob)) {
         foreach ($glob as $file_path) {
-          if (!is_file($file_path)) {
-            continue;
-          }
-          if (!preg_match('/\.(jpe?g|png|gif|webp)$/i', $file_path)) {
+          if (!\Drupal\df_setup\LocalWpImage::isImageFile($file_path)) {
             continue;
           }
           return $gen->generateAbsoluteString('public://wp-images/' . basename($file_path));
@@ -2730,67 +2801,19 @@ function df_impact_in_brief_card_image_meta(NodeInterface $node): ?array {
   if ($uri === NULL) {
     $uri = df_impact_in_brief_manifest_image_uri($node);
   }
-  if (is_string($uri) && df_impact_public_file_is_image($uri)) {
-    return [
-      'url' => df_impact_card_image_url_for_parity($uri),
-      'alt' => $alt,
-    ];
-  }
-  // Local wp-images copies of some cards are SiteGround captcha HTML, or absent.
-  // Live PostX cards use the Photon fit of the full upload.
-  $photon = df_impact_in_brief_photon_card_url($node);
-  if ($photon === NULL) {
-    return NULL;
+  if (is_string($uri)) {
+    $resolved = df_impact_public_file_is_image($uri) ? $uri : df_impact_resolve_wp_images_uri($uri);
+    if (is_string($resolved) && df_impact_public_file_is_image($resolved)) {
+      return [
+        'url' => df_impact_card_image_url_for_parity($resolved),
+        'alt' => $alt,
+      ];
+    }
   }
   return [
-    'url' => $photon,
+    'url' => df_impact_placeholder_image_url(),
     'alt' => $alt,
   ];
-}
-
-/**
- * Live PostX card URL (fit=768×551) for an In Brief item.
- */
-function df_impact_in_brief_photon_card_url(NodeInterface $node): ?string {
-  $row = df_impact_in_brief_manifest_row($node);
-  static $media_by_wp_id = NULL;
-  if ($media_by_wp_id === NULL) {
-    $media_by_wp_id = [];
-    $json_path = DRUPAL_ROOT . '/' . \Drupal::service('extension.list.module')->getPath('df_setup') . '/data/media.json';
-    if (is_readable($json_path)) {
-      $items = json_decode((string) file_get_contents($json_path), TRUE);
-      if (is_array($items)) {
-        foreach ($items as $item) {
-          if (!empty($item['wp_id']) && !empty($item['source_url'])) {
-            $media_by_wp_id[(string) $item['wp_id']] = (string) $item['source_url'];
-          }
-        }
-      }
-    }
-  }
-  $url = $media_by_wp_id[(string) ($row['featured_image_wp_id'] ?? '')] ?? '';
-  if ($url === '' && !empty($row['body']) && preg_match('#https?://[^"\s]+/wp-content/uploads/[^"\s]+#', (string) $row['body'], $match)) {
-    $url = $match[0];
-  }
-  if ($url === '') {
-    return NULL;
-  }
-  $url = preg_replace('/-\d+x\d+(?=\.(?:jpe?g|png|gif|webp)(?:\?|$))/i', '', $url) ?? $url;
-  $path = parse_url($url, PHP_URL_PATH);
-  if (!is_string($path) || !preg_match('#/wp-content/uploads/(.+)$#', $path, $m)) {
-    return NULL;
-  }
-  $relative = rawurldecode($m[1]);
-  foreach ([
-    'public://wp-content/uploads/' . $relative,
-    'public://wp-images/' . basename($relative),
-  ] as $uri) {
-    $styled = df_impact_local_styled_image_url($uri, 'wp_card_870x570');
-    if ($styled !== NULL) {
-      return $styled;
-    }
-  }
-  return NULL;
 }
 
 /**

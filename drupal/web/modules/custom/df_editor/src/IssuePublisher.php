@@ -99,6 +99,7 @@ final class IssuePublisher {
   }
 
   private function applyPublishedState(NodeInterface $node): void {
+    $homepage_was_blank = $node->hasField('field_homepage_sort_weight') && $node->get('field_homepage_sort_weight')->isEmpty();
     if ($node->hasField('moderation_state')) {
       $node->set('moderation_state', 'published');
     }
@@ -108,6 +109,28 @@ final class IssuePublisher {
     }
     $node->setChangedTime($this->time->getRequestTime());
     $node->save();
+    $this->clearInventedHomepageWeight($node, $homepage_was_blank);
+  }
+
+  /**
+   * Publish must not fill homepage slots 1–5. A blank weight stays blank.
+   */
+  private function clearInventedHomepageWeight(NodeInterface $node, bool $homepage_was_blank): void {
+    if (!$homepage_was_blank || !$node->id() || !$node->hasField('field_homepage_sort_weight')) {
+      return;
+    }
+    $storage = $this->entityTypeManager->getStorage('node');
+    $storage->resetCache([(int) $node->id()]);
+    $fresh = $storage->load($node->id());
+    if (!$fresh instanceof NodeInterface || $fresh->get('field_homepage_sort_weight')->isEmpty()) {
+      return;
+    }
+    $weight = (int) $fresh->get('field_homepage_sort_weight')->value;
+    if ($weight < 1 || $weight > 5) {
+      return;
+    }
+    $fresh->set('field_homepage_sort_weight', NULL);
+    $fresh->save();
   }
 
 }

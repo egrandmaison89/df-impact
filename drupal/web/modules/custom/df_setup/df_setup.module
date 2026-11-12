@@ -13,10 +13,12 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\df_secondary\NodePublicationTime;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\df_setup\ArchivePageWpOrder;
 use Drupal\df_setup\ArticleCreditLabels;
 use Drupal\df_setup\ExploreSlotSelector;
 use Drupal\df_setup\IssueStoryOrder;
+use Drupal\df_setup\VideoEmbedUrl;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
@@ -100,19 +102,15 @@ function _df_setup_alter_article_credit_fields(array &$form): void {
 }
 
 /**
- * Photo caption is only relevant when a featured image is selected.
+ * Photo caption help text. The field stays visible; the media library widget
+ * does not use the autocomplete input name the old #states selector required.
  */
 function _df_setup_alter_article_photo_caption_field(array &$form): void {
   if (!isset($form['field_photo_caption'])) {
     return;
   }
 
-  $form['field_photo_caption']['#description'] = (string) t('Optional caption shown beneath the featured image (e.g., subject name and title).');
-  $form['field_photo_caption']['#states'] = [
-    'visible' => [
-      ':input[name="field_featured_image[0][target_id]"]' => ['filled' => TRUE],
-    ],
-  ];
+  $form['field_photo_caption']['#description'] = (string) t('Shown under the featured image at the top right of the story. Stories whose body already includes this image keep that existing caption and are not given a second copy.');
 }
 
 /**
@@ -256,6 +254,7 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
   if (
     $view_id === 'topic_archive'
     && $display === 'page_1'
+    && !df_setup_archive_uses_live_term_query()
   ) {
     $path = \Drupal::request()->getPathInfo();
     $nids = df_setup_archive_nids_for_request_path($path);
@@ -281,6 +280,7 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
     }
     if (in_array($display, ['block_1', 'default'], TRUE)) {
       df_setup_issue_articles_exclude_promo_references($view, $query);
+      df_setup_views_query_issue_story_sort($query);
     }
   }
 
@@ -455,8 +455,44 @@ function df_setup_sql_sort_integer_nulls_last(Sql $query, string $table, string 
       unset($query->orderby[$key]);
     }
   }
+  $query->orderby = array_values($query->orderby);
   $order_alias = str_contains($column, 'homepage') ? 'df_home_sort_coalesce' : 'df_postx_sort_coalesce';
-  $query->addOrderBy(NULL, "COALESCE({$alias}.{$column}, 999999)", 'ASC', $order_alias);
+  // addOrderBy appends. Pin and demote have to win over created, so the
+  // coalesce is the first ORDER BY.
+  df_setup_sql_sort_prepend($query, "COALESCE({$alias}.{$column}, 999999)", $order_alias);
+}
+
+/**
+ * Inserts an ORDER BY at the front of a Views SQL query.
+ */
+function df_setup_sql_sort_prepend(Sql $query, string $expression, string $alias, string $direction = 'ASC'): void {
+  foreach ($query->orderby as $key => $order) {
+    if (($order['field'] ?? '') === $alias) {
+      unset($query->orderby[$key]);
+    }
+  }
+  $query->orderby = array_values($query->orderby);
+  $query->addOrderBy(NULL, $expression, $direction, $alias);
+  $added = array_pop($query->orderby);
+  if (is_array($added)) {
+    array_unshift($query->orderby, $added);
+  }
+}
+
+/**
+ * Issue pages: story rank, then PostX weight (blank last), then created.
+ */
+function df_setup_views_query_issue_story_sort(Sql $query): void {
+  df_setup_sql_sort_integer_nulls_last($query, 'node__field_postx_sort_weight', 'field_postx_sort_weight_value');
+  $rank_alias = $query->ensureTable('node__field_issue_story_rank');
+  if (!$rank_alias) {
+    return;
+  }
+  df_setup_sql_sort_prepend(
+    $query,
+    "CASE {$rank_alias}.field_issue_story_rank_value WHEN 'pinned' THEN 0 WHEN 'demoted' THEN 2 ELSE 1 END",
+    'df_issue_story_rank',
+  );
 }
 
 /**
@@ -543,6 +579,23 @@ function df_setup_archive_frozen_lookup_path(): string {
     return rtrim($path, '/') . '/page/' . $page_num;
   }
   return $path;
+}
+
+/**
+ * Category and tag archives that match a term stay live queries.
+ *
+ * Frozen WordPress lists stay in place only for legacy tag paths that do not
+ * match a topics, cancer type, or tags term (issue-season tags).
+ */
+function df_setup_archive_uses_live_term_query(): bool {
+  $path = df_setup_archive_frozen_lookup_path();
+  if (!preg_match('#^/(category|tag)/([^/]+)#', $path, $match)) {
+    return FALSE;
+  }
+  if ($match[1] === 'tag' && $match[2] === 'digital-exclusives') {
+    return TRUE;
+  }
+  return df_setup_topic_term_tids_for_category_slug($match[2]) !== [];
 }
 
 /**
@@ -662,6 +715,9 @@ function df_setup_views_pre_view(ViewExecutable $view, $display_id, array &$args
   ) {
     return;
   }
+  if (df_setup_archive_uses_live_term_query()) {
+    return;
+  }
   $frozen = df_setup_archive_nids_for_request_path('');
   if ($frozen !== []) {
     $args = ['all'];
@@ -683,7 +739,7 @@ function df_setup_views_pre_build(ViewExecutable $view): void {
     return;
   }
 
-  if ($view_id === 'topic_archive' && $display === 'page_1') {
+  if ($view_id === 'topic_archive' && $display === 'page_1' && !df_setup_archive_uses_live_term_query()) {
     $frozen_nids = df_setup_archive_nids_for_request_path('');
     if ($frozen_nids !== []) {
       $pager = $view->display_handler->getOption('pager');
@@ -743,6 +799,10 @@ function df_setup_pathauto_alias_alter(&$alias, array $context): void {
 }
 
 function df_setup_entity_presave(EntityInterface $entity): void {
+  if ($entity->getEntityTypeId() === 'paragraph') {
+    df_setup_paragraph_presave($entity);
+    return;
+  }
   if ($entity instanceof NodeInterface && $entity->bundle() === 'article') {
     $title = $entity->getTitle();
     $decoded = Html::decodeEntities($title);
@@ -782,6 +842,72 @@ function df_setup_entity_presave(EntityInterface $entity): void {
 }
 
 /**
+ * Defaults that keep Image with Caption and Video Embed from being dropped.
+ */
+function df_setup_paragraph_presave(EntityInterface $entity): void {
+  if ($entity->bundle() === 'image_caption' && $entity->hasField('field_display_mode') && $entity->get('field_display_mode')->isEmpty()) {
+    $entity->set('field_display_mode', 'half_right');
+  }
+  if ($entity->bundle() !== 'video_embed' || !$entity->hasField('field_video_url') || $entity->get('field_video_url')->isEmpty()) {
+    return;
+  }
+  $uri = (string) $entity->get('field_video_url')->uri;
+  $normalized = VideoEmbedUrl::normalizeInput($uri);
+  if ($normalized === '' || $normalized === $uri) {
+    return;
+  }
+  $entity->set('field_video_url', [
+    'uri' => $normalized,
+    'title' => (string) ($entity->get('field_video_url')->title ?? ''),
+  ]);
+}
+
+/**
+ * Implements hook_field_widget_single_element_form_alter().
+ */
+function df_setup_field_widget_single_element_form_alter(array &$element, FormStateInterface $form_state, array $context): void {
+  $items = $context['items'] ?? NULL;
+  if (!$items instanceof FieldItemListInterface) {
+    return;
+  }
+  $definition = $items->getFieldDefinition();
+  if ($definition->getTargetEntityTypeId() !== 'paragraph') {
+    return;
+  }
+  if ($definition->getName() === 'field_display_mode') {
+    $element['#required'] = FALSE;
+    $selected = $element['#default_value'] ?? NULL;
+    $empty = $selected === NULL || $selected === '' || $selected === [] || $selected === ['_none'];
+    if ($empty) {
+      $element['#default_value'] = 'half_right';
+    }
+    return;
+  }
+  if ($definition->getName() === 'field_video_url' && isset($element['uri'])) {
+    $element['uri']['#description'] = (string) t('Paste a YouTube or Vimeo URL, including https://.');
+    $validators = $element['uri']['#element_validate'] ?? [];
+    array_unshift($validators, 'df_setup_video_embed_uri_normalize');
+    $element['uri']['#element_validate'] = $validators;
+  }
+}
+
+/**
+ * Accepts a YouTube or Vimeo URL pasted without a scheme.
+ */
+function df_setup_video_embed_uri_normalize(array &$element, FormStateInterface $form_state): void {
+  $value = $element['#value'] ?? '';
+  if (!is_string($value)) {
+    return;
+  }
+  $normalized = VideoEmbedUrl::normalizeInput($value);
+  if ($normalized === $value) {
+    return;
+  }
+  $element['#value'] = $normalized;
+  $form_state->setValueForElement($element, $normalized);
+}
+
+/**
  * Builds a WP-style category slug from a topic term label (e.g. /category/cancer-research).
  */
 function df_setup_topic_category_slug(string $name): string {
@@ -809,7 +935,7 @@ function df_setup_topic_term_tids_for_category_slug(string $slug): array {
   /** @var \Drupal\taxonomy\TermStorageInterface $storage */
   $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
   $tids = [];
-  foreach (['topics', 'cancer_types'] as $vid) {
+  foreach (['topics', 'cancer_types', 'tags'] as $vid) {
     $tree = $storage->loadTree($vid, 0, NULL, TRUE);
     foreach ($tree as $item) {
       if (!$item instanceof TermInterface) {
@@ -1371,21 +1497,9 @@ function df_setup_legacy_issue_tag_slug_for_request_path(string $path): string {
 /**
  * Implements hook_entity_view_alter().
  *
- * Legacy issues: WordPress serves 404 at the issue URL (tag archive is canonical).
+ * Issue landings, including /late-fall-2022-issue, render the issue node.
  */
 function df_setup_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display): void {
-  if ($display->getMode() !== 'full' || !$entity instanceof NodeInterface || $entity->bundle() !== 'issue') {
-    return;
-  }
-  $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $entity->id());
-  if (df_setup_legacy_issue_tag_slug_for_request_path($alias) === '') {
-    return;
-  }
-  $build = df_setup_wordpress_not_found_page_build();
-  $build['#cache']['tags'] = Cache::mergeTags(
-    $build['#cache']['tags'] ?? [],
-    $entity->getCacheTags(),
-  );
 }
 
 /**
@@ -1487,9 +1601,23 @@ function df_setup_views_post_execute(ViewExecutable $view): void {
   if ($view->id() === 'issue_articles' && in_array($view->current_display, ['block_1', 'default'], TRUE)) {
     $rows = $view->result;
     if (is_array($rows) && count($rows) > 1) {
-      usort($rows, static function ($a, $b): int {
-        $node_a = $a->_entity ?? NULL;
-        $node_b = $b->_entity ?? NULL;
+      $missing = [];
+      foreach ($rows as $row) {
+        $entity = $row->_entity ?? NULL;
+        if ($entity instanceof NodeInterface) {
+          continue;
+        }
+        $nid = (int) ($row->nid ?? $row->node_field_data_nid ?? 0);
+        if ($nid > 0) {
+          $missing[$nid] = $nid;
+        }
+      }
+      $loaded = $missing === []
+        ? []
+        : \Drupal::entityTypeManager()->getStorage('node')->loadMultiple($missing);
+      usort($rows, static function ($a, $b) use ($loaded): int {
+        $node_a = df_setup_views_result_node($a, $loaded);
+        $node_b = df_setup_views_result_node($b, $loaded);
         if (!$node_a instanceof NodeInterface || !$node_b instanceof NodeInterface) {
           return 0;
         }
@@ -1507,6 +1635,7 @@ function df_setup_views_post_execute(ViewExecutable $view): void {
   if (
     $view->id() !== 'topic_archive'
     || ($view->current_display ?? '') !== 'page_1'
+    || df_setup_archive_uses_live_term_query()
     || df_setup_archive_nids_for_request_path('') === []
   ) {
     return;
@@ -1520,6 +1649,21 @@ function df_setup_views_post_execute(ViewExecutable $view): void {
   }
   \Drupal::service('pager.manager')->createPager($total, $per_page, $element);
   $view->df_setup_frozen_pager_element = $element;
+}
+
+/**
+ * Node for a Views result row, including field rows that omit _entity.
+ *
+ * @param array<int, \Drupal\node\NodeInterface> $loaded
+ */
+function df_setup_views_result_node(object $row, array $loaded): ?NodeInterface {
+  $entity = $row->_entity ?? NULL;
+  if ($entity instanceof NodeInterface) {
+    return $entity;
+  }
+  $nid = (int) ($row->nid ?? $row->node_field_data_nid ?? 0);
+  $entity = $loaded[$nid] ?? NULL;
+  return $entity instanceof NodeInterface ? $entity : NULL;
 }
 
 /**

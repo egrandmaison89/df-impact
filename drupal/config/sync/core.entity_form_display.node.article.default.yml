@@ -64,7 +64,6 @@ third_party_settings:
         - field_channels
         - field_topics
         - field_cancer_types
-        - field_content_type
         - field_homepage_placement
         - field_explore_order
         - field_issue_story_rank
@@ -159,12 +158,6 @@ content:
       add_mode: dropdown
       form_display_mode: default
       default_paragraph_type: ''
-    third_party_settings: {  }
-  field_content_type:
-    type: options_select
-    weight: 14
-    region: content
-    settings: {  }
     third_party_settings: {  }
   field_excerpt:
     type: text_textarea
@@ -354,6 +347,7 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_content_type: true
   field_image: true
   unpublish_on: true
 

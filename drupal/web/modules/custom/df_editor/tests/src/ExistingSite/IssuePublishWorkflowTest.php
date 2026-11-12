@@ -114,6 +114,12 @@ final class IssuePublishWorkflowTest extends ExistingSiteBase {
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->responseContains('Functional Test Issue 2099');
 
+    foreach ($articles as $article) {
+      $published_article = $storage->load($article->id());
+      $this->assertNotNull($published_article);
+      $this->assertTrue($published_article->get('field_homepage_sort_weight')->isEmpty(), 'Publish issue leaves homepage weight blank.');
+    }
+
     foreach ([$issue, ...$articles] as $node) {
       $loaded = $storage->load($node->id());
       if ($loaded) {

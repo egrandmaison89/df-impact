@@ -98,11 +98,7 @@ function df_secondary_preprocess_node(array &$variables): void {
   if ($node->isNew() || !$node->id()) {
     return;
   }
-  $origin = 'https://danafarberimpact.org';
-  $permalink = $origin . $node->toUrl()->toString();
-  if (!str_ends_with($permalink, '/')) {
-    $permalink .= '/';
-  }
+  $permalink = $node->toUrl('canonical', ['absolute' => TRUE])->toString();
   $title = $node->label();
   $encoded_title = rawurlencode($title);
   $encoded_url = rawurlencode($permalink);

@@ -11,6 +11,7 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\df_editor\EditorBodyImages;
 use Drupal\df_editor\IssuePublisher;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\filter\FilterFormatInterface;
@@ -33,6 +34,9 @@ function df_editor_form_node_article_edit_form_alter(array &$form, FormStateInte
 function df_editor_form_node_article_form_alter(array &$form, FormStateInterface $form_state): void {
   df_editor_configure_article_placement_form($form, $form_state);
   df_editor_restrict_url_alias_form($form);
+  if (isset($form['field_content_type'])) {
+    $form['field_content_type']['#access'] = FALSE;
+  }
   if (!isset($form['body']['widget'][0])) {
     return;
   }
@@ -152,6 +156,17 @@ function df_editor_node_presave(NodeInterface $node): void {
     $placement = (string) $node->get('field_homepage_placement')->value;
     if ($placement !== 'featured') {
       $node->set('field_explore_order', NULL);
+    }
+  }
+  if ($node->bundle() === 'article' && $node->hasField('body') && !$node->get('body')->isEmpty()) {
+    $html = (string) $node->get('body')->value;
+    $normalized = EditorBodyImages::normalize($html);
+    if ($normalized !== $html) {
+      $node->set('body', [
+        'value' => $normalized,
+        'format' => $node->get('body')->format,
+        'summary' => $node->get('body')->summary,
+      ]);
     }
   }
   if ($node->bundle() !== 'article' || !$node->hasField('body') || $node->get('body')->isEmpty()) {
@@ -549,10 +564,10 @@ function df_editor_configure_article_placement_form(array &$form, FormStateInter
     $form['field_homepage_placement']['widget']['#description'] = (string) t('Explore the Latest Issue uses the three featured slots (1 large, then two stacked). Recent Highlights is separate. Digital Exclusives and In Brief are not featured here.');
   }
   if (isset($form['field_explore_order']['widget'])) {
-    $form['field_explore_order']['widget']['#description'] = (string) t('Slot on Explore the Latest Issue when Homepage placement is Explore the Latest Issue. 1 is the large card. 2 and 3 are the stacked cards.');
+    $form['field_explore_order']['widget']['#description'] = (string) t('Slot on Explore the Latest Issue when Homepage placement is Explore the Latest Issue. 1 is the large card. 2 and 3 are the stacked cards. Those three slots are the homepage Explore band.');
     $form['field_explore_order']['#states'] = [
       'visible' => [
-        ':input[name="field_homepage_placement"]' => ['value' => 'featured'],
+        ':input[name="field_homepage_placement[0][value]"]' => ['value' => 'featured'],
       ],
     ];
   }

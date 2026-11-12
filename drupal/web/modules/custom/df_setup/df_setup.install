@@ -1125,6 +1125,27 @@ function df_setup_update_10036(): string {
 }
 
 /**
+ * Rewrites leftover upload URLs and attachment permalinks, including nids 37, 38, 42, and 54.
+ */
+function df_setup_update_10037(): string {
+  if (!\Drupal::hasService('df_setup.wp_inline_image_localizer')) {
+    return 'Inline image localizer is not available.';
+  }
+  /** @var \Drupal\df_setup\WpInlineImageLocalizer $localizer */
+  $localizer = \Drupal::service('df_setup.wp_inline_image_localizer');
+  $saved = $localizer->rewriteContentFields();
+  $present = [];
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  foreach ([37, 38, 42, 54] as $nid) {
+    if ($storage->load($nid)) {
+      $present[] = (string) $nid;
+    }
+  }
+  $which = $present === [] ? 'nids 37, 38, 42, and 54 are not in this database' : 'present nids ' . implode(', ', $present);
+  return "Rewrote leftover WordPress URLs on {$saved} nodes ({$which}).";
+}
+
+/**
  * Loads the canonical About Impact page node, if present.
  */
 function _df_setup_load_about_impact_node(): ?Node {

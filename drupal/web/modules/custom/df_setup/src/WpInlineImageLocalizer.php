@@ -64,20 +64,50 @@ final class WpInlineImageLocalizer {
   }
 
   public function rewriteHtml(string $html): string {
-    if ($html === '' || (!str_contains($html, 'wp-content/uploads') && !str_contains($html, 'wp.com'))) {
+    if ($html === '') {
       return $html;
     }
-    return (string) preg_replace_callback(
+    $needs = str_contains($html, 'wp-content/uploads')
+      || str_contains($html, 'wp.com')
+      || str_contains($html, 'danafarberimpact.org')
+      || str_contains($html, 'attachment_id=');
+    if (!$needs) {
+      return $html;
+    }
+    $html = (string) preg_replace_callback(
       '#https?://(?:[a-z0-9.-]*wp\.com/)?(?:danafarberimpact\.org/)?wp-content/uploads/([^"\'\s>]+)#i',
       function (array $matches): string {
         $relative = rawurldecode((string) strtok($matches[1], '?'));
         $relative = ltrim(str_replace(['../', '..\\'], '', $relative), '/');
         if ($relative === '') {
-          return $matches[0];
+          return $this->placeholderWebPath();
         }
         $uri = $this->ensureLocal($relative);
         if ($uri === NULL) {
-          return $matches[0];
+          return $this->placeholderWebPath();
+        }
+        return \Drupal::service('file_url_generator')->generateString($uri);
+      },
+      $html,
+    );
+    $html = (string) preg_replace_callback(
+      '#https?://(?:www\.)?danafarberimpact\.org/(\d{4}/\d{2}/[^/"\'\s>]+)/([^/"\'\s>]+)/?#i',
+      function (array $matches): string {
+        $parent = '/' . $matches[1];
+        $file = $this->ensureLocal($matches[2]);
+        if ($file !== NULL && preg_match('/\.(?:jpe?g|png|gif|webp)$/i', $matches[2]) === 1) {
+          return \Drupal::service('file_url_generator')->generateString($file);
+        }
+        return $parent;
+      },
+      $html,
+    );
+    return (string) preg_replace_callback(
+      '#https?://(?:www\.)?danafarberimpact\.org/(?:\?|&)(?:[^"\'\s>]*&)?attachment_id=(\d+)#i',
+      function (array $matches): string {
+        $uri = $this->localFileForAttachmentId((int) $matches[1]);
+        if ($uri === NULL) {
+          return $this->placeholderWebPath();
         }
         return \Drupal::service('file_url_generator')->generateString($uri);
       },
@@ -90,14 +120,14 @@ final class WpInlineImageLocalizer {
    */
   public function ensureLocal(string $relative): ?string {
     $relative = ltrim($relative, '/');
+    $basename = basename($relative);
+    $flat = $this->realFlatImage($basename);
+    if ($flat !== NULL) {
+      return $flat;
+    }
     $uri = 'public://wp-content/uploads/' . $relative;
     if ($this->isRealFile($uri)) {
       return $uri;
-    }
-    $basename = basename($relative);
-    $wp_images = 'public://wp-images/' . $basename;
-    if ($this->isRealFile($wp_images)) {
-      return $wp_images;
     }
     $directory = $this->fileSystem->dirname($uri);
     if (!$this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
@@ -114,16 +144,57 @@ final class WpInlineImageLocalizer {
       return NULL;
     }
     $body = (string) $response->getBody();
-    if ($body === '' || str_starts_with(ltrim($body), '<')) {
+    if (!str_starts_with($body, "\xFF\xD8") && !str_starts_with($body, "\x89PNG") && !str_starts_with($body, 'GIF8') && !str_starts_with($body, 'RIFF')) {
       return NULL;
     }
-    $file = $this->fileRepository->writeData($body, $uri, FileExists::Replace);
-    return $file->getFileUri();
+    $file = $this->fileRepository->writeData($body, 'public://wp-images/' . $basename, FileExists::Replace);
+    $written = $file->getFileUri();
+    return $this->isRealFile($written) ? $written : NULL;
+  }
+
+  private function realFlatImage(string $basename): ?string {
+    $directory = $this->fileSystem->realpath('public://wp-images');
+    if (!is_string($directory)) {
+      return NULL;
+    }
+    $found = LocalWpImage::findInDirectory($directory, $basename);
+    if ($found === NULL) {
+      return NULL;
+    }
+    return 'public://wp-images/' . basename($found);
+  }
+
+  private function localFileForAttachmentId(int $wp_id): ?string {
+    static $index = NULL;
+    if ($index === NULL) {
+      $index = [];
+      $path = DRUPAL_ROOT . '/modules/custom/df_setup/data/media.json';
+      if (is_readable($path)) {
+        $items = json_decode((string) file_get_contents($path), TRUE);
+        if (is_array($items)) {
+          foreach ($items as $item) {
+            if (!is_array($item) || empty($item['wp_id']) || empty($item['filename'])) {
+              continue;
+            }
+            $index[(int) $item['wp_id']] = (string) $item['filename'];
+          }
+        }
+      }
+    }
+    if (!isset($index[$wp_id])) {
+      return NULL;
+    }
+    return $this->ensureLocal($index[$wp_id]);
+  }
+
+  private function placeholderWebPath(): string {
+    $theme = \Drupal::service('extension.list.theme')->getPath('df_impact');
+    return '/' . $theme . '/assets/image-placeholder.png';
   }
 
   private function isRealFile(string $uri): bool {
     $path = $this->fileSystem->realpath($uri);
-    return is_string($path) && is_file($path) && filesize($path) > 32;
+    return is_string($path) && LocalWpImage::isImageFile($path);
   }
 
 }

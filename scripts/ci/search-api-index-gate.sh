@@ -120,9 +120,51 @@ http_code() {
 }
 
 http_code "/"
-for path in "/search?s=" "/search?s=cancer" "/browse-issues" "/in-brief" "/user/login" "/tag/digital-exclusives" "/tag/digital-exclusives/" "/rss.xml"; do
+for path in "/search?s=" "/search?s=cancer" "/browse-issues" "/in-brief" "/late-fall-2022-issue" "/user/login" "/tag/digital-exclusives" "/tag/digital-exclusives/" "/rss.xml"; do
   http_code "$path"
 done
+
+assert_no_wp_hosts() {
+  local path="$1"
+  curl -s -L -o /tmp/df-http-body --max-time 30 "${BASE_URL}${path}" || fail "Could not fetch ${path} for host check"
+  python3 - "$path" <<'PY' || fail "Rendered page requests a WordPress host"
+import re, sys
+path = sys.argv[1]
+html = open("/tmp/df-http-body", "r", errors="replace").read()
+pattern = re.compile(r"(?:https?:)?//(?:[a-z0-9.-]+\.)?(?:danafarberimpact\.org|wp\.com)\b", re.I)
+hits = pattern.findall(html)
+if hits:
+    print(path, "off-domain WordPress URLs:", len(hits), file=sys.stderr)
+    for hit in hits[:8]:
+        print(" ", hit, file=sys.stderr)
+    sys.exit(1)
+print("no wordpress hosts", path)
+PY
+}
+
+for path in "/" "/search?s=cancer" "/browse-issues" "/in-brief" "/late-fall-2022-issue" "/rss.xml"; do
+  assert_no_wp_hosts "$path"
+done
+
+curl -s -L -o /tmp/df-search-body --max-time 30 "${BASE_URL}/search?s=cancer" || fail "Could not fetch search"
+python3 - <<'PY' || fail "Search canonical is not /search?s=cancer"
+import re
+html = open("/tmp/df-search-body", "r", errors="replace").read()
+match = re.search(r'rel="canonical" href="([^"]+)"', html)
+if not match:
+    raise SystemExit("missing canonical")
+href = match.group(1)
+if not href.endswith("/search?s=cancer") and "search?s=cancer" not in href:
+    raise SystemExit(href)
+print("canonical", href)
+PY
+
+php "$ROOT/scripts/ci/wp-image-stubs.php" || fail "HTML files are committed as images"
+
+if [[ ! -d /tmp/df-blocked-host/node_modules/puppeteer-core ]]; then
+  npm install --prefix /tmp/df-blocked-host --no-save --silent puppeteer-core
+fi
+PUPPETEER_CORE_ROOT=/tmp/df-blocked-host BASE_URL="$BASE_URL" node "$ROOT/scripts/ci/blocked-host-images.mjs" || fail "Blocked-host image check failed"
 
 # Saved article preview must not 500 after a cold cache rebuild.
 "${DRUSH[@]}" php:eval '

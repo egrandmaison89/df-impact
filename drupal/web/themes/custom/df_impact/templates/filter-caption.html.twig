@@ -1,0 +1,17 @@
+{#
+  Caption filter output matches migrated wp-block-image figures.
+  filter_align puts align-left / align-right / align-center on the image;
+  those classes move onto this figure as alignleft / alignright / aligncenter.
+#}
+{% set align = 'alignright' %}
+{% if 'align-left' in classes %}
+  {% set align = 'alignleft' %}
+{% elseif 'align-center' in classes %}
+  {% set align = 'aligncenter' %}
+{% elseif 'align-right' in classes %}
+  {% set align = 'alignright' %}
+{% endif %}
+<figure class="wp-block-image {{ align }} size-large is-resized">
+{{ node }}
+<figcaption class="wp-element-caption">{{ caption }}</figcaption>
+</figure>

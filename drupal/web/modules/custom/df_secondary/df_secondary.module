@@ -159,7 +159,8 @@ function df_secondary_preprocess_views_view(array &$variables): void {
 /**
  * Implements hook_views_query_alter().
  *
- * A blank /?s= is a search with no keywords. Live lists the newest posts.
+ * A blank /?s= is a search with no keywords. Live lists the newest posts by
+ * publication_sort (manifest post date when indexed, else changed / created).
  */
 function df_secondary_views_query_alter(ViewExecutable $view, QueryPluginBase $query): void {
   if ($view->id() !== 'df_impact_search' || !$query instanceof SearchApiQuery) {
@@ -172,7 +173,7 @@ function df_secondary_views_query_alter(ViewExecutable $view, QueryPluginBase $q
   // Live's blank search is the main post query: articles and issues, newest first.
   $query->addCondition('status', 1);
   $query->addCondition('type', ['article', 'issue'], 'IN');
-  $query->sort('created', 'DESC');
+  $query->sort('publication_sort', 'DESC');
 }
 
 /**

@@ -11,4 +11,7 @@ $webRoot = dirname(__DIR__, 4);
 $drupalRoot = dirname($webRoot);
 $autoload = require $drupalRoot . '/vendor/autoload.php';
 $autoload->addPsr4('Drupal\\df_launch\\', dirname(__DIR__) . '/src/');
+$autoload->addPsr4('Drupal\\df_secondary\\', dirname(__DIR__, 2) . '/df_secondary/src/');
 $autoload->addPsr4('Drupal\\Tests\\df_launch\\', dirname(__DIR__) . '/tests/src/');
+$autoload->addPsr4('Drupal\\Tests\\df_secondary\\', dirname(__DIR__, 2) . '/df_secondary/tests/src/');
+$autoload->addPsr4('Drupal\\node\\', $webRoot . '/core/modules/node/src/');

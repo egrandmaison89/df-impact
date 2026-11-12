@@ -24,6 +24,18 @@ final class IssuePublisher {
   ) {}
 
   /**
+   * TRUE while publishIssueWithArticles() is saving the issue.
+   *
+   * hook_node_update also publishes attached stories. Counting after that
+   * second pass sees them as already published and reports zero.
+   */
+  private bool $bundledPublish = FALSE;
+
+  public function isBundledPublish(): bool {
+    return $this->bundledPublish;
+  }
+
+  /**
    * Publishes the issue plus linked Draft and In Review articles and briefs.
    *
    * Homepage placement and listing weights are left as the editor set them.
@@ -37,10 +49,16 @@ final class IssuePublisher {
       throw new \InvalidArgumentException('Expected an issue node.');
     }
 
-    $this->applyPublishedState($issue);
-    $published = $this->publishAttachedArticles($issue);
-    $this->invalidateIssueCaches($issue);
-    return $published;
+    $this->bundledPublish = TRUE;
+    try {
+      $this->applyPublishedState($issue);
+      $published = $this->publishAttachedArticles($issue);
+      $this->invalidateIssueCaches($issue);
+      return $published;
+    }
+    finally {
+      $this->bundledPublish = FALSE;
+    }
   }
 
   /**

@@ -408,6 +408,14 @@ function df_metatag_placeholder_image_url(): string {
 }
 
 /**
+ * Theme logo used when a page has no story image of its own.
+ */
+function df_metatag_default_share_image_url(): string {
+  $theme = \Drupal::service('extension.list.theme')->getPath('df_impact');
+  return rtrim(df_metatag_public_origin(), '/') . '/' . $theme . '/images/ImpactDFJF_HeaderLogo_878.png';
+}
+
+/**
  * Rewrites canonical and image tags onto the public origin after other merges.
  */
 function df_metatag_finalize_public_tags(array &$tags): void {
@@ -433,6 +441,14 @@ function df_metatag_finalize_public_tags(array &$tags): void {
     if (!empty($tags[$key]) && !str_contains((string) $tags[$key], '[')) {
       $tags[$key] = df_metatag_rewrite_upload_url((string) $tags[$key], $origin);
     }
+  }
+  $is_front = $route_name === '<front>' || $path === '/' || df_metatag_is_homepage_path();
+  $share_missing = empty($tags['og_image']) || str_contains((string) $tags['og_image'], '[');
+  if (($is_front || $is_search) && $share_missing) {
+    $share = df_metatag_default_share_image_url();
+    $tags['og_image'] = $share;
+    $tags['og_image_secure_url'] = $share;
+    $tags['twitter_cards_image'] = $share;
   }
 }
 

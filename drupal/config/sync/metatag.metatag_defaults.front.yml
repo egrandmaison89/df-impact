@@ -16,4 +16,6 @@ tags:
   og_title: 'Homepage - Impact Magazine'
   og_description: "Explore the latest issue, read recent highlights, and dive into digital exclusives for Dana-Farber Cancer Institute's Impact newsletter."
   og_url: '[current-page:url]'
+  og_image: /themes/custom/df_impact/images/ImpactDFJF_HeaderLogo_878.png
   twitter_cards_type: summary_large_image
+  twitter_cards_image: /themes/custom/df_impact/images/ImpactDFJF_HeaderLogo_878.png

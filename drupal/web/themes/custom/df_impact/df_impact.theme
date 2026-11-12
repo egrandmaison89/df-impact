@@ -651,7 +651,7 @@ function df_impact_preprocess_node(&$variables) {
       }
       $variables['in_brief_body'] = [
         '#type' => 'processed_text',
-        '#text' => $summary,
+        '#text' => df_impact_rewrite_unpublished_issue_hrefs($summary),
         '#format' => $summary_format,
         '#langcode' => $node->language()->getId(),
       ];
@@ -665,7 +665,7 @@ function df_impact_preprocess_node(&$variables) {
       if ($issue instanceof NodeInterface) {
         $variables['in_brief_issue_label'] = $issue->label();
         if (!$issue->isPublished()) {
-          $variables['in_brief_issue_url'] = Url::fromRoute('view.browse_issues.page_1')->toString();
+          $variables['in_brief_issue_url'] = \Drupal\df_setup\UnpublishedIssueLinks::urlForIssue($issue, TRUE);
         }
         else {
           $issue_alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $issue->id());
@@ -744,9 +744,8 @@ function df_impact_preprocess_node(&$variables) {
     $issue = $node->get('field_issue')->entity;
     if ($issue instanceof NodeInterface) {
       $variables['issue_title'] = $issue->label();
-      $browse = Url::fromRoute('view.browse_issues.page_1')->toString();
       if (!$issue->isPublished()) {
-        $variables['issue_url'] = $browse;
+        $variables['issue_url'] = \Drupal\df_setup\UnpublishedIssueLinks::urlForIssue($issue, TRUE);
         $variables['article_meta_in_body'] = FALSE;
       }
       else {
@@ -815,7 +814,7 @@ function df_impact_preprocess_node(&$variables) {
       }
       $variables['article_body'] = [
         '#type' => 'processed_text',
-        '#text' => $body_html,
+        '#text' => df_impact_rewrite_unpublished_issue_hrefs($body_html),
         '#format' => $node->get('body')->format,
         '#langcode' => $node->language()->getId(),
       ];
@@ -980,6 +979,27 @@ function df_impact_preprocess_block(&$variables) {
  * Implements hook_preprocess_HOOK() for breadcrumb.
  */
 function df_impact_preprocess_breadcrumb(array &$variables): void {
+  if (!empty($variables['breadcrumb']) && is_array($variables['breadcrumb'])) {
+    foreach ($variables['breadcrumb'] as &$item) {
+      $url = '';
+      if (isset($item['url']) && is_string($item['url'])) {
+        $url = $item['url'];
+      }
+      elseif (isset($item['link']['#url']) && $item['link']['#url'] instanceof Url) {
+        $url = $item['link']['#url']->toString();
+      }
+      if ($url !== '' && \Drupal\df_setup\UnpublishedIssueLinks::isUnpublishedIssuePath($url)) {
+        $browse = \Drupal\df_setup\UnpublishedIssueLinks::browseUrl();
+        if (isset($item['url'])) {
+          $item['url'] = $browse;
+        }
+        if (isset($item['link']['#url'])) {
+          $item['link']['#url'] = Url::fromRoute('view.browse_issues.page_1');
+        }
+      }
+    }
+    unset($item);
+  }
   // WordPress front-end pages do not show Drupal-style breadcrumb trails.
   $variables['breadcrumb'] = [];
 }
@@ -1830,6 +1850,16 @@ function df_impact_theme_image_url_for_basename(string $basename): ?string {
  */
 function df_impact_placeholder_image_url(): string {
   return df_impact_theme_asset_url('image-placeholder.png');
+}
+
+/**
+ * Points stored story HTML at Browse issues when the issue is unpublished.
+ */
+function df_impact_rewrite_unpublished_issue_hrefs(string $html): string {
+  if (!class_exists(\Drupal\df_setup\UnpublishedIssueLinks::class)) {
+    return $html;
+  }
+  return \Drupal\df_setup\UnpublishedIssueLinks::rewriteHtml($html);
 }
 
 function df_impact_card_image_url_for_parity_from_src(string $src): string {
@@ -2829,12 +2859,14 @@ function df_impact_theme_asset_url(string $filename): string {
  * Local image-style URL when the file is a real image on disk.
  */
 function df_impact_local_styled_image_url(string $uri, string $style_id): ?string {
-  if (!df_impact_public_file_is_image($uri)) {
+  $extension = strtolower(pathinfo(basename(str_replace('public://', '', $uri)), PATHINFO_EXTENSION));
+  $needs_extension = !in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'], TRUE);
+  if ($needs_extension || !df_impact_public_file_is_image($uri)) {
     $resolved = df_impact_resolve_wp_images_uri($uri);
     if (is_string($resolved) && df_impact_public_file_is_image($resolved)) {
       $uri = $resolved;
     }
-    else {
+    elseif (!df_impact_public_file_is_image($uri)) {
       return NULL;
     }
   }

@@ -11,12 +11,21 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+use Drupal\Component\Utility\NestedArray;
 use Drupal\df_editor\EditorBodyImages;
 use Drupal\df_editor\IssuePublisher;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\filter\FilterFormatInterface;
 use Drupal\node\Form\NodeForm;
 use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for node forms.
+ */
+function df_editor_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form['#after_build'][] = 'df_editor_url_alias_after_build';
+}
 
 /**
  * Implements hook_form_FORM_ID_alter() for issue edit forms.
@@ -538,22 +547,122 @@ function df_editor_node_update(NodeInterface $node): void {
   if (!\Drupal::currentUser()->hasPermission('publish issue with articles')) {
     return;
   }
-  \Drupal::service('df_editor.issue_publisher')->publishAttachedArticles($node);
+  $publisher = \Drupal::service('df_editor.issue_publisher');
+  if ($publisher->isBundledPublish()) {
+    return;
+  }
+  $publisher->publishAttachedArticles($node);
 }
 
 /**
- * Hides the URL alias widget unless the account may override aliases.
+ * Hides the URL alias widget unless the account is a site admin.
  *
- * site_admin has create/administer url aliases. web_editor does not.
- * Alias changes are not scheduled.
+ * The path widget also parks itself in the advanced sidebar. Site admins
+ * get it open on the form. Web editors do not. Nobody schedules.
  */
 function df_editor_restrict_url_alias_form(array &$form): void {
-  $account = \Drupal::currentUser();
-  $can_override = $account->hasPermission('create url aliases') || $account->hasPermission('administer url aliases');
-  if ($can_override || !isset($form['path'])) {
-    return;
+  $form['#after_build'][] = 'df_editor_url_alias_after_build';
+}
+
+/**
+ * Shows the URL alias to site admins and hides scheduling fields.
+ */
+function df_editor_url_alias_after_build(array $form, FormStateInterface $form_state): array {
+  foreach (['publish_on', 'unpublish_on'] as $field_name) {
+    $parents = df_editor_form_element_parents($form, $field_name);
+    if ($parents !== NULL) {
+      NestedArray::setValue($form, array_merge($parents, ['#access']), FALSE);
+    }
   }
-  $form['path']['#access'] = FALSE;
+  $parents = df_editor_form_element_parents($form, 'path');
+  if ($parents === NULL) {
+    return $form;
+  }
+  $allowed = df_editor_account_may_set_url_alias(\Drupal::currentUser());
+  if (!$allowed) {
+    df_editor_form_element_set_access($form, 'path', FALSE);
+    return $form;
+  }
+  $path = NestedArray::getValue($form, $parents);
+  df_editor_form_element_remove($form, 'path');
+  if (!is_array($path)) {
+    return $form;
+  }
+  // The path widget lives in the advanced sidebar, which Gin hides. Pull it
+  // onto the main form so a site admin can see and change the alias.
+  $path['#access'] = TRUE;
+  $path['#weight'] = 36;
+  unset($path['#group']);
+  if (isset($path['widget']) && is_array($path['widget'])) {
+    foreach (Element::children($path['widget']) as $delta) {
+      $path['widget'][$delta]['#access'] = TRUE;
+      $path['widget'][$delta]['#open'] = TRUE;
+      $path['widget'][$delta]['#title'] = t('URL alias');
+      unset($path['widget'][$delta]['#group']);
+    }
+  }
+  $form['path'] = $path;
+  // Group membership was recorded before this after_build. Clear it or the
+  // advanced sidebar renders a second, hidden copy of the alias field.
+  if (isset($form['path']['widget'][0]['#groups']['advanced']) && is_array($form['path']['widget'][0]['#groups']['advanced'])) {
+    foreach ($form['path']['widget'][0]['#groups']['advanced'] as $key => $member) {
+      if (is_array($member) && ($member['#id'] ?? '') === 'edit-path-0') {
+        unset($form['path']['widget'][0]['#groups']['advanced'][$key]);
+      }
+    }
+  }
+  return $form;
+}
+
+/**
+ * Site admins change URLs. Web editors do not. The superuser still can.
+ */
+function df_editor_account_may_set_url_alias(AccountInterface $account): bool {
+  return (int) $account->id() === 1 || in_array('site_admin', $account->getRoles(), TRUE);
+}
+
+/**
+ * Sets #access on every copy of a named form element.
+ */
+function df_editor_form_element_set_access(array &$element, string $key, bool $access): void {
+  if (isset($element[$key]) && is_array($element[$key])) {
+    $element[$key]['#access'] = $access;
+  }
+  foreach (Element::children($element) as $child) {
+    if (is_array($element[$child])) {
+      df_editor_form_element_set_access($element[$child], $key, $access);
+    }
+  }
+}
+
+/**
+ * Removes every copy of a named form element.
+ */
+function df_editor_form_element_remove(array &$element, string $key): void {
+  unset($element[$key]);
+  foreach (Element::children($element) as $child) {
+    if (is_array($element[$child])) {
+      df_editor_form_element_remove($element[$child], $key);
+    }
+  }
+}
+
+/**
+ * Parents of a named form element, including one moved into a field group.
+ *
+ * @return list<int|string>|null
+ */
+function df_editor_form_element_parents(array $element, string $key, array $parents = []): ?array {
+  if (isset($element[$key]) && is_array($element[$key])) {
+    return array_merge($parents, [$key]);
+  }
+  foreach (Element::children($element) as $child) {
+    $found = df_editor_form_element_parents($element[$child], $key, array_merge($parents, [$child]));
+    if ($found !== NULL) {
+      return $found;
+    }
+  }
+  return NULL;
 }
 
 /**

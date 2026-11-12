@@ -55,6 +55,16 @@ services:
     tags:
       - { name: event_subscriber }
 
+  df_setup.unpublished_issue_redirect:
+    class: Drupal\df_setup\EventSubscriber\UnpublishedIssueRedirectSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  df_setup.path_processor.unpublished_issue:
+    class: Drupal\df_setup\PathProcessor\UnpublishedIssueOutboundPathProcessor
+    tags:
+      - { name: path_processor_outbound, priority: 100 }
+
   df_setup.path_processor.topic_archive:
     class: Drupal\df_setup\PathProcessor\TopicTermArchivePathProcessor
     arguments: ['@entity_type.manager']

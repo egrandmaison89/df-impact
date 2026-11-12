@@ -431,6 +431,27 @@ function df_setup_explore_latest_nids(int $issue_nid): array {
 }
 
 /**
+ * Refreshes unpublished-issue link targets after an issue changes status.
+ */
+function df_setup_node_presave(NodeInterface $node): void {
+  if ($node->bundle() === 'issue') {
+    \Drupal\df_setup\UnpublishedIssueLinks::reset();
+  }
+}
+
+function df_setup_node_insert(NodeInterface $node): void {
+  if ($node->bundle() === 'issue') {
+    \Drupal\df_setup\UnpublishedIssueLinks::reset();
+  }
+}
+
+function df_setup_node_update(NodeInterface $node): void {
+  if ($node->bundle() === 'issue') {
+    \Drupal\df_setup\UnpublishedIssueLinks::reset();
+  }
+}
+
+/**
  * Publication timestamp for ordering. Uses the WordPress-aligned helper when present.
  */
 function df_setup_node_publication_sort(NodeInterface $node): int {
@@ -884,7 +905,21 @@ function df_setup_field_widget_single_element_form_alter(array &$element, FormSt
     return;
   }
   if ($definition->getName() === 'field_video_url' && isset($element['uri'])) {
+    // External URL widget even when active config still has the generic
+    // autocomplete. A pasted YouTube URL is not a node title, so the
+    // autocomplete drops it and the paragraph is saved empty.
+    $element['uri']['#type'] = 'url';
     $element['uri']['#description'] = (string) t('Paste a YouTube or Vimeo URL, including https://.');
+    unset(
+      $element['uri']['#autocomplete_route_name'],
+      $element['uri']['#autocomplete_route_parameters'],
+      $element['uri']['#target_type'],
+      $element['uri']['#process_default_value'],
+    );
+    if (isset($element['uri']['#attributes']['data-autocomplete-first-character-denylist'])) {
+      unset($element['uri']['#attributes']['data-autocomplete-first-character-denylist']);
+    }
+    $element['uri']['#link_type'] = 16;
     $validators = $element['uri']['#element_validate'] ?? [];
     array_unshift($validators, 'df_setup_video_embed_uri_normalize');
     $element['uri']['#element_validate'] = $validators;
@@ -1072,7 +1107,7 @@ function df_setup_get_header_issue_links(int $limit = 4): array {
   foreach (array_slice($issues, 0, $limit) as $issue) {
     $links[] = [
       'title' => df_setup_format_issue_nav_label($issue),
-      'url' => $issue->toUrl()->toString(),
+      'url' => \Drupal\df_setup\UnpublishedIssueLinks::urlForIssue($issue),
     ];
   }
   return $links;

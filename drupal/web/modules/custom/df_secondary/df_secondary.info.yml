@@ -6,6 +6,7 @@ package: 'DF Impact'
 dependencies:
   - df_metatag:df_metatag
   - df_setup:df_setup
+  - search_api:search_api
   - simple_sitemap:simple_sitemap
   - drupal:node
   - drupal:system

@@ -3,6 +3,7 @@
   <testsuites>
     <testsuite name="df_launch">
       <directory>tests/src</directory>
+      <directory>../df_secondary/tests/src/Unit</directory>
     </testsuite>
   </testsuites>
 </phpunit>

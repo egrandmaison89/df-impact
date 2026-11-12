@@ -815,7 +815,7 @@ function df_impact_theme_suggestions_page_alter(array &$suggestions, array $vari
   $node = $route_match->getParameter('node');
   if ($node instanceof NodeInterface) {
     $suggestions[] = 'page__node__' . $node->bundle();
-    if ($node->bundle() === 'issue' && function_exists('df_setup_legacy_issue_tag_slug_for_request_path')) {
+    if ($node->bundle() === 'issue' && $node->id() && !$node->isNew() && function_exists('df_setup_legacy_issue_tag_slug_for_request_path')) {
       $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $node->id());
       if (df_setup_legacy_issue_tag_slug_for_request_path($alias) !== '') {
         $suggestions[] = 'page__404';
@@ -1976,7 +1976,9 @@ function df_impact_article_more_story_nodes(NodeInterface $node): array {
  */
 function df_impact_more_story_auto_nodes(NodeInterface $node, array $exclude): array {
   $wanted = 3 - count($exclude);
-  $exclude = array_merge($exclude, [(int) $node->id()]);
+  if (!$node->isNew() && $node->id()) {
+    $exclude[] = (int) $node->id();
+  }
   $tids = [];
   if ($node->hasField('field_topics')) {
     $tids = array_map('intval', array_column($node->get('field_topics')->getValue(), 'target_id'));
@@ -1992,13 +1994,16 @@ function df_impact_more_story_auto_nodes(NodeInterface $node, array $exclude): a
     if ($need <= 0) {
       break;
     }
+    $not_in = array_values(array_unique(array_filter(array_merge($exclude, $nids))));
     $query = \Drupal::entityQuery('node')
       ->accessCheck(TRUE)
       ->condition('type', 'article')
       ->condition('status', 1)
-      ->condition('nid', array_merge($exclude, $nids), 'NOT IN')
       ->sort('created', 'DESC')
       ->range(0, $need);
+    if ($not_in !== []) {
+      $query->condition('nid', $not_in, 'NOT IN');
+    }
     if ($topic_tids) {
       $query->condition('field_topics', $topic_tids, 'IN');
     }
@@ -2456,7 +2461,7 @@ function df_impact_articles_export_rows_by_drupal_alias(): array {
  * @return array<string, mixed>|null
  */
 function df_impact_article_export_row_for_node(NodeInterface $node): ?array {
-  if ($node->bundle() !== 'article') {
+  if ($node->bundle() !== 'article' || $node->isNew() || !$node->id()) {
     return NULL;
   }
   $by_nid = df_impact_articles_export_rows_by_nid();
@@ -2710,6 +2715,9 @@ function df_impact_in_brief_item_url(NodeInterface $node): string {
       return $link->getUrl()->toString();
     }
   }
+  if ($node->isNew() || !$node->id()) {
+    return '';
+  }
   return $node->toUrl()->toString();
 }
 
@@ -2922,6 +2930,9 @@ function df_impact_in_brief_listing_excerpt(NodeInterface $node): string {
  * @return array<string, mixed>
  */
 function df_impact_article_manifest_row(NodeInterface $node): array {
+  if ($node->isNew() || !$node->id()) {
+    return [];
+  }
   static $by_alias = NULL;
   if ($by_alias === NULL) {
     $by_alias = [];
@@ -2943,6 +2954,9 @@ function df_impact_article_manifest_row(NodeInterface $node): array {
 }
 
 function df_impact_in_brief_manifest_row(NodeInterface $node): array {
+  if ($node->isNew() || !$node->id()) {
+    return [];
+  }
   static $by_alias = NULL;
   if ($by_alias === NULL) {
     $by_alias = [];

@@ -87,6 +87,10 @@ function df_secondary_preprocess_node(array &$variables): void {
   if (($variables['view_mode'] ?? '') !== 'full') {
     return;
   }
+  // Preview of a new node has no id; Node::toUrl() throws EntityMalformedException.
+  if ($node->isNew() || !$node->id()) {
+    return;
+  }
   $origin = 'https://danafarberimpact.org';
   $permalink = $origin . $node->toUrl()->toString();
   if (!str_ends_with($permalink, '/')) {

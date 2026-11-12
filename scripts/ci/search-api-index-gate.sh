@@ -85,7 +85,7 @@ echo "==> search-api:clear + search-api:index df_impact_content"
 
 # HTTP checks on a real install. Fail if the server cannot be reached.
 if ! curl -s -o /dev/null --max-time 2 "${BASE_URL}/"; then
-  php -S 127.0.0.1:8888 -t web web/.ht.router.php >/tmp/df-drush-serve.log 2>&1 &
+  php -S 127.0.0.1:8888 -t "$DRUPAL/web" "$DRUPAL/web/.ht.router.php" >/tmp/df-drush-serve.log 2>&1 &
   echo $! > /tmp/df-drush-serve.pid
   ready=0
   for _ in $(seq 1 30); do

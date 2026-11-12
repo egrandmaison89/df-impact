@@ -122,15 +122,15 @@ function df_impact_build_in_brief_listing_sections(?array $grouped = NULL): arra
   $grouped ??= df_impact_group_in_brief_nodes_by_issue();
   $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
   $sections = [];
+  // These five ids have real PostX rules in extracted-wp-inline.css
+  // (image max-width 30%, stack at 768px). a1b2c3, d4e5f6, and 789abc
+  // were placeholders with no CSS, so later sections rendered the raw image.
   $ultp_block_ids = [
     '9a02d2',
     '0eb052',
     '3c7cc6',
     '317443',
     '57d46b',
-    'a1b2c3',
-    'd4e5f6',
-    '789abc',
   ];
 
   foreach ($grouped as $index => $row) {

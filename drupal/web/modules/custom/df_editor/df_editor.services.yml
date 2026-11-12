@@ -22,3 +22,9 @@ services:
     class: Drupal\df_editor\EventSubscriber\IssueNavPageCacheSubscriber
     tags:
       - { name: event_subscriber }
+
+  df_editor.editor_upload_unique_name:
+    class: Drupal\df_editor\EventSubscriber\EditorUploadUniqueNameSubscriber
+    arguments: ['@current_route_match']
+    tags:
+      - { name: event_subscriber }

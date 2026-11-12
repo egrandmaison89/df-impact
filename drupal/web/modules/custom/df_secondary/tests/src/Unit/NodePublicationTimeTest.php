@@ -26,6 +26,20 @@ final class NodePublicationTimeTest extends TestCase {
     $this->assertGreaterThan($older, $newer);
   }
 
+  public function testWinterUsesLabeledYearNotTheFollowingDecember(): void {
+    $winter = NodePublicationTime::issueSeasonTimestamp(2025, 'winter');
+    $fall = NodePublicationTime::issueSeasonTimestamp(2026, 'fall');
+    $september = NodePublicationTime::parseIsoDate('2026-09-01T12:00:00');
+    $this->assertNotNull($winter);
+    $this->assertNotNull($fall);
+    $this->assertNotNull($september);
+    $this->assertSame(2025, (int) date('Y', $winter));
+    $this->assertSame(12, (int) date('n', $winter));
+    $this->assertLessThan($fall, $winter);
+    $this->assertLessThan($september, $winter);
+    $this->assertGreaterThan($winter, $fall);
+  }
+
   public function testBlankSearchSortFieldIsWiredInModule(): void {
     $module = file_get_contents(dirname(__DIR__, 3) . '/df_secondary.module');
     $this->assertIsString($module);

@@ -4,6 +4,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 DRUPAL="$ROOT/drupal"
+bash "$ROOT/scripts/ci/no-wp-hotlinks.sh"
 DB_NAME="${DF_DB_NAME:-dfimpact}"
 DB_USER="${DF_DB_USER:-dfimpact}"
 DB_PASS="${DF_DB_PASS:-dfimpact}"
@@ -119,7 +120,7 @@ http_code() {
 }
 
 http_code "/"
-for path in "/search?s=" "/search?s=cancer" "/browse-issues" "/in-brief" "/user/login"; do
+for path in "/search?s=" "/search?s=cancer" "/browse-issues" "/in-brief" "/user/login" "/tag/digital-exclusives" "/tag/digital-exclusives/" "/rss.xml"; do
   http_code "$path"
 done
 

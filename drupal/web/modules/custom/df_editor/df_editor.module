@@ -31,6 +31,8 @@ function df_editor_form_node_article_edit_form_alter(array &$form, FormStateInte
 }
 
 function df_editor_form_node_article_form_alter(array &$form, FormStateInterface $form_state): void {
+  df_editor_configure_article_placement_form($form, $form_state);
+  df_editor_restrict_url_alias_form($form);
   if (!isset($form['body']['widget'][0])) {
     return;
   }
@@ -64,7 +66,7 @@ function df_editor_form_node_article_form_alter(array &$form, FormStateInterface
     }
   }
 
-  $widget['#description'] = (string) t('Use the toolbar for headings, quotes, images, and media embeds (Vimeo/YouTube). For WordPress-style blocks (pull quote, spacer, buttons), switch to Source and paste the same markup used on migrated stories—see WEB_EDITOR_GUIDE.md.');
+  $widget['#description'] = (string) t('Use the toolbar for headings, quotes, images, and the media library (insert an image once and reuse it). For a multi-image gallery with captions, add an Image gallery in Content sections. For WordPress-style blocks, switch to Source.');
 
   if (isset($form['title']['widget'][0]['value'])) {
     $form['title']['widget'][0]['value']['#title_display'] = 'before';
@@ -118,7 +120,7 @@ function df_editor_count_attached_articles(NodeInterface $issue): int {
   }
   return (int) \Drupal::entityTypeManager()->getStorage('node')->getQuery()
     ->accessCheck(FALSE)
-    ->condition('type', 'article')
+    ->condition('type', ['article', 'in_brief'], 'IN')
     ->condition('field_issue.target_id', $issue->id())
     ->count()
     ->execute();
@@ -146,6 +148,12 @@ function df_editor_entity_access(EntityInterface $entity, $operation, AccountInt
  * Web editors with legacy Full HTML may only keep that format on existing nodes.
  */
 function df_editor_node_presave(NodeInterface $node): void {
+  if ($node->bundle() === 'article' && $node->hasField('field_homepage_placement') && $node->hasField('field_explore_order')) {
+    $placement = (string) $node->get('field_homepage_placement')->value;
+    if ($placement !== 'featured') {
+      $node->set('field_explore_order', NULL);
+    }
+  }
   if ($node->bundle() !== 'article' || !$node->hasField('body') || $node->get('body')->isEmpty()) {
     return;
   }
@@ -215,8 +223,10 @@ function df_editor_views_pre_render(\Drupal\views\ViewExecutable $view): void {
     [
       'node_list:issue',
       'node_list:article',
+      'node_list:in_brief',
       IssuePublisher::CACHE_TAG_ISSUE_NAV,
       'config:df_editor.settings',
+      'config:views.view.browse_issues',
     ],
   );
 }
@@ -255,8 +265,10 @@ function df_editor_invalidate_issue_nav_cache(): void {
   \Drupal::service('cache_tags.invalidator')->invalidateTags([
     'node_list:issue',
     'node_list:article',
+    'node_list:in_brief',
     IssuePublisher::CACHE_TAG_ISSUE_NAV,
     'config:df_editor.settings',
+    'config:views.view.browse_issues',
   ]);
 }
 
@@ -276,8 +288,10 @@ function df_editor_apply_issue_nav_page_cache(array &$element): void {
   $tags = [
     'node_list:issue',
     'node_list:article',
+    'node_list:in_brief',
     IssuePublisher::CACHE_TAG_ISSUE_NAV,
     'config:df_editor.settings',
+    'config:views.view.browse_issues',
   ];
   if (function_exists('df_setup_get_latest_issue_nid')) {
     $latest = df_setup_get_latest_issue_nid();
@@ -350,7 +364,7 @@ function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $
     $form['#attached']['drupalSettings']['dfEditor']['issueArticleCount'] = df_editor_count_attached_articles($entity);
     $form['df_publish_issue_bundle'] = [
       '#type' => 'submit',
-      '#value' => t('Publish issue and all attached articles'),
+      '#value' => t('Publish issue'),
       '#weight' => 101,
       '#submit' => ['df_editor_issue_publish_bundle_submit'],
       '#limit_validation_errors' => [],
@@ -365,6 +379,7 @@ function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $
   if (isset($form['field_year']['widget'][0]['value'])) {
     $form['field_year']['widget'][0]['value']['#max'] = 2105;
   }
+  df_editor_restrict_url_alias_form($form);
   df_editor_attach_web_editor_save_redirect($form);
 }
 
@@ -436,7 +451,7 @@ function df_editor_issue_publish_bundle_submit(array &$form, FormStateInterface 
   /** @var \Drupal\df_editor\IssuePublisher $publisher */
   $publisher = \Drupal::service('df_editor.issue_publisher');
   $articles = $publisher->publishIssueWithArticles($issue);
-  \Drupal::messenger()->addStatus(t('Published issue @issue and @count article(s).', [
+  \Drupal::messenger()->addStatus(t('Published issue @issue and @count draft or in-review article(s) and brief(s). Homepage placement was not changed.', [
     '@issue' => $issue->label(),
     '@count' => count($articles),
   ]));
@@ -459,7 +474,7 @@ function df_editor_warn_empty_published_issue(NodeInterface $issue): void {
   if (df_editor_count_attached_articles($issue) > 0) {
     return;
   }
-  \Drupal::messenger()->addWarning(t('Issue @issue was published with no attached articles. Its issue page and the homepage feature stay empty until articles are attached.', [
+  \Drupal::messenger()->addWarning(t('Issue @issue was published with no attached articles or briefs. Its issue page and the homepage feature stay empty until stories are attached.', [
     '@issue' => $issue->label(),
   ]));
 }
@@ -475,6 +490,9 @@ function df_editor_node_update(NodeInterface $node): void {
     if ($original instanceof NodeInterface) {
       if ($original->isPublished() !== $node->isPublished()) {
         df_editor_invalidate_issue_nav_cache();
+        if ($original->isPublished() && !$node->isPublished()) {
+          df_editor_warn_unpublished_issue_links($node);
+        }
       }
       elseif ($original->hasField('moderation_state') && $node->hasField('moderation_state')) {
         $old_mod = (string) $original->get('moderation_state')->value;
@@ -506,4 +524,135 @@ function df_editor_node_update(NodeInterface $node): void {
     return;
   }
   \Drupal::service('df_editor.issue_publisher')->publishAttachedArticles($node);
+}
+
+/**
+ * Hides the URL alias widget unless the account may override aliases.
+ *
+ * site_admin has create/administer url aliases. web_editor does not.
+ * Alias changes are not scheduled.
+ */
+function df_editor_restrict_url_alias_form(array &$form): void {
+  $account = \Drupal::currentUser();
+  $can_override = $account->hasPermission('create url aliases') || $account->hasPermission('administer url aliases');
+  if ($can_override || !isset($form['path'])) {
+    return;
+  }
+  $form['path']['#access'] = FALSE;
+}
+
+/**
+ * Explore slots are regular articles only, with an editor-chosen order of 1–3.
+ */
+function df_editor_configure_article_placement_form(array &$form, FormStateInterface $form_state): void {
+  if (isset($form['field_homepage_placement']['widget'])) {
+    $form['field_homepage_placement']['widget']['#description'] = (string) t('Explore the Latest Issue uses the three featured slots (1 large, then two stacked). Recent Highlights is separate. Digital Exclusives and In Brief are not featured here.');
+  }
+  if (isset($form['field_explore_order']['widget'])) {
+    $form['field_explore_order']['widget']['#description'] = (string) t('Slot on Explore the Latest Issue when Homepage placement is Explore the Latest Issue. 1 is the large card. 2 and 3 are the stacked cards.');
+    $form['field_explore_order']['#states'] = [
+      'visible' => [
+        ':input[name="field_homepage_placement"]' => ['value' => 'featured'],
+      ],
+    ];
+  }
+  if (isset($form['field_issue_story_rank']['widget'])) {
+    $form['field_issue_story_rank']['widget']['#description'] = (string) t('Issue pages list stories by publication date. Pinned stays at the top. Demoted stays at the bottom. Normal uses the date.');
+  }
+  if (isset($form['field_homepage_sort_weight']['widget'])) {
+    $form['field_homepage_sort_weight']['widget']['#description'] = (string) t('Not used for Explore the Latest Issue. Leave blank. Digital Exclusives no longer need a 110–199 weight.');
+  }
+  $form['#validate'][] = 'df_editor_article_featured_slot_validate';
+}
+
+/**
+ * Warns when a fourth story is featured or an Explore slot is taken.
+ */
+function df_editor_article_featured_slot_validate(array &$form, FormStateInterface $form_state): void {
+  $placement = (string) ($form_state->getValue(['field_homepage_placement', 0, 'value']) ?? 'none');
+  $digital_exclusive = !$form_state->isValueEmpty('df_digital_exclusive_checkbox');
+  if ($digital_exclusive && $placement === 'featured') {
+    $form_state->setErrorByName('field_homepage_placement', t('Digital Exclusives are not featured in Explore the Latest Issue. Turn off Digital Exclusives or set placement to None.'));
+    return;
+  }
+  if ($placement !== 'featured') {
+    return;
+  }
+  $order = (int) ($form_state->getValue(['field_explore_order', 0, 'value']) ?? 0);
+  if (!in_array($order, [1, 2, 3], TRUE)) {
+    $form_state->setErrorByName('field_explore_order', t('Choose Explore slot 1, 2, or 3.'));
+    return;
+  }
+  $issue_id = (int) ($form_state->getValue(['field_issue', 0, 'target_id']) ?? 0);
+  if ($issue_id <= 0) {
+    \Drupal::messenger()->addWarning(t('This story is featured, but it has no issue, so it cannot fill an Explore the Latest Issue slot.'));
+    return;
+  }
+  $form_object = $form_state->getFormObject();
+  $current_id = 0;
+  if ($form_object instanceof NodeForm) {
+    $current_id = (int) $form_object->getEntity()->id();
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('field_issue.target_id', $issue_id)
+    ->condition('field_homepage_placement', 'featured')
+    ->execute();
+  $nids = array_map('intval', $nids);
+  if ($current_id === 0 || !in_array($current_id, $nids, TRUE)) {
+    $nids[] = $current_id;
+  }
+  if (count($nids) > 3) {
+    \Drupal::messenger()->addWarning(t('This issue already has three featured stories. A fourth featured story will not get its own Explore slot until one of the others is cleared.'));
+  }
+  $others_query = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('field_issue.target_id', $issue_id)
+    ->condition('field_homepage_placement', 'featured')
+    ->condition('field_explore_order', $order);
+  if ($current_id > 0) {
+    $others_query->condition('nid', $current_id, '<>');
+  }
+  $others = $others_query->execute();
+  if ($others === []) {
+    return;
+  }
+  $replaced = $storage->load(reset($others));
+  $title = $replaced instanceof NodeInterface ? $replaced->label() : (string) reset($others);
+  \Drupal::messenger()->addWarning(t('Explore slot @slot is already used by “@title”. Saving replaces that slot with this story.', [
+    '@slot' => $order,
+    '@title' => $title,
+  ]));
+}
+
+/**
+ * Unpublished issues keep their stories live. Links must not point at a 403.
+ */
+function df_editor_warn_unpublished_issue_links(NodeInterface $issue): void {
+  if (!$issue->id()) {
+    return;
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', ['article', 'in_brief'], 'IN')
+    ->condition('status', 1)
+    ->condition('field_issue.target_id', $issue->id())
+    ->execute();
+  if ($nids === []) {
+    return;
+  }
+  $titles = [];
+  foreach ($storage->loadMultiple($nids) as $node) {
+    if ($node instanceof NodeInterface) {
+      $titles[] = $node->label();
+    }
+  }
+  \Drupal::messenger()->addWarning(t('Issue @issue is unpublished. These stories stay live, and their issue links go to Browse issues instead of this issue: @list', [
+    '@issue' => $issue->label(),
+    '@list' => implode('; ', $titles),
+  ]));
 }

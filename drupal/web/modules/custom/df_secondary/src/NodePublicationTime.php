@@ -62,6 +62,17 @@ final class NodePublicationTime {
       return self::fallbackNodeTime($issue);
     }
     $season = mb_strtolower(trim((string) ($issue->get('field_season')->value ?? '')), 'UTF-8');
+    return self::issueSeasonTimestamp($year, $season) ?? self::fallbackNodeTime($issue);
+  }
+
+  /**
+   * Magazine season timestamp. Winter keeps the labeled year (not year + 1).
+   */
+  public static function issueSeasonTimestamp(int $year, string $season): ?int {
+    if ($year < 1970) {
+      return NULL;
+    }
+    $season = mb_strtolower(trim($season), 'UTF-8');
     $month = match ($season) {
       'spring' => 3,
       'summer' => 6,
@@ -70,8 +81,7 @@ final class NodePublicationTime {
       'late fall' => 11,
       default => 6,
     };
-    $calendarYear = $season === 'winter' ? $year + 1 : $year;
-    return (int) mktime(12, 0, 0, $month, 15, $calendarYear);
+    return (int) mktime(12, 0, 0, $month, 15, $year);
   }
 
   /**

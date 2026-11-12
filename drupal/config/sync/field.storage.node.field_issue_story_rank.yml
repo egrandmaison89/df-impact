@@ -1,0 +1,30 @@
+uuid: 91d4e2aa-0c77-4b18-8f55-6e0c3b21aa90
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_issue_story_rank
+field_name: field_issue_story_rank
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: pinned
+      label: Pinned
+    -
+      value: normal
+      label: Normal
+    -
+      value: demoted
+      label: Demoted
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: false
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

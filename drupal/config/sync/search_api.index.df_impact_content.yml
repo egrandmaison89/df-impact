@@ -20,14 +20,38 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'body:value'
     type: text
-    boost: 1.0
-    dependencies: {  }
   created:
     label: Created
     datasource_id: 'entity:node'
     property_path: created
     type: date
-    dependencies: {  }
+  field_byline:
+    label: Byline
+    datasource_id: 'entity:node'
+    property_path: field_byline
+    type: text
+  field_cancer_types:
+    label: 'Cancer Types'
+    datasource_id: 'entity:node'
+    property_path: field_cancer_types
+    type: integer
+  field_excerpt:
+    label: Excerpt
+    datasource_id: 'entity:node'
+    property_path: field_excerpt
+    type: text
+    boost: 2.0
+  field_subtitle:
+    label: Subtitle
+    datasource_id: 'entity:node'
+    property_path: field_subtitle
+    type: text
+    boost: 3.0
+  field_topics:
+    label: Topics
+    datasource_id: 'entity:node'
+    property_path: field_topics
+    type: integer
   publication_sort:
     label: 'Publication sort'
     property_path: publication_sort
@@ -38,60 +62,22 @@ field_settings:
     dependencies:
       module:
         - df_secondary
-  field_byline:
-    label: Byline
-    datasource_id: 'entity:node'
-    property_path: field_byline
-    type: text
-    boost: 1.0
-    dependencies: {  }
-  field_cancer_types:
-    label: 'Cancer Types'
-    datasource_id: 'entity:node'
-    property_path: field_cancer_types
-    type: integer
-    boost: 1.0
-    dependencies: {  }
-  field_excerpt:
-    label: Excerpt
-    datasource_id: 'entity:node'
-    property_path: field_excerpt
-    type: text
-    boost: 2.0
-    dependencies: {  }
-  field_subtitle:
-    label: Subtitle
-    datasource_id: 'entity:node'
-    property_path: field_subtitle
-    type: text
-    boost: 3.0
-    dependencies: {  }
-  field_topics:
-    label: Topics
-    datasource_id: 'entity:node'
-    property_path: field_topics
-    type: integer
-    boost: 1.0
-    dependencies: {  }
   status:
     label: Published
     datasource_id: 'entity:node'
     property_path: status
     type: boolean
-    dependencies: {  }
   title:
     label: Title
     datasource_id: 'entity:node'
     property_path: title
     type: text
     boost: 5.0
-    dependencies: {  }
   type:
     label: 'Content type'
     datasource_id: 'entity:node'
     property_path: type
     type: string
-    dependencies: {  }
 datasource_settings:
   'entity:node':
     plugin_id: 'entity:node'
@@ -107,11 +93,6 @@ datasource_settings:
         default: true
         selected: {  }
 processor_settings:
-  publication_sort:
-    weights:
-      add_properties: 0
-    plugin_id: publication_sort
-    settings: {  }
   html_filter:
     weights:
       preprocessor: -15
@@ -129,6 +110,11 @@ processor_settings:
     weights:
       postprocessor: 0
     plugin_id: ignorecase
+    settings: {  }
+  publication_sort:
+    weights:
+      add_properties: 0
+    plugin_id: publication_sort
     settings: {  }
   stopwords:
     weights:

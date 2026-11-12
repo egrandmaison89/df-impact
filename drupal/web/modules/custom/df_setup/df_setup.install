@@ -1112,6 +1112,19 @@ function df_setup_update_10035(): string {
 }
 
 /**
+ * Rewrites inline wp.com and wp-content image URLs onto local public files.
+ */
+function df_setup_update_10036(): string {
+  if (!\Drupal::hasService('df_setup.wp_inline_image_localizer')) {
+    return 'Inline image localizer is not available.';
+  }
+  /** @var \Drupal\df_setup\WpInlineImageLocalizer $localizer */
+  $localizer = \Drupal::service('df_setup.wp_inline_image_localizer');
+  $saved = $localizer->rewriteContentFields();
+  return "Localized inline WordPress images on {$saved} nodes. Re-run with drush df-setup:localize-wp-images.";
+}
+
+/**
  * Loads the canonical About Impact page node, if present.
  */
 function _df_setup_load_about_impact_node(): ?Node {

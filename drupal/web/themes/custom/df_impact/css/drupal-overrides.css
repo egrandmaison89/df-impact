@@ -480,6 +480,41 @@ body.search-results .wp-block-post-template .wp-block-post-title a {
   max-width: 100%;
 }
 
+/* Digital Exclusives and Recent Highlights cards match the WP 870×570 crop. */
+.view-homepage-digital-exclusives .ultp-block-image img,
+.view-homepage-highlights .ultp-block-image img {
+  aspect-ratio: 870 / 570;
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+
+.df-image-gallery,
+.entry-content .wp-block-gallery,
+.entry-content .wp-block-gallery.has-nested-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.df-image-gallery__item,
+.entry-content .wp-block-gallery figure {
+  margin: 0;
+}
+
+.df-image-gallery__item img,
+.entry-content .wp-block-gallery img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.df-image-gallery__item figcaption,
+.entry-content .wp-block-gallery figcaption {
+  margin-top: 0.35rem;
+}
+
 .visually-hidden {
   position: absolute !important;
   overflow: hidden;

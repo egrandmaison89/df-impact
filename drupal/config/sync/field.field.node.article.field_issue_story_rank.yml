@@ -1,0 +1,23 @@
+uuid: c4e81f60-12ab-4d09-9e77-8a55b0c1d442
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_issue_story_rank
+    - node.type.article
+  module:
+    - options
+id: node.article.field_issue_story_rank
+field_name: field_issue_story_rank
+entity_type: node
+bundle: article
+label: 'Issue story order'
+description: 'Issue pages list stories by publication date. Pinned stays at the top. Demoted stays at the bottom.'
+required: false
+translatable: false
+default_value:
+  -
+    value: normal
+default_value_callback: ''
+settings: {  }
+field_type: list_string

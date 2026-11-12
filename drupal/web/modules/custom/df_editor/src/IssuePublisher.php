@@ -24,9 +24,13 @@ final class IssuePublisher {
   ) {}
 
   /**
-   * Publishes the issue node and every article referencing it.
+   * Publishes the issue plus linked Draft and In Review articles and briefs.
    *
-   * @return int[] Published article node IDs
+   * Homepage placement and listing weights are left as the editor set them.
+   * A blank placement stays blank.
+   *
+   * @return int[]
+   *   Node IDs that were transitioned to published.
    */
   public function publishIssueWithArticles(NodeInterface $issue): array {
     if ($issue->bundle() !== 'issue') {
@@ -35,66 +39,63 @@ final class IssuePublisher {
 
     $this->applyPublishedState($issue);
     $published = $this->publishAttachedArticles($issue);
-    $this->cacheTagsInvalidator->invalidateTags([
-      'node_list:issue',
-      'node_list:article',
-      self::CACHE_TAG_ISSUE_NAV,
-      'config:df_editor.settings',
-      'node:' . $issue->id(),
-    ]);
+    $this->invalidateIssueCaches($issue);
     return $published;
   }
 
   /**
-   * Publishes every article assigned to the issue (issue itself unchanged).
+   * Publishes Draft and In Review articles and briefs assigned to the issue.
+   *
+   * Does not assign homepage weights or placement.
    *
    * @return int[]
    */
   public function publishAttachedArticles(NodeInterface $issue): array {
     $storage = $this->entityTypeManager->getStorage('node');
-    $article_nids = $storage->getQuery()
-      ->condition('type', 'article')
+    $nids = $storage->getQuery()
+      ->condition('type', ['article', 'in_brief'], 'IN')
       ->condition('field_issue.target_id', $issue->id())
       ->accessCheck(FALSE)
       ->execute();
 
-    $articles = [];
-    foreach ($storage->loadMultiple($article_nids) as $article) {
-      if ($article instanceof NodeInterface) {
-        $articles[] = $article;
+    $nodes = [];
+    foreach ($storage->loadMultiple($nids) as $node) {
+      if ($node instanceof NodeInterface && $this->isDraftOrInReview($node)) {
+        $nodes[] = $node;
       }
     }
-    usort($articles, static fn (NodeInterface $a, NodeInterface $b): int => (int) $a->getCreatedTime() <=> (int) $b->getCreatedTime());
+    usort($nodes, static fn (NodeInterface $a, NodeInterface $b): int => (int) $a->getCreatedTime() <=> (int) $b->getCreatedTime());
 
-    $homepage_weight = 1;
-    $postx_weight = 1;
     $published = [];
-    foreach ($articles as $article) {
-      $this->applyEditorListingWeights($article, $homepage_weight, $postx_weight);
-      $this->applyPublishedState($article);
-      $published[] = (int) $article->id();
+    foreach ($nodes as $node) {
+      $this->applyPublishedState($node);
+      $published[] = (int) $node->id();
     }
+    $this->invalidateIssueCaches($issue);
     return $published;
   }
 
   /**
-   * Assigns homepage/issue listing weights when editors publish without admin tuning.
+   * Draft and In Review only. Published and archived nodes are left alone.
    */
-  private function applyEditorListingWeights(NodeInterface $article, int &$homepage_weight, int &$postx_weight): void {
-    if ($article->hasField('field_homepage_sort_weight')) {
-      $current = $article->get('field_homepage_sort_weight')->value;
-      if ($current === NULL || $current === '' || (int) $current === 0) {
-        $article->set('field_homepage_sort_weight', $homepage_weight);
-        $homepage_weight++;
-      }
+  private function isDraftOrInReview(NodeInterface $node): bool {
+    if (!$node->hasField('moderation_state')) {
+      return !$node->isPublished();
     }
-    if ($article->hasField('field_postx_sort_weight')) {
-      $current = $article->get('field_postx_sort_weight')->value;
-      if ($current === NULL || $current === '' || (int) $current === 0) {
-        $article->set('field_postx_sort_weight', $postx_weight);
-        $postx_weight++;
-      }
-    }
+    return in_array((string) $node->get('moderation_state')->value, ['draft', 'in_review'], TRUE);
+  }
+
+  private function invalidateIssueCaches(NodeInterface $issue): void {
+    $this->cacheTagsInvalidator->invalidateTags([
+      'node_list:issue',
+      'node_list:article',
+      'node_list:in_brief',
+      self::CACHE_TAG_ISSUE_NAV,
+      'config:df_editor.settings',
+      'config:views.view.browse_issues',
+      'config:views.view.issue_articles',
+      'node:' . $issue->id(),
+    ]);
   }
 
   private function applyPublishedState(NodeInterface $node): void {

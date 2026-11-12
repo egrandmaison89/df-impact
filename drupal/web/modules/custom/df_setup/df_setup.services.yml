@@ -1,4 +1,8 @@
 services:
+  df_setup.wp_inline_image_localizer:
+    class: Drupal\df_setup\WpInlineImageLocalizer
+    arguments: ['@entity_type.manager', '@file_system', '@file.repository', '@http_client']
+
   df_setup.article_body_cleaner:
     class: Drupal\df_setup\ArticleBodyCleaner
     arguments:

@@ -1,0 +1,29 @@
+uuid: 19d7f2c3-66bb-4e84-902a-7c51e3d8fa14
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.image_gallery.field_gallery_items
+    - paragraphs.paragraphs_type.image_gallery
+  module:
+    - paragraphs
+id: paragraph.image_gallery.default
+targetEntityType: paragraph
+bundle: image_gallery
+mode: default
+content:
+  field_gallery_items:
+    type: entity_reference_paragraphs
+    weight: 0
+    region: content
+    settings:
+      title: Image
+      title_plural: Images
+      edit_mode: open
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: gallery_item
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

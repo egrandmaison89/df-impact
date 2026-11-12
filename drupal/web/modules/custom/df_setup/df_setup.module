@@ -12,8 +12,11 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\df_secondary\NodePublicationTime;
 use Drupal\df_setup\ArchivePageWpOrder;
 use Drupal\df_setup\ArticleCreditLabels;
+use Drupal\df_setup\ExploreSlotSelector;
+use Drupal\df_setup\IssueStoryOrder;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
@@ -245,8 +248,13 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
   $view_id = $view->storage->id();
   $display = $view->current_display ?? '';
 
+  if ($view_id === 'digital_exclusives_archive' && $display === 'page_1') {
+    df_setup_views_query_digital_exclusive_live($view, $query, 10);
+    return;
+  }
+
   if (
-    in_array($view_id, ['topic_archive', 'digital_exclusives_archive'], TRUE)
+    $view_id === 'topic_archive'
     && $display === 'page_1'
   ) {
     $path = \Drupal::request()->getPathInfo();
@@ -268,25 +276,11 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
 
   if ($view_id === 'issue_articles') {
     if ($display === 'homepage_latest') {
-      $alias = $query->ensureTable('node__field_homepage_sort_weight');
-      if ($alias) {
-        $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 100, '<');
-        $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 0, '>');
-      }
-      df_setup_sql_sort_integer_nulls_last($query, 'node__field_homepage_sort_weight', 'field_homepage_sort_weight_value');
-      df_setup_sql_sort_integer_nulls_last($query, 'node__field_postx_sort_weight', 'field_postx_sort_weight_value');
+      df_setup_views_query_explore_latest_slots($view, $query);
+      return;
     }
     if (in_array($display, ['block_1', 'default'], TRUE)) {
-      df_setup_sql_sort_integer_nulls_last($query, 'node__field_postx_sort_weight', 'field_postx_sort_weight_value');
       df_setup_issue_articles_exclude_promo_references($view, $query);
-    }
-  }
-
-  if ($view_id === 'homepage_digital_exclusives') {
-    $alias = $query->ensureTable('node__field_homepage_sort_weight');
-    if ($alias) {
-      $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 110, '>=');
-      $query->addWhere(0, "{$alias}.field_homepage_sort_weight_value", 200, '<');
     }
   }
 
@@ -295,7 +289,12 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
     return;
   }
 
-  if (!in_array($view_id, ['homepage_digital_exclusives', 'digital_exclusives_archive'], TRUE)) {
+  if ($view_id === 'homepage_digital_exclusives') {
+    df_setup_views_query_digital_exclusive_live($view, $query, 3);
+    return;
+  }
+
+  if ($view_id !== 'digital_exclusives_archive') {
     return;
   }
 
@@ -316,6 +315,130 @@ function df_setup_views_query_alter(ViewExecutable $view, QueryPluginBase $query
   $tid_sql = (int) $tid;
   $snippet = "{$base_alias}.{$base_field} IN (SELECT fc.entity_id FROM {node__field_channels} fc WHERE fc.bundle = 'article' AND fc.deleted = 0 AND fc.field_channels_target_id = {$tid_sql})";
   $query->addWhereExpression(0, $snippet);
+}
+
+/**
+ * Explore the Latest Issue: three featured slots, backfilled by publication date.
+ */
+function df_setup_views_query_explore_latest_slots(ViewExecutable $view, Sql $query): void {
+  $issue_nid = (int) ($view->args[0] ?? 0);
+  $nids = $issue_nid > 0 ? df_setup_explore_latest_nids($issue_nid) : [];
+  $base_table = $view->storage->get('base_table');
+  $base_alias = $query->ensureTable($base_table) ?: $base_table;
+  if ($nids === []) {
+    $query->addWhereExpression(0, '1 = 0');
+    return;
+  }
+  $query->addWhere(0, "{$base_alias}.nid", $nids, 'IN');
+  $query->orderby = [];
+  $field_order = implode(', ', array_map('intval', $nids));
+  $query->addOrderBy(NULL, "FIELD({$base_alias}.nid, {$field_order})", 'ASC', 'explore_slot_order');
+  $query->setLimit(count($nids));
+}
+
+/**
+ * Published Digital Exclusives, newest publication date first (not a frozen nid list).
+ *
+ * @return int[]
+ */
+function df_setup_digital_exclusive_nids_by_publication(): array {
+  $cached = &drupal_static(__FUNCTION__);
+  if (is_array($cached)) {
+    return $cached;
+  }
+  $cached = [];
+  $channels = \Drupal::service('df_setup.digital_exclusive_channels');
+  $tid = $channels->findTermId() ?? $channels->ensureTermId();
+  if (!$tid) {
+    return $cached;
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('status', 1)
+    ->condition('field_channels', $tid)
+    ->execute();
+  $nodes = [];
+  foreach ($storage->loadMultiple($nids) as $node) {
+    if ($node instanceof NodeInterface) {
+      $nodes[] = $node;
+    }
+  }
+  usort($nodes, static fn (NodeInterface $a, NodeInterface $b): int => df_setup_node_publication_sort($b) <=> df_setup_node_publication_sort($a));
+  $cached = array_map(static fn (NodeInterface $node): int => (int) $node->id(), $nodes);
+  return $cached;
+}
+
+/**
+ * Restricts a Digital Exclusives view to the live publication-date order.
+ */
+function df_setup_views_query_digital_exclusive_live(ViewExecutable $view, Sql $query, int $hard_limit): void {
+  $nids = df_setup_digital_exclusive_nids_by_publication();
+  $base_table = $view->storage->get('base_table');
+  $base_alias = $query->ensureTable($base_table) ?: $base_table;
+  if ($nids === []) {
+    $query->addWhereExpression(0, '1 = 0');
+    return;
+  }
+  $query->addWhere(0, "{$base_alias}.nid", $nids, 'IN');
+  $query->orderby = [];
+  $field_order = implode(', ', array_map('intval', $nids));
+  $query->addOrderBy(NULL, "FIELD({$base_alias}.nid, {$field_order})", 'ASC', 'de_publication_order');
+  if ($view->id() === 'homepage_digital_exclusives' && $hard_limit > 0) {
+    $query->setLimit($hard_limit);
+  }
+}
+
+/**
+ * Featured slot node IDs for one issue (order 1, 2, 3).
+ *
+ * @return int[]
+ */
+function df_setup_explore_latest_nids(int $issue_nid): array {
+  $channels = \Drupal::service('df_setup.digital_exclusive_channels');
+  $de_tid = (int) ($channels->findTermId() ?? 0);
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('field_issue.target_id', $issue_nid)
+    ->execute();
+  $rows = [];
+  foreach ($storage->loadMultiple($nids) as $node) {
+    if (!$node instanceof NodeInterface) {
+      continue;
+    }
+    $digital_exclusive = FALSE;
+    if ($de_tid && $node->hasField('field_channels')) {
+      foreach ($node->get('field_channels') as $item) {
+        if ((int) $item->target_id === $de_tid) {
+          $digital_exclusive = TRUE;
+        }
+      }
+    }
+    $rows[] = [
+      'nid' => (int) $node->id(),
+      'placement' => $node->hasField('field_homepage_placement') ? (string) $node->get('field_homepage_placement')->value : 'none',
+      'order' => $node->hasField('field_explore_order') ? (int) $node->get('field_explore_order')->value : 0,
+      'published' => $node->isPublished(),
+      'digital_exclusive' => $digital_exclusive,
+      'sort' => df_setup_node_publication_sort($node),
+      'changed' => (int) $node->getChangedTime(),
+    ];
+  }
+  return ExploreSlotSelector::select($rows);
+}
+
+/**
+ * Publication timestamp for ordering. Uses the WordPress-aligned helper when present.
+ */
+function df_setup_node_publication_sort(NodeInterface $node): int {
+  if (class_exists(NodePublicationTime::class)) {
+    return NodePublicationTime::sortValue($node);
+  }
+  $changed = (int) $node->getChangedTime();
+  return $changed > 0 ? $changed : (int) $node->getCreatedTime();
 }
 
 /**
@@ -530,8 +653,11 @@ function df_setup_digital_exclusive_archive_slugs(): array {
  * WordPress archive order applies (e.g. /tag/late-fall-2022 → /category/…).
  */
 function df_setup_views_pre_view(ViewExecutable $view, $display_id, array &$args): void {
+  if ($view->id() === 'digital_exclusives_archive') {
+    return;
+  }
   if (
-    !in_array($view->id(), ['topic_archive', 'digital_exclusives_archive'], TRUE)
+    $view->id() !== 'topic_archive'
     || $display_id !== 'page_1'
   ) {
     return;
@@ -553,10 +679,11 @@ function df_setup_views_pre_build(ViewExecutable $view): void {
   $view_id = $view->id();
   $display = $view->current_display ?? '';
 
-  if (
-    in_array($view_id, ['topic_archive', 'digital_exclusives_archive'], TRUE)
-    && $display === 'page_1'
-  ) {
+  if ($view_id === 'digital_exclusives_archive' && $display === 'page_1') {
+    return;
+  }
+
+  if ($view_id === 'topic_archive' && $display === 'page_1') {
     $frozen_nids = df_setup_archive_nids_for_request_path('');
     if ($frozen_nids !== []) {
       $pager = $view->display_handler->getOption('pager');
@@ -564,11 +691,9 @@ function df_setup_views_pre_build(ViewExecutable $view): void {
         $pager['type'] = 'none';
         $view->display_handler->setOption('pager', $pager);
       }
-      if ($view_id === 'topic_archive') {
-        // Frozen WP order is authoritative; do not narrow by taxonomy_index tid.
-        $view->setArguments(['all']);
-        return;
-      }
+      // Frozen WP order is authoritative; do not narrow by taxonomy_index tid.
+      $view->setArguments(['all']);
+      return;
     }
   }
 
@@ -1359,8 +1484,28 @@ function df_setup_backfill_issue_banner_is_light(): string {
  * register the archive's real total to render WP's numbered pager (QA-005).
  */
 function df_setup_views_post_execute(ViewExecutable $view): void {
+  if ($view->id() === 'issue_articles' && in_array($view->current_display, ['block_1', 'default'], TRUE)) {
+    $rows = $view->result;
+    if (is_array($rows) && count($rows) > 1) {
+      usort($rows, static function ($a, $b): int {
+        $node_a = $a->_entity ?? NULL;
+        $node_b = $b->_entity ?? NULL;
+        if (!$node_a instanceof NodeInterface || !$node_b instanceof NodeInterface) {
+          return 0;
+        }
+        return IssueStoryOrder::compare(
+          IssueStoryOrder::rankValue($node_a->hasField('field_issue_story_rank') ? (string) $node_a->get('field_issue_story_rank')->value : ''),
+          df_setup_node_publication_sort($node_a),
+          IssueStoryOrder::rankValue($node_b->hasField('field_issue_story_rank') ? (string) $node_b->get('field_issue_story_rank')->value : ''),
+          df_setup_node_publication_sort($node_b),
+        );
+      });
+      $view->result = $rows;
+    }
+    return;
+  }
   if (
-    !in_array($view->id(), ['topic_archive', 'digital_exclusives_archive'], TRUE)
+    $view->id() !== 'topic_archive'
     || ($view->current_display ?? '') !== 'page_1'
     || df_setup_archive_nids_for_request_path('') === []
   ) {

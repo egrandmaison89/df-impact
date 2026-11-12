@@ -18,17 +18,16 @@ settings:
       - '|'
       - link
       - '|'
+      - drupalInsertImage
+      - drupalMedia
+      - insertTable
+      - sourceEditing
+      - '|'
       - bulletedList
       - numberedList
       - '|'
       - blockQuote
-      - '|'
-      - drupalInsertImage
-      - drupalMedia
-      - '|'
-      - insertTable
-      - '|'
-      - sourceEditing
+      - '-'
       - '|'
       - undo
       - redo

@@ -12,6 +12,8 @@ dependencies:
     - field.field.node.article.field_content_sections
     - field.field.node.article.field_content_type
     - field.field.node.article.field_excerpt
+    - field.field.node.article.field_explore_order
+    - field.field.node.article.field_issue_story_rank
     - field.field.node.article.field_featured_image
     - field.field.node.article.field_homepage_placement
     - field.field.node.article.field_image
@@ -46,11 +48,13 @@ hidden:
   field_content_sections: true
   field_content_type: true
   field_excerpt: true
+  field_explore_order: true
   field_featured_image: true
   field_homepage_placement: true
   field_homepage_sort_weight: true
   field_image: true
   field_issue: true
+  field_issue_story_rank: true
   field_meta_description: true
   field_photo_caption: true
   field_photo_credit: true
@@ -60,3 +64,4 @@ hidden:
   field_tags: true
   field_topics: true
   search_api_excerpt: true
+

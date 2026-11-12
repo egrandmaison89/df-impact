@@ -76,7 +76,7 @@
       "cover_url": "",
       "main_grid_wp_post_ids": [],
       "promo_wp_post_ids": [],
-      "wp_archive_error": true
+      "wp_archive_error": false
     },
     {
       "path_alias": "/spring-2023-issue/",

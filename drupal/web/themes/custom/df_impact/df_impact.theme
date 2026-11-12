@@ -851,7 +851,7 @@ function df_impact_theme_suggestions_page_alter(array &$suggestions, array $vari
   $node = $route_match->getParameter('node');
   if ($node instanceof NodeInterface) {
     $suggestions[] = 'page__node__' . $node->bundle();
-    if ($node->bundle() === 'issue' && $node->id() && !$node->isNew() && function_exists('df_setup_legacy_issue_tag_slug_for_request_path')) {
+    if ($node->bundle() === 'issue' && $node->id() && !$node->isNew() && !$node->isPublished() && function_exists('df_setup_legacy_issue_tag_slug_for_request_path')) {
       $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $node->id());
       if (df_setup_legacy_issue_tag_slug_for_request_path($alias) !== '') {
         $suggestions[] = 'page__404';

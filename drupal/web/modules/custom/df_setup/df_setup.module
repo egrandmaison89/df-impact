@@ -1519,14 +1519,46 @@ function df_setup_wordpress_not_found_page_build(): array {
 }
 
 /**
- * When WP had no issue landing, map the issue URL to its tag archive slug.
+ * Tag archive slug for an issue URL that still has no published issue node.
+ *
+ * Late Fall 2022 is no longer an archive error. A published issue renders
+ * even if an older fixture still has wp_archive_error set.
  */
 function df_setup_legacy_issue_tag_slug_for_request_path(string $path): string {
   $fixture = \Drupal\df_setup\IssuePageWpFixture::rowForPathAlias($path);
   if (!is_array($fixture) || empty($fixture['wp_archive_error'])) {
     return '';
   }
+  if (df_setup_alias_has_published_issue($path)) {
+    return '';
+  }
   return df_setup_issue_tag_slug_for_path_alias($path);
+}
+
+/**
+ * TRUE when the path alias is a published issue node.
+ */
+function df_setup_alias_has_published_issue(string $path): bool {
+  return df_setup_published_issue_for_alias($path) instanceof NodeInterface;
+}
+
+/**
+ * Published issue node for a path alias, or NULL.
+ */
+function df_setup_published_issue_for_alias(string $path): ?NodeInterface {
+  $alias = '/' . trim($path, '/');
+  if ($alias === '/') {
+    return NULL;
+  }
+  $system = \Drupal::service('path_alias.manager')->getPathByAlias($alias);
+  if (!is_string($system) || !preg_match('#^/node/(\d+)$#', $system, $matches)) {
+    return NULL;
+  }
+  $node = \Drupal::entityTypeManager()->getStorage('node')->load((int) $matches[1]);
+  if (!$node instanceof NodeInterface || $node->bundle() !== 'issue' || !$node->isPublished()) {
+    return NULL;
+  }
+  return $node;
 }
 
 /**

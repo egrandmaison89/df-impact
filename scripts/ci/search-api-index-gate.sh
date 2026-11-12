@@ -84,18 +84,43 @@ echo "==> search-api:clear + search-api:index df_impact_content"
 "${DRUSH[@]}" search-api:index df_impact_content
 
 # HTTP checks on a real install. Fail if the server cannot be reached.
-if ! curl -sf --max-time 2 "${BASE_URL}/" >/dev/null; then
-  "${DRUSH[@]}" serve 127.0.0.1:8888 >/tmp/df-drush-serve.log 2>&1 &
+if ! curl -s -o /dev/null --max-time 2 "${BASE_URL}/"; then
+  php -S 127.0.0.1:8888 -t web web/.ht.router.php >/tmp/df-drush-serve.log 2>&1 &
   echo $! > /tmp/df-drush-serve.pid
-  for _ in 1 2 3 4 5 6 7 8 9 10; do
-    curl -sf --max-time 2 "${BASE_URL}/" >/dev/null && break
+  ready=0
+  for _ in $(seq 1 30); do
+    if curl -s -o /dev/null --max-time 2 "${BASE_URL}/"; then
+      ready=1
+      break
+    fi
     sleep 1
   done
+  if [[ "$ready" != "1" ]]; then
+    echo "---- drush serve log ----" >&2
+    cat /tmp/df-drush-serve.log >&2 || true
+    fail "Drupal did not accept HTTP connections at ${BASE_URL}"
+  fi
 fi
-curl -sf --max-time 10 -o /dev/null -w "%{http_code}" "${BASE_URL}/" | grep -qx 200 || fail "GET / did not return 200"
+
+http_code() {
+  local path="$1"
+  local code
+  code=$(curl -s -L -o /tmp/df-http-body -w "%{http_code}" --max-time 30 "${BASE_URL}${path}" || echo "000")
+  if [[ "$code" != "200" ]]; then
+    echo "GET ${path} -> ${code}" >&2
+    head -c 800 /tmp/df-http-body >&2 || true
+    echo >&2
+    echo "---- drush serve log ----" >&2
+    cat /tmp/df-drush-serve.log >&2 || true
+    "${DRUSH[@]}" watchdog:show --count=8 >&2 || true
+    fail "GET ${path} returned ${code}"
+  fi
+  echo "200 ${path}"
+}
+
+http_code "/"
 for path in "/search?s=" "/search?s=cancer" "/browse-issues" "/in-brief" "/user/login"; do
-  code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "${BASE_URL}${path}")
-  [[ "$code" == "200" ]] || fail "GET ${path} returned ${code}"
+  http_code "$path"
 done
 
 # Saved article preview must not 500 after a cold cache rebuild.

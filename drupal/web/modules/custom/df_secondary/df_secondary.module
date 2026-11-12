@@ -196,8 +196,18 @@ function df_secondary_search_api_index_items_alter(IndexInterface $index, array 
     }
     $entity = $original->getValue();
     if ($entity instanceof NodeInterface) {
-      $item->setField('publication_sort', NodePublicationTime::sortValue($entity));
+      df_secondary_search_api_set_publication_sort($item, $entity);
     }
+  }
+}
+
+/**
+ * Sets publication_sort on a Search API item (custom integer field).
+ */
+function df_secondary_search_api_set_publication_sort(ItemInterface $item, NodeInterface $entity): void {
+  $field = $item->getField('publication_sort', FALSE);
+  if ($field) {
+    $field->setValues([NodePublicationTime::sortValue($entity)]);
   }
 }
 

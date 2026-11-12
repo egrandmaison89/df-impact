@@ -30,7 +30,7 @@ final class NodePublicationTimeTest extends TestCase {
     $module = file_get_contents(dirname(__DIR__, 3) . '/df_secondary.module');
     $this->assertIsString($module);
     $this->assertStringContainsString("sort('publication_sort'", $module);
-    $this->assertStringContainsString("setField('publication_sort'", $module);
+    $this->assertStringContainsString('df_secondary_search_api_set_publication_sort', $module);
   }
 
 }

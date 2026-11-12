@@ -383,7 +383,7 @@ function df_editor_attach_web_editor_save_redirect(array &$form): void {
     if (($form['actions'][$action]['#type'] ?? '') !== 'submit') {
       continue;
     }
-    if ($action === 'df_publish_issue_bundle') {
+    if (in_array($action, ['df_publish_issue_bundle', 'preview', 'delete'], TRUE)) {
       continue;
     }
     $form['actions'][$action]['#submit'][] = 'df_editor_web_editor_node_save_redirect';
@@ -395,6 +395,15 @@ function df_editor_attach_web_editor_save_redirect(array &$form): void {
  */
 function df_editor_web_editor_node_save_redirect(array &$form, FormStateInterface $form_state): void {
   if ($form_state->get('df_editor_web_editor_save_redirect_done')) {
+    return;
+  }
+  $trigger = $form_state->getTriggeringElement();
+  $parents = $trigger['#parents'] ?? [];
+  $triggering_name = $trigger['#name'] ?? '';
+  if (in_array('preview', $parents, TRUE) || $triggering_name === 'preview') {
+    return;
+  }
+  if (in_array('delete', $parents, TRUE) || $triggering_name === 'delete') {
     return;
   }
   $form_object = $form_state->getFormObject();

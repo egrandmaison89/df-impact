@@ -1,0 +1,41 @@
+name: Drupal search index gate
+
+on:
+  pull_request:
+    branches:
+      - cursor/phase4-chrome-behavior-0b67
+
+jobs:
+  search-api-index:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: dfimpact
+          MYSQL_USER: dfimpact
+          MYSQL_PASSWORD: dfimpact
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      DF_DB_HOST: 127.0.0.1
+      DF_DB_NAME: dfimpact
+      DF_DB_USER: dfimpact
+      DF_DB_PASS: dfimpact
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: dom, curl, libxml, mbstring, zip, pdo, pdo_mysql
+          coverage: none
+
+      - name: Run search-api:index gate
+        run: bash scripts/ci/search-api-index-gate.sh

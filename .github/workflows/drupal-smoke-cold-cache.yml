@@ -1,4 +1,6 @@
-name: Drupal search index gate
+# Required PR check: fresh install, config import, cold cache rebuild, Search API
+# index, and HTTP 200 on core public routes (replaces archived parity smoke-200).
+name: Drupal smoke (cold cache)
 
 on:
   pull_request:
@@ -6,7 +8,7 @@ on:
       - cursor/phase4-chrome-behavior-0b67
 
 jobs:
-  search-api-index:
+  drupal-smoke:
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -28,14 +30,15 @@ jobs:
       DF_DB_NAME: dfimpact
       DF_DB_USER: dfimpact
       DF_DB_PASS: dfimpact
+      DRUPAL_BASE_URL: http://127.0.0.1:8888
     steps:
       - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          extensions: dom, curl, libxml, mbstring, zip, pdo, pdo_mysql
+          extensions: dom, curl, libxml, mbstring, zip, pdo, pdo_mysql, gd
           coverage: none
 
-      - name: Run search-api:index gate
+      - name: Drupal smoke (cold cache)
         run: bash scripts/ci/search-api-index-gate.sh

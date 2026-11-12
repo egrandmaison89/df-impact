@@ -77,6 +77,29 @@ After `cim`, `config:status` may show only **`system.site`** different if `FixHo
 
 Acquia-specific checklist: [docs/deploy/ACQUIA_RUNBOOK.md](deploy/ACQUIA_RUNBOOK.md).
 
+## Continuous integration
+
+This handoff tree does **not** include the `parity/` pixel and URL harness (it was removed for ACSF packaging). GitHub Actions therefore runs **Drupal smoke (cold cache)** as the required pull request check, defined in `.github/workflows/drupal-smoke-cold-cache.yml` and implemented by `scripts/ci/search-api-index-gate.sh`.
+
+On each PR to `cursor/phase4-chrome-behavior-0b67`, CI:
+
+1. Boots a fresh Drupal site on MySQL 8.
+2. Imports exported configuration from `drupal/config/sync` (`drush updatedb`, `drush cim`).
+3. Rebuilds caches twice (`drush cr`) so Views and theme registry are cold (this catches Search API field definition errors such as missing `publication_sort` processor properties).
+4. Clears and rebuilds the Search API index `df_impact_content`.
+5. Serves the docroot and requires HTTP 200 on core public routes (`/`, search, archives, login).
+6. Renders a saved article with `in_preview` to ensure node preview does not WSOD.
+
+To reproduce locally (needs MariaDB or MySQL and PHP 8.3):
+
+```bash
+bash scripts/ci/search-api-index-gate.sh
+```
+
+Optional: set `DF_FIXTURE_SQL` to a database dump path before running the script so CI indexes the full content set instead of a minimal install.
+
+The retired **Parity smoke 200** workflow is not used. To run historical parity checks, restore `parity/` from tag `archive/pre-acsf-handoff-47352229` and use the scripts under `parity/` manually (see older docs under `docs/`).
+
 ## Roles and editorial workflow
 
 Workflow **`editorial`** (`workflows.workflow.editorial`) applies to **article**, **in_brief**, **issue**, and **page**.

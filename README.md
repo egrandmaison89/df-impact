@@ -62,6 +62,20 @@ cd drupal
 ./vendor/bin/phpunit -c web/modules/custom/df_editor/phpunit.xml.dist --testsuite df_editor --filter Unit
 ```
 
+## Continuous integration
+
+Pull requests targeting `cursor/phase4-chrome-behavior-0b67` run the GitHub Actions workflow **Drupal smoke (cold cache)** (`.github/workflows/drupal-smoke-cold-cache.yml`). It is the required smoke check for this handoff tree.
+
+The job installs Drupal on MySQL in CI, imports `drupal/config/sync`, runs `drush updatedb`, `drush cim`, and **`drush cr` twice** (cold caches), then `search-api:clear` and `search-api:index` on `df_impact_content`. It serves the site and requires HTTP **200** on `/`, `/search?s=`, `/search?s=cancer`, `/browse-issues`, `/in-brief`, and `/user/login`, and verifies that rendering a saved article in preview mode does not throw.
+
+Run the same gate locally:
+
+```bash
+bash scripts/ci/search-api-index-gate.sh
+```
+
+The old **parity smoke 200** workflow and `parity/` harness are not part of this deliverable. Historical pixel and URL parity tooling lives on git tag `archive/pre-acsf-handoff-47352229`.
+
 ## ACSF / Labs
 
 Packaging as an ACSF site or install profile is **not** implemented in this tree. Open questions for DFCI EWS (Jonathan Webb) are listed in [docs/HANDOFF.md](docs/HANDOFF.md) and [docs/acsf-packaging-proposal.md](docs/acsf-packaging-proposal.md).

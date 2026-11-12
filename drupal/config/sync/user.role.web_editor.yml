@@ -56,6 +56,7 @@ permissions:
   - 'update any media'
   - 'use editorial transition create_new_draft'
   - 'use editorial transition publish'
+  - 'use editorial transition send_back'
   - 'use editorial transition submit_for_review'
   - 'use legacy full html on stored content'
   - 'use text format editor_html'

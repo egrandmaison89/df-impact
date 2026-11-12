@@ -64,6 +64,7 @@ type_settings:
       label: Publish
       from:
         - draft
+        - in_review
         - published
       to: published
       weight: 1

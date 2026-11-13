@@ -1,16 +1,7 @@
 {#
 /**
  * @file
- * Digital Exclusives archive: stacked story cards (responsive list).
+ * Digital Exclusives list wrapper (wp-block-post-template).
  */
 #}
-{% if title %}
-  <h3 class="de-archive__subsection-title">{{ title }}</h3>
-{% endif %}
-<div class="de-archive-grid">
-  {% for row in rows %}
-    <div{{ row.attributes.addClass('views-row', 'de-archive-grid__item') }}>
-      {{ row.content }}
-    </div>
-  {% endfor %}
-</div>
+{% include '@df_impact/views/views-view-unformatted--topic-archive.html.twig' %}

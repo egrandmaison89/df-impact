@@ -5,7 +5,7 @@ namespace Drupal\editoria11y;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Path\PathValidatorInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\editoria11y\Exception\Editoria11yApiException;
@@ -31,9 +31,11 @@ class Api {
   protected Connection $connection;
 
   /**
-   * The manager property.
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected EntityTypeManager $manager;
+  protected EntityTypeManagerInterface $manager;
 
   /**
    * The configuration factory.
@@ -56,14 +58,14 @@ class Api {
    *   The current user.
    * @param \Drupal\Core\Database\Connection $connection
    *   The database connection.
-   * @param \Drupal\Core\Entity\EntityTypeManager $manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $manager
    *   The entity type manager.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The configuration factory.
    * @param \Drupal\Core\Path\PathValidatorInterface $path_validator
    *   The path validator service.
    */
-  public function __construct(AccountInterface $account, Connection $connection, EntityTypeManager $manager, ConfigFactoryInterface $config_factory, PathValidatorInterface $path_validator) {
+  public function __construct(AccountInterface $account, Connection $connection, EntityTypeManagerInterface $manager, ConfigFactoryInterface $config_factory, PathValidatorInterface $path_validator) {
     $this->account = $account;
     $this->connection = $connection;
     $this->manager = $manager;
@@ -82,6 +84,9 @@ class Api {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('current_user'),
+      $container->get('database'),
+      $container->get('entity_type.manager'),
       $container->get('config.factory'),
       $container->get('path.validator')
     );

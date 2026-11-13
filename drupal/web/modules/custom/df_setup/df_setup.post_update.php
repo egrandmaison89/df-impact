@@ -1,0 +1,667 @@
+<?php
+
+/**
+ * @file
+ * Name-based post updates for df_setup after schema **10035** (frozen).
+ *
+ * Do not add df_setup_update_10036+ in df_setup.install. Drupal tracks
+ * post_update hooks by function name, so ordering merges no longer skips work.
+ *
+ * Combined on phase4 integrator:
+ * - **#23** content-sweep: in_brief excerpts + home moderation fix.
+ * - **#25** cover / media seed for issue parity.
+ * - **#10** `is_light` field: config import + backfill post-update (stacked on #25).
+ * - **#30** internal links, inline images, featured media repair.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+
+/**
+ * Ensures df_secondary is enabled so /search matches WP (update_10034 on fresh VMs).
+ */
+function df_setup_post_update_ensure_df_secondary_search(): string {
+  if (\Drupal::moduleHandler()->moduleExists('df_secondary')) {
+    return 'df_secondary already enabled.';
+  }
+  \Drupal::service('module_installer')->install(['df_secondary']);
+  drupal_flush_all_caches();
+  return 'Enabled df_secondary for /search parity.';
+}
+
+/**
+ * Publishes Home and sets page.front when 10035 ran before moderation fix.
+ */
+function df_setup_post_update_ensure_home_landing_published(): string {
+  require_once __DIR__ . '/df_setup.install';
+  _df_setup_ensure_home_landing();
+  return 'Home landing published; page.front verified.';
+}
+
+/**
+ * Ensures in_brief has editable field_excerpt for archive listing teasers.
+ */
+function df_setup_post_update_in_brief_excerpt(): string {
+  if (FieldConfig::loadByName('node', 'in_brief', 'field_excerpt')) {
+    return 'in_brief field_excerpt already present.';
+  }
+  $storage = FieldStorageConfig::loadByName('node', 'field_excerpt');
+  if (!$storage instanceof FieldStorageConfig) {
+    return 'field_excerpt storage missing; sync field.storage.node.field_excerpt from config.';
+  }
+  _df_setup_repair_link_default_view_formatters();
+  FieldConfig::create([
+    'field_storage' => $storage,
+    'label' => 'Listing excerpt',
+    'bundle' => 'in_brief',
+    'required' => FALSE,
+  ])->save();
+  return 'Added field_excerpt to in_brief.';
+}
+
+/**
+ * Stale view displays may use link widget id "link_default" as formatter (invalid).
+ *
+ * FieldConfig::save() validates all displays; repair before post_updates that add fields.
+ */
+function _df_setup_repair_link_default_view_formatters(): void {
+  if (!\Drupal::moduleHandler()->moduleExists('link')) {
+    \Drupal::service('module_installer')->install(['link'], TRUE);
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('entity_view_display');
+  foreach ($storage->loadMultiple() as $display) {
+    if (!$display instanceof EntityViewDisplayInterface) {
+      continue;
+    }
+    $content = $display->get('content');
+    if (!is_array($content)) {
+      continue;
+    }
+    $changed = FALSE;
+    foreach ($content as $field_name => $component) {
+      if (!is_array($component)) {
+        continue;
+      }
+      if (($component['type'] ?? '') === 'link_default') {
+        $content[$field_name]['type'] = 'link';
+        $changed = TRUE;
+      }
+    }
+    if ($changed) {
+      $display->set('content', $content);
+      $display->save();
+    }
+  }
+}
+
+/**
+ * Seeds article/in_brief field_excerpt from archive_row_wp_excerpts.json.
+ */
+function df_setup_post_update_seed_listing_excerpts(): string {
+  $script = __DIR__ . '/../df_migrate/scripts/backfill_archive_row_excerpts.php';
+  if (!is_readable($script)) {
+    return 'backfill_archive_row_excerpts.php missing';
+  }
+  require_once $script;
+  $result = df_migrate_backfill_archive_row_excerpts();
+  if (!empty($result['error'])) {
+    return 'Archive excerpt backfill failed: ' . $result['error'];
+  }
+  return sprintf(
+    'Listing excerpt backfill: %d updated, %d already matched, %d unresolved.',
+    (int) ($result['updated'] ?? 0),
+    (int) ($result['skipped'] ?? 0),
+    (int) ($result['missing'] ?? 0),
+  );
+}
+
+/**
+ * Restores in_brief field_summary HTML from in_brief.json export bodies.
+ */
+function df_setup_post_update_restore_in_brief_summary(): string {
+  $restore = __DIR__ . '/../df_migrate/scripts/restore_in_brief_summary_from_export.php';
+  if (!is_readable($restore)) {
+    return 'restore_in_brief_summary_from_export.php missing';
+  }
+  require_once $restore;
+  $fixed = df_migrate_restore_in_brief_summary_from_export();
+  if (!empty($fixed['error'])) {
+    return 'in_brief summary restore failed: ' . $fixed['error'];
+  }
+  drupal_flush_all_caches();
+  return sprintf(
+    'in_brief field_summary restored from export: %d updated.',
+    (int) ($fixed['updated'] ?? 0),
+  );
+}
+
+/**
+ * Seed issue field_cover_image from committed wp-images / WP uploads (browse-issues).
+ */
+function df_setup_post_update_seed_issue_covers(&$sandbox = NULL): string {
+  return _df_setup_backfill_issue_cover_images();
+}
+
+/**
+ * Seed issue field_banner_image when empty (issue landing hero parity).
+ */
+function df_setup_post_update_seed_issue_banners(&$sandbox = NULL): string {
+  return _df_setup_backfill_issue_banner_images();
+}
+
+/**
+ * Applies full About Impact Gutenberg body + staff block (#25 on phase4).
+ */
+function df_setup_post_update_ensure_about_impact_body(): string {
+  require_once __DIR__ . '/df_setup.install';
+  return _df_setup_apply_about_impact_gutenberg_body();
+}
+
+/**
+ * Point Late Fall 2022 in-content links at /tag/late-fall-2022 like live WP.
+ */
+function df_setup_post_update_late_fall_2022_tag_links(): string {
+  require_once __DIR__ . '/df_setup.install';
+  return _df_setup_apply_late_fall_2022_link_parity();
+}
+
+/**
+ * Replaces Late Fall 2022 bylines that were nested inside wp:image blocks.
+ */
+function df_setup_post_update_late_fall_2022_byline_placement(): string {
+  require_once __DIR__ . '/df_setup.install';
+  return _df_setup_apply_late_fall_2022_link_parity();
+}
+
+/**
+ * Drops body bylaws where export has no tag link (template carries issue label).
+ */
+function df_setup_post_update_late_fall_2022_export_byline_trim(): string {
+  require_once __DIR__ . '/df_setup.install';
+  return _df_setup_apply_late_fall_2022_link_parity();
+}
+
+/**
+ * Converges About + truncated article bodies for content-sweep parity (any DB state).
+ */
+function df_setup_post_update_converge_content_sweep_reference_bodies(): string {
+  require_once __DIR__ . '/df_setup.install';
+  return _df_setup_converge_content_sweep_reference_bodies();
+}
+
+/**
+ * Rewrites WP internal links, localizes inline images, fixes broken featured media.
+ */
+function df_setup_post_update_repair_internal_links_and_media(): string {
+  $script = __DIR__ . '/../df_migrate/scripts/df_setup_content_repair.php';
+  if (!is_readable($script)) {
+    return 'df_setup_content_repair.php missing';
+  }
+  require_once $script;
+  $result = df_setup_content_repair_run();
+  return sprintf(
+    'Content repair: link fields %d/%d, inline images %d/%d, featured %d updated / %d cleared (scanned %d), lead body resync %d.',
+    (int) ($result['link_fields_updated'] ?? 0),
+    (int) ($result['fields_scanned'] ?? 0),
+    (int) ($result['inline_nodes_updated'] ?? 0),
+    (int) ($result['inline_nodes_scanned'] ?? 0),
+    (int) ($result['featured_updated'] ?? 0),
+    (int) ($result['featured_cleared'] ?? 0),
+    (int) ($result['featured_scanned'] ?? 0),
+    (int) ($result['lead_body_resync'] ?? 0),
+  );
+}
+
+/**
+ * Installs issue banner is-light field config and backfills from reference-pack.
+ */
+function df_setup_post_update_issue_banner_is_light(): string {
+  $messages = [df_setup_import_issue_banner_is_light_config()];
+  $messages[] = df_setup_ensure_issue_banner_is_light_form_display();
+  $messages[] = df_setup_backfill_issue_banner_is_light();
+  return implode(' ', array_filter($messages));
+}
+
+/**
+ * Imports field storage + field config from this module's config/install (idempotent).
+ */
+function df_setup_import_issue_banner_is_light_config(): string {
+  if (!\Drupal::moduleHandler()->moduleExists('field')) {
+    return 'Field module unavailable.';
+  }
+  $module_path = \Drupal::service('extension.list.module')->getPath('df_setup');
+  $install_storage = new FileStorage($module_path . '/config/install');
+  $installed = [];
+
+  if (!FieldStorageConfig::loadByName('node', 'field_issue_banner_is_light')) {
+    $data = $install_storage->read('field.storage.node.field_issue_banner_is_light');
+    if ($data) {
+      FieldStorageConfig::create($data)->save();
+      $installed[] = 'storage';
+    }
+  }
+
+  if (!FieldConfig::loadByName('node', 'issue', 'field_issue_banner_is_light')) {
+    $data = $install_storage->read('field.field.node.issue.field_issue_banner_is_light');
+    if ($data) {
+      FieldConfig::create($data)->save();
+      $installed[] = 'field';
+    }
+  }
+
+  if ($installed !== []) {
+    \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+    return 'Imported field_issue_banner_is_light ' . implode('+', $installed) . '.';
+  }
+  return 'field_issue_banner_is_light config already present.';
+}
+
+/**
+ * Sets issue cover alt text to the WP /browse-issues/ alt (QA-004).
+ */
+function df_setup_post_update_browse_issue_cover_alt(): string {
+  // WP leaves /spring-2025-issue and /fall-2024-issue covers without alt; keep ours.
+  $alts = [
+    '/fall-2026-issue' => 'Cover of the Fall 2026 issue of Impact',
+    '/summer-2026-issue' => 'Cover of the Summer 2026 issue of Impact',
+    '/spring-2026-issue' => 'Impact Spring 2026 magazine cover',
+    '/winter-2025-issue' => 'Impact Winter 2025 cover',
+    '/fall-2025-issue' => 'Impact Fall 2025 cover',
+    '/summer-2025-issue' => 'Impact Summer 2025 cover',
+    '/winter-2024-issue' => 'Impact Winter 2024 cover',
+    '/summer-2024-issue' => 'Impact Magazine Summer 2024 Cover',
+    '/spring-2024-issue' => 'Dana-Farber Impact Spring 2024 cover',
+    '/winter-2023-issue' => 'Dana-Farber Impact Winter 2023 magazine cover',
+    '/fall-2023-issue' => 'Impact Fall 2023 Cover',
+    '/summer-2023-issue' => 'Impact Summer 2023 Cover',
+    '/spring-2023-issue' => 'Impact Spring 2023 Cover',
+  ];
+  $alias_manager = \Drupal::service('path_alias.manager');
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  foreach ($alts as $alias => $alt) {
+    $path = $alias_manager->getPathByAlias($alias);
+    if (!preg_match('#^/node/(\d+)$#', $path, $m)) {
+      continue;
+    }
+    $issue = $node_storage->load((int) $m[1]);
+    if (!$issue || $issue->bundle() !== 'issue' || !$issue->hasField('field_cover_image')) {
+      continue;
+    }
+    $media = $issue->get('field_cover_image')->entity;
+    if (!$media || !$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
+      continue;
+    }
+    $item = $media->get('field_media_image')->first();
+    if ((string) $item->alt === $alt) {
+      continue;
+    }
+    $item->alt = $alt;
+    $media->save();
+    $updated++;
+  }
+  return sprintf('Browse-issues cover alt text: %d updated.', $updated);
+}
+
+/**
+ * Attach In Brief featured images (in_brief.json holds WP attachment-page URLs, not files).
+ */
+function df_setup_post_update_in_brief_featured_images(): string {
+  if (!\Drupal::moduleHandler()->moduleExists('df_migrate') || !class_exists('\Drupal\df_migrate\Plugin\migrate\process\DownloadImage')) {
+    return 'In Brief featured images: df_migrate unavailable.';
+  }
+  $data_dir = DRUPAL_ROOT . '/' . \Drupal::service('extension.list.module')->getPath('df_migrate') . '/data';
+  $briefs = json_decode((string) @file_get_contents($data_dir . '/in_brief.json'), TRUE);
+  $media_rows = json_decode((string) @file_get_contents($data_dir . '/media.json'), TRUE);
+  if (!is_array($briefs) || !is_array($media_rows)) {
+    return 'In Brief featured images: data files missing.';
+  }
+  $media_by_wp_id = [];
+  foreach ($media_rows as $row) {
+    if (!empty($row['wp_id']) && !empty($row['source_url'])) {
+      $media_by_wp_id[(string) $row['wp_id']] = $row;
+    }
+  }
+  $alias_manager = \Drupal::service('path_alias.manager');
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $file_system = \Drupal::service('file_system');
+  $updated = 0;
+  $missing = 0;
+  foreach ($briefs as $brief) {
+    if (empty($brief['drupal_alias'])) {
+      continue;
+    }
+    $path = $alias_manager->getPathByAlias($brief['drupal_alias']);
+    if (!preg_match('#^/node/(\d+)$#', $path, $m)) {
+      continue;
+    }
+    $node = $node_storage->load((int) $m[1]);
+    if (!$node || $node->bundle() !== 'in_brief' || !$node->hasField('field_image') || !$node->get('field_image')->isEmpty()) {
+      continue;
+    }
+    $media_row = $media_by_wp_id[(string) ($brief['featured_image_wp_id'] ?? '')] ?? NULL;
+    $url = $media_row['source_url'] ?? '';
+    if ($url === '' && preg_match('#<img[^>]+src="([^"]*wp-content/uploads/[^"]+)"#', (string) ($brief['body'] ?? ''), $img)) {
+      $url = $img[1];
+    }
+    $uri = $url !== '' ? \Drupal\df_migrate\Plugin\migrate\process\DownloadImage::urlToUri($url) : '';
+    $real = $uri !== '' ? $file_system->realpath($uri) : FALSE;
+    if (!is_string($real) || !is_readable($real)) {
+      $missing++;
+      continue;
+    }
+    $fid = \Drupal\df_migrate\Plugin\migrate\process\DownloadImage::getOrCreateFileFromUrl($url);
+    if (!$fid) {
+      $missing++;
+      continue;
+    }
+    $alt = trim((string) ($media_row['alt_text'] ?? '')) ?: $node->label();
+    $node->set('field_image', ['target_id' => $fid, 'alt' => $alt]);
+    $node->save();
+    $updated++;
+  }
+  return sprintf('In Brief featured images: %d attached, %d without a local file.', $updated, $missing);
+}
+
+/**
+ * Populate article "More stories" (field_related_articles) from the WP Jetpack export.
+ */
+function df_setup_post_update_jetpack_related_articles(): string {
+  $inc = DRUPAL_ROOT . '/modules/custom/df_migrate/scripts/backfill_jetpack_related_articles.inc';
+  if (!is_readable($inc)) {
+    return 'Jetpack related: df_migrate include missing.';
+  }
+  require_once $inc;
+  $data = df_migrate_load_jetpack_related_json();
+  $by_wp_id = is_array($data) ? ($data['by_wp_id'] ?? []) : [];
+  $wp_to_nid = df_migrate_wp_id_to_article_nid_map();
+  $slug_to_wp = df_migrate_article_slug_to_wp_id_map();
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  foreach ($by_wp_id as $entry) {
+    $source_wp_id = (int) ($entry['wp_id'] ?? 0);
+    $nid = $wp_to_nid[$source_wp_id] ?? NULL;
+    $node = $nid ? $node_storage->load($nid) : NULL;
+    if (!$node || $node->bundle() !== 'article' || !$node->hasField('field_related_articles')) {
+      continue;
+    }
+    $targets = [];
+    foreach ($entry['related'] ?? [] as $rel) {
+      $rel_wp = (int) ($rel['wp_id'] ?? 0);
+      if ($rel_wp <= 0 && !empty($rel['slug'])) {
+        $rel_wp = (int) ($slug_to_wp[(string) $rel['slug']] ?? 0);
+      }
+      $rel_nid = $wp_to_nid[$rel_wp] ?? NULL;
+      if ($rel_wp > 0 && $rel_wp !== $source_wp_id && $rel_nid !== NULL && !in_array($rel_nid, $targets, TRUE)) {
+        $targets[] = $rel_nid;
+      }
+    }
+    $targets = array_slice($targets, 0, 3);
+    $current = array_map('intval', array_column($node->get('field_related_articles')->getValue(), 'target_id'));
+    if ($current === $targets) {
+      continue;
+    }
+    $node->set('field_related_articles', array_map(static fn(int $id): array => ['target_id' => $id], $targets));
+    $node->save();
+    $updated++;
+  }
+  return sprintf('Jetpack related: %d articles updated.', $updated);
+}
+
+/**
+ * Root-relative inline file URLs (migrations under drush stored http://default/…).
+ */
+function df_setup_post_update_relative_inline_file_urls(): string {
+  $fields = ['body', 'field_summary', 'field_excerpt'];
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  foreach ($node_storage->getQuery()->accessCheck(FALSE)->execute() as $nid) {
+    $node = $node_storage->load($nid);
+    if (!$node) {
+      continue;
+    }
+    $changed = FALSE;
+    foreach ($fields as $field) {
+      if (!$node->hasField($field) || $node->get($field)->isEmpty()) {
+        continue;
+      }
+      $item = $node->get($field)->first();
+      $value = (string) $item->value;
+      $new = str_replace(['http://default/sites/default/files/', 'https://default/sites/default/files/'], '/sites/default/files/', $value);
+      if ($new !== $value) {
+        $item->value = $new;
+        $changed = TRUE;
+      }
+    }
+    if ($changed) {
+      $node->save();
+      $updated++;
+    }
+    $node_storage->resetCache([$nid]);
+  }
+  return sprintf('Inline file URLs: %d nodes made root-relative.', $updated);
+}
+
+/**
+ * Repairs "Mismatched entity and/or field definitions" for node field storages.
+ *
+ * Covers node.body, node.field_homepage_sort_weight and node.field_postx_sort_weight
+ * (plus field_issue_banner_is_light, which shows the same drift on long-lived DBs).
+ */
+function df_setup_post_update_repair_node_field_storage_definitions(): string {
+  return df_setup_repair_node_field_storage_definitions([
+    'body',
+    'field_homepage_sort_weight',
+    'field_postx_sort_weight',
+    'field_issue_banner_is_light',
+  ]);
+}
+
+/**
+ * Reconciles dedicated field tables and installed schema records (idempotent).
+ *
+ * The drift seen on migrated DBs is a missing or stale
+ * entity.storage_schema.sql record while the field tables already hold data,
+ * so tables are created/extended non-destructively and the records rewritten.
+ *
+ * @param list<string> $field_names
+ */
+function df_setup_repair_node_field_storage_definitions(array $field_names): string {
+  $entity_type_id = 'node';
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $change_list = $update_manager->getChangeList()[$entity_type_id]['field_storage_definitions'] ?? [];
+  $current = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions($entity_type_id);
+  $repository = \Drupal::service('entity.last_installed_schema.repository');
+  $schema_kv = \Drupal::keyValue('entity.storage_schema.sql');
+  $db_schema = \Drupal::database()->schema();
+  $storage = \Drupal::entityTypeManager()->getStorage($entity_type_id);
+  $storage_schema = (fn () => $this->getStorageSchema())->call($storage);
+
+  $repaired = [];
+  foreach ($field_names as $field_name) {
+    $definition = $current[$field_name] ?? NULL;
+    if ($definition === NULL || !isset($change_list[$field_name])) {
+      continue;
+    }
+
+    if ($change_list[$field_name] === $update_manager::DEFINITION_CREATED && !$db_schema->tableExists($storage->getTableMapping()->getDedicatedDataTableName($definition))) {
+      $update_manager->installFieldStorageDefinition($field_name, $entity_type_id, $definition->getProvider(), $definition);
+      $repaired[] = $field_name . ' (installed)';
+      continue;
+    }
+
+    $schema = (fn ($d) => $this->getSchemaFromStorageDefinition($d))->call($storage_schema, $definition);
+    foreach ($schema as $table => $table_schema) {
+      if (!$db_schema->tableExists($table)) {
+        $db_schema->createTable($table, $table_schema);
+        continue;
+      }
+      foreach ($table_schema['fields'] as $column => $column_schema) {
+        if (!$db_schema->fieldExists($table, $column)) {
+          $db_schema->addField($table, $column, $column_schema);
+        }
+      }
+      foreach ($table_schema['indexes'] ?? [] as $index => $index_fields) {
+        if (!$db_schema->indexExists($table, $index)) {
+          $db_schema->addIndex($table, $index, $index_fields, $table_schema);
+        }
+      }
+    }
+    $schema_kv->set($entity_type_id . '.field_schema_data.' . $field_name, $schema);
+    $repository->setLastInstalledFieldStorageDefinition($definition);
+    $repaired[] = $field_name;
+  }
+
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+  return $repaired === []
+    ? 'Node field storage definitions already in sync.'
+    : 'Repaired node field storage definitions: ' . implode(', ', $repaired) . '.';
+}
+
+/**
+ * "More stories:" = live Jetpack Related Posts for articles and In Briefs (QA-020).
+ *
+ * Applies df_migrate/data/wp_jetpack_related_posts.json (frozen from live) in live order.
+ */
+function df_setup_post_update_jetpack_related_live_fixture(): string {
+  $messages = [];
+  if (!FieldConfig::loadByName('node', 'in_brief', 'field_related_articles') && FieldStorageConfig::loadByName('node', 'field_related_articles')) {
+    $data = \Drupal::service('config.storage.sync')->read('field.field.node.in_brief.field_related_articles');
+    if ($data) {
+      // Syncing like config import: the In Brief listing display references a missing formatter.
+      FieldConfig::create($data)->setSyncing(TRUE)->save();
+      \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+      $messages[] = 'Added field_related_articles to In Brief.';
+    }
+  }
+  $inc = DRUPAL_ROOT . '/modules/custom/df_migrate/scripts/backfill_jetpack_related_articles.inc';
+  if (!is_readable($inc)) {
+    return implode(' ', [...$messages, 'Jetpack live related: df_migrate include missing.']);
+  }
+  require_once $inc;
+  $data = df_migrate_load_jetpack_related_json();
+  $wp_to_nid = df_migrate_wp_id_to_article_nid_map();
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $updated = 0;
+  $unresolved = 0;
+  foreach (is_array($data) ? ($data['by_wp_id'] ?? []) : [] as $entry) {
+    $nid = $wp_to_nid[(int) ($entry['wp_id'] ?? 0)] ?? NULL;
+    $node = $nid ? $node_storage->load($nid) : NULL;
+    if (!$node || !in_array($node->bundle(), ['article', 'in_brief'], TRUE) || !$node->hasField('field_related_articles')) {
+      continue;
+    }
+    $targets = [];
+    foreach (array_slice($entry['related'] ?? [], 0, 3) as $rel) {
+      $rel_nid = $wp_to_nid[(int) ($rel['wp_id'] ?? 0)] ?? NULL;
+      if ($rel_nid === NULL || $rel_nid === (int) $nid) {
+        $unresolved++;
+        continue;
+      }
+      $targets[] = $rel_nid;
+    }
+    $current = array_map('intval', array_column($node->get('field_related_articles')->getValue(), 'target_id'));
+    if ($current === $targets) {
+      continue;
+    }
+    $node->set('field_related_articles', array_map(static fn(int $id): array => ['target_id' => $id], $targets));
+    $node->save();
+    $updated++;
+  }
+  $messages[] = sprintf('Jetpack live related: %d nodes updated, %d related posts not migrated.', $updated, $unresolved);
+  return implode(' ', $messages);
+}
+
+/**
+ * One Digital Exclusives channel term. Remap references, then delete duplicates.
+ */
+function df_setup_post_update_consolidate_digital_exclusives_term(): string {
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $tids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('vid', 'channels')
+    ->condition('name', 'Digital Exclusives')
+    ->sort('tid', 'ASC')
+    ->execute();
+  $tids = array_map('intval', array_values($tids));
+  if (count($tids) < 2) {
+    return 'Digital Exclusives term already unique.';
+  }
+  $db = \Drupal::database();
+  $canonical = $tids[0];
+  $best = -1;
+  foreach ($tids as $tid) {
+    $count = (int) $db->query('SELECT COUNT(*) FROM {node__field_channels} WHERE field_channels_target_id = :tid AND deleted = 0', [':tid' => $tid])->fetchField();
+    if ($count > $best) {
+      $best = $count;
+      $canonical = $tid;
+    }
+  }
+  $remapped = 0;
+  $tables = ['node__field_channels', 'node_revision__field_channels'];
+  foreach ($tids as $tid) {
+    if ($tid === $canonical) {
+      continue;
+    }
+    foreach ($tables as $table) {
+      if (!$db->schema()->tableExists($table)) {
+        continue;
+      }
+      $rows = $db->select($table, 'c')
+        ->fields('c', ['entity_id'])
+        ->condition('field_channels_target_id', $tid)
+        ->execute()
+        ->fetchCol();
+      foreach ($rows as $entity_id) {
+        $exists = (int) $db->select($table, 'c')
+          ->condition('entity_id', $entity_id)
+          ->condition('field_channels_target_id', $canonical)
+          ->countQuery()
+          ->execute()
+          ->fetchField();
+        if ($exists) {
+          $db->delete($table)
+            ->condition('entity_id', $entity_id)
+            ->condition('field_channels_target_id', $tid)
+            ->execute();
+          continue;
+        }
+        $db->update($table)
+          ->fields(['field_channels_target_id' => $canonical])
+          ->condition('entity_id', $entity_id)
+          ->condition('field_channels_target_id', $tid)
+          ->execute();
+        $remapped++;
+      }
+    }
+    if ($db->schema()->tableExists('taxonomy_index')) {
+      $nids = $db->select('taxonomy_index', 'ti')
+        ->fields('ti', ['nid'])
+        ->condition('tid', $tid)
+        ->execute()
+        ->fetchCol();
+      foreach ($nids as $nid) {
+        $exists = (int) $db->select('taxonomy_index', 'ti')
+          ->condition('nid', $nid)
+          ->condition('tid', $canonical)
+          ->countQuery()
+          ->execute()
+          ->fetchField();
+        if ($exists) {
+          $db->delete('taxonomy_index')->condition('nid', $nid)->condition('tid', $tid)->execute();
+        }
+        else {
+          $db->update('taxonomy_index')->fields(['tid' => $canonical])->condition('nid', $nid)->condition('tid', $tid)->execute();
+        }
+      }
+    }
+    $term = $storage->load($tid);
+    if ($term) {
+      $term->delete();
+    }
+  }
+  return sprintf('Kept Digital Exclusives term %d and remapped %d references.', $canonical, $remapped);
+}

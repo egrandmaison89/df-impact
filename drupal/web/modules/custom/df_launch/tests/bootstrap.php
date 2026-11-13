@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * PHPUnit bootstrap for df_launch tests.
+ */
+
+$webRoot = dirname(__DIR__, 4);
+$drupalRoot = dirname($webRoot);
+$autoload = require $drupalRoot . '/vendor/autoload.php';
+$autoload->addPsr4('Drupal\\df_launch\\', dirname(__DIR__) . '/src/');
+$autoload->addPsr4('Drupal\\df_secondary\\', dirname(__DIR__, 2) . '/df_secondary/src/');
+$autoload->addPsr4('Drupal\\df_setup\\', dirname(__DIR__, 2) . '/df_setup/src/');
+$autoload->addPsr4('Drupal\\df_metatag\\', dirname(__DIR__, 2) . '/df_metatag/src/');
+$autoload->addPsr4('Drupal\\Tests\\df_setup\\', dirname(__DIR__, 2) . '/df_setup/tests/src/');
+$autoload->addPsr4('Drupal\\Tests\\df_metatag\\', dirname(__DIR__, 2) . '/df_metatag/tests/src/');
+$autoload->addPsr4('Drupal\\Tests\\df_launch\\', dirname(__DIR__) . '/tests/src/');
+$autoload->addPsr4('Drupal\\Tests\\df_secondary\\', dirname(__DIR__, 2) . '/df_secondary/tests/src/');
+$autoload->addPsr4('Drupal\\node\\', $webRoot . '/core/modules/node/src/');

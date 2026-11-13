@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for df_secondary.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_install().
+ */
+function df_secondary_install(): void {
+  // Sitemap generation is handled in CI/deploy (drush simple-sitemap:generate).
+}
+
+/**
+ * Enables the publication_sort processor so the index field has a property.
+ *
+ * A field with no datasource and no processor throws from Field::getDataDefinition()
+ * during Views data and theme registry rebuilds.
+ */
+function df_secondary_update_10001(): string {
+  if (!\Drupal::moduleHandler()->moduleExists('search_api')) {
+    return 'search_api is not installed.';
+  }
+  $config = \Drupal::configFactory()->getEditable('search_api.index.df_impact_content');
+  if ($config->isNew()) {
+    return 'Index df_impact_content is not installed yet.';
+  }
+  $settings = $config->get('processor_settings') ?? [];
+  $settings['publication_sort'] = [
+    'weights' => [
+      'add_properties' => 0,
+    ],
+    'plugin_id' => 'publication_sort',
+    'settings' => [],
+  ];
+  $config->set('processor_settings', $settings);
+  $fields = $config->get('field_settings') ?? [];
+  if (isset($fields['publication_sort'])) {
+    unset($fields['publication_sort']['datasource_id']);
+    $fields['publication_sort']['property_path'] = 'publication_sort';
+    $fields['publication_sort']['type'] = 'integer';
+    $config->set('field_settings', $fields);
+  }
+  $config->save(TRUE);
+  return 'Enabled the publication_sort Search API processor on df_impact_content.';
+}

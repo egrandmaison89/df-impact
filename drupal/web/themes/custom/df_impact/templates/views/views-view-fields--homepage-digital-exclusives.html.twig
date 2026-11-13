@@ -1,28 +1,23 @@
 {#
-/**
- * @file
- * Article card template for digital exclusives view.
- */
+  PostX card — Digital Exclusives homepage row.
 #}
-<article class="home-card home-card--digital">
-  {% if fields.field_featured_image is defined and fields.field_featured_image.content|render|trim %}
-    <div class="home-card__image">
-      {{ fields.field_featured_image.content }}
+<div class="ultp-block-item post-id-{{ article_nid }}">
+  <div class="ultp-block-content-wrap">
+    {% if article_card_image_url %}
+      <div class="ultp-block-image ultp-block-image-zoomIn">
+        {% include '@df_impact/includes/postx-card-image.html.twig' with {
+          card_url: article_url,
+          image_url: article_card_image_url,
+          srcset: article_card_image_srcset,
+          sizes: article_card_image_sizes,
+          width: article_card_image_width,
+          height: article_card_image_height,
+          alt: article_card_image_alt,
+        } only %}
+      </div>
+    {% endif %}
+    <div class="ultp-block-content">
+      <h3 class="ultp-block-title"><a href="{{ article_url }}">{{ fields.title.content|render|striptags|trim }}</a></h3>
     </div>
-  {% elseif article_card_image_fallback is defined and article_card_image_fallback %}
-    <div class="home-card__image">
-      {{ article_card_image_fallback }}
-    </div>
-  {% endif %}
-  <div class="home-card__body">
-    {% if fields.field_topics is defined and fields.field_topics.content|render|trim %}
-      <div class="home-card__category">{{ fields.field_topics.content }}</div>
-    {% endif %}
-    {% if fields.title is defined %}
-      <h3 class="home-card__title">{{ fields.title.content }}</h3>
-    {% endif %}
-    {% if fields.field_excerpt is defined and fields.field_excerpt.content|render|trim %}
-      <div class="home-card__excerpt">{{ fields.field_excerpt.content }}</div>
-    {% endif %}
   </div>
-</article>
+</div>

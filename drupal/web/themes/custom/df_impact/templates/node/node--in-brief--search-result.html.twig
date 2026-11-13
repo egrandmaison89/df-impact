@@ -1,0 +1,19 @@
+{#
+  In Brief search result row.
+#}
+<li{{ attributes.addClass('wp-block-post', 'node--view-mode-search-result') }}>
+  <div class="wp-block-group wp-block-post-container is-layout-flow wp-block-group-is-layout-flow">
+    <h2 class="wp-block-post-title" style="font-size:24px;font-style:normal;font-weight:600">
+      <a href="{{ url }}">{{ search_result_title|default(label) }}</a>
+    </h2>
+    {% if search_result_excerpt %}
+      <div class="wp-block-post-excerpt has-text-color has-black-color">
+        <p class="wp-block-post-excerpt__excerpt">{{ search_result_excerpt }}</p>
+      </div>
+    {% elseif in_brief_excerpt is defined and in_brief_excerpt %}
+      <div class="wp-block-post-excerpt has-text-color has-black-color">
+        <p class="wp-block-post-excerpt__excerpt">{{ in_brief_excerpt }}</p>
+      </div>
+    {% endif %}
+  </div>
+</li>

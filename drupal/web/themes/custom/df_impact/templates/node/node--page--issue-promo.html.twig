@@ -1,20 +1,19 @@
 {#
-/**
- * @file
- * Issue landing featured page — banner image and title only.
- */
+  Issue “In Brief” promo row — PostX excerpt card.
 #}
-<div{{ attributes.addClass('card', 'card--issue-promo') }}>
-  {% if content.field_banner_image|render|trim %}
-    <div class="card__image">
-      {{ content.field_banner_image }}
+<div class="ultp-block-item post-id-{{ node.id }}">
+  <div class="ultp-block-content-wrap">
+    {% if issue_promo_image_url %}
+      <div class="ultp-block-image ultp-block-image-none">
+        <a href="{{ url }}"><img decoding="async" src="{{ issue_promo_image_url }}" width="{{ issue_promo_image_width|default(768) }}" height="{{ issue_promo_image_height|default(551) }}" class="ultp-block-image-content lazyloaded" alt="{{ issue_promo_image_alt }}" style="width:100%;height:100%;object-fit:cover"></a>
+      </div>
+    {% endif %}
+    <div class="ultp-block-content">
+      <h2 class="ultp-block-title"><a href="{{ url }}">{{ label }}</a></h2>
+      {% if issue_promo_excerpt %}
+        <div class="ultp-block-excerpt">{{ issue_promo_excerpt }}</div>
+      {% endif %}
+      <div class="ultp-block-readmore"><a href="{{ url }}">{{ 'Continue Reading'|t }}</a></div>
     </div>
-  {% endif %}
-  <div class="card__body">
-    {{ title_prefix }}
-    <h3 class="card__title card__title--issue-promo">
-      <a href="{{ url }}">{{ label }}</a>
-    </h3>
-    {{ title_suffix }}
   </div>
 </div>

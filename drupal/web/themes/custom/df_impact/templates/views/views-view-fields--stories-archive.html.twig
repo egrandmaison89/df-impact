@@ -1,0 +1,37 @@
+{#
+/**
+ * @file
+ * Stories archive row — wider image column (WordPress /issues/ parity).
+ */
+#}
+<li class="wp-block-post type-post hentry">
+  <div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained">
+    <div class="wp-block-columns alignwide are-vertically-aligned-center is-layout-flex wp-block-columns-is-layout-flex">
+      {% if archive_featured_image_url %}
+        <div class="wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:54.857%">
+          <figure class="wp-block-post-featured-image">
+            <a href="{{ article_url }}"><img width="1450" height="1040" src="{{ archive_featured_image_url }}" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="{{ archive_featured_image_alt }}" style="object-fit:cover;" decoding="async"></a>
+          </figure>
+        </div>
+      {% endif %}
+      <div class="wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:45.714%">
+        <div class="wp-block-group wp-block-post-container is-layout-flow wp-block-group-is-layout-flow">
+          {% if fields.title is defined %}
+            <h2 class="wp-block-post-title">
+              <a href="{{ article_url }}">{{ fields.title.content|render|striptags|trim }}</a>
+            </h2>
+          {% endif %}
+          <div class="wp-block-post-meta"></div>
+          {% if archive_excerpt %}
+            <div class="wp-block-post-excerpt">
+              <p class="wp-block-post-excerpt__excerpt">{{ archive_excerpt }}</p>
+              {% if article_url %}
+                <p class="wp-block-post-excerpt__more-text"><a class="wp-block-post-excerpt__more-link" href="{{ article_url }}">{{ 'Continue Reading'|t }}</a></p>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</li>

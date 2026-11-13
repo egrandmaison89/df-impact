@@ -6,6 +6,7 @@ namespace Drupal\df_setup\EventSubscriber;
 
 use Drupal\Core\Config\ConfigCrudEvent;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\ConfigImporterEvent;
 use Drupal\Core\Config\ConfigEvents;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\NodeInterface;
@@ -15,8 +16,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Normalizes system.site:page.front to /node/NID so isFrontPage() works.
  *
- * Storing the /home alias (or any non-internal path) breaks front page detection
- * because PathMatcher compares the active route's internal path to this setting.
+ * Exported config uses /node/1, the Home landing on the standard database.
+ * This subscriber leaves that value alone when node 1 is the published Home
+ * page, so config:status stays clean. It still rewrites /homepage or a
+ * non-Home node id, because PathMatcher compares the internal path.
  */
 final class FixHomeFrontPageConfigSubscriber implements EventSubscriberInterface {
 
@@ -32,7 +35,17 @@ final class FixHomeFrontPageConfigSubscriber implements EventSubscriberInterface
    * {@inheritdoc}
    */
   public static function getSubscribedEvents(): array {
-    return [ConfigEvents::SAVE => 'onConfigSave'];
+    return [
+      ConfigEvents::SAVE => 'onConfigSave',
+      ConfigEvents::IMPORT => 'onConfigImport',
+    ];
+  }
+
+  /**
+   * After config import, re-bind page.front to this DB's Home node (sync NIDs differ).
+   */
+  public function onConfigImport(ConfigImporterEvent $event): void {
+    self::ensureHomeLandingFrontPage();
   }
 
   public function onConfigSave(ConfigCrudEvent $event): void {
@@ -46,7 +59,11 @@ final class FixHomeFrontPageConfigSubscriber implements EventSubscriberInterface
     if (!is_string($front) || $front === '') {
       return;
     }
-    if (preg_match('#^/node/\d+$#', $front)) {
+    if (preg_match('#^/node/(\d+)$#', $front, $matches)) {
+      if ($this->isValidHomeFrontNode((int) $matches[1])) {
+        return;
+      }
+      self::ensureHomeLandingFrontPage();
       return;
     }
 
@@ -57,12 +74,9 @@ final class FixHomeFrontPageConfigSubscriber implements EventSubscriberInterface
       return;
     }
 
-    // Repo shipped system.site:page.front as /home; normalize using the node.
-    if ($lookup === '/home') {
-      $node = $this->loadHomeLandingNode();
-      if ($node instanceof NodeInterface) {
-        $this->applyFrontPath('/node/' . $node->id());
-      }
+    // Shipped front paths are aliases; normalize to /node/NID for PathMatcher.
+    if (in_array($lookup, ['/home', '/homepage'], TRUE)) {
+      self::ensureHomeLandingFrontPage();
     }
   }
 
@@ -79,6 +93,29 @@ final class FixHomeFrontPageConfigSubscriber implements EventSubscriberInterface
     }
     $node = $storage->load(reset($nids));
     return $node instanceof NodeInterface ? $node : NULL;
+  }
+
+  private function isValidHomeFrontNode(int $nid): bool {
+    $node = $this->entityTypeManager->getStorage('node')->load($nid);
+    return $node instanceof NodeInterface
+      && $node->bundle() === 'page'
+      && $node->getTitle() === 'Home'
+      && $node->isPublished();
+  }
+
+  /**
+   * Ensures Home exists and system.site:page.front points at its internal path.
+   */
+  private static function ensureHomeLandingFrontPage(): void {
+    if (!function_exists('_df_setup_ensure_home_landing')) {
+      $install = \Drupal::root() . '/modules/custom/df_setup/df_setup.install';
+      if (is_readable($install)) {
+        require_once $install;
+      }
+    }
+    if (function_exists('_df_setup_ensure_home_landing')) {
+      _df_setup_ensure_home_landing();
+    }
   }
 
   private function applyFrontPath(string $path): void {

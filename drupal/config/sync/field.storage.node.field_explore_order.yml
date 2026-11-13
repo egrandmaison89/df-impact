@@ -1,0 +1,30 @@
+uuid: 7c1e0a2b-4d55-4e8a-9c11-0b6e5d4a3f21
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_explore_order
+field_name: field_explore_order
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: '1'
+      label: '1 — large card'
+    -
+      value: '2'
+      label: '2 — stacked'
+    -
+      value: '3'
+      label: '3 — stacked'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: false
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

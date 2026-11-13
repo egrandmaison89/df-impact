@@ -1,0 +1,152 @@
+uuid: f6a7b8c9-d0e1-2345-f012-789abcdef012
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.node.article.teaser
+    - search_api.index.df_impact_content
+  module:
+    - search_api
+    - user
+id: df_impact_search
+label: 'Impact search'
+module: views
+description: 'Site search (Search API index df_impact_content).'
+tag: ''
+base_table: search_api_index_df_impact_content
+base_field: search_api_id
+display:
+  default:
+    id: default
+    display_title: Default
+    display_plugin: default
+    position: 0
+    display_options:
+      title: Search
+      pager:
+        type: full
+        options:
+          offset: 0
+          items_per_page: 10
+          tags:
+            next: 'Next Page'
+            previous: 'Previous Page'
+            first: ''
+            last: ''
+          quantity: 5
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Search
+          reset_button: false
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          expose_sort_order: true
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      access:
+        type: none
+        options: {  }
+      cache:
+        type: search_api_none
+        options: {  }
+      empty:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text_custom
+          empty: true
+          content: ''
+          tokenize: false
+      sorts: {  }
+      arguments: {  }
+      filters:
+        search_api_fulltext:
+          id: search_api_fulltext
+          table: search_api_index_df_impact_content
+          field: search_api_fulltext
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api_fulltext
+          operator: and
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: search_op
+            label: Search
+            description: ''
+            use_operator: false
+            operator: search_op
+            identifier: s
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          parse_mode: terms
+          min_length: 3
+          fields: {  }
+      style:
+        type: default
+      row:
+        type: search_api
+        options:
+          view_modes:
+            'entity:node':
+              article: search_result
+              in_brief: search_result
+              issue: search_result
+              page: search_result
+      query:
+        type: search_api_query
+        options: {  }
+      relationships: {  }
+      header: {  }
+      footer: {  }
+      display_extenders: {  }
+    cache_metadata:
+      max-age: 0
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+      tags:
+        - 'config:search_api.index.df_impact_content'
+      cacheable: false
+  page_1:
+    id: page_1
+    display_title: Page
+    display_plugin: page
+    position: 1
+    display_options:
+      display_extenders: {  }
+      path: search-legacy
+    cache_metadata:
+      max-age: 0
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+      tags:
+        - 'config:search_api.index.df_impact_content'
+      cacheable: false

@@ -1,0 +1,144 @@
+/**
+ * WordPress query-pagination parity (archives, categories, issues listings).
+ */
+.pager,
+.pager__items,
+nav.pager ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wp-block-query-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wp-block-query-pagination > .wp-block-query-pagination-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+}
+
+/* blockmag + child theme: 49–63px square boxes, filled links, outlined current page. */
+.wp-block-query-pagination-numbers .page-numbers {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--wp--custom--spacing--wp-block-page-numbers, clamp(49px, 3.3vw, 63px));
+  height: var(--wp--custom--spacing--wp-block-page-numbers, clamp(49px, 3.3vw, 63px));
+  margin: 0 7px 7px 0;
+  padding: 0;
+  font-family: var(--wp--preset--font-family--montserrat, Montserrat, sans-serif);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 27px;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background: #00629b;
+  border: 2px solid #00629b;
+  border-radius: 0;
+  transition: 0.5s;
+}
+
+.wp-block-query-pagination-numbers .page-numbers.current,
+.wp-block-query-pagination-numbers a.page-numbers:hover,
+.wp-block-query-pagination-numbers a.page-numbers:focus {
+  color: #00629b;
+  background: transparent;
+}
+
+.wp-block-query-pagination-next,
+.wp-block-query-pagination-previous {
+  display: inline-block;
+  font-family: var(--wp--preset--font-family--montserrat, Montserrat, sans-serif);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 26.25px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #fff;
+  background: #00629b;
+  border: 2px solid #00629b;
+  border-radius: 5px;
+  padding: max(0.7rem, 0.75vw) max(1.5rem, 1.499vw);
+  opacity: 1;
+  transition: 0.5s;
+}
+
+.wp-block-query-pagination-next:hover,
+.wp-block-query-pagination-next:focus,
+.wp-block-query-pagination-previous:hover,
+.wp-block-query-pagination-previous:focus {
+  color: #00629b;
+  background: transparent;
+  border-color: #00629b;
+}
+
+.wp-block-query-pagination.is-content-justification-space-between > .wp-block-query-pagination-next:last-child,
+.wp-block-query-pagination.is-content-justification-space-between > .wp-block-query-pagination-next:last-of-type {
+  margin-inline-start: auto;
+}
+
+.wp-block-query-pagination.is-content-justification-space-between > .wp-block-query-pagination-previous:first-child {
+  margin-inline-end: auto;
+}
+
+/* PostX issue landing pager (ultp-pagination). */
+.ultp-pagination-wrap .ultp-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  list-style: none;
+  margin: 2.5rem 0 1rem;
+  padding: 0;
+}
+
+.ultp-pagination-wrap .ultp-pagination li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ultp-pagination-wrap .ultp-pagination li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-body, Montserrat, sans-serif);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-decoration: none !important;
+  color: #00629b;
+  border: 2px solid #00629b;
+  border-radius: 2px;
+  padding: 8px 14px;
+  background: transparent;
+}
+
+.ultp-pagination-wrap .ultp-pagination li.pagination-active a,
+.ultp-pagination-wrap .ultp-pagination li a[aria-current="page"] {
+  color: #fff;
+  background: #00629b;
+}
+
+.ultp-pagination-wrap .ultp-pagination li a:hover {
+  color: #fff;
+  background: #00629b;
+}
+
+.ultp-pagination-wrap .ultp-pagination li a svg {
+  width: 1rem;
+  height: 1rem;
+}

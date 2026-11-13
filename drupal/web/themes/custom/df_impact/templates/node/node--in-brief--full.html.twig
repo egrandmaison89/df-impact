@@ -1,35 +1,48 @@
 {#
 /**
  * @file
- * Theme override for In Brief nodes (full view mode).
+ * In Brief full view — WordPress entry-content parity.
  */
 #}
-<div{{ attributes.addClass('in-brief-item') }}>
-  {% if content.field_image|render|trim %}
-    <div class="in-brief-item__image">
-      {{ content.field_image }}
-    </div>
-  {% endif %}
+<article{{ attributes.addClass('wp-singular', 'in-brief-post', 'post') }}>
 
-  <div class="in-brief-item__content">
-    {{ title_prefix }}
-    <h2 class="in-brief-item__title">
-      {% if content.field_link|render|trim %}
-        {{ content.field_link }}
-      {% else %}
-        {{ label }}
+  <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow">
+    <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">
+
+      {% if in_brief_lead_figure is defined and in_brief_lead_figure %}
+        {{ in_brief_lead_figure }}
+      {% elseif in_brief_image_url %}
+        <figure class="wp-block-image alignleft size-large is-resized"><img decoding="async" src="{{ in_brief_image_url }}" alt="{{ in_brief_image_alt }}" class="wp-post-image wp-image-{{ node.id }}" width="363" height="260"></figure>
       {% endif %}
-    </h2>
-    {{ title_suffix }}
 
-    <div class="in-brief-item__summary">
-      {{ content.field_summary }}
+      {% set has_byline = in_brief_byline is defined and in_brief_byline|trim %}
+      {% set has_photo_credit = in_brief_photo_credit_display is defined and in_brief_photo_credit_display|trim %}
+      {% if in_brief_issue_url %}
+        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
+          <a href="{{ in_brief_issue_url }}">{{ in_brief_issue_label }}</a>
+          {% if has_byline %}<br>By {{ in_brief_byline }}{% endif %}
+          {% if has_photo_credit %}<br>{{ in_brief_photo_credit_display }}{% endif %}
+        </p>
+      {% elseif has_byline or has_photo_credit %}
+        <p class="wp-block-paragraph" style="font-style:normal;font-weight:500">
+          {% if has_byline %}By {{ in_brief_byline }}{% endif %}
+          {% if has_photo_credit %}{% if has_byline %}<br>{% endif %}{{ in_brief_photo_credit_display }}{% endif %}
+        </p>
+      {% endif %}
+
+      {% if content.body|render|trim %}
+        {{ content.body }}
+      {% elseif in_brief_body is defined and in_brief_body %}
+        {{ in_brief_body }}
+      {% elseif content.field_summary %}
+        {{ content.field_summary }}
+      {% elseif in_brief_listing_excerpt %}
+        <p class="has-drop-cap wp-block-paragraph">{{ in_brief_listing_excerpt }}</p>
+      {% endif %}
+
+      {% include '@df_impact/includes/article-social-share.html.twig' %}
     </div>
-
-    {% if content.field_issue|render|trim %}
-      <div class="in-brief-item__issue">
-        {{ content.field_issue }}
-      </div>
-    {% endif %}
   </div>
-</div>
+
+  {% include '@df_impact/includes/single-post-footer.html.twig' %}
+</article>

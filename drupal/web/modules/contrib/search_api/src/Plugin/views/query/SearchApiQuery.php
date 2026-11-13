@@ -5,6 +5,8 @@ namespace Drupal\search_api\Plugin\views\query;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheableDependencyInterface;
+use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Database\Query\ConditionInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -429,8 +431,28 @@ class SearchApiQuery extends QueryPluginBase {
       '#title' => $this->t('Query Tags'),
       '#description' => $this->t('If set, these tags will be appended to the query and can be used to identify the query in a module. This can be helpful for altering queries.'),
       '#default_value' => implode(', ', $this->options['query_tags']),
-      '#element_validate' => ['views_element_validate_tags'],
+      '#element_validate' => [[static::class, 'elementValidateTags']],
     ];
+  }
+
+  /**
+   * Validation callback for query tags.
+   *
+   * @param array $element
+   *   The form element to validate.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current form state.
+   *
+   * @see \Drupal\views\Plugin\views\query\Sql::elementValidateTags()
+   */
+  public static function elementValidateTags(array &$element, FormStateInterface $form_state): void {
+    $values = array_map('trim', explode(',', $element['#value']));
+    foreach ($values as $value) {
+      if (preg_match("/[^a-z_]/", $value)) {
+        $form_state->setError($element, t('The query tags may only contain lower-case alphabetical characters and underscores.'));
+        return;
+      }
+    }
   }
 
   /**
@@ -638,6 +660,14 @@ class SearchApiQuery extends QueryPluginBase {
       // Trigger pager postExecute().
       $view->pager->postExecute($view->result);
       $view->pager->updatePageInfo();
+
+      // Apply the cacheability of the search query to the rendered view. It is
+      // only known once the search has run (for example, the cache contexts of
+      // the item access checks), so it is not part of the cacheability that
+      // Views calculates when the view is saved.
+      CacheableMetadata::createFromRenderArray($view->element)
+        ->addCacheableDependency($this->query)
+        ->applyTo($view->element);
     }
     catch (\Exception $e) {
       $this->abort($e->getMessage());
@@ -696,11 +726,25 @@ class SearchApiQuery extends QueryPluginBase {
     // First, unless disabled, check access for all entities in the results.
     if (!$this->options['skip_access']) {
       $account = $this->getAccessAccount();
+      $search_api_query = $result_set->getQuery();
+      // Cache contexts such as "user" would describe the current user rather
+      // than the account being checked, so do not cache the results then.
+      if ($account && $search_api_query instanceof RefinableCacheableDependencyInterface) {
+        $search_api_query->mergeCacheMaxAge(0);
+      }
       // If search items are not loaded already, pre-load them now in bulk to
       // avoid them being individually loaded inside checkAccess().
       $result_set->preLoadResultItems();
       foreach ($results as $item_id => $result) {
-        if (!$result->getAccessResult($account)->isAllowed()) {
+        $access_result = $result->getAccessResult($account);
+        // Whatever the access check depended on (for example permissions, the
+        // user or node grants) decides which users may share these results,
+        // so add it to the cacheability of the query. Denied items count too,
+        // as they might be allowed for another user.
+        if ($search_api_query instanceof RefinableCacheableDependencyInterface) {
+          $search_api_query->addCacheableDependency($access_result);
+        }
+        if (!$access_result->isAllowed()) {
           unset($results[$item_id]);
         }
       }
@@ -709,11 +753,12 @@ class SearchApiQuery extends QueryPluginBase {
     foreach ($results as $result) {
       $values = [];
       $values['_item'] = $result;
+      $values['search_api_has_fields_from_server'] = FALSE;
       try {
         $object = $result->getOriginalObject(FALSE);
         if ($object) {
           $values['_object'] = $object;
-          $values['_relationship_objects'][NULL] = [$object];
+          $values['_relationship_objects'][''] = [$object];
           if ($object instanceof EntityAdapter) {
             $values['_entity'] = $object->getEntity();
           }
@@ -747,6 +792,7 @@ class SearchApiQuery extends QueryPluginBase {
           // it doesn't really matter.
         }
         $values[$path] = $field->getValues();
+        $values['search_api_has_fields_from_server'] = TRUE;
       }
 
       $values['index'] = $count++;
@@ -771,6 +817,26 @@ class SearchApiQuery extends QueryPluginBase {
   }
 
   /**
+   * Gets all the involved entities of the view.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   *   The entities.
+   */
+  protected function getAllEntities(): array {
+    $entities = [];
+
+    /** @var \Drupal\search_api\Plugin\views\ResultRow $row */
+    foreach ($this->view->result as $row) {
+      $entity_adapter = $row->_object;
+      if ($entity_adapter instanceof EntityAdapter) {
+        $entities[] = $entity_adapter->getEntity();
+      }
+    }
+
+    return $entities;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function getCacheTags() {
@@ -782,6 +848,10 @@ class SearchApiQuery extends QueryPluginBase {
       // invalidated if any items on the index are indexed or deleted.
       $tags[] = 'search_api_list:' . $this->getIndex()->id();
       $tags = Cache::mergeTags($query->getCacheTags(), $tags);
+    }
+
+    foreach ($this->getAllEntities() as $entity) {
+      $tags = Cache::mergeTags($entity->getCacheTags(), $tags);
     }
 
     return $tags;
@@ -796,6 +866,10 @@ class SearchApiQuery extends QueryPluginBase {
     $query = $this->getSearchApiQuery();
     if ($query instanceof CacheableDependencyInterface) {
       $max_age = Cache::mergeMaxAges($query->getCacheMaxAge(), $max_age);
+    }
+
+    foreach ($this->getAllEntities() as $entity) {
+      $max_age = Cache::mergeMaxAges($max_age, $entity->getCacheMaxAge());
     }
 
     return $max_age;

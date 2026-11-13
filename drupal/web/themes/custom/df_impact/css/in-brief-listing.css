@@ -1,0 +1,44 @@
+.in-brief-page__item.is-collapsed,
+.ultp-block-items-wrap .ultp-block-item.is-collapsed,
+.ultp-block-item.ultp-block-media.is-collapsed {
+  display: none !important;
+}
+
+/* /in-brief issue sections — spacing vs WordPress PostX blocks. */
+.in-brief-page__issue-heading {
+  margin: 0 0 1rem;
+}
+
+.in-brief-page__issue-heading + .ultp-post-grid-block {
+  margin-top: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+
+main .in-brief-page__issue-heading + .ultp-post-grid-block .ultp-block-item:first-child {
+  margin-top: 0.75rem;
+}
+
+/*
+ * PostX makes .ultp-block-content-wrap a flex row. The 30% image cap and the
+ * 768px stack live only on five block ids in extracted-wp-inline.css. These
+ * rules apply to every /in-brief section, including ones that reuse an id
+ * whose extracted rules do not match. Values match .ultp-block-9a02d2.
+ */
+.view-in-brief-listing .ultp-block-image {
+  max-width: 30%;
+  height: fit-content;
+  flex-shrink: 0;
+  margin-right: 40px;
+}
+
+@media (max-width: 768px) {
+  .view-in-brief-listing .ultp-block-media .ultp-block-content-wrap {
+    display: block;
+  }
+
+  .view-in-brief-listing .ultp-block-item .ultp-block-image {
+    margin-right: 0;
+    margin-left: 0;
+    max-width: 100%;
+  }
+}

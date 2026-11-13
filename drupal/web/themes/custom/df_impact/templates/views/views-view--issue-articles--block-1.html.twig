@@ -1,0 +1,24 @@
+{#
+  Issue page PostX grid: rows + ultp-pagination inside the block (WordPress parity).
+#}
+{%
+  set classes = [
+    dom_id ? 'js-view-dom-id-' ~ dom_id,
+  ]
+%}
+<div class="ultp-post-grid-block wp-block-ultimate-post-post-grid-1 ultp-block-70af6c alignwide issue-page__articles"{{ attributes.addClass(classes) }}>
+  <div class="ultp-block-wrapper">
+    <div class="ultp-heading-filter"><div class="ultp-heading-filter-in"><div class="ultp-filter-navigation"></div></div></div>
+    <div class="ultp-block-items-wrap ultp-block-row ultp-pg1a-style4 ultp-layout1">
+      {% if rows %}
+        {{ rows }}
+      {% elseif empty %}
+        {{ empty }}
+      {% endif %}
+    </div>
+    {% if pager %}
+      {{ pager }}
+    {% endif %}
+  </div>
+  <div class="pagination-block-html" aria-hidden="true" style="display: none;"></div>
+</div>

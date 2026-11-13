@@ -1,0 +1,1269 @@
+<?php
+
+/**
+ * @file
+ * Editor roles, site chrome, and issue publishing workflow.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\NestedArray;
+use Drupal\df_editor\EditorBodyImages;
+use Drupal\df_editor\Form\EditorFormValidation;
+use Drupal\df_editor\IssuePublisher;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\filter\FilterFormatInterface;
+use Drupal\node\Form\NodeForm;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for node forms.
+ */
+function df_editor_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form['#after_build'][] = 'df_editor_url_alias_after_build';
+  $form['#after_build'][] = 'df_editor_moderation_notice_after_build';
+  $form['#pre_render'][] = [EditorFormValidation::class, 'preRender'];
+  $form['#attributes']['novalidate'] = 'novalidate';
+  $form['#attributes']['data-df-editor-validation'] = '1';
+  $form['#df_editor_inline_errors'] = TRUE;
+  $form['#attached']['library'][] = 'df_editor/form_validation';
+  $form['#validate'][] = 'df_editor_validate_inline_image_alt';
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm || !isset($form['actions'])) {
+    return;
+  }
+  $bundle = $form_object->getEntity()->bundle();
+  foreach (array_keys($form['actions']) as $action) {
+    if (($form['actions'][$action]['#type'] ?? '') !== 'submit') {
+      continue;
+    }
+    if (in_array($action, ['preview', 'delete'], TRUE)) {
+      continue;
+    }
+    $form['actions'][$action]['#submit'][] = 'df_editor_ensure_node_save_status';
+    if (in_array($bundle, ['article', 'in_brief'], TRUE)) {
+      $form['actions'][$action]['#submit'][] = 'df_editor_published_draft_save_message';
+    }
+  }
+}
+
+/**
+ * Rejects newly inserted text images that have no alt text.
+ */
+function df_editor_validate_inline_image_alt(array &$form, FormStateInterface $form_state): void {
+  $submitted = df_editor_empty_alt_sources(df_editor_collect_submitted_html($form_state->getValues()));
+  if ($submitted === []) {
+    return;
+  }
+  $previous = '';
+  $form_object = $form_state->getFormObject();
+  if ($form_object instanceof NodeForm) {
+    $node = $form_object->getEntity();
+    if ($node instanceof NodeInterface && $node->id()) {
+      $original = \Drupal::entityTypeManager()->getStorage('node')->loadUnchanged($node->id());
+      if ($original instanceof NodeInterface) {
+        $previous = df_editor_entity_html($original);
+      }
+    }
+  }
+  $added = array_diff($submitted, df_editor_empty_alt_sources($previous));
+  if ($added === []) {
+    return;
+  }
+  $form_state->setError($form, (string) t('Alt text is required for each image inserted in the text. Describe the image and save again.'));
+}
+
+/**
+ * @return list<string>
+ */
+function df_editor_empty_alt_sources(string $html): array {
+  if ($html === '' || !preg_match_all('/<img\b[^>]*>/i', $html, $tags)) {
+    return [];
+  }
+  $sources = [];
+  foreach ($tags[0] as $tag) {
+    $alt = '';
+    if (preg_match('/\balt\s*=\s*(["\'])(.*?)\1/i', $tag, $match)) {
+      $alt = trim(html_entity_decode($match[2], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    }
+    if ($alt !== '') {
+      continue;
+    }
+    $src = '';
+    if (preg_match('/\bsrc\s*=\s*(["\'])(.*?)\1/i', $tag, $match)) {
+      $src = $match[2];
+    }
+    $sources[] = $src !== '' ? $src : $tag;
+  }
+  return array_values(array_unique($sources));
+}
+
+function df_editor_collect_submitted_html(mixed $values): string {
+  if (!is_array($values)) {
+    return '';
+  }
+  $html = '';
+  foreach ($values as $key => $child) {
+    if ($key === 'value' && is_string($child) && str_contains($child, '<img')) {
+      $html .= ' ' . $child;
+    }
+    elseif (is_array($child)) {
+      $html .= df_editor_collect_submitted_html($child);
+    }
+  }
+  return $html;
+}
+
+function df_editor_entity_html(EntityInterface $entity): string {
+  $html = '';
+  foreach ($entity->getFields() as $field) {
+    $type = $field->getFieldDefinition()->getType();
+    if (in_array($type, ['text', 'text_long', 'text_with_summary', 'string_long'], TRUE)) {
+      foreach ($field as $item) {
+        $html .= ' ' . (string) ($item->value ?? '');
+      }
+    }
+    if ($type === 'entity_reference_revisions') {
+      foreach ($field->referencedEntities() as $child) {
+        if ($child instanceof EntityInterface) {
+          $html .= df_editor_entity_html($child);
+        }
+      }
+    }
+  }
+  return $html;
+}
+
+/**
+ * Seeds the Footer menu with the public About-column links when it is empty.
+ */
+function df_editor_ensure_footer_menu_links(): string {
+  $existing = \Drupal::entityTypeManager()->getStorage('menu_link_content')->loadByProperties([
+    'menu_name' => 'footer',
+  ]);
+  if ($existing) {
+    foreach ($existing as $link) {
+      if ($link->getTitle() === 'Jimmy Fund Events' && $link->getUrlObject()->toString() === 'https://www.jimmyfund.org/events/') {
+        $link->set('link', ['uri' => 'https://www.jimmyfund.org/get-involved/events']);
+        $link->save();
+      }
+    }
+    return 'Footer menu already has links.';
+  }
+  $links = [
+    ['title' => 'About Impact', 'uri' => 'internal:/about', 'weight' => 0],
+    ['title' => 'See All Issues', 'uri' => 'internal:/browse-issues', 'weight' => 1],
+    ['title' => 'Jimmy Fund Events', 'uri' => 'https://www.jimmyfund.org/get-involved/events', 'weight' => 2],
+  ];
+  foreach ($links as $link) {
+    \Drupal\menu_link_content\Entity\MenuLinkContent::create([
+      'title' => $link['title'],
+      'link' => ['uri' => $link['uri']],
+      'menu_name' => 'footer',
+      'weight' => $link['weight'],
+    ])->save();
+  }
+  return 'Seeded Footer menu links.';
+}
+
+/**
+ * Creates the issue and In Brief nodes the editor validation script checks.
+ */
+function df_editor_ensure_validation_issue_fixtures(): string {
+  df_editor_ensure_footer_menu_links();
+  $media_items = \Drupal::entityTypeManager()->getStorage('media')->loadByProperties([
+    'name' => 'P14 validation image',
+  ]);
+  $media = $media_items ? reset($media_items) : NULL;
+  if (!$media) {
+    return 'missing-media';
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $issue = df_editor_validation_issue($storage, 'Playwright issue section', $media, TRUE);
+  $publish = df_editor_validation_issue($storage, 'Playwright publish issue', $media, FALSE);
+  $briefs = $storage->loadByProperties([
+    'type' => 'in_brief',
+    'title' => 'Playwright brief on issue',
+  ]);
+  $brief = $briefs ? reset($briefs) : NULL;
+  if (!$brief) {
+    $brief = $storage->create([
+      'type' => 'in_brief',
+      'title' => 'Playwright brief on issue',
+      'status' => 1,
+      'moderation_state' => 'published',
+      'uid' => 1,
+      'field_issue' => ['target_id' => $issue->id()],
+      'field_summary' => [
+        'value' => 'Playwright brief summary for the issue page.',
+        'format' => 'basic_html',
+      ],
+    ]);
+    $brief->save();
+  }
+  return 'issue=' . $issue->id() . ' brief=' . $brief->id() . ' publish=' . $publish->id();
+}
+
+/**
+ * @param \Drupal\Core\Entity\EntityStorageInterface $storage
+ */
+function df_editor_validation_issue($storage, string $title, $media, bool $published) {
+  $existing = $storage->loadByProperties(['type' => 'issue', 'title' => $title]);
+  if ($existing) {
+    return reset($existing);
+  }
+  $issue = $storage->create([
+    'type' => 'issue',
+    'title' => $title,
+    'status' => $published ? 1 : 0,
+    'moderation_state' => $published ? 'published' : 'draft',
+    'uid' => 1,
+    'field_year' => 2026,
+    'field_season' => 'fall',
+    'field_banner_image' => ['target_id' => $media->id()],
+    'field_cover_image' => ['target_id' => $media->id()],
+  ]);
+  $issue->save();
+  return $issue;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for issue edit forms.
+ */
+/**
+ * Implements hook_form_FORM_ID_alter() for article forms.
+ */
+/**
+ * Implements hook_form_FORM_ID_alter() for article edit forms.
+ */
+function df_editor_form_node_article_edit_form_alter(array &$form, FormStateInterface $form_state): void {
+  df_editor_form_node_article_form_alter($form, $form_state);
+}
+
+function df_editor_form_node_article_form_alter(array &$form, FormStateInterface $form_state): void {
+  df_editor_configure_article_placement_form($form, $form_state);
+  df_editor_restrict_url_alias_form($form);
+  if (isset($form['field_content_type'])) {
+    $form['field_content_type']['#access'] = FALSE;
+  }
+  if (!isset($form['body']['widget'][0])) {
+    return;
+  }
+  $account = \Drupal::currentUser();
+  $widget = &$form['body']['widget'][0];
+  $stored_format = is_array($widget['#default_value'] ?? NULL)
+    ? ($widget['#default_value']['format'] ?? NULL)
+    : ($widget['#format'] ?? NULL);
+
+  if ($account->hasPermission('use text format full_html')) {
+    $widget['#format'] = 'full_html';
+    if (is_array($widget['#default_value'] ?? NULL)) {
+      $widget['#default_value']['format'] = $stored_format === 'full_html' ? 'full_html' : ($widget['#default_value']['format'] ?? 'full_html');
+    }
+    $widget['#allowed_formats'] = ['full_html', 'editor_html'];
+  }
+  elseif ($account->hasPermission('use text format editor_html')) {
+    if ($stored_format === 'full_html' && $account->hasPermission('use legacy full html on stored content')) {
+      $widget['#format'] = 'full_html';
+      if (is_array($widget['#default_value'] ?? NULL)) {
+        $widget['#default_value']['format'] = 'full_html';
+      }
+      $widget['#allowed_formats'] = ['full_html'];
+    }
+    else {
+      $widget['#format'] = 'editor_html';
+      if (is_array($widget['#default_value'] ?? NULL)) {
+        $widget['#default_value']['format'] = 'editor_html';
+      }
+      $widget['#allowed_formats'] = ['editor_html'];
+    }
+  }
+
+  $widget['#description'] = (string) t('Use the toolbar for headings, quotes, images, and the media library (insert an image once and reuse it). For a multi-image gallery with captions, add an Image gallery in Content sections. For WordPress-style blocks, switch to Source.');
+
+  if (isset($form['title']['widget'][0]['value'])) {
+    $form['title']['widget'][0]['value']['#title_display'] = 'before';
+  }
+  if (isset($form['field_topics']['widget'])) {
+    $form['field_topics']['widget']['#title'] = $form['field_topics']['widget']['#title'] ?? t('Topics');
+    $form['field_topics']['widget']['#title_display'] = 'before';
+    $form['field_topics']['widget']['#required'] = FALSE;
+  }
+  if (isset($form['field_featured_image']['widget'])) {
+    $form['field_featured_image']['widget']['#required'] = FALSE;
+  }
+
+  df_editor_attach_web_editor_save_redirect($form);
+}
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function df_editor_entity_type_alter(array &$entity_types): void {
+  if (isset($entity_types['file'])) {
+    $entity_types['file']->setLinkTemplate('canonical', '/admin/content/files/{file}');
+  }
+}
+
+/**
+ * Deletes nodes left by Drush/Playwright automation (DF Test*, Playwright*).
+ */
+function df_editor_cleanup_automation_test_nodes(): int {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $deleted = 0;
+  foreach (['Playwright%', 'DF Test%'] as $pattern) {
+    $nids = $storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('title', $pattern, 'LIKE')
+      ->execute();
+    foreach ($nids as $nid) {
+      $storage->load($nid)?->delete();
+      $deleted++;
+    }
+  }
+  return $deleted;
+}
+
+/**
+ * Counts published and draft articles assigned to an issue.
+ */
+function df_editor_count_attached_articles(NodeInterface $issue): int {
+  if (!$issue->id()) {
+    return 0;
+  }
+  return (int) \Drupal::entityTypeManager()->getStorage('node')->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', ['article', 'in_brief'], 'IN')
+    ->condition('field_issue.target_id', $issue->id())
+    ->count()
+    ->execute();
+}
+
+/**
+ * Implements hook_entity_access() for legacy Full HTML on migrated bodies.
+ */
+function df_editor_entity_access(EntityInterface $entity, $operation, AccountInterface $account): AccessResult {
+  if ($operation !== 'use' || !$entity instanceof FilterFormatInterface || $entity->id() !== 'full_html') {
+    return AccessResult::neutral();
+  }
+  if ($account->hasPermission('use text format full_html')) {
+    return AccessResult::neutral();
+  }
+  if ($account->hasPermission('use legacy full html on stored content')) {
+    return AccessResult::allowed()->cachePerPermissions();
+  }
+  return AccessResult::neutral();
+}
+
+/**
+ * Implements hook_node_presave().
+ *
+ * Web editors with legacy Full HTML may only keep that format on existing nodes.
+ */
+function df_editor_node_presave(NodeInterface $node): void {
+  if ($node->bundle() === 'article' && $node->hasField('field_homepage_placement') && $node->hasField('field_explore_order')) {
+    $placement = (string) $node->get('field_homepage_placement')->value;
+    if ($placement !== 'featured') {
+      $node->set('field_explore_order', NULL);
+    }
+  }
+  if ($node->bundle() === 'article' && $node->hasField('body') && !$node->get('body')->isEmpty()) {
+    $html = (string) $node->get('body')->value;
+    $normalized = EditorBodyImages::normalize($html);
+    if ($normalized !== $html) {
+      $node->set('body', [
+        'value' => $normalized,
+        'format' => $node->get('body')->format,
+        'summary' => $node->get('body')->summary,
+      ]);
+    }
+  }
+  if ($node->bundle() !== 'article' || !$node->hasField('body') || $node->get('body')->isEmpty()) {
+    return;
+  }
+  $format = $node->get('body')->format;
+  if ($format !== 'full_html') {
+    return;
+  }
+  $account = \Drupal::currentUser();
+  if ($account->hasPermission('use text format full_html')) {
+    return;
+  }
+  if (!$account->hasPermission('use legacy full html on stored content')) {
+    return;
+  }
+  $original = $node->original ?? NULL;
+  if (!$original instanceof NodeInterface || $original->get('body')->format !== 'full_html') {
+    $node->set('body', [
+      'value' => $node->get('body')->value,
+      'format' => 'editor_html',
+    ]);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for media forms (require alt text).
+ */
+function df_editor_form_media_image_form_alter(array &$form, FormStateInterface $form_state): void {
+  df_editor_media_require_alt_text($form);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for media library edit.
+ */
+function df_editor_form_media_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!is_object($form_object) || !method_exists($form_object, 'getEntity')) {
+    return;
+  }
+  $media = $form_object->getEntity();
+  if ($media && $media->bundle() === 'image') {
+    df_editor_media_require_alt_text($form);
+  }
+}
+
+/**
+ * Marks image alt fields required for accessibility parity.
+ */
+function df_editor_media_require_alt_text(array &$form): void {
+  if (isset($form['field_media_image']['widget'][0]['#alt_field_required'])) {
+    $form['field_media_image']['widget'][0]['#alt_field_required'] = TRUE;
+  }
+  if (isset($form['field_media_image']['widget'][0]['alt'])) {
+    $form['field_media_image']['widget'][0]['alt']['#required'] = TRUE;
+    $form['field_media_image']['widget'][0]['alt']['#description'] = (string) t('Required. Describe the image for screen readers (WordPress alt parity).');
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function df_editor_views_pre_render(\Drupal\views\ViewExecutable $view): void {
+  if (!in_array($view->storage->id(), ['browse_issues', 'issue_articles'], TRUE)) {
+    return;
+  }
+  $view->element['#cache']['tags'] = Cache::mergeTags(
+    $view->element['#cache']['tags'] ?? [],
+    [
+      'node_list:issue',
+      'node_list:article',
+      'node_list:in_brief',
+      IssuePublisher::CACHE_TAG_ISSUE_NAV,
+      'config:df_editor.settings',
+      'config:views.view.browse_issues',
+    ],
+  );
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function df_editor_page_attachments_alter(array &$attachments): void {
+  df_editor_apply_issue_nav_page_cache($attachments);
+  if (!\Drupal::moduleHandler()->moduleExists('df_editor')) {
+    return;
+  }
+  /** @var \Drupal\df_editor\IssuePreview $preview */
+  $preview = \Drupal::service('df_editor.issue_preview');
+  $nid = $preview->getPreviewIssueNid();
+  if ($nid === NULL) {
+    return;
+  }
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => ['name' => 'df-preview-issue', 'content' => (string) $nid],
+    ],
+    'df_editor_preview_issue',
+  ];
+  if (\Drupal::currentUser()->hasPermission('publish issue with articles') && \Drupal::service('path.matcher')->isFrontPage()) {
+    \Drupal::messenger()->addWarning(t('Homepage and Issues navigation preview: treating issue @nid as the current featured issue.', ['@nid' => $nid]));
+  }
+}
+
+/**
+ * Invalidates render and page cache for issue-driven chrome.
+ */
+function df_editor_invalidate_issue_nav_cache(): void {
+  \Drupal::service('cache_tags.invalidator')->invalidateTags([
+    'node_list:issue',
+    'node_list:article',
+    'node_list:in_brief',
+    IssuePublisher::CACHE_TAG_ISSUE_NAV,
+    'config:df_editor.settings',
+    'config:views.view.browse_issues',
+  ]);
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function df_editor_preprocess_page(array &$variables): void {
+  df_editor_apply_issue_nav_page_cache($variables);
+}
+
+/**
+ * Adds cache tags so issue publish and df_editor.settings changes bust page cache.
+ *
+ * @param array<string, mixed> $element
+ */
+function df_editor_apply_issue_nav_page_cache(array &$element): void {
+  $tags = [
+    'node_list:issue',
+    'node_list:article',
+    'node_list:in_brief',
+    IssuePublisher::CACHE_TAG_ISSUE_NAV,
+    'config:df_editor.settings',
+    'config:views.view.browse_issues',
+  ];
+  if (function_exists('df_setup_get_latest_issue_nid')) {
+    $latest = df_setup_get_latest_issue_nid();
+    if ($latest) {
+      $tags[] = 'node:' . $latest;
+    }
+  }
+  $element['#cache']['tags'] = Cache::mergeTags($element['#cache']['tags'] ?? [], $tags);
+  $element['#cache']['contexts'] = Cache::mergeContexts(
+    $element['#cache']['contexts'] ?? [],
+    ['languages:language_interface'],
+  );
+  $element['#cache']['max-age'] = Cache::PERMANENT;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for issue edit forms.
+ */
+function df_editor_form_node_issue_edit_form_alter(array &$form, FormStateInterface $form_state): void {
+  df_editor_form_node_issue_form_alter($form, $form_state);
+}
+
+function df_editor_form_node_issue_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  $entity = $form_object->getEntity();
+  if (!$entity instanceof NodeInterface || $entity->bundle() !== 'issue') {
+    return;
+  }
+
+  if (isset($form['field_hero_video'])) {
+    $form['field_hero_video']['#description'] = (string) t('Ambient MP4 for the homepage cover video when this issue is the newest published issue. Autoplay, muted, loop—same behavior as WordPress.');
+    $form['field_hero_video']['#weight'] = 20;
+  }
+  if (isset($form['field_hero_poster'])) {
+    $form['field_hero_poster']['#description'] = (string) t('Poster image shown while the homepage hero video loads (cover image).');
+    $form['field_hero_poster']['#weight'] = 21;
+  }
+  if (isset($form['field_hero_heading'])) {
+    $form['field_hero_heading']['#description'] = (string) t('Large heading over the homepage hero video when this issue is the current featured issue on the homepage.');
+    $form['field_hero_heading']['#weight'] = 12;
+  }
+
+  $group = [
+    '#type' => 'details',
+    '#title' => t('Homepage hero (site admins)'),
+    '#open' => TRUE,
+    '#weight' => 15,
+  ];
+  if (isset($form['field_hero_heading']) && !\Drupal::currentUser()->hasPermission('administer df site settings')) {
+    $form['field_hero_heading']['#access'] = FALSE;
+  }
+  foreach (['field_hero_video', 'field_hero_poster', 'field_hero_heading'] as $field_name) {
+    if (isset($form[$field_name])) {
+      $group[$field_name] = $form[$field_name];
+      unset($form[$field_name]);
+    }
+  }
+  if (isset($group['field_hero_video']) || isset($group['field_hero_poster']) || isset($group['field_hero_heading'])) {
+    $form['df_homepage_hero'] = $group;
+    if (!\Drupal::currentUser()->hasPermission('administer df site settings')) {
+      $form['df_homepage_hero']['#access'] = FALSE;
+    }
+  }
+
+  if (\Drupal::currentUser()->hasPermission('publish issue with articles')) {
+    $form['#attached']['library'][] = 'df_editor/issue_publish_confirm';
+    $form['#attached']['drupalSettings']['dfEditor']['issueArticleCount'] = df_editor_count_attached_articles($entity);
+    $form['df_publish_issue_bundle'] = [
+      '#type' => 'submit',
+      '#value' => t('Publish issue'),
+      '#weight' => 101,
+      '#submit' => ['df_editor_issue_publish_bundle_submit'],
+      '#limit_validation_errors' => [],
+      '#attributes' => ['class' => ['js-df-issue-publish-bundle']],
+    ];
+  }
+
+  if (isset($form['publish_on'])) {
+    $form['publish_on']['#description'] = (string) t('Optional: schedule this issue to go live automatically (requires Scheduler).');
+    $form['publish_on']['#weight'] = 99;
+  }
+  if (isset($form['field_year']['widget'][0]['value'])) {
+    $form['field_year']['widget'][0]['value']['#max'] = 2105;
+  }
+  df_editor_restrict_url_alias_form($form);
+  df_editor_attach_web_editor_save_redirect($form);
+}
+
+/**
+ * Keeps editors on the Gin edit form after save so status messages render.
+ */
+function df_editor_attach_web_editor_save_redirect(array &$form): void {
+  $account = \Drupal::currentUser();
+  if (!$account->hasPermission('create article content') && !$account->hasPermission('create issue content')) {
+    return;
+  }
+  if (!isset($form['actions'])) {
+    return;
+  }
+  foreach (array_keys($form['actions']) as $action) {
+    if (($form['actions'][$action]['#type'] ?? '') !== 'submit') {
+      continue;
+    }
+    if (in_array($action, ['df_publish_issue_bundle', 'preview', 'delete'], TRUE)) {
+      continue;
+    }
+    $form['actions'][$action]['#submit'][] = 'df_editor_web_editor_node_save_redirect';
+  }
+}
+
+/**
+ * Submit handler: redirect to edit-form after a successful save (Gin status messages).
+ */
+function df_editor_web_editor_node_save_redirect(array &$form, FormStateInterface $form_state): void {
+  if ($form_state->get('df_editor_web_editor_save_redirect_done')) {
+    return;
+  }
+  $trigger = $form_state->getTriggeringElement();
+  $parents = $trigger['#parents'] ?? [];
+  $triggering_name = $trigger['#name'] ?? '';
+  if (in_array('preview', $parents, TRUE) || $triggering_name === 'preview') {
+    return;
+  }
+  if (in_array('delete', $parents, TRUE) || $triggering_name === 'delete') {
+    return;
+  }
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  $node = $form_object->getEntity();
+  if (!$node instanceof NodeInterface || !in_array($node->bundle(), ['issue', 'article'], TRUE)) {
+    return;
+  }
+  if (!$node->id()) {
+    return;
+  }
+  $form_state->set('df_editor_web_editor_save_redirect_done', TRUE);
+  $form_state->setRedirectUrl($node->toUrl('edit-form'));
+}
+
+/**
+ * Submit handler: publish issue and attached articles.
+ */
+function df_editor_issue_publish_bundle_submit(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  $issue = $form_object->getEntity();
+  if (!$issue instanceof NodeInterface) {
+    return;
+  }
+  /** @var \Drupal\df_editor\IssuePublisher $publisher */
+  $publisher = \Drupal::service('df_editor.issue_publisher');
+  $articles = $publisher->publishIssueWithArticles($issue);
+  \Drupal::messenger()->addStatus(t('Published issue @issue and @count draft or in-review article(s) and brief(s). Homepage placement was not changed.', [
+    '@issue' => $issue->label(),
+    '@count' => count($articles),
+  ]));
+  $form_state->setRedirect('entity.node.canonical', ['node' => $issue->id()]);
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function df_editor_node_insert(NodeInterface $node): void {
+  if ($node->bundle() === 'issue' && $node->isPublished() && PHP_SAPI !== 'cli') {
+    df_editor_warn_empty_published_issue($node);
+  }
+}
+
+/**
+ * Server-side counterpart of issue-publish-confirm.js; warns without blocking the publish.
+ */
+function df_editor_warn_empty_published_issue(NodeInterface $issue): void {
+  if (df_editor_count_attached_articles($issue) > 0) {
+    return;
+  }
+  \Drupal::messenger()->addWarning(t('Issue @issue was published with no attached articles or briefs. Its issue page and the homepage feature stay empty until stories are attached.', [
+    '@issue' => $issue->label(),
+  ]));
+}
+
+/**
+ * Implements hook_node_update().
+ *
+ * When an issue is first published via moderation, attach-publish its articles.
+ */
+function df_editor_node_update(NodeInterface $node): void {
+  if ($node->bundle() === 'issue') {
+    $original = $node->original ?? NULL;
+    if ($original instanceof NodeInterface) {
+      if ($original->isPublished() !== $node->isPublished()) {
+        df_editor_invalidate_issue_nav_cache();
+        if ($original->isPublished() && !$node->isPublished()) {
+          df_editor_warn_unpublished_issue_links($node);
+        }
+      }
+      elseif ($original->hasField('moderation_state') && $node->hasField('moderation_state')) {
+        $old_mod = (string) $original->get('moderation_state')->value;
+        $new_mod = (string) $node->get('moderation_state')->value;
+        if ($old_mod !== $new_mod && ($old_mod === 'published' || $new_mod === 'published')) {
+          df_editor_invalidate_issue_nav_cache();
+        }
+      }
+      if ($node->isPublished()) {
+        if ($node->hasField('field_hero_heading') && $original->hasField('field_hero_heading')) {
+          $old = (string) $original->get('field_hero_heading')->value;
+          $new = (string) $node->get('field_hero_heading')->value;
+          if ($old !== $new) {
+            df_editor_invalidate_issue_nav_cache();
+          }
+        }
+      }
+    }
+  }
+  if ($node->bundle() !== 'issue' || !$node->isPublished()) {
+    return;
+  }
+  $original = $node->original ?? NULL;
+  if (!$original instanceof NodeInterface || $original->isPublished()) {
+    return;
+  }
+  df_editor_warn_empty_published_issue($node);
+  if (!\Drupal::currentUser()->hasPermission('publish issue with articles')) {
+    return;
+  }
+  $publisher = \Drupal::service('df_editor.issue_publisher');
+  if ($publisher->isBundledPublish()) {
+    return;
+  }
+  $publisher->publishAttachedArticles($node);
+}
+
+/**
+ * Opens details and tabs that contain an error and marks the paragraph.
+ */
+function df_editor_validation_prepare(array &$element): bool {
+  $child_has = FALSE;
+  foreach (Element::children($element) as $child) {
+    if (!is_array($element[$child])) {
+      continue;
+    }
+    if (df_editor_validation_prepare($element[$child])) {
+      $child_has = TRUE;
+      $element[$child]['#df_editor_group_error'] = TRUE;
+    }
+  }
+  $has = $child_has || !empty($element['#errors']);
+  if ($has && (($element['#type'] ?? '') === 'details')) {
+    $element['#open'] = TRUE;
+    $element['#attributes']['class'][] = 'df-editor-group-has-error';
+  }
+  $details = [];
+  $any_detail_error = FALSE;
+  foreach (Element::children($element) as $child) {
+    if (!is_array($element[$child]) || ($element[$child]['#type'] ?? '') !== 'details') {
+      continue;
+    }
+    $classes = $element[$child]['#attributes']['class'] ?? [];
+    if (!is_array($classes) || !in_array('field-group-tab', $classes, TRUE)) {
+      continue;
+    }
+    $details[] = $child;
+    if (!empty($element[$child]['#df_editor_group_error']) || !empty($element[$child]['#errors'])) {
+      $any_detail_error = TRUE;
+    }
+  }
+  if ($any_detail_error) {
+    foreach ($details as $child) {
+      $element[$child]['#open'] = !empty($element[$child]['#df_editor_group_error']) || !empty($element[$child]['#errors']);
+    }
+  }
+  if (!empty($element['#errors'])) {
+    $element['#attributes']['class'][] = 'df-editor-field-error';
+    // Drupal 11.3 form templates suppress the inline error text. Print it
+    // beside the field so a required-field failure is visible there.
+    $suffix = (string) ($element['#suffix'] ?? '');
+    if (!str_contains($suffix, 'df-editor-inline-error')) {
+      $element['#suffix'] = $suffix . '<div class="form-item__error-message df-editor-inline-error">' . Html::escape((string) $element['#errors']) . '</div>';
+    }
+  }
+  $classes = $element['#attributes']['class'] ?? [];
+  if ($has && is_array($classes) && in_array('paragraphs-subform', $classes, TRUE) && !isset($element['df_editor_paragraph_error'])) {
+    $element['df_editor_paragraph_error'] = [
+      '#weight' => -10000,
+      '#theme' => 'item_list',
+      '#items' => df_editor_validation_error_list($element),
+      '#attributes' => [
+        'class' => ['df-editor-paragraph-error', 'messages', 'messages--error'],
+        'role' => 'alert',
+      ],
+    ];
+  }
+  return $has;
+}
+
+/**
+ * Unique validation messages already attached to the form.
+ *
+ * @return list<\Stringable|string>
+ */
+function df_editor_validation_error_list(array $element, array &$seen = []): array {
+  $list = [];
+  if (!empty($element['#errors'])) {
+    $text = trim((string) $element['#errors']);
+    if ($text !== '' && !isset($seen[$text])) {
+      $seen[$text] = TRUE;
+      $list[] = $element['#errors'];
+    }
+  }
+  foreach (Element::children($element) as $child) {
+    if (!is_array($element[$child])) {
+      continue;
+    }
+    foreach (df_editor_validation_error_list($element[$child], $seen) as $error) {
+      $list[] = $error;
+    }
+  }
+  return $list;
+}
+
+/**
+ * Warns when this edit will not replace the live published version.
+ *
+ * The editorial workflow default stays Draft. Switching new content to
+ * Published later is workflows.workflow.editorial default_moderation_state.
+ */
+function df_editor_moderation_notice_after_build(array $form, FormStateInterface $form_state): array {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return $form;
+  }
+  $node = $form_object->getEntity();
+  if (!$node instanceof NodeInterface || $node->isNew() || !in_array($node->bundle(), ['article', 'in_brief'], TRUE)) {
+    return $form;
+  }
+  $default = \Drupal::entityTypeManager()->getStorage('node')->load($node->id());
+  if (!$default instanceof NodeInterface || !$default->isPublished()) {
+    return $form;
+  }
+  $form['#attributes']['data-df-published-live'] = '1';
+  $message = t('View shows the live published version. This draft is on Latest version. Save anyway?');
+  $form['#attached']['drupalSettings']['dfEditor']['draftConfirm'] = (string) $message;
+  $parents = df_editor_form_element_parents($form, 'moderation_state');
+  if ($parents === NULL) {
+    return $form;
+  }
+  $moderation = &NestedArray::getValue($form, $parents);
+  if (!is_array($moderation)) {
+    return $form;
+  }
+  $moderation['df_published_draft_notice'] = [
+    '#type' => 'container',
+    '#weight' => 50,
+    '#attributes' => [
+      'class' => ['df-editor-published-draft-notice', 'messages', 'messages--warning'],
+      'role' => 'status',
+    ],
+    'text' => [
+      '#markup' => (string) t('View shows the live published version. Saving with Change to set to Draft keeps that live page. The draft is on Latest version. Choose Published when this edit should replace the live page.'),
+    ],
+  ];
+  return $form;
+}
+
+/**
+ * Confirms a draft save of an article that already has a live version.
+ */
+function df_editor_published_draft_save_message(array &$form, FormStateInterface $form_state): void {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  $node = $form_object->getEntity();
+  if (!$node instanceof NodeInterface || !$node->id() || !in_array($node->bundle(), ['article', 'in_brief'], TRUE)) {
+    return;
+  }
+  $state = $node->hasField('moderation_state') ? (string) $node->get('moderation_state')->value : '';
+  if ($state === '' || $state === 'published') {
+    return;
+  }
+  $default = \Drupal::entityTypeManager()->getStorage('node')->load($node->id());
+  if (!$default instanceof NodeInterface || !$default->isPublished()) {
+    return;
+  }
+  \Drupal::messenger()->addWarning(t('Saved as a draft. View shows the live published version. This draft is on Latest version.'));
+}
+
+/**
+ * Makes sure a node save still has Drupal's standard status message.
+ *
+ * NodeForm adds "has been created/updated". This runs after that and only
+ * fills the message in when a later submit handler dropped it. Preview and
+ * delete do not use this handler.
+ */
+function df_editor_ensure_node_save_status(array &$form, FormStateInterface $form_state): void {
+  if ($form_state->hasAnyErrors()) {
+    return;
+  }
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  $node = $form_object->getEntity();
+  if (!$node instanceof NodeInterface || !$node->id()) {
+    return;
+  }
+  $messenger = \Drupal::messenger();
+  foreach ($messenger->messagesByType(MessengerInterface::TYPE_STATUS) as $message) {
+    $text = trim(strip_tags((string) $message));
+    if (str_contains($text, 'has been created') || str_contains($text, 'has been updated')) {
+      return;
+    }
+  }
+  $messenger->addStatus(t('@type %title has been updated.', [
+    '@type' => $node->getBundleEntity()->label(),
+    '%title' => $node->access('view') ? $node->toLink()->toString() : $node->label(),
+  ]));
+}
+
+/**
+ * Banner on View when the live node has a newer draft.
+ *
+ * Shown only to people who can edit. The draft itself stays on Latest version.
+ */
+function df_editor_page_top(array &$page_top): void {
+  if (\Drupal::routeMatch()->getRouteName() !== 'entity.node.canonical') {
+    return;
+  }
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!$node instanceof NodeInterface || !$node->isDefaultRevision() || !$node->isPublished()) {
+    return;
+  }
+  if (!$node->access('update')) {
+    return;
+  }
+  $info = \Drupal::service('content_moderation.moderation_information');
+  if (!$info->isModeratedEntity($node) || !$info->hasPendingRevision($node) || !$node->hasLinkTemplate('latest-version')) {
+    return;
+  }
+  $url = $node->toUrl('latest-version');
+  $page_top['df_editor_newer_draft'] = [
+    '#type' => 'container',
+    '#weight' => -100,
+    '#attributes' => [
+      'class' => ['df-editor-newer-draft', 'messages', 'messages--warning'],
+      'role' => 'status',
+    ],
+    '#cache' => [
+      'contexts' => ['route', 'user'],
+      'tags' => $node->getCacheTags(),
+    ],
+    'text' => [
+      '#type' => 'inline_template',
+      '#template' => '{{ message }} <a href="{{ url }}">{{ link }}</a>',
+      '#context' => [
+        'message' => t('A newer draft exists.'),
+        'url' => $url->toString(),
+        'link' => t('Latest version'),
+      ],
+    ],
+  ];
+}
+
+/**
+ * Revisions help matches the revert permission.
+ *
+ * web_editor and site_admin can read history and cannot revert. The core
+ * help text says they can. Least privilege: change the sentence, do not
+ * grant revert. Accounts that already have revert still see the core text.
+ */
+function df_editor_block_view_alter(array &$build, BlockPluginInterface $block): void {
+  if ($block->getPluginId() !== 'help_block') {
+    return;
+  }
+  if (\Drupal::routeMatch()->getRouteName() !== 'entity.node.version_history') {
+    return;
+  }
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!$node instanceof NodeInterface) {
+    return;
+  }
+  $build['#cache']['contexts'][] = 'user.permissions';
+  $account = \Drupal::currentUser();
+  $bundle = $node->bundle();
+  $can_revert = $account->hasPermission('revert all revisions')
+    || $account->hasPermission("revert $bundle revisions")
+    || $account->hasPermission('administer nodes');
+  if ($can_revert) {
+    return;
+  }
+  $build = [
+    '#markup' => '<p>' . t('Revisions allow you to track differences between multiple versions of this content.') . '</p>',
+    '#cache' => [
+      'contexts' => ['route', 'user.permissions'],
+      'tags' => Cache::mergeTags($node->getCacheTags(), ['node:' . $node->id()]),
+    ],
+  ];
+}
+
+/**
+ * Lets preview use the node metatag pattern, including the node title.
+ */
+function df_editor_metatag_route_entity(RouteMatchInterface $route_match): ?NodeInterface {
+  if ($route_match->getRouteName() !== 'entity.node.preview') {
+    return NULL;
+  }
+  $preview = $route_match->getParameter('node_preview');
+  return $preview instanceof NodeInterface ? $preview : NULL;
+}
+
+/**
+ * Hides the URL alias widget unless the account is a site admin.
+ *
+ * The path widget also parks itself in the advanced sidebar. Site admins
+ * get it open on the form. Web editors do not. Nobody schedules.
+ */
+function df_editor_restrict_url_alias_form(array &$form): void {
+  $form['#after_build'][] = 'df_editor_url_alias_after_build';
+}
+
+/**
+ * Shows the URL alias to site admins and hides scheduling fields.
+ */
+function df_editor_url_alias_after_build(array $form, FormStateInterface $form_state): array {
+  foreach (['publish_on', 'unpublish_on'] as $field_name) {
+    $parents = df_editor_form_element_parents($form, $field_name);
+    if ($parents !== NULL) {
+      NestedArray::setValue($form, array_merge($parents, ['#access']), FALSE);
+    }
+  }
+  $parents = df_editor_form_element_parents($form, 'path');
+  if ($parents === NULL) {
+    return $form;
+  }
+  $allowed = df_editor_account_may_set_url_alias(\Drupal::currentUser());
+  if (!$allowed) {
+    df_editor_form_element_set_access($form, 'path', FALSE);
+    return $form;
+  }
+  $path = NestedArray::getValue($form, $parents);
+  df_editor_form_element_remove($form, 'path');
+  if (!is_array($path)) {
+    return $form;
+  }
+  // The path widget lives in the advanced sidebar, which Gin hides. Pull it
+  // onto the main form so a site admin can see and change the alias.
+  $path['#access'] = TRUE;
+  $path['#weight'] = 36;
+  unset($path['#group']);
+  if (isset($path['widget']) && is_array($path['widget'])) {
+    foreach (Element::children($path['widget']) as $delta) {
+      $path['widget'][$delta]['#access'] = TRUE;
+      $path['widget'][$delta]['#open'] = TRUE;
+      $path['widget'][$delta]['#title'] = t('URL alias');
+      unset($path['widget'][$delta]['#group']);
+    }
+  }
+  $form['path'] = $path;
+  // Group membership was recorded before this after_build. Clear it or the
+  // advanced sidebar renders a second, hidden copy of the alias field.
+  if (isset($form['path']['widget'][0]['#groups']['advanced']) && is_array($form['path']['widget'][0]['#groups']['advanced'])) {
+    foreach ($form['path']['widget'][0]['#groups']['advanced'] as $key => $member) {
+      if (is_array($member) && ($member['#id'] ?? '') === 'edit-path-0') {
+        unset($form['path']['widget'][0]['#groups']['advanced'][$key]);
+      }
+    }
+  }
+  return $form;
+}
+
+/**
+ * Site admins change URLs. Web editors do not. The superuser still can.
+ */
+function df_editor_account_may_set_url_alias(AccountInterface $account): bool {
+  return (int) $account->id() === 1 || in_array('site_admin', $account->getRoles(), TRUE);
+}
+
+/**
+ * Sets #access on every copy of a named form element.
+ */
+function df_editor_form_element_set_access(array &$element, string $key, bool $access): void {
+  if (isset($element[$key]) && is_array($element[$key])) {
+    $element[$key]['#access'] = $access;
+  }
+  foreach (Element::children($element) as $child) {
+    if (is_array($element[$child])) {
+      df_editor_form_element_set_access($element[$child], $key, $access);
+    }
+  }
+}
+
+/**
+ * Removes every copy of a named form element.
+ */
+function df_editor_form_element_remove(array &$element, string $key): void {
+  unset($element[$key]);
+  foreach (Element::children($element) as $child) {
+    if (is_array($element[$child])) {
+      df_editor_form_element_remove($element[$child], $key);
+    }
+  }
+}
+
+/**
+ * Parents of a named form element, including one moved into a field group.
+ *
+ * @return list<int|string>|null
+ */
+function df_editor_form_element_parents(array $element, string $key, array $parents = []): ?array {
+  if (isset($element[$key]) && is_array($element[$key])) {
+    return array_merge($parents, [$key]);
+  }
+  foreach (Element::children($element) as $child) {
+    $found = df_editor_form_element_parents($element[$child], $key, array_merge($parents, [$child]));
+    if ($found !== NULL) {
+      return $found;
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Explore slots are regular articles only, with an editor-chosen order of 1–3.
+ */
+function df_editor_configure_article_placement_form(array &$form, FormStateInterface $form_state): void {
+  if (isset($form['field_homepage_placement']['widget'])) {
+    $form['field_homepage_placement']['widget']['#description'] = (string) t('Explore the Latest Issue uses the three featured slots (1 large, then two stacked). Recent Highlights is separate. Digital Exclusives and In Brief are not featured here.');
+  }
+  if (isset($form['field_explore_order']['widget'])) {
+    $form['field_explore_order']['widget']['#description'] = (string) t('Slot on Explore the Latest Issue when Homepage placement is Explore the Latest Issue. 1 is the large card. 2 and 3 are the stacked cards. Those three slots are the homepage Explore band.');
+    $form['field_explore_order']['#states'] = [
+      'visible' => [
+        ':input[name="field_homepage_placement[0][value]"]' => ['value' => 'featured'],
+      ],
+    ];
+  }
+  if (isset($form['field_issue_story_rank']['widget'])) {
+    $form['field_issue_story_rank']['widget']['#description'] = (string) t('Issue pages list stories by publication date. Pinned stays at the top. Demoted stays at the bottom. Normal uses the date.');
+  }
+  if (isset($form['field_homepage_sort_weight']['widget'])) {
+    $form['field_homepage_sort_weight']['widget']['#description'] = (string) t('Not used for Explore the Latest Issue. Leave blank. Digital Exclusives no longer need a 110–199 weight.');
+  }
+  $form['#validate'][] = 'df_editor_article_featured_slot_validate';
+}
+
+/**
+ * Warns when a fourth story is featured or an Explore slot is taken.
+ */
+function df_editor_article_featured_slot_validate(array &$form, FormStateInterface $form_state): void {
+  $placement = (string) ($form_state->getValue(['field_homepage_placement', 0, 'value']) ?? 'none');
+  $digital_exclusive = !$form_state->isValueEmpty('df_digital_exclusive_checkbox');
+  if ($digital_exclusive && $placement === 'featured') {
+    $form_state->setErrorByName('field_homepage_placement', t('Digital Exclusives are not featured in Explore the Latest Issue. Turn off Digital Exclusives or set placement to None.'));
+    return;
+  }
+  if ($placement !== 'featured') {
+    return;
+  }
+  $order = (int) ($form_state->getValue(['field_explore_order', 0, 'value']) ?? 0);
+  if (!in_array($order, [1, 2, 3], TRUE)) {
+    $form_state->setErrorByName('field_explore_order', t('Choose Explore slot 1, 2, or 3.'));
+    return;
+  }
+  $issue_id = (int) ($form_state->getValue(['field_issue', 0, 'target_id']) ?? 0);
+  if ($issue_id <= 0) {
+    \Drupal::messenger()->addWarning(t('This story is featured, but it has no issue, so it cannot fill an Explore the Latest Issue slot.'));
+    return;
+  }
+  $form_object = $form_state->getFormObject();
+  $current_id = 0;
+  if ($form_object instanceof NodeForm) {
+    $current_id = (int) $form_object->getEntity()->id();
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('field_issue.target_id', $issue_id)
+    ->condition('field_homepage_placement', 'featured')
+    ->execute();
+  $nids = array_map('intval', $nids);
+  if ($current_id === 0 || !in_array($current_id, $nids, TRUE)) {
+    $nids[] = $current_id;
+  }
+  if (count($nids) > 3) {
+    \Drupal::messenger()->addWarning(t('This issue already has three featured stories. A fourth featured story will not get its own Explore slot until one of the others is cleared.'));
+  }
+  $others_query = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->condition('field_issue.target_id', $issue_id)
+    ->condition('field_homepage_placement', 'featured')
+    ->condition('field_explore_order', $order);
+  if ($current_id > 0) {
+    $others_query->condition('nid', $current_id, '<>');
+  }
+  $others = $others_query->execute();
+  if ($others === []) {
+    return;
+  }
+  $replaced = $storage->load(reset($others));
+  $title = $replaced instanceof NodeInterface ? $replaced->label() : (string) reset($others);
+  \Drupal::messenger()->addWarning(t('Explore slot @slot is already used by “@title”. Saving replaces that slot with this story.', [
+    '@slot' => $order,
+    '@title' => $title,
+  ]));
+}
+
+/**
+ * Unpublished issues keep their stories live. Links must not point at a 403.
+ */
+function df_editor_warn_unpublished_issue_links(NodeInterface $issue): void {
+  if (!$issue->id()) {
+    return;
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', ['article', 'in_brief'], 'IN')
+    ->condition('status', 1)
+    ->condition('field_issue.target_id', $issue->id())
+    ->execute();
+  if ($nids === []) {
+    return;
+  }
+  $titles = [];
+  foreach ($storage->loadMultiple($nids) as $node) {
+    if ($node instanceof NodeInterface) {
+      $titles[] = $node->label();
+    }
+  }
+  \Drupal::messenger()->addWarning(t('Issue @issue is unpublished. These stories stay live, and their issue links go to Browse issues instead of this issue: @list', [
+    '@issue' => $issue->label(),
+    '@list' => implode('; ', $titles),
+  ]));
+}

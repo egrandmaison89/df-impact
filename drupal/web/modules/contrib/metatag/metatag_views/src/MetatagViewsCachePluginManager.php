@@ -5,6 +5,7 @@ namespace Drupal\metatag_views;
 use Drupal\Component\Plugin\Discovery\CachedDiscoveryInterface;
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\Cache\CacheableDependencyInterface;
+use Drupal\Core\Plugin\PreWarmablePluginManagerTrait;
 use Drupal\views\Plugin\views\cache\CachePluginBase;
 use Drupal\views\Plugin\ViewsPluginManager;
 
@@ -13,12 +14,14 @@ use Drupal\views\Plugin\ViewsPluginManager;
  */
 class MetatagViewsCachePluginManager implements PluginManagerInterface, CachedDiscoveryInterface, CacheableDependencyInterface {
 
+  use PreWarmablePluginManagerTrait;
+
   /**
    * {@inheritdoc}
    *
    * @var \Drupal\views\Plugin\ViewsPluginManager
    */
-  protected $viewsPluginManager;
+  protected ViewsPluginManager $viewsPluginManager;
 
   /**
    * MetatagViewsCachePluginManager constructor.

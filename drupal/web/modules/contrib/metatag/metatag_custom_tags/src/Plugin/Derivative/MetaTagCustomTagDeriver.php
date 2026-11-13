@@ -21,7 +21,7 @@ class MetaTagCustomTagDeriver extends DeriverBase implements ContainerDeriverInt
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Constructs a new MetaTagCustomTagDeriver object.

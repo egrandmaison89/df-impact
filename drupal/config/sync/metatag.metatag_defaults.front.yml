@@ -1,0 +1,21 @@
+uuid: 0355e873-d5ca-4b03-ac8a-e200a623bcd3
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: 1noCXlegCr5HFehQRF1ViXy1jhU1jZ_sNN99a8Sj5jo
+id: front
+label: 'Front page'
+tags:
+  title: 'Homepage - Impact Magazine'
+  description: "Explore the latest issue, read recent highlights, and dive into digital exclusives for Dana-Farber Cancer Institute's Impact newsletter."
+  canonical_url: '[current-page:url]'
+  robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+  og_site_name: 'Impact Magazine'
+  og_type: article
+  og_title: 'Homepage - Impact Magazine'
+  og_description: "Explore the latest issue, read recent highlights, and dive into digital exclusives for Dana-Farber Cancer Institute's Impact newsletter."
+  og_url: '[current-page:url]'
+  og_image: /themes/custom/df_impact/images/ImpactDFJF_HeaderLogo_878.png
+  twitter_cards_type: summary_large_image
+  twitter_cards_image: /themes/custom/df_impact/images/ImpactDFJF_HeaderLogo_878.png

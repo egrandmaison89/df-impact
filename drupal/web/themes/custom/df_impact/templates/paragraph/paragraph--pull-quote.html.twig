@@ -1,16 +1,14 @@
 {#
 /**
  * @file
- * Theme override for Pull Quote paragraphs.
+ * Pull Quote paragraph — WordPress core/pullquote block markup.
  */
 #}
-<aside{{ attributes.addClass('paragraph--pull-quote') }} role="complementary">
-  <div class="paragraph--pull-quote__text">
-    {{ content.field_quote_text }}
-  </div>
-  {% if content.field_attribution|render|trim %}
-    <div class="paragraph--pull-quote__attribution">
-      — {{ content.field_attribution }}
-    </div>
-  {% endif %}
-</aside>
+<figure{{ attributes.addClass('wp-block-pullquote', 'paragraph--pull-quote') }}>
+  <blockquote>
+    {{ content.field_quote_text.0 }}
+    {% if content.field_attribution.0 %}
+      <cite>{{ content.field_attribution.0 }}</cite>
+    {% endif %}
+  </blockquote>
+</figure>

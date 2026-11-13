@@ -1,0 +1,10 @@
+uuid: a71d90e2-4c33-4b8e-91aa-77f0c2e5b918
+langcode: en
+status: true
+dependencies: {  }
+id: image_gallery
+label: 'Image gallery'
+icon_uuid: null
+icon_default: null
+description: 'Several images, each with its own caption, in the article body.'
+behavior_plugins: {  }

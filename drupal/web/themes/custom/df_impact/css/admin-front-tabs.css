@@ -1,0 +1,46 @@
+/**
+ * Local tasks on the public theme (logged-in editors only).
+ */
+body.user-logged-in .df-admin-local-tasks {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem 0;
+}
+
+body.user-logged-in .df-admin-local-tasks .tabs,
+body.user-logged-in .df-admin-local-tasks ul.tabs {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-bottom: 2px solid #c8c8c8;
+}
+
+body.user-logged-in .df-admin-local-tasks .tabs li,
+body.user-logged-in .df-admin-local-tasks .tabs__tab {
+  list-style: none;
+  margin: 0;
+}
+
+body.user-logged-in .df-admin-local-tasks .tabs a,
+body.user-logged-in .df-admin-local-tasks .tabs__tab a {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  text-decoration: none;
+  font-size: 0.875rem;
+  color: #63666a;
+  border-bottom: 3px solid transparent;
+}
+
+body.user-logged-in .df-admin-local-tasks .tabs a:hover,
+body.user-logged-in .df-admin-local-tasks .tabs__tab a:hover,
+body.user-logged-in .df-admin-local-tasks .tabs__tab.is-active a {
+  color: #003354;
+  border-bottom-color: #003354;
+}
+
+body.user-logged-in .df-admin-local-tasks .tabs__tab--danger a {
+  color: #cf2e2e;
+}

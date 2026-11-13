@@ -9,14 +9,14 @@
     attach(context) {
       once('df-impact-in-brief-load-more', '.js-in-brief-load-more', context).forEach((button) => {
         button.addEventListener('click', () => {
-          const section = button.closest('.in-brief-page__issue-section');
-          if (!section) {
+          const block = button.closest('.ultp-block-wrapper');
+          if (!block) {
             return;
           }
-          section.querySelectorAll('.in-brief-page__item.is-collapsed').forEach((el) => {
+          block.querySelectorAll('.ultp-block-item.is-collapsed').forEach((el) => {
             el.classList.remove('is-collapsed');
           });
-          button.remove();
+          button.closest('.ultp-loadmore')?.remove();
         });
       });
     },

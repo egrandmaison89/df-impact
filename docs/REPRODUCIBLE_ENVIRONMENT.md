@@ -1,6 +1,6 @@
 # Reproducible environment (Phase 1)
 
-This document describes how to build a **content-bearing** Dana-Farber Impact Drupal site from Git alone, without the owner’s laptop database.
+A content-bearing site is a database dump plus public files. See [HANDOFF.md](../HANDOFF.md). Rebuilding from WordPress is no longer part of this tree; that pipeline is on tag `archive/pre-acsf-handoff-47352229`.
 
 ## Primary path: DDEV (recommended)
 
@@ -32,12 +32,21 @@ Committed artifacts:
 | Migration JSON | `drupal/web/modules/custom/df_migrate/data/*.json` |
 | WP refresh pipeline | `drupal/migration-data/fetch_wordpress_model.py` |
 
+WordPress front-end assets for the `df_impact` theme must live **inside** `drupal/web/themes/custom/df_impact/wp-assets/` (committed). Refresh from the reference pack after asset updates:
+
+```bash
+./scripts/repro/vendor-wp-assets.sh
+./scripts/repro/verify-wp-port-assets.sh   # fails loudly if any wp_port URL ≠ 200
+```
+
 One-shot script (runs host Drush against DDEV DB port):
 
 ```bash
 chmod +x scripts/repro/bootstrap-from-migrations.sh
 ./scripts/repro/bootstrap-from-migrations.sh
 ```
+
+After `drush cim`, `config:status` should report no differences. Stale `filter.format.*` `roles:` keys, unused **Config Split**, and YAML ordering drift were removed from the export (Oct 2026).
 
 Manual equivalent:
 

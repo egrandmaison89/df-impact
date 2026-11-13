@@ -1,0 +1,10 @@
+services:
+  df_secondary.wp_id_map:
+    class: Drupal\df_secondary\WordPressIdMap
+    arguments: ['@extension.list.module']
+
+  df_secondary.request_subscriber:
+    class: Drupal\df_secondary\EventSubscriber\WordpressSecondaryRequestSubscriber
+    arguments: ['@df_secondary.wp_id_map']
+    tags:
+      - { name: event_subscriber }

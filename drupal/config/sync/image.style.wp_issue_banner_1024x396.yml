@@ -1,0 +1,18 @@
+uuid: 7997bb00-7c93-4f64-aa3a-c0127cc8b1de
+langcode: en
+status: true
+dependencies:
+  module:
+    - focal_point
+name: wp_issue_banner_1024x396
+label: 'WP issue cover banner (1024×396)'
+effects:
+  79694af7-ab55-40f5-a942-8e7636d6c853:
+    uuid: 79694af7-ab55-40f5-a942-8e7636d6c853
+    id: focal_point_scale_and_crop
+    weight: 0
+    data:
+      width: 1024
+      height: 396
+      crop_type: focal_point
+pipeline: __default__

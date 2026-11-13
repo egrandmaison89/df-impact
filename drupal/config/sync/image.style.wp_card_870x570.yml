@@ -1,0 +1,18 @@
+uuid: e0ed3ec5-20c9-41ff-8410-609c39c111ac
+langcode: en
+status: true
+dependencies:
+  module:
+    - focal_point
+name: wp_card_870x570
+label: 'WP PostX card (870×570)'
+effects:
+  9ac09e2d-ffd1-4319-82e4-3d0a5243d84f:
+    uuid: 9ac09e2d-ffd1-4319-82e4-3d0a5243d84f
+    id: focal_point_scale_and_crop
+    weight: 0
+    data:
+      width: 870
+      height: 570
+      crop_type: focal_point
+pipeline: __default__

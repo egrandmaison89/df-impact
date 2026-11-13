@@ -1,0 +1,173 @@
+uuid: d4e5f6a7-b8c9-0123-def0-456789abcdef
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api.server.df_impact_search
+  module:
+    - df_secondary
+    - node
+    - search_api
+    - search_api_db
+    - taxonomy
+id: df_impact_content
+name: 'Dana-Farber Impact Content'
+description: 'Search index for articles, issues, pages, and in-brief items.'
+read_only: false
+field_settings:
+  body:
+    label: Body
+    datasource_id: 'entity:node'
+    property_path: 'body:value'
+    type: text
+  created:
+    label: Created
+    datasource_id: 'entity:node'
+    property_path: created
+    type: date
+  field_byline:
+    label: Byline
+    datasource_id: 'entity:node'
+    property_path: field_byline
+    type: text
+  field_cancer_types:
+    label: 'Cancer Types'
+    datasource_id: 'entity:node'
+    property_path: field_cancer_types
+    type: integer
+  field_excerpt:
+    label: Excerpt
+    datasource_id: 'entity:node'
+    property_path: field_excerpt
+    type: text
+    boost: 2.0
+  field_subtitle:
+    label: Subtitle
+    datasource_id: 'entity:node'
+    property_path: field_subtitle
+    type: text
+    boost: 3.0
+  field_topics:
+    label: Topics
+    datasource_id: 'entity:node'
+    property_path: field_topics
+    type: integer
+  publication_sort:
+    label: 'Publication sort'
+    property_path: publication_sort
+    type: integer
+    indexed_locked: true
+    type_locked: true
+    hidden: true
+    dependencies:
+      module:
+        - df_secondary
+  status:
+    label: Published
+    datasource_id: 'entity:node'
+    property_path: status
+    type: boolean
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: text
+    boost: 5.0
+  type:
+    label: 'Content type'
+    datasource_id: 'entity:node'
+    property_path: type
+    type: string
+datasource_settings:
+  'entity:node':
+    plugin_id: 'entity:node'
+    settings:
+      bundles:
+        default: false
+        selected:
+          - article
+          - issue
+          - page
+          - in_brief
+      languages:
+        default: true
+        selected: {  }
+processor_settings:
+  html_filter:
+    weights:
+      preprocessor: -15
+    plugin_id: html_filter
+    settings:
+      title: false
+      alt: true
+      tags:
+        h1: 5
+        h2: 3
+        h3: 2
+        strong: 2
+        b: 2
+  ignorecase:
+    weights:
+      postprocessor: 0
+    plugin_id: ignorecase
+    settings: {  }
+  publication_sort:
+    weights:
+      add_properties: 0
+    plugin_id: publication_sort
+    settings: {  }
+  stopwords:
+    weights:
+      postprocessor: 0
+    plugin_id: stopwords
+    settings:
+      stopwords: |-
+        a
+        an
+        are
+        as
+        at
+        be
+        but
+        by
+        for
+        if
+        in
+        into
+        is
+        it
+        no
+        not
+        of
+        on
+        or
+        such
+        that
+        the
+        their
+        then
+        there
+        these
+        they
+        this
+        to
+        was
+        will
+        with
+  tokenizer:
+    weights:
+      postprocessor: 0
+    plugin_id: tokenizer
+    settings:
+      spaces: ''
+      ignored: ''
+tracker_settings:
+  default:
+    plugin_id: default
+    settings: {  }
+options:
+  cron_limit: 100
+  delete_on_fail: true
+  index_directly: false
+  track_changes_in_references: true
+server: df_impact_search

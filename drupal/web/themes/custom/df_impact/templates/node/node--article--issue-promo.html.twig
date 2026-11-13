@@ -1,28 +1,4 @@
 {#
-/**
- * @file
- * Issue landing featured article — image, title, excerpt, Continue Reading.
- */
+  Issue landing featured article — PostX excerpt card (matches page issue_promo).
 #}
-<div{{ attributes.addClass('card', 'card--issue-promo') }}>
-  {% if content.field_featured_image|render|trim %}
-    <div class="card__image">
-      {{ content.field_featured_image }}
-    </div>
-  {% endif %}
-  <div class="card__body">
-    {{ title_prefix }}
-    <h3 class="card__title card__title--issue-promo">
-      <a href="{{ url }}">{{ label }}</a>
-    </h3>
-    {{ title_suffix }}
-    {% if content.field_excerpt|render|trim %}
-      <div class="card__excerpt card__excerpt--issue-promo">
-        {{ content.field_excerpt }}
-      </div>
-    {% endif %}
-    <p class="card__readmore card__readmore--issue-promo">
-      <a href="{{ url }}">{{ 'Continue Reading'|t }}</a>
-    </p>
-  </div>
-</div>
+{% include '@df_impact/node/node--page--issue-promo.html.twig' %}

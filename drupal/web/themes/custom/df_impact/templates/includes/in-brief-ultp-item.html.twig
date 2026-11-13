@@ -1,0 +1,20 @@
+{#
+/**
+ * In Brief list item — WordPress Ultimate Post (PostX) list layout on /in-brief/.
+ */
+#}
+<div class="ultp-block-item ultp-block-media post-id-{{ node.id }}{{ collapsed ? ' js-in-brief-item is-collapsed' : ' js-in-brief-item' }}">
+  <div class="ultp-block-content-wrap">
+    {% if in_brief_image_url %}
+      <div class="ultp-block-image ultp-block-image-zoomIn">
+        <a href="{{ in_brief_item_url }}"><img decoding="async"{{ collapsed ? ' loading="lazy"' }} src="{{ in_brief_image_url }}" class="ultp-block-image-content lazyloaded" alt="{{ in_brief_image_alt }}"></a>
+      </div>
+    {% endif %}
+    <div class="ultp-block-content">
+      <h2 class="ultp-block-title"><a href="{{ in_brief_item_url }}">{{ label }}</a></h2>
+      {% if in_brief_excerpt %}
+        <div class="ultp-block-excerpt">{{ in_brief_excerpt }}</div>
+      {% endif %}
+    </div>
+  </div>
+</div>

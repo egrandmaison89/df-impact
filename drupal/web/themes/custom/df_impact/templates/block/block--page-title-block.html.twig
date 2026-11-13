@@ -6,7 +6,7 @@
  * page, and on custom pages that render their own title.
  */
 #}
-{% if not is_front and not is_node and not is_about_impact %}
+{% if not is_front and not is_node and not is_about_impact and not hide_page_title_block %}
   <div{{ attributes }}>
     {{ title_prefix }}
     {% if content %}

@@ -86,4 +86,7 @@ type_settings:
       - in_brief
       - issue
       - page
+  # New articles, briefs, issues, and pages start as Draft.
+  # To default new content to Published later, change this one value to published.
+  # An edit of something already published still goes live only when Change to is Published.
   default_moderation_state: draft

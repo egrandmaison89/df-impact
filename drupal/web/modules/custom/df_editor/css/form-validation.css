@@ -1,0 +1,23 @@
+.df-editor-validation-errors,
+.df-editor-paragraph-error,
+.df-editor-media-dialog-block,
+.df-editor-published-draft-notice {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.df-editor-validation-errors__title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.df-editor-group-has-error > summary,
+.df-editor-field-error {
+  outline: 2px solid #d72222;
+  outline-offset: 2px;
+}
+
+.gin-sticky-form-actions .df-editor-sticky-errors {
+  margin: 0 0 0.5rem;
+  max-width: 36rem;
+}

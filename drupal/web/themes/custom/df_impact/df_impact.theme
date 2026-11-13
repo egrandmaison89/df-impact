@@ -398,6 +398,18 @@ function df_impact_preprocess_html(array &$variables): void {
     }
   }
 
+  // Preview's route title was removed in Drupal 11.2, so metatag renders
+  // "[empty] - Impact Magazine". Use the node title the editor just typed.
+  if ($route === 'entity.node.preview') {
+    $preview = \Drupal::routeMatch()->getParameter('node_preview');
+    if ($preview instanceof NodeInterface && $preview->label() !== '') {
+      $site_name = (string) \Drupal::config('system.site')->get('name');
+      $variables['head_title'] = [
+        'title' => $preview->label() . ' - ' . $site_name,
+      ];
+    }
+  }
+
   $route = \Drupal::routeMatch();
   if ($route->getRouteName() === 'entity.node.canonical') {
     $node = $route->getParameter('node');
@@ -523,6 +535,12 @@ function df_impact_preprocess_page(&$variables) {
     }
   }
   $variables['footer_topic_links'] = $footer_topic_links;
+  $footer_about = df_impact_footer_about_links();
+  $variables['footer_about_links'] = $footer_about['links'];
+  $variables['footer_link_source'] = $footer_about['source'];
+  $footer_cache = $variables['#cache'] ?? [];
+  $variables['#cache']['tags'] = array_values(array_unique(array_merge($footer_cache['tags'] ?? [], $footer_about['tags'])));
+  $variables['#cache']['contexts'] = array_values(array_unique(array_merge($footer_cache['contexts'] ?? [], ['user.permissions'])));
   $variables['homepage_digital_exclusives_url'] = Url::fromUserInput('/tag/digital-exclusives/')->toString();
 
   // Front page: stories from the newest issue (WordPress "Explore" band).
@@ -703,6 +721,9 @@ function df_impact_preprocess_node(&$variables) {
     }
     $variables['issue_promo_cards'] = [];
     $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
+    $cache = $variables['#cache'] ?? [];
+    $tags = $cache['tags'] ?? [];
+    $tags[] = 'node_list:in_brief';
     foreach (['field_leadership_message', 'field_issue_promo_2'] as $field_name) {
       if (!$node->hasField($field_name) || $node->get($field_name)->isEmpty()) {
         continue;
@@ -710,8 +731,23 @@ function df_impact_preprocess_node(&$variables) {
       $referenced = $node->get($field_name)->entity;
       if ($referenced instanceof NodeInterface) {
         $variables['issue_promo_cards'][] = $view_builder->view($referenced, 'issue_promo');
+        $tags = array_merge($tags, $referenced->getCacheTags());
       }
     }
+    foreach (df_impact_issue_attached_briefs($node) as $brief) {
+      $variables['issue_promo_cards'][] = $view_builder->view($brief, 'issue_promo');
+      $tags = array_merge($tags, $brief->getCacheTags());
+    }
+    $variables['#cache']['tags'] = array_values(array_unique($tags));
+  }
+
+  if (in_array($variables['view_mode'], ['issue_promo'], TRUE) && $node->bundle() === 'in_brief') {
+    $image = df_impact_in_brief_card_image_meta($node);
+    $variables['issue_promo_image_url'] = $image['url'] ?? NULL;
+    $variables['issue_promo_image_alt'] = $image['alt'] ?? $node->label();
+    $variables['issue_promo_image_width'] = $image['width'] ?? 768;
+    $variables['issue_promo_image_height'] = $image['height'] ?? 551;
+    $variables['issue_promo_excerpt'] = df_impact_in_brief_plain_excerpt($node);
   }
 
   if (in_array($variables['view_mode'], ['issue_promo'], TRUE) && in_array($node->bundle(), ['page', 'article'], TRUE)) {
@@ -2782,6 +2818,88 @@ function df_impact_topic_archive_term_label(): ?string {
  *
  * @return array<int, array{title: string, url: string}>
  */
+/**
+ * Published In Brief nodes attached to an issue.
+ *
+ * @return list<\Drupal\node\NodeInterface>
+ */
+function df_impact_issue_attached_briefs(NodeInterface $issue): array {
+  if (!$issue->id()) {
+    return [];
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $storage->getQuery()
+    ->accessCheck(TRUE)
+    ->condition('type', 'in_brief')
+    ->condition('status', 1)
+    ->condition('field_issue.target_id', $issue->id())
+    ->sort('created', 'DESC')
+    ->execute();
+  if (!$nids) {
+    return [];
+  }
+  $nodes = [];
+  foreach ($storage->loadMultiple($nids) as $node) {
+    if ($node instanceof NodeInterface && $node->isPublished()) {
+      $nodes[] = $node;
+    }
+  }
+  return $nodes;
+}
+
+/**
+ * About-column links from the Footer menu, with the frozen links as fallback.
+ *
+ * @return array{links: list<array{title: string, url: string, external: bool}>, source: string, tags: list<string>}
+ */
+function df_impact_footer_about_links(): array {
+  $fallback = [
+    [
+      'title' => (string) t('About Impact'),
+      'url' => Url::fromUri('internal:/about')->toString(),
+      'external' => FALSE,
+    ],
+    [
+      'title' => (string) t('See All Issues'),
+      'url' => Url::fromRoute('view.browse_issues.page_1')->toString(),
+      'external' => FALSE,
+    ],
+    [
+      'title' => (string) t('Jimmy Fund Events'),
+      'url' => 'https://www.jimmyfund.org/get-involved/events',
+      'external' => TRUE,
+    ],
+  ];
+  $tags = ['config:system.menu.footer'];
+  $menu_tree = \Drupal::menuTree();
+  $parameters = $menu_tree->getCurrentRouteMenuTreeParameters('footer');
+  $parameters->setMaxDepth(1);
+  $tree = $menu_tree->load('footer', $parameters);
+  $tree = $menu_tree->transform($tree, [
+    ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+    ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
+  ]);
+  $links = [];
+  foreach ($tree as $element) {
+    if (!$element->link->isEnabled()) {
+      continue;
+    }
+    $url = $element->link->getUrlObject();
+    $links[] = [
+      'title' => (string) $element->link->getTitle(),
+      'url' => $url->toString(),
+      'external' => $url->isExternal(),
+    ];
+    if (method_exists($element->link, 'getCacheTags')) {
+      $tags = array_merge($tags, $element->link->getCacheTags());
+    }
+  }
+  if ($links === []) {
+    return ['links' => $fallback, 'source' => 'default', 'tags' => $tags];
+  }
+  return ['links' => $links, 'source' => 'menu', 'tags' => array_values(array_unique($tags))];
+}
+
 /**
  * Canonical URL for an In Brief node (external link field when set).
  */

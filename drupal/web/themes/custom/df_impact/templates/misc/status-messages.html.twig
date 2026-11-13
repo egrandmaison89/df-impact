@@ -1,0 +1,28 @@
+{#
+/**
+ * @file
+ * Status messages on the public theme.
+ *
+ * Core's default template prints the text without the messages--status
+ * classes, so a node save that lands on View does not look like Drupal's
+ * status message. Gin already styles these classes on the edit form.
+ */
+#}
+<div data-drupal-messages class="messages-list">
+{% for type, messages in message_list %}
+  <div class="messages messages--{{ type }}" role="{{ type == 'error' ? 'alert' : 'status' }}" aria-label="{{ status_headings[type] }}"{{ attributes|without('role', 'aria-label') }}>
+    {% if status_headings[type] %}
+      <h2 class="visually-hidden">{{ status_headings[type] }}</h2>
+    {% endif %}
+    {% if messages|length > 1 %}
+      <ul class="messages__list">
+        {% for message in messages %}
+          <li class="messages__item">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      {{ messages|first }}
+    {% endif %}
+  </div>
+{% endfor %}
+</div>

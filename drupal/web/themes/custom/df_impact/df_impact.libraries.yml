@@ -68,6 +68,7 @@ wp_port:
     wp-assets/danafarberimpact.org_wp-content_plugins_megamenu_js_maxmegamenu.min.js: {}
     wp-assets/danafarberimpact.org_wp-content_plugins_add-search-to-menu_public_js_ivory-search.min.js: {}
     wp-assets/danafarberimpact.org_wp-content_plugins_socialsnap_assets_js_socialsnap.js: {}
+    js/wp-jquery-restore.js: {}
   dependencies:
     - core/jquery
 

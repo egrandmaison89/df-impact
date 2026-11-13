@@ -48,8 +48,8 @@ For each story in the issue:
 
 3. In **Publication & placement**, set **Issue** to the issue you created.
 4. Use **Show under Digital Exclusives** if the story should appear in that homepage row (independent of the issue).
-5. Set **Moderation state** to **Draft**.
-6. Save.
+5. Set **Moderation state** to **Draft**. **Byline** is required. If it is empty, Save stays on the form and shows the error at the top and next to Byline.
+6. Save. Editing a story that is already published keeps **View** on the live version until **Change to** is **Published**. A draft save is the **Latest version**. View shows a notice with that link while a newer draft exists.
 
 ### Media library
 

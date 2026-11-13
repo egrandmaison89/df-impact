@@ -43,6 +43,13 @@ function df_editor_update_9002(): string {
 /**
  * Installs Editor HTML text format and CKEditor 5 profile.
  */
+/**
+ * Seeds Footer menu links so the public footer can render that menu.
+ */
+function df_editor_update_9004(): string {
+  return df_editor_ensure_footer_menu_links();
+}
+
 function df_editor_update_9003(): string {
   $config_factory = \Drupal::configFactory();
   if (!$config_factory->get('filter.format.editor_html')->isNew()) {

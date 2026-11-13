@@ -9,10 +9,10 @@
     <div class="footer__inner footer__grid">
       <div class="footer__col footer__col--about">
         <h2 class="footer__heading">{{ 'About'|t }}</h2>
-        <ul class="footer__link-list">
-          <li><a href="{{ about_impact_url }}" class="footer__link">{{ 'About Impact'|t }}</a></li>
-          <li><a href="{{ path('view.browse_issues.page_1') }}" class="footer__link">{{ 'See All Issues'|t }}</a></li>
-          <li><a href="https://www.jimmyfund.org/events/" class="footer__link" target="_blank" rel="noopener">{{ 'Jimmy Fund Events'|t }}</a></li>
+        <ul class="footer__link-list" data-df-footer-source="{{ footer_link_source }}">
+          {% for item in footer_about_links %}
+            <li><a href="{{ item.url }}" class="footer__link"{% if item.external %} target="_blank" rel="noopener"{% endif %}>{{ item.title }}</a></li>
+          {% endfor %}
         </ul>
         <p class="footer__address">{{ 'The Jimmy Fund'|t }}<br>{{ '10 Brookline Place West, 5th Floor'|t }}<br>{{ 'Brookline, MA 02445-7226'|t }}<br>{{ '800-525-4669'|t }}</p>
         <div class="footer__brand-row">

@@ -3,6 +3,18 @@ issue_dashboard:
     theme:
       css/issue-dashboard.css: {}
 
+form_validation:
+  version: 1.6
+  css:
+    theme:
+      css/form-validation.css: {}
+  js:
+    js/form-validation.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/once
+
 issue_publish_confirm:
   version: 1.0
   js:

@@ -82,6 +82,150 @@
     return x >= box.left && x <= box.right && y >= box.top && y <= box.bottom;
   };
 
+  const isVisible = function (node) {
+    if (!node || !node.getBoundingClientRect) {
+      return false;
+    }
+    const box = node.getBoundingClientRect();
+    return box.width > 0 && box.height > 0;
+  };
+
+  const stickyBarHeight = function () {
+    const bar = document.querySelector('.gin-sticky-form-actions, .gin-secondary-toolbar');
+    return bar ? Math.ceil(bar.getBoundingClientRect().height) + 16 : 88;
+  };
+
+  const openCollapsedAncestors = function (node) {
+    let current = node;
+    while (current && current !== document.body) {
+      if (current.tagName === 'DETAILS' && !current.open) {
+        current.open = true;
+      }
+      if (current.classList && current.classList.contains('vertical-tabs')) {
+        const pane = current.closest('.vertical-tabs__pane') || current.querySelector('.vertical-tabs__pane');
+        if (pane && pane.id) {
+          const tab = document.querySelector('[href="#' + CSS.escape(pane.id) + '"]');
+          if (tab) {
+            tab.click();
+          }
+        }
+      }
+      current = current.parentElement;
+    }
+  };
+
+  const focusableControl = function (formItem) {
+    if (!formItem) {
+      return null;
+    }
+    const uri = formItem.querySelector('input[name*="[uri]"], input.form-url-input');
+    if (uri && !uri.disabled && uri.type !== 'hidden' && formItem.querySelector('.df-editor-inline-error')) {
+      return uri;
+    }
+    const autocomplete = formItem.querySelector('input.ui-autocomplete-input[name*="target_id"]');
+    if (autocomplete && formItem.querySelector('.df-editor-inline-error')) {
+      return autocomplete;
+    }
+    const textarea = formItem.querySelector('textarea[data-ckeditor5-id]');
+    if (textarea) {
+      const editable = formItem.querySelector('.ck-editor__editable[contenteditable="true"]');
+      if (editable) {
+        return editable;
+      }
+    }
+    const mediaOpen = formItem.querySelector('[data-drupal-selector*="media-library-open-button"], input[name*="media-library-open-button"]');
+    if (mediaOpen && formItem.querySelector('.df-editor-inline-error') && /image/i.test(formItem.textContent || '')) {
+      return mediaOpen;
+    }
+    const fields = formItem.querySelectorAll('input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])');
+    for (let i = 0; i < fields.length; i++) {
+      if (isVisible(fields[i])) {
+        return fields[i];
+      }
+    }
+    return null;
+  };
+
+  const formItemForInlineError = function (inline) {
+    let item = inline.closest('.js-form-item, .form-item, fieldset');
+    if (item) {
+      return item;
+    }
+    const prev = inline.previousElementSibling;
+    if (prev && prev.matches('.js-form-item, .form-item, fieldset')) {
+      return prev;
+    }
+    const fieldWrapper = inline.closest('.js-form-wrapper.form-wrapper[id$="-wrapper"]');
+    if (fieldWrapper) {
+      return fieldWrapper.querySelector('.js-form-item, .form-item, input, textarea, select');
+    }
+    return null;
+  };
+
+  const firstInvalidControl = function (form) {
+    const inlineErrors = form.querySelectorAll('.df-editor-inline-error');
+    for (let i = 0; i < inlineErrors.length; i++) {
+      const item = formItemForInlineError(inlineErrors[i]);
+      const control = focusableControl(item) || (item instanceof HTMLElement && item.matches('input, textarea, select') ? item : null);
+      if (control) {
+        return control;
+      }
+    }
+    const marked = form.querySelectorAll('.df-editor-field-error');
+    for (let j = 0; j < marked.length; j++) {
+      const control = focusableControl(marked[j]);
+      if (control) {
+        return control;
+      }
+    }
+    return null;
+  };
+
+  const focusInvalidField = function (form, summary) {
+    const control = firstInvalidControl(form);
+    const sticky = document.querySelector('.gin-sticky-form-actions, #gin-sticky-edit-submit');
+    if (sticky && summary && !document.querySelector('.df-editor-sticky-errors')) {
+      const note = document.createElement('div');
+      note.className = 'df-editor-sticky-errors messages messages--error';
+      note.setAttribute('role', 'alert');
+      note.textContent = summary.innerText.replace(/\s+/g, ' ').trim();
+      const bar = sticky.classList.contains('gin-sticky-form-actions') ? sticky : sticky.parentElement;
+      if (bar) {
+        bar.prepend(note);
+      }
+    }
+    if (window.history && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    const scrollTarget = control || summary;
+    if (!scrollTarget) {
+      return;
+    }
+    openCollapsedAncestors(scrollTarget);
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        const offset = stickyBarHeight();
+        const top = scrollTarget.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        if (control) {
+          if (control === document.activeElement) {
+            return;
+          }
+          try {
+            control.focus({ preventScroll: true });
+          }
+          catch (e) {
+            control.focus();
+          }
+          if (control !== document.activeElement && control.hasAttribute('contenteditable')) {
+            control.setAttribute('tabindex', '-1');
+            control.focus({ preventScroll: true });
+          }
+        }
+      });
+    });
+  };
+
   const isSaveControl = function (button) {
     if (!button || button.closest('.ui-dialog')) {
       return false;
@@ -143,40 +287,24 @@
 
       once('dfEditorErrorScroll', '.df-editor-validation-errors', context).forEach(function (summary) {
         const form = summary.closest('form') || document;
-        const error = form.querySelector('.df-editor-inline-error, .df-editor-paragraph-error');
-        const item = error ? error.closest('.js-form-item, .form-item, .paragraphs-subform, fieldset') : null;
-        const field = item ? item.querySelector('input, textarea, select') : null;
-        const sticky = document.querySelector('.gin-sticky-form-actions, #gin-sticky-edit-submit');
-        if (sticky && !document.querySelector('.df-editor-sticky-errors')) {
-          const note = document.createElement('div');
-          note.className = 'df-editor-sticky-errors messages messages--error';
-          note.setAttribute('role', 'alert');
-          note.textContent = summary.innerText.replace(/\s+/g, ' ').trim();
-          const bar = sticky.classList.contains('gin-sticky-form-actions') ? sticky : sticky.parentElement;
-          if (bar) {
-            bar.prepend(note);
+        focusInvalidField(form, summary);
+      });
+
+      once('dfEditorInvalidFocus', 'form[data-df-editor-validation]', context).forEach(function (form) {
+        form.addEventListener('invalid', function (event) {
+          const target = event.target;
+          if (!target || !target.closest('form[data-df-editor-validation]')) {
+            return;
           }
-        }
-        const visibleBox = function (node) {
-          if (!node) {
-            return false;
-          }
-          const box = node.getBoundingClientRect();
-          return box.height > 0 && box.width > 0;
-        };
-        const target = visibleBox(field) ? field : (visibleBox(error) ? error : summary);
-        if (!target.hasAttribute('tabindex')) {
-          target.setAttribute('tabindex', '-1');
-        }
-        if (window.history && 'scrollRestoration' in window.history) {
-          window.history.scrollRestoration = 'manual';
-        }
-        window.requestAnimationFrame(function () {
-          target.scrollIntoView({ block: 'center' });
-          if (field && typeof field.focus === 'function') {
-            field.focus({ preventScroll: true });
-          }
-        });
+          event.preventDefault();
+          const item = target.closest('.js-form-item, .form-item, fieldset') || target;
+          const control = focusableControl(item) || target;
+          openCollapsedAncestors(control);
+          const offset = stickyBarHeight();
+          const top = control.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+          control.focus({ preventScroll: true });
+        }, true);
       });
 
       once('dfEditorImageAlt', 'body', context).forEach(function () {

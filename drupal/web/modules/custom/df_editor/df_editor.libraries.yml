@@ -4,7 +4,7 @@ issue_dashboard:
       css/issue-dashboard.css: {}
 
 form_validation:
-  version: 1.4
+  version: 1.6
   css:
     theme:
       css/form-validation.css: {}

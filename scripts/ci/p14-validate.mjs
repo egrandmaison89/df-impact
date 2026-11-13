@@ -48,6 +48,7 @@ async function run() {
   let articlePath = '';
   try {
     await assertBylineError(admin.page, 'admin');
+    await assertCtaUrlFocus(admin.page);
     await assertParagraphRequired(admin.page);
     await assertImageAndDialog(admin.page);
     await assertValidSave(admin.page);
@@ -100,6 +101,18 @@ async function openSession(login) {
   return { context, page };
 }
 
+async function waitForActiveField(page, matcher) {
+  await page.waitForFunction((pattern) => {
+    const active = document.activeElement;
+    if (!active || active === document.body) {
+      return false;
+    }
+    const name = active.getAttribute('name') || '';
+    const id = active.id || '';
+  return new RegExp(pattern, 'i').test(name + ' ' + id);
+  }, matcher, { timeout: 10000 });
+}
+
 async function assertBylineError(page, role) {
   await page.goto(`${base}/node/add/article`, { waitUntil: 'domcontentloaded' });
   const form = page.locator('#node-article-form');
@@ -126,7 +139,31 @@ async function assertBylineError(page, role) {
       throw new Error(`${role}: Byline error is inside the status banner`);
     }
   }
+  await waitForActiveField(page, 'field_byline');
+  const active = await page.evaluate(() => {
+    const el = document.activeElement;
+    return el ? `${el.id} ${el.getAttribute('name') || ''}` : '';
+  });
+  if (!/field.byline/i.test(active)) {
+    throw new Error(`${role}: focus is not on Byline (${active})`);
+  }
   console.log(`${role}: empty Byline shows a form error`);
+}
+
+async function assertCtaUrlFocus(page) {
+  await page.goto(`${base}/node/add/article`, { waitUntil: 'domcontentloaded' });
+  await page.locator('#edit-title-0-value').fill('Playwright CTA focus');
+  await page.locator('#edit-field-byline-0-value').fill('QA Editor');
+  await clickParagraphAdd(page, '[name="field_content_sections_cta_add_more"]');
+  await page.locator('input[name*="field_cta_button_url"][name*="uri"]').waitFor({ state: 'attached' });
+  await page.locator('#gin-sticky-edit-submit').click();
+  await page.locator('.df-editor-validation-errors').waitFor();
+  await waitForActiveField(page, 'field_cta_button_url.*uri');
+  const active = await page.evaluate(() => document.activeElement && document.activeElement.name);
+  if (!active || !/field_cta_button_url.*uri/i.test(active)) {
+    throw new Error(`CTA save did not focus the URL input (${active})`);
+  }
+  console.log('CTA URL error focuses the URL input');
 }
 
 async function clickCoveredSave(page) {

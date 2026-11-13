@@ -218,4 +218,48 @@ CODE=$(curl -s -o /dev/null -w "%{http_code}" -b /tmp/df-ci-cookies --max-time 2
 \Drupal::service('renderer')->renderRoot(\$build);
 echo 'preview-render-ok';
 " | grep -q preview-render-ok || fail "Saved article preview render failed"
+if [[ ! -d /tmp/df-playwright/node_modules/playwright-core ]]; then
+  npm install --prefix /tmp/df-playwright --no-save --silent playwright-core
+fi
+"${DRUSH[@]}" php:eval '
+$bytes = base64_decode("/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////2wBDAf//////////////////////////////////////////////////////////////////////////////////////wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA//2Q==");
+$directory = "public://p14-validate";
+\Drupal::service("file_system")->prepareDirectory($directory, \Drupal\Core\File\FileSystemInterface::CREATE_DIRECTORY);
+$uri = $directory . "/p14-validate.jpg";
+file_put_contents(\Drupal::service("file_system")->realpath($directory) . "/p14-validate.jpg", $bytes);
+$file = \Drupal\file\Entity\File::create(["uri" => $uri, "status" => 1, "uid" => 1]);
+$file->save();
+$media = \Drupal\media\Entity\Media::create([
+  "bundle" => "image",
+  "name" => "P14 validation image",
+  "status" => 1,
+  "uid" => 1,
+  "field_media_image" => ["target_id" => $file->id(), "alt" => "P14 validation image"],
+]);
+$media->save();
+foreach (["p14-web-editor" => "web_editor", "p14-site-admin" => "site_admin"] as $name => $role) {
+  $accounts = \Drupal::entityTypeManager()->getStorage("user")->loadByProperties(["name" => $name]);
+  $account = $accounts ? reset($accounts) : NULL;
+  if (!$account) {
+    $account = \Drupal\user\Entity\User::create(["name" => $name, "mail" => $name . "@example.com", "status" => 1]);
+    $account->setPassword("p14-pass");
+  }
+  $account->addRole($role);
+  $account->save();
+}
+echo df_editor_ensure_validation_issue_fixtures();
+echo "p14-fixtures-ok";
+' > /tmp/p14-fixtures.txt || fail "Could not create the QA-100 validation fixtures"
+grep -q p14-fixtures-ok /tmp/p14-fixtures.txt || fail "Could not create the QA-100 validation fixtures"
+ISSUE_ID=$(sed -n 's/.*issue=\([0-9][0-9]*\).*/\1/p' /tmp/p14-fixtures.txt)
+PUBLISH_ID=$(sed -n 's/.*publish=\([0-9][0-9]*\).*/\1/p' /tmp/p14-fixtures.txt)
+[[ -n "$ISSUE_ID" && -n "$PUBLISH_ID" ]] || fail "Issue fixtures were not created"
+ADMIN_LOGIN=$("${DRUSH[@]}" user:login --uid=1 --uri="$BASE_URL")
+WEB_EDITOR_LOGIN=$("${DRUSH[@]}" user:login --name=p14-web-editor --uri="$BASE_URL")
+SITE_ADMIN_LOGIN=$("${DRUSH[@]}" user:login --name=p14-site-admin --uri="$BASE_URL")
+PLAYWRIGHT_CORE_ROOT=/tmp/df-playwright CHROME_PATH="$CHROME" BASE_URL="$BASE_URL" \
+  ADMIN_LOGIN="$ADMIN_LOGIN" WEB_EDITOR_LOGIN="$WEB_EDITOR_LOGIN" SITE_ADMIN_LOGIN="$SITE_ADMIN_LOGIN" \
+  ISSUE_ID="$ISSUE_ID" PUBLISH_ID="$PUBLISH_ID" \
+  node "$ROOT/scripts/ci/p14-validate.mjs" || fail "Editor validation check failed"
+"${DRUSH[@]}" php:eval 'echo df_editor_cleanup_automation_test_nodes();' >/dev/null || true
 echo "Search API index gate passed."

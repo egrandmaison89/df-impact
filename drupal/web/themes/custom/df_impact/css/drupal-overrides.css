@@ -523,3 +523,37 @@ body.search-results .wp-block-post-template .wp-block-post-title a {
   height: 1px;
   word-wrap: normal;
 }
+
+/* Standard Drupal status / warning / error banners on the public theme. */
+.messages-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem 0;
+}
+
+.messages {
+  margin: 0 0 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.messages--status {
+  background: #e6f4ea;
+  border: 1px solid #1b7f3b;
+}
+
+.messages--warning,
+.df-editor-newer-draft {
+  background: #fff4d6;
+  border: 1px solid #a15c00;
+}
+
+.messages--error {
+  background: #fde8e8;
+  border: 1px solid #d72222;
+}
+
+.df-editor-newer-draft {
+  max-width: 1200px;
+  margin: 0.75rem auto;
+  padding: 0.75rem 1rem;
+}

@@ -1,4 +1,9 @@
 services:
+  df_editor.form_error_handler:
+    class: Drupal\df_editor\Form\EditorFormErrorHandler
+    decorates: form_error_handler
+    arguments: ['@df_editor.form_error_handler.inner', '@messenger']
+
   df_editor.issue_preview:
     class: Drupal\df_editor\IssuePreview
     arguments: ['@request_stack', '@entity_type.manager', '@current_user']

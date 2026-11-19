@@ -8,8 +8,10 @@
 use Drupal\Component\Utility\Html;
 use Drupal\df_setup\ArticleCreditLabels;
 use Drupal\df_setup\LocalWpImage;
+use Drupal\file\Entity\File;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
+use Drupal\media\Entity\Media;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
 use Drupal\taxonomy\Entity\Term;
@@ -1211,6 +1213,137 @@ function df_setup_update_10038(): string {
  */
 function df_setup_update_10039(): string {
   return _df_setup_repoint_suzanne_fountain();
+}
+
+/**
+ * Corrects stale filesize metadata for the Suzanne Fountain file (fid 316).
+ */
+function df_setup_update_10040(): string {
+  $fid = 316;
+  $file = File::load($fid);
+  if (!$file) {
+    return 'fid 316 not found; filesize fix skipped.';
+  }
+  $realpath = \Drupal::service('file_system')->realpath($file->getFileUri());
+  if ($realpath === FALSE || !is_file($realpath)) {
+    return 'fid 316 is missing on disk; filesize fix skipped.';
+  }
+  $actual = (int) filesize($realpath);
+  $current = (int) $file->getSize();
+  if ($current === $actual) {
+    return "fid 316 filesize already matches disk ({$actual} bytes).";
+  }
+  $file->setSize($actual);
+  $file->save();
+  return "fid 316 filesize updated from {$current} to {$actual}.";
+}
+
+/**
+ * Removes unused orphan media mid 166 and file fid 1253 (dfi_suzanne-2).
+ */
+function df_setup_update_10041(): string {
+  $mid = 166;
+  $fid = 1253;
+  $file = File::load($fid);
+  $media = Media::load($mid);
+  if (!$file && !$media) {
+    return 'mid 166 and fid 1253 already absent.';
+  }
+  $file_refs = $file ? _df_setup_count_file_entity_usages($file) : 0;
+  $media_refs = $media ? _df_setup_count_media_entity_usages($media) : 0;
+  if ($file_refs > 0 || $media_refs > 0) {
+    $message = sprintf(
+      'QA-099: delete skipped — fid %d usages=%d, mid %d usages=%d.',
+      $fid,
+      $file_refs,
+      $mid,
+      $media_refs,
+    );
+    \Drupal::logger('df_setup')->warning('@message', ['@message' => $message]);
+    return $message;
+  }
+  if ($media) {
+    $media->delete();
+  }
+  if ($file) {
+    $file->delete();
+  }
+  return "Deleted unused mid {$mid} and fid {$fid}.";
+}
+
+/**
+ * Counts recorded and field references for one file entity.
+ */
+function _df_setup_count_file_entity_usages(File $file): int {
+  $count = 0;
+  $usage = \Drupal::service('file.usage')->listUsage($file);
+  foreach ($usage as $module_usages) {
+    foreach ($module_usages as $ids) {
+      $count += count($ids);
+    }
+  }
+  $database = \Drupal::database();
+  $fid = (int) $file->id();
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  foreach ($storage->loadMultiple() as $field_storage) {
+    if (!in_array($field_storage->getType(), ['file', 'image'], TRUE)) {
+      continue;
+    }
+    $field_name = $field_storage->getName();
+    $column = $field_name . '_target_id';
+    foreach ([$field_storage->getTargetEntityTypeId(), $field_storage->getTargetEntityTypeId() . '_revision'] as $entity_type_id) {
+      $table = $entity_type_id === $field_storage->getTargetEntityTypeId()
+        ? $entity_type_id . '__' . $field_name
+        : $entity_type_id . '__' . $field_name;
+      if (!$database->schema()->tableExists($table) || !$database->schema()->fieldExists($table, $column)) {
+        continue;
+      }
+      $count += (int) $database->select($table, 't')
+        ->condition($column, $fid)
+        ->countQuery()
+        ->execute()
+        ->fetchField();
+    }
+  }
+  return $count;
+}
+
+/**
+ * Counts entity references pointing at one media entity.
+ */
+function _df_setup_count_media_entity_usages(Media $media): int {
+  $count = 0;
+  $database = \Drupal::database();
+  $mid = (int) $media->id();
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  foreach ($storage->loadMultiple() as $field_storage) {
+    if ($field_storage->getType() !== 'entity_reference') {
+      continue;
+    }
+    $target_type = (string) ($field_storage->getSetting('target_type') ?? '');
+    if ($target_type !== 'media') {
+      continue;
+    }
+    $field_name = $field_storage->getName();
+    foreach ([$field_storage->getTargetEntityTypeId(), $field_storage->getTargetEntityTypeId() . '_revision'] as $entity_type_id) {
+      $prefix = $entity_type_id === $field_storage->getTargetEntityTypeId()
+        ? $entity_type_id . '__' . $field_name
+        : $entity_type_id . '__' . $field_name;
+      if (!$database->schema()->tableExists($prefix)) {
+        continue;
+      }
+      $column = $field_name . '_target_id';
+      if (!$database->schema()->fieldExists($prefix, $column)) {
+        continue;
+      }
+      $count += (int) $database->select($prefix, 't')
+        ->condition($column, $mid)
+        ->countQuery()
+        ->execute()
+        ->fetchField();
+    }
+  }
+  return $count;
 }
 
 /**

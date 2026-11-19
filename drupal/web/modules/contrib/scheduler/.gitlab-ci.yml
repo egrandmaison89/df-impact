@@ -35,8 +35,13 @@ variables:
   _PHPUNIT_TESTGROUPS: ''
   _CSPELL_EXTRA: '--dot'
   _ALL_VALIDATE_ALLOW_FAILURE: 0
+  _PHPSTAN_ALLOW_FAILURE: 1
   PHPUNIT_FAIL_ON_PHPUNIT_DEPRECATION: 0
   FF_TIMESTAMPS: 0
+
+  # These variables are defined here so that they are automatically removed from manual pipeline UI forms.
+  # The required values are defined in the variants defined later.
+  _LENIENT_ALLOW_LIST: ''
 
 ################
 # Job overrides
@@ -46,7 +51,7 @@ workflow:
   rules:
     - !reference [ .default-workflow ]
     # Also run if the branch starts with 'mr' followed by digits or is the specific issue branch 3356800 and there is no associated MR on that branch.
-    - if: $CI_COMMIT_BRANCH =~ /^(mr[0-9]+|3356800)/i && $CI_OPEN_MERGE_REQUESTS == ""
+    - if: $CI_COMMIT_BRANCH =~ /^(mr[0-9]+|3356800)/i && $CI_OPEN_MERGE_REQUESTS == null
 
 .show-variables: &show-variables
   - |
@@ -204,6 +209,7 @@ pages:
 
 eslint:
   after_script:
+    - *show-variables
     - echo -e "\e[0Ksection_start:`date +%s`:eslint_files[collapsed=true]\r\e[0K---Show ESLINT and PRETTIER files"
     - echo "Change to directory above the project"
     - cd $CI_PROJECT_DIR/$_WEB_ROOT/modules/custom && pwd
@@ -216,23 +222,16 @@ eslint:
 
 phpstan:
   after_script:
+    - *show-variables
     - echo -e "\e[0Ksection_start:`date +%s`:phpstan_summary[collapsed=true]\r\e[0K---PHPSTAN summary"
     - pwd && ls -l phpstan* && test -f phpstan.neon && echo "=== This is phpstan.neon ===" && cat phpstan.neon && echo "==="
     - php $CI_PROJECT_DIR/scripts/baseline-phpstan-summary.php phpstan-baseline-to-fix.neon || true
     - echo -e "\e[0Ksection_end:`date +%s`:phpstan_summary\r\e[0K"
 
 phpstan (previous major):
-  # Temporarily skip this job.
-  rules:
-    - when: never
-
-phpstan (next minor):
+  # Do run this variant of PHPStan.
   variables:
-    _PHPSTAN_ALLOW_FAILURE: 1
-
-phpstan (next major):
-  variables:
-    _PHPSTAN_ALLOW_FAILURE: 1
+    SKIP_PHPSTAN: 1
 
 # -------------------------------- TEST ----------------------------------------
 

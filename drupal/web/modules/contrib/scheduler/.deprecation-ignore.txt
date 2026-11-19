@@ -24,4 +24,10 @@
 %(address|workbench_moderation)_module_implements_alter without a #\[LegacyModuleImplementsAlter\] attribute is deprecated%
 # https://www.drupal.org/node/3496788
 
+%node_access(_needs)?_rebuild\(\) is deprecated in drupal:11.4.0 and is removed from drupal:13.0.0%
+# https://www.drupal.org/node/3534610
+
+%(address|commerce(_price)?|token)_requirements without a #\[LegacyRequirementsHook\] attribute is deprecated in drupal:11.3.0%
+# https://www.drupal.org/node/3549685 and https://www.drupal.org/project/scheduler/issues/3587907
+
 # cspell:enable
